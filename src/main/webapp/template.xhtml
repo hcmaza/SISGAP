@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <!--  <h:outputStylesheet name="./css/cssLayout.css"/> -->
+        <h:outputStylesheet name="./css/default.css"/>
+      <!--  <h:outputStylesheet name="./css/jsfcrud.css"/> -->
+
+        <title>sisgap - sistema de gestión de proyectos</title>
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+         <script src="http://maps.google.com/maps/api/js?sensor=false" 
+          type="text/javascript"></script>
+    </h:head>
+
+    <h:body>
+        <div class="wrapper" >
+
+            <header class="header rounded-corners" >
+                <ui:insert name="top">
+                        <h2 class="cabecera1">sisgap</h2>
+                        <h3 class="cabecera2">sistema de gestión de proyectos</h3>
+                </ui:insert>
+            </header><!-- .header-->
+
+            <div class="middle">
+
+                <div class="container">
+                    <ui:include src="./menu.xhtml"></ui:include>
+                    <main class="content ">
+                        <ui:insert name="body">body</ui:insert>
+                    </main><!-- .content -->
+                </div><!-- .container-->
+            </div><!-- .middle-->
+        </div><!-- .wrapper -->
+
+        <footer class="footer rounded-corners" style="vertical-align: middle; margin: 0px auto 0px auto; position: relative;">
+            <ui:insert name="bottom">  
+                <div align="center" style="margin: 0px auto 0px auto; border-color: white; border-width: 1;" >
+                    <h:outputText value="[UNdeC] Universidad Nacional de Chilecito" class="pie1" style="vertical-align: middle;" />
+                </div>
+            </ui:insert>
+        </footer><!-- .footer -->
+        <h:form id="formabout">
+            <p:dialog id="dabout" widgetVar="dabout" header="Acerca de ..." closable="true" >
+                <p:graphicImage value="/resources/img/vinculacionTecnologica.png" />
+              <!--  <p:gmap zoom="15" type="hybrid" center="-29.156567,-67.470834" style="width: 400px;height: 200px" /> -->
+                Version 1.0
+                <br />
+                Copyright 2014, The Wolberg, Leguiza, Paez, Maza - Development Team
+                <br />
+                This Software is realeased under the The Wolberg, Leguiza, Paez, Maza.
+            </p:dialog>
+        </h:form>
+    </h:body>
+
+</html>
