@@ -272,7 +272,7 @@ public class Agente implements Serializable {
 
     @Override
     public String toString() {
-        return numerodocumento+" | "+apellido+", "+nombres;
+        return cuil+" | "+numerodocumento+" | "+apellido+", "+nombres;
     }
     
 }
