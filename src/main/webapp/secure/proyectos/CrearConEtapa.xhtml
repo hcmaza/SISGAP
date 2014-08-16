@@ -154,7 +154,111 @@
                 </p:panel>
                 
                 <p:separator />
-                <p:panel id="paneletapas" header="Agregar Etapas">
+                
+                <p:panel id="panelequipo" header="Equipo de Trabajo" >
+                    <br />
+                    <div align="right" >
+                                    <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
+                                </div>
+                                <h:panelGrid columns="4">
+                                    <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / cuil" ></p:outputLabel>
+                                    <p:selectOneMenu id="advancedfiltroa" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"   >
+                                        <p:ajax update="@this" />
+                                        <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}"  />
+ 
+                                           </p:selectOneMenu> 
+                                    
+                                    <h:panelGrid columns="6" id="agenteselecciona" >
+                                        
+                                        <p:commandButton immediate="true" update="agentesa" value="Agregar al equipo de trabajo" action="#{proyectoAgenteController.agregarEquipo}" >
+                                               
+                                                </p:commandButton>
+                                    </h:panelGrid>
+                                
+                                </h:panelGrid>
+                                <div align="center">
+                                    <p:dataTable id="agentesa" value="#{proyectoAgenteController.equipotrabajo}" var="agentea" editable="true" editMode="cell" >
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Cuil"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.cuil}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Apellido"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.apellido}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombres"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.nombres}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Email"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.email}"/>
+                                    </p:column>
+                                    
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Profesion"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.profesion}"/>
+                                    </p:column>
+                                   <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Horas laborales"/>
+                                        </f:facet>
+                                       <h:outputText value="#{agentea.agente.horaslaborales}"/>
+                                    </p:column>
+                                    
+                                        <p:column headerText="Función en el Proyecto">
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputLabel value="#{agentea.funcionproyecto}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ifuncion" value="#{agentea.funcionproyecto}"  /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                        
+                                     <p:column headerText="Horas Disponibles">
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputLabel value="#{agentea.horasdisponibles}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ihoradisponible" value="#{agentea.horasdisponibles}"  /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                        
+                                    <p:column headerText="Horas Dedicadas">
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputLabel value="#{agentea.horasdedicadas}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ihoradedicada" value="#{agentea.horasdedicadas}"  /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>    
+                                        
+                                    
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="&nbsp;"/>
+                                        </f:facet>
+                                        <p:commandButton immediate="true" id="cborrara" value="Eliminar" update="agentesa"  >
+                                            <p:collector value="#{agentea}" removeFrom="#{proyectoAgenteController.equipotrabajo}" unique="true"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                                
+                                </div>
+                    
+                    
+                </p:panel>
+                
+                
+                
+                <p:panel id="paneletapas" header="Plan de Trabajo">
                             <br />
                             <br />
                              <p:commandButton id="btn_addetapa" update=":forme:dialogoetapa" action="#{etapaController.rearmarEtapasProyecto}" onclick="PF('dialogoetapa').show()" value="Agregar Etapa" />  
@@ -482,7 +586,7 @@
             
             <h:form id="forme" >
                 <p:dialog id="dialogoetapa" maximizable="false" minimizable="false" header="Agregar Etapa"
-                          resizable="false" widgetVar="dialogoetapa" visible="true" >
+                          resizable="false" widgetVar="dialogoetapa" >
                         <p:panel header="Etapa" >
                             <div align="center" >
                                     <h:panelGrid styleClass="right,left" columns="2">

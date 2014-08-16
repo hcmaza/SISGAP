@@ -74,6 +74,9 @@ public class Agente implements Serializable {
     @Size(max = 100)
     @Column(name = "profesion")
     private String profesion;
+    @Size(max = 15)
+    @Column(name = "cuil")
+    private String cuil;
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="agente_id_seq")
@@ -95,7 +98,11 @@ public class Agente implements Serializable {
     @Size(max = 60)
     @Column(name = "especialidad")
     private String especialidad;
-   
+    @Column(name = "legajo")
+    private Integer legajo;
+    @Column(name = "horaslaborales")
+    private Integer horaslaborales;
+    
     public Agente() {
     }
 
@@ -215,6 +222,32 @@ public class Agente implements Serializable {
         this.especialidad = especialidad;
     }
 
+    public String getCuil() {
+        return cuil;
+    }
+
+    public void setCuil(String cuil) {
+        this.cuil = cuil;
+    }
+
+    public Integer getLegajo() {
+        return legajo;
+    }
+
+    public void setLegajo(Integer legajo) {
+        this.legajo = legajo;
+    }
+
+    public Integer getHoraslaborales() {
+        return horaslaborales;
+    }
+
+    public void setHoraslaborales(Integer horaslaborales) {
+        this.horaslaborales = horaslaborales;
+    }
+    
+    
+    
        
 
     @Override

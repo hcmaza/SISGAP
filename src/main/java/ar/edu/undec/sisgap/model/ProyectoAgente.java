@@ -43,7 +43,11 @@ public class ProyectoAgente implements Serializable {
     @JoinColumn(name = "agenteid", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Agente agente;
-
+    @Column(name = "horasdisponibles")
+    private Integer horasdisponibles;
+    @Column(name = "horasdedicadas")
+    private Integer horasdedicadas;
+    
     public ProyectoAgente() {
     }
 
@@ -87,6 +91,23 @@ public class ProyectoAgente implements Serializable {
         this.agente = agente;
     }
 
+    public Integer getHorasdisponibles() {
+        return horasdisponibles;
+    }
+
+    public void setHorasdisponibles(Integer horasdisponibles) {
+        this.horasdisponibles = horasdisponibles;
+    }
+
+    public Integer getHorasdedicadas() {
+        return horasdedicadas;
+    }
+
+    public void setHorasdedicadas(Integer horasdedicadas) {
+        this.horasdedicadas = horasdedicadas;
+    }
+
+    
     
     
     @Override

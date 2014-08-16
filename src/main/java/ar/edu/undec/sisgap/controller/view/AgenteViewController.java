@@ -9,11 +9,21 @@ package ar.edu.undec.sisgap.controller.view;
 import ar.edu.undec.sisgap.controller.AgenteFacade;
 import ar.edu.undec.sisgap.controller.EncriptarSHA256;
 import ar.edu.undec.sisgap.controller.UsuarioFacade;
+import ar.edu.undec.sisgap.controller.view.util.ConnectJDBCPostgresql;
 import ar.edu.undec.sisgap.model.Agente;
+import ar.edu.undec.sisgap.model.DatosMapuche;
+import ar.edu.undec.sisgap.model.Tipodocumento;
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -41,6 +51,8 @@ public class AgenteViewController implements Serializable {
     private ar.edu.undec.sisgap.controller.AgenteFacade ejbFacade;
     @EJB
     private ar.edu.undec.sisgap.controller.UsuarioFacade ejbFacadeu;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     private ar.edu.undec.sisgap.controller.view.util.PaginationHelper pagination;
     private int selectedItemIndex;
     
@@ -50,6 +62,7 @@ public class AgenteViewController implements Serializable {
     private boolean filtroapellidonombre=false;
     private boolean filtrodocumento=false;
     private SelectItem[] itemsAgentes;
+    
     
     /**
      * Creates a new instance of AgenteViewController
@@ -391,5 +404,63 @@ public class AgenteViewController implements Serializable {
     public void setItemsAgentes(SelectItem[] i) {
         itemsAgentes=i;
     }
+    
+   
+    //importo datos del mapuche mediante JDBC
+    public void importardatos(){
+        
+        Calendar fecha = new GregorianCalendar();
+        int año = fecha.get(Calendar.YEAR);
+        int mes = fecha.get(Calendar.MONTH);
+        int dia = fecha.get(Calendar.DATE);
+          
+        ConnectJDBCPostgresql connectjdbcpostgresql = new ConnectJDBCPostgresql();
+        try {
+            connectjdbcpostgresql.connect(ejbFacadec.findAtributo("mapuchehost").getValor(), ejbFacadec.findAtributo("mapucheport").getValor(), ejbFacadec.findAtributo("mapuchedatabase").getValor(), ejbFacadec.findAtributo("mapucheuser").getValor(), ejbFacadec.findAtributo("mapuchepassword").getValor());
+        } catch (SQLException ex) {
+            Logger.getLogger(AgenteViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            PreparedStatement ps= connectjdbcpostgresql.getConn().prepareStatement(" select dh01.nro_legaj, desc_appat,desc_apmat,desc_nombr,tipo_docum,nro_docum,nro_cuil1, nro_cuil, nro_cuil2,tipo_sexo,fec_nacim, sum(cant_horas) as cant_horas " +
+                    "	from mapuche.dh03 \n" +
+                    "left join mapuche.dh01 on (dh01.nro_legaj=dh03.nro_legaj)\n" +
+                    "left join mapuche.dh11 on (dh03.codc_categ=dh11.codc_categ)\n" +
+                    "left join mapuche.dh31 on (dh11.codc_dedic=dh31.codc_dedic)\n" +
+                    "	where dh03.vig_caano > " + (año-1) +" and (fec_baja > '"+año+"-"+mes+"-"+dia+"' or fec_baja is NULL) and dh11.codc_dedic != 'NODO' group by dh01.nro_legaj ");
+           ResultSet rs = ps.executeQuery();
+           while(rs.next()){
+               Agente ai =new Agente();
+               
+            ai.setLegajo(rs.getInt("nro_legaj"));
+            ai.setApellido(rs.getString("desc_appat"));
+            ai.setNombres(rs.getString("desc_nombr"));
+            ai.setNumerodocumento(rs.getString("nro_docum"));
+            ai.setCuil(rs.getString("nro_cuil1")+"-"+rs.getString("nro_cuil")+"-"+rs.getString("nro_cuil2"));
+            ai.setTipodocumentoid(new Tipodocumento(1));
+            ai.setHoraslaborales(rs.getInt("cant_horas"));
+            if(ejbFacade.filtroDocumentooCuil(ai.getNumerodocumento())==null){
+                this.ejbFacade.create(ai);
+            
+            }
+           }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(AgenteViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        for(DatosMapuche dm :this.findAllUNDEC()){
+//            Agente ai =new Agente();
+//            ai.setLegajo(dm.getNro_legaj());
+//            ai.setApellido(dm.getDesc_appat());
+//            ai.setNombres(dm.getDesc_nombr());
+//            ai.setNumerodocumento(""+dm.getNro_docum());
+//            ai.setCuil(dm.getNro_cuil1()+"-"+dm.getNro_cuil()+"-"+dm.getNro_cuil2());
+//            ai.setTipodocumentoid(new Tipodocumento(1));
+//            if(ejbFacade.filtroDocumentooCuil(ai.getNumerodocumento()).isEmpty()){
+//                this.ejbFacade.create(ai);
+//            
+//            }
+//        }
+    }
+    
     
 }

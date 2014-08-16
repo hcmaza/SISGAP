@@ -40,6 +40,10 @@
                     <p:menuitem value="Tipo de proyecto" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/tipoproyecto/List.xhtml'  />  
 
                 </p:submenu>
+                <p:submenu label="Datos Externos">  
+                    <p:menuitem value="Importar Datos desde Mapuche" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/DatosMapuche/Migrar.xhtml'  />  
+                </p:submenu> 
+
                 <p:submenu label="Ayuda" icon="ui-icon-help">  
                     <p:menuitem value="Acerca de ..." onclick="PF('dabout').show()" />  
                     <p:submenu label="Manual" icon="ui-icon-search">  

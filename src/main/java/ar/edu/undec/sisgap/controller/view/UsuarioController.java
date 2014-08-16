@@ -33,6 +33,7 @@ import javax.faces.model.SelectItem;
 import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
 
 @ManagedBean(name = "usuarioController")
 @SessionScoped
@@ -196,7 +197,7 @@ public class UsuarioController implements Serializable {
             
             System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"+current.getUsuarioid());
             currenta.setUsuarioid(current);
-            getFacadea().createWithPersist(currenta);
+            getFacadea().create(currenta);
             if(!new EnviarMail().enviarMailConfirmacion(currenta, current)){
                 JsfUtil.addErrorMessage("No se pudo enviar el mail para activar su cuenta!");
                 
@@ -381,5 +382,20 @@ public class UsuarioController implements Serializable {
 
     }
     
+    public String onFlowProcess(FlowEvent event) {
+        if(currenta.getId()>0){
+            return event.getNewStep();
+        }else{
+            return null;
+        }
+    }
+    
+    public void buscarAgenteCuil(String cuil){
+        this.currenta=this.ejbFacadea.filtroDocumentooCuil(cuil);
+        if(currenta==null){
+            JsfUtil.addErrorMessage("No se pudo encontrar el docente");
+            
+        }
+    }
     
 }
