@@ -40,4 +40,15 @@ public class ProyectoAgenteFacade extends AbstractFacade<ProyectoAgente> {
         }
 
     }
+     
+     public void removebyProyecto(int proyectoid) {
+
+        try {
+            em.createQuery("Delete FROM ProyectoAgente p WHERE p.proyectoAgentePK.proyectoid = :proyectoid", ProyectoAgente.class).setParameter("proyectoid", proyectoid).getResultList();
+        } catch (Exception e) {
+            System.out.println("No se pudo realizar la eliminacion" + e);
+           
+        }
+
+    }
 }

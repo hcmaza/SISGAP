@@ -776,6 +776,18 @@ public class ProyectoController implements Serializable {
         
         PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
         PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        
+        //Creacion de proyectosAgentes
+        ejbproyectoagente.removebyProyecto(this.current.getId());
+        
+       for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+           ejbproyectoagente.create(pa);
+       }
+        
+           
+        
+        //Creacion de etapas
         for (Etapa e : etapacontroller.getEtapas()) {
            e.setId(null);
            e.setProyectoid(current);

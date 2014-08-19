@@ -155,8 +155,13 @@
                 
                 <p:separator />
                 
+                
+        <p:tabView id="tabviewTodo" style="font-size: 12px;"> 
+
                 <p:panel id="panelequipo" header="Equipo de Trabajo" >
-                    <br />
+                    <p:fieldset legend="Equipo de Trabajo" style="margin-bottom:5px">
+                              
+                
                     <div align="right" >
                                     <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
                                 </div>
@@ -250,19 +255,19 @@
                                 </p:dataTable>
                                 
                                 </div>
-                    
+                    </p:fieldset>
                     
                 </p:panel>
                 
                 
                 
                 <p:panel id="paneletapas" header="Plan de Trabajo">
-                            <br />
+                     <p:fieldset legend="Plan de Trabajo" style="margin-bottom:5px">
+                            
                             <br />
                              <p:commandButton id="btn_addetapa" update=":forme:etapa :forme:tareasdeproyecto" action="#{etapaController.rearmarEtapasProyecto}" onclick="PF('dialogoetapa').show()" value="Agregar Etapa" />  
                              <br />
-                             <br />
-                    
+                            
                              <p:treeTable id="treetableetapas" value="#{etapaController.root}" var="document">
                                     <p:column headerText="Etapa/Tarea">
                                         <h:outputText value="#{document.tarea}" />
@@ -296,7 +301,7 @@
                                         </p:commandButton>
                                     </p:column>
                                  <p:column style="width:24px">
-                                     <p:commandButton value="Eliminar" update=":form:treetableetapas :form:paneletapas :form:contenedor :form:beanvalue" rendered="#{document.estado eq null}"  onclick="crearGrafico()" title="Eliminar" actionListener="#{etapaController.eliminarEtapaTreeTable(document)}" icon="ui-icon-trash">
+                                     <p:commandButton value="Eliminar" update=":form:tabviewTodo:treetableetapas :form:paneletapas :form:contenedor :form:beanvalue" rendered="#{document.estado eq null}"  onclick="crearGrafico()" title="Eliminar" actionListener="#{etapaController.eliminarEtapaTreeTable(document)}" icon="ui-icon-trash">
                                             
                                         </p:commandButton>
                                     </p:column>
@@ -322,23 +327,13 @@
                                         <p:graphicImage value="/resources/img/xml.png" />  
                                         <p:dataExporter type="xml" target="tareasdeproyecto" fileName="tareas" />  
                                     </h:commandLink>  
-                              <p:panel id="contenedor" >
-    
-                                <div id="containergrafico"  style="width: 100%;position: relative;display: inline-block; vertical-align: top;white-space: normal;" >
-
-
-                               </div>
-                              </p:panel>
-                        <br />
-                        <h:inputHidden value="#{etapaController.gsoncategoria}" id="beanvalue"  />
-                        <br />
-                              
+                        
+                     </p:fieldset>      
                 </p:panel>
                 
-                <br />
-                <br />
+               
                 <p:panel header="Presupuesto" >
-                   
+                    <p:fieldset legend="Presupuesto" style="margin-bottom:5px">
                            
                     <p:commandButton id="cagregarpresupuesto" value="Agregar Presupuesto" onclick="PF('dialogopresupuesto').show()" update=":formpresupuesto:panelpresupuesto" action="#{presupuestoRubroitemController.reinit}" >
                     </p:commandButton>
@@ -411,8 +406,16 @@
 
                     </h:panelGrid>
                     
-                    
+                    </p:fieldset>
                 </p:panel>
+        </p:tabView>
+                <p:panel id="contenedor" >
+    
+                                <div id="containergrafico"  style="width: 100%;position: relative;display: inline-block; vertical-align: top;white-space: normal;" >
+
+
+                               </div>
+                              </p:panel>
                         <br />
                         <div align="center" >
                             <p:commandButton value="Enviar para evaluacion" actionListener="#{proyectoController.enviarEvaluarProyecto}" />
@@ -420,7 +423,7 @@
                         <br />
                         
                 <h:link outcome="/index" value="INICIO"/>
-                
+                 <h:inputHidden value="#{etapaController.gsoncategoria}" id="beanvalue"  />
                
                 </h:form>
                 <h:form id="formd">
@@ -476,9 +479,9 @@
                                 
                             </p:tab>
                             <p:tab id="tab2" title="Equipo de trabajo">
-                                <div align="right" >
+                          <!--      <div align="right" >
                                     <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
-                                </div>
+                                </div> -->
                                 <h:panelGrid columns="4">
                                     <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Apellido" ></p:outputLabel>
                                     <p:selectOneMenu id="advancedfiltro" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"   >
@@ -647,8 +650,8 @@
                                   
                               </p:panel>
                     <div align="center">
-                        <p:commandButton rendered="#{etapaController.paraeditar}" id ="cetapaeditar" update=":form:contenedor :form:treetableetapas :form:beanvalue" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Editar" actionListener="#{etapaController.editarListadoEtapas}" />
-                        <p:commandButton rendered="#{!etapaController.paraeditar}" id ="cetapa" update=":form:contenedor :form:treetableetapas :form:beanvalue" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Aceptar" actionListener="#{etapaController.agregaralListadoEtapas}" />
+                        <p:commandButton rendered="#{etapaController.paraeditar}" id ="cetapaeditar" update=":form:contenedor :form:tabviewTodo:treetableetapas :form:beanvalue" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Editar" actionListener="#{etapaController.editarListadoEtapas}" />
+                        <p:commandButton rendered="#{!etapaController.paraeditar}" id ="cetapa" update=":form:contenedor :form:tabviewTodo:treetableetapas :form:beanvalue" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Aceptar" actionListener="#{etapaController.agregaralListadoEtapas}" />
                     </div>
                    
                 </p:dialog>
@@ -722,7 +725,7 @@
                     <h:inputText maxlength="70" id="especialidad" value="#{agenteViewController.agente1.especialidad}" title="Especialidad" required="true" />
                     <p:message for="especialidad" /> 
                     
-                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formd:wizardtarea:advancedfiltro :form:advancedfiltroa" value="Crear" />
+                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formd:wizardtarea:advancedfiltro :form:tabviewTodo:advancedfiltroa" value="Crear" />
                     <br />
              
               
@@ -798,7 +801,7 @@
                             </h:panelGrid>
                              
                     <div align="center" >
-                        <p:commandButton id="agregaralpresupuesto" value="OK" onclick="PF('dialogopresupuesto').hide()" actionListener="#{presupuestoRubroitemController.agregarPresupuesto}" update=":formpresupuesto:growlpresupuesto :formpresupuesto:panelpresupuesto :form:tablepresupuesto :form:pchartpresupuesto :form:chartaportes :form:chartrubros "  >
+                        <p:commandButton id="agregaralpresupuesto" value="OK" onclick="PF('dialogopresupuesto').hide()" actionListener="#{presupuestoRubroitemController.agregarPresupuesto}" update=":formpresupuesto:growlpresupuesto :formpresupuesto:panelpresupuesto :form:tabviewTodo:tablepresupuesto :form:tabviewTodo:pchartpresupuesto :form:tabviewTodo:chartaportes :form:tabviewTodo:chartrubros "  >
                            
                         </p:commandButton>
                         
