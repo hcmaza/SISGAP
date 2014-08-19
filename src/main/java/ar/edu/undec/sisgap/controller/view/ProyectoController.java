@@ -852,6 +852,17 @@ public class ProyectoController implements Serializable {
     }
       public String CrearConEtapa() {
         current = (Proyecto) getItems().getRowData();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
+        
+        for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
+            pa1.setFuncionproyecto("");
+            pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
+            pa.add(pa1);
+            
+        }
+        proyectoagentecontroller.setEquipotrabajo(pa);
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "CrearConEtapa";
     }

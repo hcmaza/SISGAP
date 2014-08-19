@@ -162,7 +162,7 @@
                                 </div>
                                 <h:panelGrid columns="4">
                                     <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Cuil " ></p:outputLabel>
-                                    <p:selectOneMenu id="advancedfiltroa" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"   >
+                                    <p:selectOneMenu  id="advancedfiltroa" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"    >
                                         <p:ajax update="@this" />
                                         <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}"  />
  
@@ -215,21 +215,13 @@
                                         </f:facet>
                                        <h:outputText value="#{agentea.agente.horaslaborales}"/>
                                     </p:column>
-                                    
-                                        <p:column headerText="Función en el Proyecto">
                                         
-                                        <p:cellEditor>
-                                            <f:facet name="output"><h:outputLabel value="#{agentea.funcionproyecto}" /></f:facet>
-                                            <f:facet name="input"><p:inputText id="ifuncion" value="#{agentea.funcionproyecto}"  /></f:facet>
-                                        </p:cellEditor>
-                                    </p:column>
+                                     <p:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Horas Disponibles" />
+                                            </f:facet>
+                                            <h:outputText value="#{agentea.horasdisponibles}"  />
                                         
-                                     <p:column headerText="Horas Disponibles">
-                                        
-                                        <p:cellEditor>
-                                            <f:facet name="output"><h:outputLabel value="#{agentea.horasdisponibles}" /></f:facet>
-                                            <f:facet name="input"><p:inputText id="ihoradisponible" value="#{agentea.horasdisponibles}"  /></f:facet>
-                                        </p:cellEditor>
                                     </p:column>
                                         
                                     <p:column headerText="Horas Dedicadas">
@@ -239,7 +231,13 @@
                                             <f:facet name="input"><p:inputText id="ihoradedicada" value="#{agentea.horasdedicadas}"  /></f:facet>
                                         </p:cellEditor>
                                     </p:column>    
+                                      <p:column headerText="Función en el Proyecto">
                                         
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputLabel value="#{agentea.funcionproyecto}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ifuncion" value="#{agentea.funcionproyecto}"  /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>   
                                     
                                     <p:column>
                                         <f:facet name="header">
@@ -484,32 +482,14 @@
                                 <h:panelGrid columns="4">
                                     <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Apellido" ></p:outputLabel>
                                     <p:selectOneMenu id="advancedfiltro" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"   >
-                                        <p:ajax update="tagenteseleccion" />
-                                        <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}"  />
+                                        <p:ajax update="@this" />
+                                        <f:selectItems value="#{agenteViewController.itemsAvailableSelectOneProyectoAgente}"  />
  
                                            </p:selectOneMenu> 
-                                    
-                                    <h:panelGrid columns="6" id="tagenteseleccion" >
-                                        
-                                        <p:outputLabel style="font-weight:bold;" value="N° Documento"/>
-                                            <p:outputLabel style="font-weight:bold;" value="Apellido"/>
-                                            <p:outputLabel style="font-weight:bold;" value="Nombres"/>
-                                            <p:outputLabel style="font-weight:bold;" value="Telefono"/>
-                                            <p:outputLabel style="font-weight:bold;" value="Email"/>
-                                            <p:outputLabel style="font-weight:bold;" value="Profesion"/>
-                                            <p:outputLabel value="#{agenteViewController.selected.numerodocumento}"/>
-                                            <p:outputLabel value="#{agenteViewController.selected.apellido}"/>
-                                            <p:outputLabel value="#{agenteViewController.selected.nombres}"/>
-                                            <p:outputLabel value="#{agenteViewController.selected.telefono}"/>
-                                            <p:outputLabel value="#{agenteViewController.selected.email}"/>
-                                            <p:outputLabel value="#{agenteViewController.selected.profesion}"/>
-                                            <f:facet name="footer">
-                                                <p:commandButton immediate="true" update="tagentes" value="Agregar al equipo de trabajo" action="#{tareaAgenteController.agregarEquipo}" >
+                                     <p:commandButton immediate="true" update="tagentes" value="Agregar al equipo de trabajo" action="#{tareaAgenteController.agregarEquipo}" >
                                                
-                                                </p:commandButton>
-                                             </f:facet>
-                                    </h:panelGrid>
-                                
+                                      </p:commandButton>
+                                    
                                 </h:panelGrid>
                                 <div align="center">
                                     <p:dataTable id="tagentes" value="#{tareaAgenteController.tareasagentes}" var="tareaagente" editable="true" editMode="cell" >
@@ -742,7 +722,7 @@
                     <h:inputText maxlength="70" id="especialidad" value="#{agenteViewController.agente1.especialidad}" title="Especialidad" required="true" />
                     <p:message for="especialidad" /> 
                     
-                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formd:wizardtarea:tagenteseleccion :formd:wizardtarea:advancedfiltro :form:advancedfiltroa" value="Crear" />
+                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formd:wizardtarea:advancedfiltro :form:advancedfiltroa" value="Crear" />
                     <br />
              
               

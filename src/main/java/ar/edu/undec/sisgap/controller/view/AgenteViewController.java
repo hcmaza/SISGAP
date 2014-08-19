@@ -12,6 +12,7 @@ import ar.edu.undec.sisgap.controller.UsuarioFacade;
 import ar.edu.undec.sisgap.controller.view.util.ConnectJDBCPostgresql;
 import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.DatosMapuche;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Tipodocumento;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -370,14 +371,14 @@ public class AgenteViewController implements Serializable {
     
     public void registrar(){
         System.out.println("oooooooooo");
-        if(this.ejbFacade.agentedocumento(agente1.getNumerodocumento())==null){
-           
+        if((this.ejbFacade.agentedocumento(agente1.getNumerodocumento())==null) || (ejbFacade.filtroDocumentooCuil(agente1.getCuil())==null)  ){
+                  
             ejbFacade.createWithPersist(agente1);
            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "La registracion fue Satisfactoria")); 
         }else{
             System.out.println("8888888888888888");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya Existe Una Persona con Ese Numero de Documento")); 
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya Existe Una Persona con Ese Numero de Documento/CUIL")); 
         }
     }
 
@@ -462,5 +463,14 @@ public class AgenteViewController implements Serializable {
 //        }
     }
     
+    public SelectItem[] getItemsAvailableSelectOneProyectoAgente() {
+         FacesContext context = FacesContext.getCurrentInstance();    
+         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+         List<Agente> as = new ArrayList<Agente>();
+         for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
+             as.add(pa.getAgente());
+         }
+        return ar.edu.undec.sisgap.controller.view.util.JsfUtil.getSelectItems(as, true);
+    }
     
 }

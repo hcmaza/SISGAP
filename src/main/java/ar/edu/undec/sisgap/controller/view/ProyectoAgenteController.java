@@ -251,6 +251,9 @@ public class ProyectoAgenteController implements Serializable {
     }
 
     public List<ProyectoAgente> getEquipotrabajo() {
+        if(equipotrabajo.isEmpty()){
+           // equipotrabajo=this.ejbFacade.buscarEquipoTrabajo(this.proyectocontroller.getSelected().getId());
+        }
         return equipotrabajo;
     }
 
@@ -282,6 +285,7 @@ public class ProyectoAgenteController implements Serializable {
             ProyectoAgente nuevo = new ProyectoAgente();
             nuevo.setAgente(agenteviewcontroller.getSelected());
             nuevo.setProyecto(proyectocontroller.getSelected());
+            nuevo.setHorasdisponibles(Math.round(nuevo.getAgente().getHoraslaborales()/2));
             equipotrabajo.add(nuevo);
             
         }
