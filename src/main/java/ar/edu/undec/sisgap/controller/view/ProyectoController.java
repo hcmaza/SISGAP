@@ -1336,6 +1336,27 @@ public class ProyectoController implements Serializable {
         etapacontroller.setEtapas(this.ejbetapa.findByProyecto(current));
         //etapacontroller.agregaralListadoEtapas();
        etapacontroller.prepareEditarListadoEtapas();
+      
+       //proyecto Agente
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
+        
+        for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
+            pa1.setFuncionproyecto("");
+            pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
+            pa.add(pa1);
+            
+        }
+        proyectoagentecontroller.setEquipotrabajo(pa);
+        
+        //Presupuesto Rubro Item
+        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
+        //presupuestorubroitemcontroller.setPresupuestosrubrositems(this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbpresupuesto.findporProyecto(current.getId())));
+        System.out.println("Presupuesto "+this.ejbpresupuesto.findporProyecto(current.getId()).getId());
+        presupuestorubroitemcontroller.armarPresupuestosNodos2(this.ejbpresupuesto.findporProyecto(current.getId()));
+        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
+            System.out.println("Presupuesto Rubro Item "+ pri.getRubro());
+        }
         return "Edit";
     }
     

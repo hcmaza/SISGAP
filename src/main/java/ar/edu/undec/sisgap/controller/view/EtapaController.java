@@ -50,8 +50,8 @@ public class EtapaController implements Serializable {
     private String dataactual;
     private long mindate;
     private Tarea tareaseleccionada;
-    private boolean paraeditar;
-    private boolean paraeditar2;
+    private boolean paraeditar=false;
+    private boolean paraeditar2=false;
     public EtapaController() {
     }
 
@@ -471,6 +471,8 @@ public class EtapaController implements Serializable {
     }
     
     public void prepararEditarEtapaTreeTable(Tarea tar){
+        this.paraeditar=true;
+        this.paraeditar2=true;
         int contador = 0;
         int posicion = 0;
         for(Etapa e: etapas){
@@ -485,8 +487,7 @@ public class EtapaController implements Serializable {
         current = etapas.get(posicion);
         
         tareacontroller.setTareasdeproyecto(current.getTareaList());
-        this.paraeditar=true;
-        this.paraeditar2=true;
+        
     }
     
     public void editarListadoEtapas(){
