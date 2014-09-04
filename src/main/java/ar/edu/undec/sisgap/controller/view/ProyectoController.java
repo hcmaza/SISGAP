@@ -1349,14 +1349,15 @@ public class ProyectoController implements Serializable {
         }
         proyectoagentecontroller.setEquipotrabajo(pa);
         
-        //Presupuesto Rubro Item
-        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
-        //presupuestorubroitemcontroller.setPresupuestosrubrositems(this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbpresupuesto.findporProyecto(current.getId())));
-        System.out.println("Presupuesto "+this.ejbpresupuesto.findporProyecto(current.getId()).getId());
-        presupuestorubroitemcontroller.armarPresupuestosNodos2(this.ejbpresupuesto.findporProyecto(current.getId()));
-        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
-            System.out.println("Presupuesto Rubro Item "+ pri.getRubro());
-        }
+//        //Presupuesto Rubro Item
+//        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
+//        presupuestorubroitemcontroller.setPresupuestosrubrositems(this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbpresupuesto.findporProyecto(current.getId())));
+//        System.out.println("Presupuesto "+this.ejbpresupuesto.findporProyecto(current.getId()).getId());
+//        presupuestorubroitemcontroller.armarPresupuestoNodos();
+//        presupuestorubroitemcontroller.armarGraficosPresupuesto();
+//        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
+//            System.out.println("Presupuesto Rubro Item "+ pri.getRubro());
+//        }
         return "Edit";
     }
     
@@ -1380,16 +1381,72 @@ public class ProyectoController implements Serializable {
         PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
       
         //Eliminacion etapas
-       boolean encontroetapa = true;
-       boolean encontrotarea = true;
-       boolean encontrotareaagente = true;
+       boolean encontroetapa = false;
+       boolean encontrotarea = false;
+       boolean encontrotareaagente = false;
+       Tarea tareaborrar = new Tarea();
        
-       
-       //eliminar todo
+       //eliminar 
       for(Etapa e: ejbetapa.findByProyecto(current)){
+          if(etapacontroller.getEtapas().contains(e)){
+             
+          }else{
               ejbetapa.remove(e);
+          }
+              
       }
-      
+      //elimino tareas
+      List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
+     for(Etapa e: etapacontroller.getEtapas() ){
+         if(e.getId()!=null){
+             for(Tarea t: e.getTareaList()){
+                listadocompletotareas.add(t);
+             }
+             
+         }
+     }
+    for(Etapa e: this.ejbetapa.buscarEtapasProyecto(current.getId()) ){
+        
+        for(Tarea t: e.getTareaList()){
+            System.out.println("tarea db "+t.getTarea());
+            for(Tarea tl:listadocompletotareas){
+                
+                System.out.println("tarea local "+tl.getTarea());
+                    if(t.getId()==tl.getId()){
+                        encontrotarea = true;
+                    }
+            }
+            if(!encontrotarea){
+                ejbtarea.remove(t);
+                encontrotarea=false;
+            }
+        }
+    }
+    
+    //elimino tareaagente
+    
+    List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
+            
+    for(Etapa e: etapacontroller.getEtapas() ){
+        for(Tarea t: e.getTareaList()){
+            for(TareaAgente ta : t.getTareaAgenteList()){
+                listadocompletotareaagente.add(ta);
+            }
+        }
+    }
+    
+    for(Etapa e: this.ejbetapa.buscarEtapasProyecto(current.getId()) ){
+        for(Tarea t: e.getTareaList()){
+            for(TareaAgente ta : t.getTareaAgenteList()){
+                if(!listadocompletotareaagente.contains(ta)){
+                this.ejbtareaagente.remove(ta);
+         
+        }
+            }
+        }
+    }
+    
+    
       //Eliminacion de presupuestosrubrositem
       for(PresupuestoRubroitem pri: ejbpresupuestorubroitem.findByPresupuesto(presupuestocontroller.getSelected())){
           if(presupuestorubroitemcontroller.getPresupuestosrubrositems().contains(pri)){
@@ -1401,10 +1458,13 @@ public class ProyectoController implements Serializable {
       }
             
       for (Etapa e : etapacontroller.getEtapas()) {
-           e.setId(null);
+         
+//          e.setId(null);
            e.setProyectoid(current);
-           
+//           
+          System.out.println("Etapa id"+e.getId());
             for(Tarea t:e.getTareaList()){
+                System.out.println("Tarea id"+t.getId());
                t.setId(null);
                t.setFechacreacion(new Date());
                t.setFechamodificacion(new Date());
@@ -1420,17 +1480,17 @@ public class ProyectoController implements Serializable {
           }
             List<Tarea> OldTarea = e.getTareaList();
            e.setTareaList(null);
-           ejbetapa.createWithPersist(e);
+          // ejbetapa.createWithPersist(e);
            if(OldTarea!=null){
                 for(Tarea t : OldTarea ){
                     t.setEtapaid(e);
                     List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
                     t.setTareaAgenteList(null);
-                    this.ejbtarea.createWithPersist(t);
+                  //  this.ejbtarea.createWithPersist(t);
                     if(OldTareaAgente != null){
                          for (TareaAgente ta : OldTareaAgente){
                              ta.setTareaid(t);
-                           ejbtareaagente.create(ta);
+                          // ejbtareaagente.create(ta);
                          }
                     }
                 }

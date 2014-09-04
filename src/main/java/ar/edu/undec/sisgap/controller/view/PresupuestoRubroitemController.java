@@ -323,6 +323,7 @@ public class PresupuestoRubroitemController implements Serializable {
         for (PresupuestoRubroitem p : getPresupuestosrubrositems()) {
           if (p.getRubro().equals(pri.getRubro())) {
             treeNodech = new DefaultTreeNode(p, treeNode);
+              System.out.println("xxxxxxxxxxxxxx " +p.getId());
               
           }
         }
