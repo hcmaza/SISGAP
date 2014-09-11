@@ -46,8 +46,8 @@ public class EtapaController implements Serializable {
     private TreeNode root = new DefaultTreeNode() ;
     private List<Etapa> etapas = new ArrayList<Etapa>() ;
     private String gsoncategoria="[]";
-    private String data ;
-    private String dataactual;
+    private String data = "[0]";
+    private String dataactual = "[0]";
     private long mindate;
     private Tarea tareaseleccionada;
     private boolean paraeditar=false;

@@ -243,7 +243,7 @@ public class ArchivoproyectoController implements Serializable {
     }
     
     public void handleFileUpload(FileUploadEvent event) { 
-        System.out.println("fdsfdsdfadf");
+        System.out.println("Subiendo Archivo");
         current= new Archivoproyecto();
         current.setId(++contador);
        current.setNombre(event.getFile().getFileName());

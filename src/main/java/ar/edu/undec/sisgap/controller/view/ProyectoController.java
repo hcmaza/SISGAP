@@ -833,6 +833,17 @@ public class ProyectoController implements Serializable {
             ejbpresupuestorubroitem.createWithPersist(pri);
            
         }
+        
+        // crear archivos del proyecto
+        
+         ArchivoproyectoController archivoproyectocontroller= (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
+         for(Archivoproyecto ap: archivoproyectocontroller.getCollectorArchivoProyecto()){
+             ap.setId(null);
+             ap.setProyectoid(current);
+             this.ejbarchivoproyecto.create(ap);
+         }
+        
+        
          EnviarMail enviarmail = new EnviarMail();
         // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
@@ -1380,6 +1391,58 @@ public class ProyectoController implements Serializable {
         PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
         PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
       
+       // Insercion de ETAPAS, TAREAS , TAREASAGENTES
+        List<Etapa> oldetapas = etapacontroller.getEtapas();
+              
+      for (Etapa e : etapacontroller.getEtapas()) {
+         
+
+          if(e.getProyectoid()==null){
+               e.setProyectoid(current);
+          }
+          
+            for(Tarea t:e.getTareaList()){
+                
+               if(t.getId()==null){
+                   t.setFechacreacion(new Date());
+               }
+               t.setFechamodificacion(new Date());
+                                
+          }
+            List<Tarea> OldTarea = e.getTareaList();
+           e.setTareaList(null);
+           if(e.getId()==null){
+                ejbetapa.createWithPersist(e);
+           }else{
+               ejbetapa.edit(e);
+           }
+           if(OldTarea!=null){
+                for(Tarea t : OldTarea ){
+                    
+                    if(t.getEtapaid()==null){
+                        t.setId(null);
+                        t.setEtapaid(e);
+                    }
+                    List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
+                    t.setTareaAgenteList(null);
+                   // System.out.println("tarea -> "+t.getId());
+                    if((t.getId()==null) ){
+                        this.ejbtarea.createWithPersist(t);
+                    }else{
+                        this.ejbtarea.edit(t);
+                    }
+                    if(OldTareaAgente != null){
+                         for (TareaAgente ta : OldTareaAgente){
+                             ta.setTareaid(t);
+                             
+                             ejbtareaagente.create(ta);
+                         }
+                    }
+                }
+           }
+        }
+        
+        
         //Eliminacion etapas
        boolean encontroetapa = false;
        boolean encontrotarea = false;
@@ -1396,22 +1459,24 @@ public class ProyectoController implements Serializable {
               
       }
       //elimino tareas
-      List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
+     List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
      for(Etapa e: etapacontroller.getEtapas() ){
-         if(e.getId()!=null){
+         if(e.getTareaList()!=null){
              for(Tarea t: e.getTareaList()){
                 listadocompletotareas.add(t);
              }
-             
-         }
+         }    
+        
      }
+     
+     
     for(Etapa e: this.ejbetapa.buscarEtapasProyecto(current.getId()) ){
         
         for(Tarea t: e.getTareaList()){
-            System.out.println("tarea db "+t.getTarea());
+          //  System.out.println("tarea db "+t.getTarea());
             for(Tarea tl:listadocompletotareas){
                 
-                System.out.println("tarea local "+tl.getTarea());
+                //System.out.println("tarea local "+tl.getTarea());
                     if(t.getId()==tl.getId()){
                         encontrotarea = true;
                     }
@@ -1425,23 +1490,39 @@ public class ProyectoController implements Serializable {
     
     //elimino tareaagente
     
-    List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
+     List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
             
-    for(Etapa e: etapacontroller.getEtapas() ){
-        for(Tarea t: e.getTareaList()){
-            for(TareaAgente ta : t.getTareaAgenteList()){
-                listadocompletotareaagente.add(ta);
-            }
-        }
-    }
+    for(Etapa e: oldetapas ){
+    
+            System.out.println("Etapa " + e.getTareaList());
+           for(Tarea t: e.getTareaList()){
+               System.out.println("TAREA "+t.getTareaAgenteList());
+              
+                   
+                   for(TareaAgente ta : t.getTareaAgenteList()){
+                       System.out.println("AGENTE "+ta.getAgenteid().getApellido());
+                       listadocompletotareaagente.add(ta);
+                   }
+               
+           }
+     
+    }    
+   
     
     for(Etapa e: this.ejbetapa.buscarEtapasProyecto(current.getId()) ){
         for(Tarea t: e.getTareaList()){
             for(TareaAgente ta : t.getTareaAgenteList()){
-                if(!listadocompletotareaagente.contains(ta)){
-                this.ejbtareaagente.remove(ta);
-         
-        }
+                for(TareaAgente t1:listadocompletotareaagente){
+                    System.out.println("for tarea "+ta.getId());
+                    if(ta.getId()==t1.getId()){
+                        System.out.println("if = "+ t1.getId());
+                            encontrotareaagente = true;
+                    }
+                }
+                if(!encontrotarea){
+                    ejbtareaagente.remove(ta);
+                    encontrotareaagente=false;
+                }
             }
         }
     }
@@ -1456,54 +1537,11 @@ public class ProyectoController implements Serializable {
           }
           
       }
-            
-      for (Etapa e : etapacontroller.getEtapas()) {
-         
-//          e.setId(null);
-           e.setProyectoid(current);
-//           
-          System.out.println("Etapa id"+e.getId());
-            for(Tarea t:e.getTareaList()){
-                System.out.println("Tarea id"+t.getId());
-               t.setId(null);
-               t.setFechacreacion(new Date());
-               t.setFechamodificacion(new Date());
-                
-//                int contador2=0;
-//                for(TareaAgente ta:t.getTareaAgenteList()){
-//                    ta.setTareaid(null);
-//                    t.getTareaAgenteList().set(contador2, ta);
-//                    contador2++;
-//                    
-//               }
-                
-          }
-            List<Tarea> OldTarea = e.getTareaList();
-           e.setTareaList(null);
-          // ejbetapa.createWithPersist(e);
-           if(OldTarea!=null){
-                for(Tarea t : OldTarea ){
-                    t.setEtapaid(e);
-                    List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
-                    t.setTareaAgenteList(null);
-                  //  this.ejbtarea.createWithPersist(t);
-                    if(OldTareaAgente != null){
-                         for (TareaAgente ta : OldTareaAgente){
-                             ta.setTareaid(t);
-                          // ejbtareaagente.create(ta);
-                         }
-                    }
-                }
-           }
-        }
-        
-        
+      
+      //Insercion de presupuestosrubrositem
         for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
-            
-           
              pri.setPresupuesto(presupuestocontroller.getSelected());
-            
-            ejbpresupuestorubroitem.create(pri);
+             ejbpresupuestorubroitem.create(pri);
            
         }
          EnviarMail enviarmail = new EnviarMail();

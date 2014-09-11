@@ -12,6 +12,7 @@ import ar.edu.undec.sisgap.model.Rubro;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -48,6 +49,10 @@ public class PresupuestoRubroitemController implements Serializable {
     private TreeNode root = new DefaultTreeNode();
     private PieChartModel pieModelAportes;
     private PieChartModel pieModelRubros;
+    private BigDecimal sumagastoorganismo;
+    private BigDecimal sumagastocomitente;
+    private BigDecimal sumagastouniversidad;
+    private BigDecimal sumatotal;
 
     public PresupuestoRubroitemController() {
     }
@@ -377,6 +382,7 @@ public class PresupuestoRubroitemController implements Serializable {
   {
     if (verificarAportes()){
       this.presupuestosrubrositems.add(this.current2);
+      this.sumarGastos();
       armarPresupuestoNodos();
      }
     else
@@ -485,5 +491,68 @@ public class PresupuestoRubroitemController implements Serializable {
   {
     this.pieModelRubros = pieModelRubros;
   }
-    
+   
+  public void sumarGastos(){
+
+
+        Iterator it=this.presupuestosrubrositems.iterator();
+     BigDecimal totalcomitente=BigDecimal.ZERO;
+    BigDecimal totaluniversidad=BigDecimal.ZERO;
+    BigDecimal totalorganismo=BigDecimal.ZERO;
+    sumagastoorganismo=BigDecimal.ZERO;
+        sumagastocomitente=BigDecimal.ZERO;
+        sumagastouniversidad=BigDecimal.ZERO;
+        sumatotal=BigDecimal.ZERO;
+        int contador=-1;
+     while(it.hasNext()){
+         contador++;
+         PresupuestoRubroitem pri=(PresupuestoRubroitem)it.next();
+        totalcomitente=totalcomitente.add(new BigDecimal(pri.getAportecomitente().setScale(2).toString()));
+       totaluniversidad=totaluniversidad.add(new BigDecimal(pri.getAporteuniversidad().setScale(2).toString()));
+        totalorganismo=totalorganismo.add(new BigDecimal(pri.getAporteorganismo().setScale(2).toString()));
+       pri.setTotal(pri.getAporteorganismo().add(pri.getAportecomitente()).add(pri.getAporteuniversidad()));
+
+        this.presupuestosrubrositems.get(contador).setTotal(pri.getTotal());
+     }
+     sumagastocomitente=totalcomitente;
+     sumagastouniversidad=totaluniversidad;
+     sumagastoorganismo=totalorganismo;
+     sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+        
+    }
+
+    public BigDecimal getSumagastoorganismo() {
+        return sumagastoorganismo;
+    }
+
+    public void setSumagastoorganismo(BigDecimal sumagastoorganismo) {
+        this.sumagastoorganismo = sumagastoorganismo;
+    }
+
+    public BigDecimal getSumagastocomitente() {
+        return sumagastocomitente;
+    }
+
+    public void setSumagastocomitente(BigDecimal sumagastocomitente) {
+        this.sumagastocomitente = sumagastocomitente;
+    }
+
+    public BigDecimal getSumagastouniversidad() {
+        return sumagastouniversidad;
+    }
+
+    public void setSumagastouniversidad(BigDecimal sumagastouniversidad) {
+        this.sumagastouniversidad = sumagastouniversidad;
+    }
+
+    public BigDecimal getSumatotal() {
+        return sumatotal;
+    }
+
+    public void setSumatotal(BigDecimal sumatotal) {
+        this.sumatotal = sumatotal;
+    }
+  
+  
+  
 }
