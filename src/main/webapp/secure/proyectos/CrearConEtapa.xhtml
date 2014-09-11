@@ -395,18 +395,7 @@
                                 </p:commandLink>
                             </p:column>
                                <f:facet name="footer">
-                                   <p:column>
-                                       
-                                   </p:column>
-                                    <p:column>
-                                       
-                                   </p:column>
-                                    <p:column>
-                                       
-                                   </p:column>
-                                    <p:column>
-                                       
-                                   </p:column>
+                                   
                                     <p:column>
                                         Total Aporte Comitente = $#{presupuestoRubroitemController.sumagastocomitente} ,
                                    </p:column>
@@ -762,8 +751,8 @@
                     <p:message for="email" /> 
                     <h:outputLabel value="Otro Email" for="otroemail" />
                      
-                    <h:inputText id="otroemail" value="#{agenteViewController.agente1.otroemail}" validatorMessage="Email Incorrecto" required="false" >
-                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                    <h:inputText id="otroemail" value="#{agenteViewController.agente1.otroemail}" >
+                     <!--   <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" /> -->
                     </h:inputText>   
                     <p:message for="otroemail" /> 
                     

@@ -32,7 +32,7 @@ public class EtapaFacade extends AbstractFacade<Etapa> {
     }
     
     public List<Etapa> findByProyecto(Proyecto p){
-        return em.createQuery("select e from Etapa e where e.proyectoid.id= "+p.getId(), Etapa.class).getResultList();
+        return em.createQuery("select e from Etapa e where e.proyectoid.id= "+p.getId()+" order by e.id", Etapa.class).getResultList();
     }
     
     public List<Etapa> buscarEtapasProyecto(int proyectoid){

@@ -285,4 +285,8 @@ public class TareaAgenteController implements Serializable {
         return null;
     }
     
+    public String controlarHorasAgente(){
+        return null;
+    }
+    
 }

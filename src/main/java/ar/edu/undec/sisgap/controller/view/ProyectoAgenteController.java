@@ -285,7 +285,11 @@ public class ProyectoAgenteController implements Serializable {
             ProyectoAgente nuevo = new ProyectoAgente();
             nuevo.setAgente(agenteviewcontroller.getSelected());
             nuevo.setProyecto(proyectocontroller.getSelected());
-            nuevo.setHorasdisponibles(Math.round(nuevo.getAgente().getHoraslaborales()/2));
+            if(nuevo.getAgente().getHoraslaborales()!=null){
+                nuevo.setHorasdisponibles(Math.round(nuevo.getAgente().getHoraslaborales()/2));
+            }else{
+                nuevo.setHorasdisponibles(50);
+            }
             equipotrabajo.add(nuevo);
             
         }

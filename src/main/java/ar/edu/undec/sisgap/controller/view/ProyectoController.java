@@ -782,6 +782,13 @@ public class ProyectoController implements Serializable {
         ejbproyectoagente.removebyProyecto(this.current.getId());
         
        for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+           System.out.println("Agente id "+ pa.getAgente().getId());
+           System.out.println("proyectoid "+ pa.getProyecto().getId());
+            ProyectoAgentePK paPK = new ProyectoAgentePK();
+                    paPK.setProyectoid(current.getId());
+                    paPK.setAgenteid(pa.getAgente().getId());
+
+                    pa.setProyectoAgentePK(paPK);     
            ejbproyectoagente.create(pa);
        }
         
@@ -1353,8 +1360,8 @@ public class ProyectoController implements Serializable {
         List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
         
         for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
-            pa1.setFuncionproyecto("");
-            pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
+           // pa1.setFuncionproyecto("");
+            //pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
             pa.add(pa1);
             
         }
