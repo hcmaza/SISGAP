@@ -35,4 +35,5 @@ public class TareaAgenteFacade extends AbstractFacade<TareaAgente> {
      public List<TareaAgente> findByTareaAgente(Tarea t, Agente a){
         return em.createQuery("select ta from TareaAgente ta where ta.tareaid.id = "+t.getId()+" and ta.agenteid.id = "+a.getId(), TareaAgente.class).getResultList();
     }
+     
 }

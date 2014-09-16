@@ -51,4 +51,15 @@ public class ProyectoAgenteFacade extends AbstractFacade<ProyectoAgente> {
         }
 
     }
+     
+      public Double sumarHorasAgenteProyectos(int agenteid) {
+
+        try {
+            return em.createQuery("select pa.agenteid, sum(horasdedicadas) from ProyectoAgente pa where pa.agenteid = "+agenteid+" group by pa.agenteid", Double.class).getSingleResult();
+        } catch (Exception e) {
+           
+           return null;
+        }
+
+    }
 }

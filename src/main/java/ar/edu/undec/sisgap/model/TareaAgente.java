@@ -7,6 +7,7 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,6 +52,11 @@ public class TareaAgente implements Serializable {
     @JoinColumn(name = "agenteid", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Agente agenteid;
+    @Size(max = 2147483647)
+    @Column(name = "observacion")
+    private String observacion;
+    @Column(name = "costo")
+    private BigDecimal costo;
 
     public TareaAgente() {
     }
@@ -90,6 +96,23 @@ public class TareaAgente implements Serializable {
     public void setAgenteid(Agente agenteid) {
         this.agenteid = agenteid;
     }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
+    public BigDecimal getCosto() {
+        return costo;
+    }
+
+    public void setCosto(BigDecimal costo) {
+        this.costo = costo;
+    }
+    
     
     
     

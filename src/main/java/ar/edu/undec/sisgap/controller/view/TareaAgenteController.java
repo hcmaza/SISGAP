@@ -5,6 +5,8 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TareaAgenteFacade;
 import ar.edu.undec.sisgap.model.Agente;
+import ar.edu.undec.sisgap.model.Etapa;
+import ar.edu.undec.sisgap.model.Tarea;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,9 +32,13 @@ public class TareaAgenteController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.TareaAgenteFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ProyectoAgenteFacade ejbProyectoAgenteFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private List<TareaAgente> tareasagentes ;
+//    @ManagedProperty(value="#{etapaController}")
+//    private EtapaController etapaController;
 
     public TareaAgenteController() {
     }
@@ -286,7 +293,25 @@ public class TareaAgenteController implements Serializable {
     }
     
     public String controlarHorasAgente(){
+        
         return null;
     }
+    
+    public Double sumarHorasAgenteProyectos(){
+        return this.ejbProyectoAgenteFacade.sumarHorasAgenteProyectos(current.getAgenteid().getId());
+    }
+    
+     public Double sumarHorasAgenteProyectoActual(){
+//         for(Etapa e : etapaController.getEtapas()){
+//             for(Tarea t : e.getTareaList()){
+//                 for(TareaAgente ta : t.getTareaAgenteList()){
+//                    // t.getDias()/7
+//                 }
+//             }
+//         }
+        return this.ejbProyectoAgenteFacade.sumarHorasAgenteProyectos(current.getAgenteid().getId());
+    }
+     
+     
     
 }

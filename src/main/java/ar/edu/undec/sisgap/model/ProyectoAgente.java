@@ -7,6 +7,8 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -47,6 +50,10 @@ public class ProyectoAgente implements Serializable {
     private Integer horasdisponibles;
     @Column(name = "horasdedicadas")
     private Integer horasdedicadas;
+    @Column(name = "consultorexterno")
+    private Boolean consultorexterno;
+    @Transient
+    private List<TareaAgente> tareasagentes = new ArrayList<TareaAgente>();
     
     public ProyectoAgente() {
     }
@@ -107,6 +114,22 @@ public class ProyectoAgente implements Serializable {
         this.horasdedicadas = horasdedicadas;
     }
 
+    public Boolean getConsultorexterno() {
+        return consultorexterno;
+    }
+
+    public void setConsultorexterno(Boolean consultorexterno) {
+        this.consultorexterno = consultorexterno;
+    }
+
+    public List<TareaAgente> getTareasagentes() {
+        return tareasagentes;
+    }
+
+    public void setTareasagentes(List<TareaAgente> tareasagentes) {
+        this.tareasagentes = tareasagentes;
+    }
+
     
     
     
@@ -133,6 +156,47 @@ public class ProyectoAgente implements Serializable {
     @Override
     public String toString() {
         return "ar.edu.undec.sisgap.model.ProyectoAgente[ proyectoAgentePK=" + proyectoAgentePK + " ]";
+    }
+    
+    // metodos para hacer el resumen de etapas tareas por agente
+    
+    public int contarEtapas(){
+        Integer etapaold= Integer.valueOf(0);
+        int contador =0;
+        for(TareaAgente ta:this.tareasagentes){
+            if(ta.getTareaid().getEtapaid().getId().equals(etapaold)){
+                
+            }else{
+                contador++;
+                etapaold = ta.getTareaid().getEtapaid().getId();
+            }
+        }
+        return contador;
+    }
+    
+    public int contarTareas(){
+        Integer tareaold= Integer.valueOf(0);
+        int contador =0;
+        for(TareaAgente ta:this.tareasagentes){
+            if(ta.getTareaid().getId().equals(tareaold)){
+                
+            }else{
+                contador++;
+                tareaold = ta.getTareaid().getId();
+            }
+        }
+        return contador;
+    }
+    
+    public int contarDiasTareas(){
+        Integer tareaold= Integer.valueOf(0);
+        int contador =0;
+        for(TareaAgente ta:this.tareasagentes){
+            
+                contador+= ta.getTareaid().getDias();
+            
+        }
+        return contador;
     }
     
 }

@@ -287,8 +287,9 @@ public class ProyectoAgenteController implements Serializable {
             nuevo.setProyecto(proyectocontroller.getSelected());
             if(nuevo.getAgente().getHoraslaborales()!=null){
                 nuevo.setHorasdisponibles(Math.round(nuevo.getAgente().getHoraslaborales()/2));
+                nuevo.setConsultorexterno(false);
             }else{
-                nuevo.setHorasdisponibles(50);
+                nuevo.setConsultorexterno(true);
             }
             equipotrabajo.add(nuevo);
             

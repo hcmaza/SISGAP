@@ -27,8 +27,7 @@
             </div>
         </p:dialog>  -->
 
-            
-            <h:form id="form" >
+             <h:form id="form" >
                 
                 <p:panel header="Proyecto N° #{proyectoController.selected.id} - #{proyectoController.selected.nombre}" toggleable="true" collapsed="true" toggleTitle="Descripcion del Proyecto" >
                                     <p:growl  for="growlprincipal" id="growlprincipal" showDetail="true" sticky="true" />
@@ -157,8 +156,6 @@
                 
                 <p:separator />
                 
-                
-                
                 <p:tabView id="tabview1" >
                         <p:tab id="panelequipo" title="Equipo de Trabajo" >
                               
@@ -215,26 +212,32 @@
                                         </f:facet>
                                         <h:outputText value="#{agentea.agente.profesion}"/>
                                     </p:column>
-                                   <p:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="Horas laborales"/>
-                                        </f:facet>
-                                       <h:outputText value="#{agentea.agente.horaslaborales}"/>
-                                    </p:column>
+                                   
                                         
                                      <p:column>
                                             <f:facet name="header">
-                                                <h:outputLabel value="Horas Disponibles" />
+                                                <h:outputLabel value="Horas Disponibles / Semanales" />
                                             </f:facet>
                                             <h:outputText value="#{agentea.horasdisponibles}"  />
                                         
                                     </p:column>
+                                    
                                         
-                                    <p:column headerText="Horas Dedicadas">
+                                        <p:column headerText="Es Consultor Externo?" styleClass="text-align: center" >
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"> <h:selectBooleanCheckbox  id="ssconsultorexterno" value="#{agentea.consultorexterno}" readonly="true" style="width:70px"  /> </f:facet>
+                                            <f:facet name="input">
+                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px" />
+                                            </f:facet>    
+                                        </p:cellEditor>
+                                    </p:column>    
+                                        
+                                    <p:column headerText="Horas Dedicadas / Semanales">
                                         
                                         <p:cellEditor>
                                             <f:facet name="output"><h:outputLabel value="#{agentea.horasdedicadas}" /></f:facet>
-                                            <f:facet name="input"><p:inputText id="ihoradedicada" value="#{agentea.horasdedicadas}"  /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ihoradedicada" value="#{agentea.horasdedicadas}"   /></f:facet>
                                         </p:cellEditor>
                                     </p:column>    
                                       <p:column headerText="Función en el Proyecto">
@@ -459,6 +462,70 @@
                                </div>
               </p:panel>
               <br />
+              <p:panel id="resumenequipo" header="Resumen del Equipo de trabajo" >
+                  <p:dataTable id="tresumenequipo" value="#{proyectoController.agentesProyecto()}" var="resumenagentes"  >
+                                    
+                                    <p:columnGroup type="header">
+                                        <p:row>
+                                            <p:column rowspan="2" headerText="Agente" />
+                                            <p:column colspan="8" headerText="Resumen" />
+                                        </p:row>
+                                        <p:row>
+                                            <p:column headerText="Etapa " />
+                                            <p:column headerText="Tarea" />
+                                            <p:column headerText="Dias en la Tarea" />
+                                            <p:column headerText="Meses" />
+                                            <p:column headerText="Horas" />
+                                            <p:column headerText="Funcion" />
+                                            <p:column headerText="Costo" />
+                                            <p:column headerText="Observacion" />
+                                        </p:row>
+                                    </p:columnGroup>
+                                    
+                      <p:subTable var="subresumen" value="#{resumenagentes.tareasagentes}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{resumenagentes.agente.apellido}" />
+                                        </f:facet>
+                                        <p:column>
+                                            <h:outputText value="" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.tareaid.etapaid.etapa}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.tareaid.tarea}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.tareaid.dias}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.tareaid.dias/30}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="muy pronto" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.funcion}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.costo}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{subresumen.observacion}" />
+                                        </p:column>
+                                        <p:columnGroup type="footer">
+                <p:row>
+                    <p:column footerText="Totales: " style="text-align:right"/>
+                    <p:column footerText="#{resumenagentes.contarEtapas()}" />
+                    <p:column footerText="#{resumenagentes.contarTareas()}" />
+                    <p:column footerText="#{resumenagentes.contarDiasTareas()}" />
+                </p:row>
+            </p:columnGroup>
+                                    </p:subTable>
+                  </p:dataTable>
+              </p:panel>
+                
+          
               
                 
                         <br />

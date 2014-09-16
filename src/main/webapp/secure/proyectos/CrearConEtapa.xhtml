@@ -211,26 +211,32 @@
                                         </f:facet>
                                         <h:outputText value="#{agentea.agente.profesion}"/>
                                     </p:column>
-                                   <p:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="Horas laborales"/>
-                                        </f:facet>
-                                       <h:outputText value="#{agentea.agente.horaslaborales}"/>
-                                    </p:column>
+                                   
                                         
                                      <p:column>
                                             <f:facet name="header">
-                                                <h:outputLabel value="Horas Disponibles" />
+                                                <h:outputLabel value="Horas Disponibles / Semanales" />
                                             </f:facet>
                                             <h:outputText value="#{agentea.horasdisponibles}"  />
                                         
                                     </p:column>
+                                    
                                         
-                                    <p:column headerText="Horas Dedicadas">
+                                        <p:column headerText="Es Consultor Externo?" styleClass="text-align: center" >
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"> <h:selectBooleanCheckbox  id="ssconsultorexterno" value="#{agentea.consultorexterno}" readonly="true" style="width:70px"  /> </f:facet>
+                                            <f:facet name="input">
+                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px" />
+                                            </f:facet>    
+                                        </p:cellEditor>
+                                    </p:column>    
+                                        
+                                    <p:column headerText="Horas Dedicadas / Semanales">
                                         
                                         <p:cellEditor>
                                             <f:facet name="output"><h:outputLabel value="#{agentea.horasdedicadas}" /></f:facet>
-                                            <f:facet name="input"><p:inputText id="ihoradedicada" value="#{agentea.horasdedicadas}"  /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ihoradedicada" value="#{agentea.horasdedicadas}"   /></f:facet>
                                         </p:cellEditor>
                                     </p:column>    
                                       <p:column headerText="Función en el Proyecto">
@@ -455,7 +461,16 @@
                                </div>
               </p:panel>
               <br />
-              
+              <p:panel id="resumenequipo" header="Resumen del Equipo de trabajo" >
+                  <p:dataTable id="tresumenequipo" value="#{etapaController.etapas}" var="resumenagentes"  >
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Agente"/>
+                                        </f:facet>
+                                        <h:outputText value="#{resumenagentes}"/>
+                                    </p:column>
+                  </p:dataTable>
+              </p:panel>
                 
                         <br />
                         <div align="center" >
@@ -691,8 +706,8 @@
                                   
                               </p:panel>
                     <div align="center">
-                        <p:commandButton rendered="#{etapaController.paraeditar}" id ="cetapaeditar" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Editar" actionListener="#{etapaController.editarListadoEtapas}" />
-                        <p:commandButton rendered="#{!etapaController.paraeditar}" id ="cetapa" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Aceptar" actionListener="#{etapaController.agregaralListadoEtapas}" />
+                        <p:commandButton rendered="#{etapaController.paraeditar}" id ="cetapaeditar" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tresumenequipo" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Editar" actionListener="#{etapaController.editarListadoEtapas}" />
+                        <p:commandButton rendered="#{!etapaController.paraeditar}" id ="cetapa" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tresumenequipo" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Aceptar" actionListener="#{etapaController.agregaralListadoEtapas}" />
                     </div>
                    
                 </p:dialog>

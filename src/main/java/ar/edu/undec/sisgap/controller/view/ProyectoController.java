@@ -68,7 +68,9 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.data.FilterEvent;
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.DonutChartModel;
@@ -119,6 +121,9 @@ public class ProyectoController implements Serializable {
     private String habilitarcomitente="0";
     private String observacionfinal;
     private Proyecto proyectoViejo;
+    //variable utilizada para recolectar los agentes del proyecto en todas las etapas
+    private List<TareaAgente> tareaagentesproyecto = new ArrayList<TareaAgente>();
+    
     
     public ProyectoController() {
     }
@@ -887,8 +892,11 @@ public class ProyectoController implements Serializable {
         List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
         
         for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
-            pa1.setFuncionproyecto("");
-            pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
+            //pa1.setFuncionproyecto("");
+           if(pa1.getAgente().getHoraslaborales()!=null){
+                pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
+            }
+           
             pa.add(pa1);
             
         }
@@ -1361,6 +1369,9 @@ public class ProyectoController implements Serializable {
         
         for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
            // pa1.setFuncionproyecto("");
+            if(pa1.getAgente().getHoraslaborales()!=null){
+               pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2)); 
+            }
             //pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
             pa.add(pa1);
             
@@ -1874,5 +1885,81 @@ public class ProyectoController implements Serializable {
         return "Create";
     }
 
+    public List<ProyectoAgente> agentesProyecto(){
+        List<ProyectoAgente> paprincipal = new ArrayList<ProyectoAgente>();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
+            
+                List<TareaAgente> tareaagentelista = new ArrayList<TareaAgente>();
+               // System.out.println("Agente"+pa.getAgente().getApellido());
+                 for(Etapa e:etapacontroller.getEtapas()){
+                    for(Tarea t:e.getTareaList()){
+                        for(TareaAgente ta:t.getTareaAgenteList()){
+                            if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
+                               
+                                tareaagentelista.add(ta);
+                                
+                                
+                            }
+                        }
+                        
+                    }
+                 }
+                 pa.setTareasagentes(tareaagentelista);
+                 paprincipal.add(pa);
+        }
+        
+//        DefaultTreeNode root = new DefaultTreeNode();
+//       root.setExpanded(true);
+//         FacesContext context = FacesContext.getCurrentInstance();
+//         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+//          EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+//                         
+//          DefaultTreeNode[] x= new DefaultTreeNode[proyectoagentecontroller.getEquipotrabajo().size()+1];
+//          int i=0;
+//          for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+//              ++i;
+//              TareaAgente tasimple = new TareaAgente();
+//              tasimple.setAgenteid(pa.getAgente());
+//              
+//              x[i] = new DefaultTreeNode(tasimple,root);
+//              x[i].setExpanded(true);
+//                for(Etapa e:etapacontroller.getEtapas()){
+//                    for(Tarea t:e.getTareaList()){
+//                        for(TareaAgente ta:t.getTareaAgenteList()){
+//                            if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
+//                                
+//                               DefaultTreeNode u = new DefaultTreeNode("",ta,x[i]);
+//                               u.setExpanded(true);
+//                               
+//                                //(ta.getTareaid().getDias()/7)*pa.getHorasdedicadas()
+//                                this.getTareaagentesproyecto().add(ta);
+//                                
+//                            }
+//                        }
+//                        
+//                    }
+//                }
+//          }
+//          
+//          
+          for(ProyectoAgente pa:paprincipal){
+              System.out.println("Etapa" +pa.getAgente().getApellido());
+              for(TareaAgente ta :pa.getTareasagentes()){
+                  System.out.println("Etapa" +ta.getTareaid().getEtapaid().getEtapa());
+              }
+          }
+          return paprincipal;
+    }
+
+    public List<TareaAgente> getTareaagentesproyecto() {
+        return tareaagentesproyecto;
+    }
+
+    public void setTareaagentesproyecto(List<TareaAgente> tareaagentesproyecto) {
+        this.tareaagentesproyecto = tareaagentesproyecto;
+    }
     
 }
