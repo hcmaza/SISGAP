@@ -161,14 +161,21 @@ public class ProyectoAgente implements Serializable {
     // metodos para hacer el resumen de etapas tareas por agente
     
     public int contarEtapas(){
+        
         Integer etapaold= Integer.valueOf(0);
+        String setapaold = null;
         int contador =0;
         for(TareaAgente ta:this.tareasagentes){
-            if(ta.getTareaid().getEtapaid().getId().equals(etapaold)){
-                
-            }else{
-                contador++;
-                etapaold = ta.getTareaid().getEtapaid().getId();
+            
+           
+            if(!tareasagentes.isEmpty()){
+                if(ta.getTareaid().getEtapaid().getEtapa().equals(setapaold)){
+
+                }else{
+                    contador++;
+                    setapaold = ta.getTareaid().getEtapaid().getEtapa();
+                    
+                }
             }
         }
         return contador;
@@ -176,13 +183,16 @@ public class ProyectoAgente implements Serializable {
     
     public int contarTareas(){
         Integer tareaold= Integer.valueOf(0);
+        String stareaold = null;
         int contador =0;
         for(TareaAgente ta:this.tareasagentes){
-            if(ta.getTareaid().getId().equals(tareaold)){
-                
-            }else{
-                contador++;
-                tareaold = ta.getTareaid().getId();
+            if(!tareasagentes.isEmpty()){
+                if(ta.getTareaid().getTarea().equals(stareaold)){
+
+                }else{
+                    contador++;
+                    tareaold = ta.getTareaid().getId();
+                }
             }
         }
         return contador;
@@ -190,11 +200,12 @@ public class ProyectoAgente implements Serializable {
     
     public int contarDiasTareas(){
         Integer tareaold= Integer.valueOf(0);
+        String setapaold = null;
         int contador =0;
         for(TareaAgente ta:this.tareasagentes){
-            
+            if(!tareasagentes.isEmpty()){
                 contador+= ta.getTareaid().getDias();
-            
+            }
         }
         return contador;
     }

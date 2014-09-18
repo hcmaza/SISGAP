@@ -257,8 +257,13 @@ public class TareaAgenteController implements Serializable {
         boolean existe=false;
         FacesContext context = FacesContext.getCurrentInstance();
         AgenteViewController agenteviewcontrol= (AgenteViewController) context.getApplication().evaluateExpressionGet(context, "#{agenteViewController}", AgenteViewController.class);
+        TareaController tareacontrol= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        EtapaController etapacontrol= (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         TareaAgente ta = new TareaAgente();
+        
         ta.setAgenteid(agenteviewcontrol.getSelected());
+        tareacontrol.getSelected().setEtapaid(etapacontrol.getSelected());
+        ta.setTareaid(tareacontrol.getSelected());
         
         if(tareasagentes==null){
             tareasagentes= new ArrayList<TareaAgente>();
@@ -269,6 +274,7 @@ public class TareaAgenteController implements Serializable {
             }
         }
         if(!existe){
+            
            // TareaAgentePK tapk = new TareaAgentePK();
             //tapk.setAgenteid(agenteviewcontrol.getSelected().getId());
             //tapk.setTareaid(tareasagentes.size()+1);

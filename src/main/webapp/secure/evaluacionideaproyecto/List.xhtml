@@ -10,7 +10,7 @@
         
         <ui:define name="body">
             <f:event type="preRenderView" listener="#{agenteController.findAgente(request.getUserPrincipal().toString())}" ></f:event>
-            <f:event type="preRenderView" listener='#{proyectoController.buscarProyectoEstado(1)}' ></f:event>
+            <f:event type="preRenderView" listener='#{proyectoController.buscarEvaluarIdeaProyectoEstado()}' ></f:event>
             
             <h:form >
                  <p:panel id="pprincipal" header="Lista de Ideas-Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">

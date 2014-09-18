@@ -516,6 +516,11 @@ public class ProyectoController implements Serializable {
         recreateModel();
         items=new ListDataModel(getFacade().buscarProyectoEstado((int)estado));
     }
+    
+    public void buscarEvaluarIdeaProyectoEstado(){
+        recreateModel();
+        items=new ListDataModel(getFacade().buscarEvaluarIdeaProyectoEstado());
+    }
 
     public boolean isColumnorganismo() {
         return columnorganismo;
@@ -1391,7 +1396,11 @@ public class ProyectoController implements Serializable {
     }
     
     public long buscarProyectosEvaluar(int estado){
-       return  this.ejbFacade.buscarProyectosEvaluar(estado);
+       return  this.ejbFacade.buscarProyectosEvaluar();
+    }
+    
+    public long buscarIdeasProyectosEvaluar(){
+        return this.ejbFacade.buscarIdeasProyectosEvaluar();
     }
     
     public void buscarProyectosAgenteFalse(int agenteid){
@@ -1885,75 +1894,7 @@ public class ProyectoController implements Serializable {
         return "Create";
     }
 
-    public List<ProyectoAgente> agentesProyecto(){
-        List<ProyectoAgente> paprincipal = new ArrayList<ProyectoAgente>();
-        FacesContext context = FacesContext.getCurrentInstance();
-        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-        EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-        for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
-            
-                List<TareaAgente> tareaagentelista = new ArrayList<TareaAgente>();
-               // System.out.println("Agente"+pa.getAgente().getApellido());
-                 for(Etapa e:etapacontroller.getEtapas()){
-                    for(Tarea t:e.getTareaList()){
-                        for(TareaAgente ta:t.getTareaAgenteList()){
-                            if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
-                               
-                                tareaagentelista.add(ta);
-                                
-                                
-                            }
-                        }
-                        
-                    }
-                 }
-                 pa.setTareasagentes(tareaagentelista);
-                 paprincipal.add(pa);
-        }
-        
-//        DefaultTreeNode root = new DefaultTreeNode();
-//       root.setExpanded(true);
-//         FacesContext context = FacesContext.getCurrentInstance();
-//         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-//          EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-//                         
-//          DefaultTreeNode[] x= new DefaultTreeNode[proyectoagentecontroller.getEquipotrabajo().size()+1];
-//          int i=0;
-//          for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-//              ++i;
-//              TareaAgente tasimple = new TareaAgente();
-//              tasimple.setAgenteid(pa.getAgente());
-//              
-//              x[i] = new DefaultTreeNode(tasimple,root);
-//              x[i].setExpanded(true);
-//                for(Etapa e:etapacontroller.getEtapas()){
-//                    for(Tarea t:e.getTareaList()){
-//                        for(TareaAgente ta:t.getTareaAgenteList()){
-//                            if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
-//                                
-//                               DefaultTreeNode u = new DefaultTreeNode("",ta,x[i]);
-//                               u.setExpanded(true);
-//                               
-//                                //(ta.getTareaid().getDias()/7)*pa.getHorasdedicadas()
-//                                this.getTareaagentesproyecto().add(ta);
-//                                
-//                            }
-//                        }
-//                        
-//                    }
-//                }
-//          }
-//          
-//          
-          for(ProyectoAgente pa:paprincipal){
-              System.out.println("Etapa" +pa.getAgente().getApellido());
-              for(TareaAgente ta :pa.getTareasagentes()){
-                  System.out.println("Etapa" +ta.getTareaid().getEtapaid().getEtapa());
-              }
-          }
-          return paprincipal;
-    }
-
+    
     public List<TareaAgente> getTareaagentesproyecto() {
         return tareaagentesproyecto;
     }
@@ -1961,5 +1902,7 @@ public class ProyectoController implements Serializable {
     public void setTareaagentesproyecto(List<TareaAgente> tareaagentesproyecto) {
         this.tareaagentesproyecto = tareaagentesproyecto;
     }
+    
+    
     
 }

@@ -462,8 +462,8 @@
                                </div>
               </p:panel>
               <br />
-              <p:panel id="resumenequipo" header="Resumen del Equipo de trabajo" >
-                  <p:dataTable id="tresumenequipo" value="#{proyectoController.agentesProyecto()}" var="resumenagentes"  >
+               <p:panel id="resumenequipo" header="Resumen del Equipo de trabajo" >
+                   <p:dataTable id="tresumenequipo" value="#{etapaController.paprincipal}" var="resumenagentes"  >
                                     
                                     <p:columnGroup type="header">
                                         <p:row>
@@ -499,7 +499,9 @@
                                             <h:outputText value="#{subresumen.tareaid.dias}" />
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{subresumen.tareaid.dias/30}" />
+                                            <h:outputText value="#{subresumen.tareaid.dias/30}" >
+                                                <f:convertNumber minFractionDigits="1" />
+                                            </h:outputText>
                                         </p:column>
                                         <p:column>
                                             <h:outputText value="muy pronto" />

@@ -4,7 +4,9 @@ import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.EtapaFacade;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Tarea;
+import ar.edu.undec.sisgap.model.TareaAgente;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -52,6 +54,9 @@ public class EtapaController implements Serializable {
     private Tarea tareaseleccionada;
     private boolean paraeditar=false;
     private boolean paraeditar2=false;
+    //Lista para el resumen del equipo
+    List<ProyectoAgente> paprincipal = new ArrayList<ProyectoAgente>();
+    
     public EtapaController() {
     }
 
@@ -294,9 +299,9 @@ public class EtapaController implements Serializable {
          if(this.current.getEtapa()!=null) {
              boolean encontro = false;
              for(Etapa etapa: etapas){
-                 System.out.println("agregar Etapa1 "+etapa.getEtapa());
+                 
                  if(etapa.getEtapa().equals(current.getEtapa())){
-                     System.out.println("agregar Etapa encontro "+etapa.getEtapa());
+                     
                     encontro = true;
                  }
              }
@@ -308,7 +313,7 @@ public class EtapaController implements Serializable {
                  root = new DefaultTreeNode(new Tarea(),null);
                  root.setExpanded(true);
                  current.setTareaList(tareacontroller.getTareasdeproyecto());
-                 System.out.println("agregar Etapa current "+current.getEtapa());
+                 
                  for(Tarea t:tareacontroller.getTareasdeproyecto()){
                      contardias = contardias + t.getDias();
                      if(t.getFechainicio().before(mindia)){
@@ -322,9 +327,9 @@ public class EtapaController implements Serializable {
                  current.setFechafin(maxdia);
                  current.setDias(contardias);
                  etapas.add(current);
-                 System.out.println("inserto");
+                 
                  for(Etapa etapa: etapas){
-                     System.out.println("agregar Etapa contiene "+etapa.getEtapa());
+                     
                      Tarea t = new Tarea();
                      t.setTarea(etapa.getEtapa());
                      t.setFechainicio(etapa.getFechainicio());
@@ -339,6 +344,7 @@ public class EtapaController implements Serializable {
                  }
              }   
              crearChart();
+              this.agentesProyecto();
               current=null;
               tareacontroller.setTareasdeproyecto(null);
         }else{
@@ -525,8 +531,10 @@ public class EtapaController implements Serializable {
              
         }
         crearChart();
+        this.agentesProyecto();
          current=null;
          tareacontroller.setTareasdeproyecto(null);
+         
         
         
     }
@@ -571,6 +579,91 @@ public class EtapaController implements Serializable {
              }
                
     }
+   
+    //Obtengo el resumen de etapas tareas en el proyecto(Resumen de Equipo)
+    public void agentesProyecto(){
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+       
+        for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
+            
+                List<TareaAgente> tareaagentelista = new ArrayList<TareaAgente>();
+               System.out.println("rrrrrproyecto agente"+pa.getAgente().getApellido());
+                 for(Etapa e:this.getEtapas()){
+                     System.out.println("rrrrrrrrrrrrrretapa"+e.getEtapa());
+                    for(Tarea t:e.getTareaList()){
+                        System.out.println("rrrrrrrrrrrrrtarea"+t.getTarea());
+                        for(TareaAgente ta:t.getTareaAgenteList()){
+                            System.out.println("rrrrrrrrrrtarea agente"+ta.getTareaid());
+                            if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
+                                if(ta.getTareaid()!=null){
+                                    System.out.println("rrrrrrrrrrrrrrrr"+ta.getTareaid().getId());
+                                }
+                                
+                                tareaagentelista.add(ta);
+                                
+                                
+                            }
+                        }
+                        
+                    }
+                 }
+                 pa.setTareasagentes(tareaagentelista);
+                 paprincipal.add(pa);
+        }
+        
+//        DefaultTreeNode root = new DefaultTreeNode();
+//       root.setExpanded(true);
+//         FacesContext context = FacesContext.getCurrentInstance();
+//         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+//          EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+//                         
+//          DefaultTreeNode[] x= new DefaultTreeNode[proyectoagentecontroller.getEquipotrabajo().size()+1];
+//          int i=0;
+//          for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+//              ++i;
+//              TareaAgente tasimple = new TareaAgente();
+//              tasimple.setAgenteid(pa.getAgente());
+//              
+//              x[i] = new DefaultTreeNode(tasimple,root);
+//              x[i].setExpanded(true);
+//                for(Etapa e:etapacontroller.getEtapas()){
+//                    for(Tarea t:e.getTareaList()){
+//                        for(TareaAgente ta:t.getTareaAgenteList()){
+//                            if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
+//                                
+//                               DefaultTreeNode u = new DefaultTreeNode("",ta,x[i]);
+//                               u.setExpanded(true);
+//                               
+//                                //(ta.getTareaid().getDias()/7)*pa.getHorasdedicadas()
+//                                this.getTareaagentesproyecto().add(ta);
+//                                
+//                            }
+//                        }
+//                        
+//                    }
+//                }
+//          }
+//          
+//          
+          for(ProyectoAgente pa:paprincipal){
+              System.out.println("Etapa" +pa.getAgente().getApellido());
+              for(TareaAgente ta :pa.getTareasagentes()){
+                  System.out.println("Etapa----------------" +ta.getTareaid().getEtapaid().getEtapa());
+              }
+          }
+          
+    }
+
+    public List<ProyectoAgente> getPaprincipal() {
+        return paprincipal;
+    }
+
+    public void setPaprincipal(List<ProyectoAgente> paprincipal) {
+        this.paprincipal = paprincipal;
+    }
+
     
     
 }

@@ -142,4 +142,6 @@ public class TareaAgente implements Serializable {
         return "ar.edu.undec.sisgap.model.TareaAgente[ id=" + id + " ]";
     }
     
+    
+    
 }
