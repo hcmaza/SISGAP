@@ -673,7 +673,7 @@
                             <f:facet name="footer">
                                 <div align="center" >
                                     
-                                    <p:commandButton id="botontareaok" value="OK" onclick="PF('dtarea').hide();" actionListener="#{tareaController.armarTareasProyecto}" update=":forme:etapa :forme:tareasdeproyecto "   ></p:commandButton>
+                                    <p:commandButton id="botontareaok" value="OK" oncomplete="PF('dtarea').hide();" actionListener="#{tareaController.armarTareasProyecto}" update=":forme:etapa :forme:tareasdeproyecto "   ></p:commandButton>
                                 
                                 </div>
                             </f:facet>
@@ -694,7 +694,7 @@
                             <div align="center" >
                                     <h:panelGrid styleClass="right,left" columns="2">
                                         <p:outputLabel style="font-weight: bold" value="Etapa:" for="etapa" />
-                                        <p:inputText id="etapa" size="40" value="#{etapaController.selected.etapa}" title="Etapa"  />
+                                        <p:inputText id="etapa" size="40" value="#{etapaController.selected.etapa}" title="Etapa" required="true"  />
                                     </h:panelGrid>
                                 
                              </div>
@@ -770,8 +770,8 @@
                                   
                               </p:panel>
                     <div align="center">
-                        <p:commandButton rendered="#{etapaController.paraeditar}" id ="cetapaeditar" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tresumenequipo" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Editar" actionListener="#{etapaController.editarListadoEtapas}" />
-                        <p:commandButton rendered="#{!etapaController.paraeditar}" id ="cetapa" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tresumenequipo" onclick="PF('dialogoetapa').hide();crearGrafico();" value="Aceptar" actionListener="#{etapaController.agregaralListadoEtapas}" />
+                        <p:commandButton rendered="#{etapaController.paraeditar}" id ="cetapaeditar" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tresumenequipo" oncomplete="PF('dialogoetapa').hide();crearGrafico();" value="Editar" actionListener="#{etapaController.editarListadoEtapas}" />
+                        <p:commandButton rendered="#{!etapaController.paraeditar}" id ="cetapa" update=":form:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tresumenequipo" oncomplete="PF('dialogoetapa').hide();crearGrafico();" value="Aceptar" actionListener="#{etapaController.agregaralListadoEtapas}" />
                     </div>
                    
                 </p:dialog>
