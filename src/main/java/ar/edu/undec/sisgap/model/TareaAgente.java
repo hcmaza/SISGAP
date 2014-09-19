@@ -57,7 +57,9 @@ public class TareaAgente implements Serializable {
     private String observacion;
     @Column(name = "costo")
     private BigDecimal costo;
-
+    @Column(name="horasdedicadas")
+    private Integer horasdedicadas;
+    
     public TareaAgente() {
     }
 
@@ -112,6 +114,15 @@ public class TareaAgente implements Serializable {
     public void setCosto(BigDecimal costo) {
         this.costo = costo;
     }
+
+    public Integer getHorasdedicadas() {
+        return horasdedicadas;
+    }
+
+    public void setHorasdedicadas(Integer horasdedicadas) {
+        this.horasdedicadas = horasdedicadas;
+    }
+    
     
     
     

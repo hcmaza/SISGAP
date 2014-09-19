@@ -7,6 +7,7 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -54,6 +55,8 @@ public class ProyectoAgente implements Serializable {
     private Boolean consultorexterno;
     @Transient
     private List<TareaAgente> tareasagentes = new ArrayList<TareaAgente>();
+    @Column(name = "honorario")
+    private BigDecimal honorario;
     
     public ProyectoAgente() {
     }
@@ -130,6 +133,15 @@ public class ProyectoAgente implements Serializable {
         this.tareasagentes = tareasagentes;
     }
 
+    public BigDecimal getHonorario() {
+        return honorario;
+    }
+
+    public void setHonorario(BigDecimal honorario) {
+        this.honorario = honorario;
+    }
+    
+    
     
     
     
@@ -209,5 +221,6 @@ public class ProyectoAgente implements Serializable {
         }
         return contador;
     }
+    
     
 }

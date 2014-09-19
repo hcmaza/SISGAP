@@ -22,6 +22,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -274,4 +275,37 @@ public class ConvocatoriaController implements Serializable {
         this.tablafiltrada = tablafiltrada;
     }
     
+    public void handleFileUploadBases(FileUploadEvent event) {
+
+        try {
+            current.setBases(event.getFile().getContents());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleFileUploadFormulario(FileUploadEvent event) {
+        try {
+            current.setFormulario(event.getFile().getContents());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public StreamedContent obtenerBases() {
+        InputStream is = new ByteArrayInputStream(current.getBases());
+
+        StreamedContent sc = new DefaultStreamedContent(is);
+
+        return sc;
+    }
+
+    public StreamedContent obtenerFormulario() {
+        InputStream is = new ByteArrayInputStream(current.getFormulario());
+
+        StreamedContent sc = new DefaultStreamedContent(is);
+
+        return sc;
+    }
 }

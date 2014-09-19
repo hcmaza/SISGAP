@@ -14,9 +14,6 @@
 
             <h:form >
                 <p:panel id="pprincipal" header="Editar Agente" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
-                    <h:panelGroup id="messagePanel" layout="block">
-                        <p:messages autoUpdate="true"/>
-                    </h:panelGroup>
 
                     <p:fieldset legend="Información Personal" style="display: inline-block; width: 46%; float: left;">
                         <p:panelGrid styleClass="sinBordes sinFondo">
@@ -73,7 +70,7 @@
                                         <p:outputLabel value="Domicilio" for="domicilio" style="font-weight: bold;" />
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <p:inputText id="domicilio" value="#{agenteController.selected.domicilio}" title="#{bundle.CreateAgenteTitle_domicilio}" />
+                                        <p:inputText id="domicilio" value="#{agenteController.selected.domicilio}" title="Domicilio" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
@@ -81,7 +78,7 @@
                                         <p:outputLabel value="Teléfono" for="telefono" style="font-weight: bold;" />
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <p:inputText id="telefono" value="#{agenteController.selected.telefono}" title="#{bundle.CreateAgenteTitle_telefono}" />
+                                        <p:inputText id="telefono" value="#{agenteController.selected.telefono}" title="Teléfono" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
@@ -89,7 +86,7 @@
                                         <p:outputLabel value="Celular" for="celular" style="font-weight: bold;" />
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <p:inputText id="celular" value="#{agenteController.selected.celular}" title="#{bundle.CreateAgenteTitle_celular}" />
+                                        <p:inputText id="celular" value="#{agenteController.selected.celular}" title="Celular" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
@@ -97,7 +94,7 @@
                                         <p:outputLabel value="Email" for="email" style="font-weight: bold;" />
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <p:inputText id="email" value="#{agenteController.selected.email}" title="#{bundle.CreateAgenteTitle_email}" />
+                                        <p:inputText id="email" value="#{agenteController.selected.email}" title="Email" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
@@ -105,7 +102,7 @@
                                         <p:outputLabel value="Email Secundario" for="otroemail"  style="font-weight: bold;"/>
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <p:inputText id="otroemail" value="#{agenteController.selected.otroemail}" title="#{bundle.CreateAgenteTitle_otroemail}" />
+                                        <p:inputText id="otroemail" value="#{agenteController.selected.otroemail}" title="Otro Email" />
                                     </p:column>
                                 </p:row>                            
                             </p:panelGrid>
@@ -117,7 +114,7 @@
                                         <p:outputLabel value="Profesión" for="profesion" style="font-weight: bold;" />
                                     </p:column>
                                     <p:column style="width: 80%;">
-                                        <p:inputText id="profesion" value="#{agenteController.selected.profesion}" title="#{bundle.CreateAgenteTitle_profesion}" />
+                                        <p:inputText id="profesion" value="#{agenteController.selected.profesion}" title="Profesión" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
@@ -145,7 +142,7 @@
                     <br style="clear: both;"/>
                     
                     <p:separator />
-                    <p:commandButton action="#{agenteController.update}" value="Guardar Agente" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" />
+                    <p:commandButton action="#{agenteController.update}" value="Guardar Agente" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();"/>
                     <p:commandButton action="#{agenteController.prepareList}" value="Lista de Agentes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
@@ -155,11 +152,13 @@
 
             </h:form>
             <h:form>
-                 <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" closable="false"  header="Edición de Agente" >
-                    El Agente fue actualizado satisfactoriamente!
+                <p:dialog id="dfinal" widgetVar="dfinalW" modal="true" header="Edición de Agente" >
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Ir a Lista" action="#{agenteController.prepareList()}" ajax="false" />
+                        <p:commandButton value="Volver a la Lista" action="#{agenteController.prepareList()}" ajax="false" />
                     </div>
 
                 </p:dialog>

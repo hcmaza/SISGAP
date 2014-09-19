@@ -14,10 +14,6 @@
             <h:form>
                 <p:panel id="pprincipal" header="Nueva Convocatoria" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
-                    <h:panelGroup id="messagePanel" layout="block">
-                        <p:messages autoUpdate="true" />
-                    </h:panelGroup>
-
                     <p:fieldset legend="Información General" style="display: inline-block; width: 46%; float: left;">
                         <p:panelGrid styleClass="sinBordes sinFondo">
                             <p:row>
@@ -69,7 +65,7 @@
                                     <p:outputLabel value="Monto Financiamiento" for="montofinanciamiento" style="font-weight: bold;" />
                                 </p:column>
                                 <p:column style="width: 60%;">
-                                    <p:inputText id="montofinanciamiento" value="#{convocatoriaController.selected.montofinanciamiento}" style="width: 100%;" title="* Este campo es requerido"  required="true" requiredMessage="El campo monto de financiamiento es requerido" />
+                                    <p:inputText id="montofinanciamiento" value="#{convocatoriaController.selected.montofinanciamiento}" style="width: 100%;" title="* Este campo es requerido"  required="true" requiredMessage="El campo monto de financiamiento es requerido" validatorMessage="El Monto debe ser un valor positivo, no debe superar los 9 digitos enteros y 2 decimales" />
                                     <p:message for="montofinanciamiento" display="icon"  /> 
                                     <p:tooltip id="ttMontoFinanciamiento" for="montofinanciamiento" showEvent="focus" hideEvent="blur" />
                                 </p:column>
@@ -110,10 +106,15 @@
                             <p:panelGrid styleClass="sinBordes sinFondo">
                                 <p:row>
                                     <p:column style="width: 40%;">
-                                        <p:outputLabel value="Bases" for="bases" style="font-weight: bold;"/>
+                                        <p:outputLabel value="Bases" for="fuploadBases" style="font-weight: bold;"/>
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <h:outputText id="bases" value="BASES [UPLOADFILE]"/>
+                                        <h:form id="fuploadBases" enctype="multipart/form-data">
+                                            <p:fileUpload label="Bases para subir" id="basesConvocatoria" fileUploadListener="#{convocatoriaController.handleFileUploadBases}" mode="advanced"  
+                                                          sizeLimit="10000000" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|pdf)$/"  >
+
+                                            </p:fileUpload>    
+                                        </h:form>
                                     </p:column>
                                 </p:row>
                                 <p:row >
@@ -126,10 +127,16 @@
                                 </p:row>
                                 <p:row>
                                     <p:column style="width: 40%;">
-                                        <p:outputLabel value="Formulario" for="formulario" style="font-weight: bold;" />
+                                        <p:outputLabel value="Formulario" for="fuploadFormulario" style="font-weight: bold;" />
                                     </p:column>
                                     <p:column style="width: 60%;">
-                                        <h:outputText id="formulario" value="FORMULARIO [UPLOADFILE]"/>
+                                        <h:form id="fuploadFormulario" enctype="multipart/form-data">
+                                            <p:fileUpload label="Formulario para subir" id="formularioConvocatoria" fileUploadListener="#{convocatoriaController.handleFileUploadFormulario}" mode="advanced"  
+                                                          sizeLimit="10000000" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|pdf)$/"  >
+                                                
+
+                                            </p:fileUpload>    
+                                        </h:form>
                                     </p:column>                                
                                 </p:row>
                             </p:panelGrid>    
@@ -152,7 +159,7 @@
 
                     <p:separator/>
 
-                    <p:commandButton action="#{convocatoriaController.create}" value="Crear Convocatoria" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" />
+                    <p:commandButton action="#{convocatoriaController.create}" value="Crear Convocatoria" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();" />
                     <p:commandButton action="#{convocatoriaController.prepareList}" value="Lista de Convocatorias" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
 
@@ -161,8 +168,10 @@
             </h:form>
 
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" closable="false"  header="Alta de Convocatoria" >
-                    La Convocatoria fue creada satisfactoriamente!
+                <p:dialog id="dfinal" widgetVar="dfinalW"  modal="true" header="Alta de Convocatoria" >
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
                     <p:separator />
                     <div align="center" >
                         <p:commandButton value="Volver a la Lista" action="#{convocatoriaController.prepareList()}" ajax="false" />

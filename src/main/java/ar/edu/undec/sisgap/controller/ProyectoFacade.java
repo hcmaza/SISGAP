@@ -74,9 +74,9 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
         
         String consulta="select p from Proyecto p join p.agenteid a where p.agenteid.id= "+agenteid;
         if(isproyecto){
-             consulta+=" and p.estadoproyectoid.id=2 or p.estadoproyectoid.id=5 or p.estadoproyectoid.id=6 or p.estadoproyectoid.id=8 or p.estadoproyectoid.id=9 ";
+             consulta+=" and p.estadoproyectoid.id in (2,5,6,8) ";
          }else{
-            consulta+=" and p.estadoproyectoid.id=1 or p.estadoproyectoid.id=3 or p.estadoproyectoid.id=4 or p.estadoproyectoid.id=7 ";
+            consulta+=" and p.estadoproyectoid.id in (1 ,3, 4, 7) ";
         }
         List<Proyecto> proyecto;
         
