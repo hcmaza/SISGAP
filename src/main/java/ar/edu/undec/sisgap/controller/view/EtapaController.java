@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
+
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -43,8 +43,8 @@ public class EtapaController implements Serializable {
     private ar.edu.undec.sisgap.controller.EtapaFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    @ManagedProperty("#{tareaController}")
-    private TareaController tareacontroller;
+    
+    //private TareaController tareacontroller;
     private TreeNode root = new DefaultTreeNode() ;
     private List<Etapa> etapas = new ArrayList<Etapa>() ;
     private String gsoncategoria="[]";
@@ -53,7 +53,7 @@ public class EtapaController implements Serializable {
     private long mindate;
     private Tarea tareaseleccionada;
     private boolean paraeditar=false;
-    private boolean paraeditar2=false;
+   
     //Lista para el resumen del equipo
     List<ProyectoAgente> paprincipal = new ArrayList<ProyectoAgente>();
     
@@ -263,14 +263,6 @@ public class EtapaController implements Serializable {
         
     }
 
-    public TareaController getTareacontroller() {
-        return tareacontroller;
-    }
-
-    public void setTareacontroller(TareaController tareacontroller) {
-        this.tareacontroller = tareacontroller;
-    }
-    
     @PostConstruct
     public void init() {
         
@@ -296,6 +288,13 @@ public class EtapaController implements Serializable {
     }
     
     public void agregaralListadoEtapas(){
+        System.out.println("Aceptar para editar "+this.paraeditar);
+        FacesContext context = FacesContext.getCurrentInstance();
+            TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+          
+        if(this.paraeditar){
+            editarListadoEtapas();
+        }else{
          if(this.current.getEtapa()!=null) {
              boolean encontro = false;
              for(Etapa etapa: etapas){
@@ -354,7 +353,7 @@ public class EtapaController implements Serializable {
                  message.setDetail("Ingrese el nombre de la Etapa ");
              FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
         }
-       
+    } 
    }
     
     public void eliminaralListadoEtapas(){
@@ -375,6 +374,9 @@ public class EtapaController implements Serializable {
         data="[";
         dataactual="[";
         mindate=Long.MAX_VALUE;
+        FacesContext context = FacesContext.getCurrentInstance();
+        TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+          
        if(tareacontroller.getTareasdeproyecto()==null){
            int cant=etapas.size();
        }else{
@@ -428,10 +430,15 @@ public class EtapaController implements Serializable {
     }
   
     public void rearmarEtapasProyecto(){
+        
+             
          current=null;
-         tareacontroller.setTareasdeproyecto(null);
+          FacesContext context = FacesContext.getCurrentInstance();
+            TareaController tareacontrol= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+           
+         tareacontrol.setTareasdeproyecto(null);
           this.paraeditar=false;
-         this.paraeditar2=false;
+         
      }
 
     public String getDataactual() {
@@ -478,7 +485,7 @@ public class EtapaController implements Serializable {
     
     public void prepararEditarEtapaTreeTable(Tarea tar){
         this.paraeditar=true;
-        this.paraeditar2=true;
+        
         int contador = 0;
         int posicion = 0;
         for(Etapa e: etapas){
@@ -491,12 +498,18 @@ public class EtapaController implements Serializable {
             contador++;
         }
         current = etapas.get(posicion);
+         FacesContext context = FacesContext.getCurrentInstance();
+            TareaController tareacontrol= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+           
+        tareacontrol.setTareasdeproyecto(current.getTareaList());
         
-        tareacontroller.setTareasdeproyecto(current.getTareaList());
         
     }
     
     public void editarListadoEtapas(){
+        FacesContext context = FacesContext.getCurrentInstance();
+            TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+          
         Date mindia = new Date("2999/12/12");
         Date maxdia = new Date("2001/01/01");
         int contardias = 0;
@@ -547,14 +560,10 @@ public class EtapaController implements Serializable {
         this.paraeditar = paraeditar;
     }
     
-    public boolean isParaeditar2() {
-        return paraeditar2;
-    }
-
-    public void setParaeditar2(boolean paraeditar2) {
-        this.paraeditar2 = paraeditar2;
-    }
+  
     public void prepareEditarListadoEtapas(){
+                FacesContext context = FacesContext.getCurrentInstance();
+            TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
           
                  int contardias = 0;
                  Date mindia = new Date("2999/12/12");
@@ -582,25 +591,25 @@ public class EtapaController implements Serializable {
    
     //Obtengo el resumen de etapas tareas en el proyecto(Resumen de Equipo)
     public void agentesProyecto(){
-        
+        this.paprincipal = new ArrayList<ProyectoAgente>();
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController)context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
        
         for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
             
                 List<TareaAgente> tareaagentelista = new ArrayList<TareaAgente>();
-               System.out.println("rrrrrproyecto agente"+pa.getAgente().getApellido());
+               
                  for(Etapa e:this.getEtapas()){
-                     System.out.println("rrrrrrrrrrrrrretapa"+e.getEtapa());
+                    
                     for(Tarea t:e.getTareaList()){
-                        System.out.println("rrrrrrrrrrrrrtarea"+t.getTarea());
+                        
                         for(TareaAgente ta:t.getTareaAgenteList()){
-                            System.out.println("rrrrrrrrrrtarea agente"+ta.getTareaid());
+                            
                             if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
                                 if(ta.getTareaid()!=null){
                                     System.out.println("rrrrrrrrrrrrrrrr"+ta.getTareaid().getId());
                                 }
-                                
+                                System.out.println("rrrrrrrrrrtarea agente"+ta.getTareaid());
                                 tareaagentelista.add(ta);
                                 
                                 
@@ -610,6 +619,7 @@ public class EtapaController implements Serializable {
                     }
                  }
                  pa.setTareasagentes(tareaagentelista);
+                 System.out.println("rrrrrrrrrrproyecto agente"+pa.getAgente().getApellido());
                  paprincipal.add(pa);
         }
         
@@ -648,9 +658,9 @@ public class EtapaController implements Serializable {
 //          
 //          
           for(ProyectoAgente pa:paprincipal){
-              System.out.println("Etapa" +pa.getAgente().getApellido());
+             
               for(TareaAgente ta :pa.getTareasagentes()){
-                  System.out.println("Etapa----------------" +ta.getTareaid().getEtapaid().getEtapa());
+                  
               }
           }
           

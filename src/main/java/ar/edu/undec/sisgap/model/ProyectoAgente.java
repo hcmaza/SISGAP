@@ -222,5 +222,35 @@ public class ProyectoAgente implements Serializable {
         return contador;
     }
     
+    public int contarHoras(){
+        Integer horas= Integer.valueOf(0);
+        Agente sagenteold = null;
+        
+        for(TareaAgente ta:this.tareasagentes){
+            
+            if(!tareasagentes.isEmpty()){
+                System.out.println("Agente  --"+ta.getAgenteid());
+                if(ta.getAgenteid().equals(sagenteold)){
+                    System.out.println("Agente horas"+ta.getHorasdedicadas());
+                    if(!this.consultorexterno){
+                        System.out.println("Agente horas 2"+ta.getHorasdedicadas());
+                        if(ta.getHorasdedicadas()==null){
+                            horas+= 0;
+                        }else{
+                            horas +=  ta.getHorasdedicadas();
+                        }
+                    }
+                }else{
+                     if(ta.getHorasdedicadas()==null){
+                            horas+= 0;
+                        }else{
+                            horas +=  ta.getHorasdedicadas();
+                        }
+                    sagenteold = ta.getAgenteid();
+                }
+            }
+        }
+        return horas;
+    }
     
 }

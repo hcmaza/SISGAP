@@ -60,7 +60,7 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
         
         List<Proyecto> proyecto;
        try{
-           return em.createQuery("select p from Proyecto p join p.agenteid a where p.estadoproyectoid.id = 1 and where p.estadoproyecto.id= 7", Proyecto.class).getResultList();
+           return em.createQuery("select p from Proyecto p join p.agenteid a where p.estadoproyectoid.id = 1 or p.estadoproyectoid.id= 7", Proyecto.class).getResultList();
        }catch(Exception e){
            System.out.println("No se pudo realizar la consulta"+e);
            return null;

@@ -38,32 +38,25 @@
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="10,15,30">
 
-                            <p:column id="columnaFecha" filterBy="fecha" filterMatchMode="contains" sortBy="fecha">
+                            <p:column id="columnaFecha" filterBy="#{item.fecha}" filterMatchMode="contains" sortBy="#{item.fecha}">
                                 <f:facet name="header">
                                     <h:outputText value="Fecha" />
                                 </f:facet>                        
                                 <h:outputText value="#{item.fecha}"/>
                             </p:column>
-                            <p:column id="columnaId" sortBy="id" width="10px" style="width: 10px;">
+                            <p:column id="columnaId" sortBy="#{item.id}" width="10px" style="width: 10px;">
                                 <f:facet name="header">
                                     <h:outputText value="Nº" />
                                 </f:facet>
                                 <h:outputText value="#{item.id}" />
                             </p:column>
 
-                            <p:column id="columnaNombre" filterBy="nombre" filterMatchMode="contains" sortBy="nombre">
+                            <p:column id="columnaNombre" filterBy="#{item.nombre}" filterMatchMode="contains" sortBy="#{item.nombre}">
                                 <f:facet name="header">
                                     <h:outputText value="Titulo" />
                                 </f:facet>                        
                                 <h:outputText value="#{item.nombre}"/>
                             </p:column>
-
-<!--                    <p:column id="columnaEstado" filterBy="#{item.estadoproyectoid}" filterMatchMode="exact" filterOptions="#{estadoproyectoController.itemsAvailableSelectOne}" sortBy="#{item.estadoproyectoid.estado}">
-                            <f:facet name="header">
-                                <h:outputText value="Estado" />
-                            </f:facet>                        
-                            <h:outputText value="#{item.estadoproyectoid.estado}"/>
-                        </p:column>-->
 
                             <p:column id="columnaTipo" filterBy="#{item.tipoproyectoid}" filterMatchMode="exact" filterOptions="#{tipoproyectoController.itemsAvailableSelectOne}" sortBy="#{item.tipoproyectoid.tipo}">
                                 <f:facet name="header">

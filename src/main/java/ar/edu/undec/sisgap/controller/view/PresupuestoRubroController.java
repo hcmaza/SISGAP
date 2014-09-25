@@ -342,13 +342,21 @@ public void init() {
                 pieModel.set("Aporte Organismo", sumagastoorganismo);  
                 pieModel.set("Aporte Comitente", sumagastocomitente);  
                 pieModel.set("Aporte Universidad", sumagastouniversidad);  
-                
+                // pieModel.setDiameter(150);
+                pieModel.setLegendPosition("e");
+                pieModel.setTitle("Aportes");
+                pieModel.setSliceMargin(5); 
+                pieModel.setShowDataLabels(true);
                   pieModelRubro = new PieChartModel();  
             for(PresupuestoRubro pre : presupuestosrubros){
                 pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
                 
             }
-                
+               //   pieModelRubro.setDiameter(150);
+                pieModelRubro.setLegendPosition("e");
+                pieModelRubro.setTitle("Rubros");
+                pieModelRubro.setSliceMargin(5); 
+                pieModelRubro.setShowDataLabels(true);
                 // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
                   //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
   //               System.out.println("gggggggggggggggggggggggggggggg");
@@ -427,7 +435,13 @@ public void init() {
   
                 pieModel.set("Gasto Organismo", sumagastoorganismo);  
                 pieModel.set("Gasto Comitente", sumagastocomitente);  
-                pieModel.set("Gasto Universidad", sumagastouniversidad);  
+                pieModel.set("Gasto Universidad", sumagastouniversidad); 
+            //    pieModel.setDiameter(150);
+                pieModel.setLegendPosition("e");
+                pieModel.setTitle("Aportes");
+               pieModel.setSliceMargin(5); 
+               pieModel.setShowDataLabels(true);
+              
         }
         return pieModel;
     }
@@ -443,7 +457,11 @@ public void init() {
                 pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
                 
             }
-                  
+          //  pieModelRubro.setDiameter(150);
+                pieModelRubro.setLegendPosition("e");
+                pieModelRubro.setTitle("Rubros");
+             pieModelRubro.setSliceMargin(5); 
+             pieModelRubro.setShowDataLabels(true);
                 
         }
         return pieModelRubro;

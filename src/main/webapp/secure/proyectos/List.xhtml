@@ -44,7 +44,7 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                                 </h:outputText>
                             </p:column>
-                            <p:column id="columnaNombre" filterBy="nombre" filterMatchMode="contains" sortBy="nombre">
+                            <p:column id="columnaNombre" filterBy="#{item.nombre}" filterMatchMode="contains" sortBy="#{item.nombre}">
                                 <f:facet name="header">
                                     <h:outputText value="Titulo del proyecto"/>
                                 </f:facet>
@@ -56,7 +56,7 @@
                                 </f:facet>
                                 <h:outputText value="#{item.agenteid.apellido}, #{item.agenteid.nombres}"/>
                             </p:column>
-                            <p:column id="columnaDuracion" filterBy="duracion" filterMatchMode="contains" sortBy="duracion">
+                            <p:column id="columnaDuracion" filterBy="#{item.duracion}" filterMatchMode="contains" sortBy="#{item.duracion}">
                                 <f:facet name="header">
                                     <h:outputText value="DuraciÃ³n (Meses)"/>
                                 </f:facet>

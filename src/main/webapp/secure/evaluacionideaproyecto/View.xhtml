@@ -194,8 +194,8 @@
                                 </f:facet>
                             </p:panelGrid>
 
-                            <p:pieChart id="caportes" value="#{presupuestoController.pieModelAportes}" legendPosition="e" showDataLabels="true"  
-                                        title="Aportes" style="width:100%;height:300px" sliceMargin="5" diameter="150" /> 
+                            <p:chart type="pie" id="caportes" model="#{presupuestoController.pieModelAportes}"   
+                                        style="width:100%;height:300px"  /> 
 
                             <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="data" >
                                 <f:facet name="header">  
@@ -211,8 +211,8 @@
                                     Total = $#{presupuestoController.sumatotal}  
                                 </f:facet>
                             </p:dataTable>
-                            <p:pieChart id="crubros" value="#{presupuestoController.pieModelRubro}" legendPosition="e" showDataLabels="true"  
-                                        title="Rubros" style="width:100%;height:300px" sliceMargin="5" diameter="150" /> 
+                            <p:chart type="pie" id="crubros" model="#{presupuestoController.pieModelRubro}"   
+                                        style="width:100%;height:300px"  /> 
 
                         </h:panelGrid>
                     </p:panel>

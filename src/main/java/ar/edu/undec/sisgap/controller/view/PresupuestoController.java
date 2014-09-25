@@ -289,12 +289,22 @@ public class PresupuestoController implements Serializable {
                 pieModelAportes.set("Aporte Organismo", sumagastoorganismo);  
                 pieModelAportes.set("Aporte Comitente", sumagastocomitente);  
                 pieModelAportes.set("Aporte Universidad", sumagastouniversidad);  
-                
-                  pieModelRubro = new PieChartModel();  
+                //pieModelAportes.setDiameter(150);
+                pieModelAportes.setLegendPosition("e");
+                pieModelAportes.setTitle("Aportes");
+                pieModelAportes.setSliceMargin(5);
+                pieModelAportes.setShowDataLabels(true);
+                  pieModelAportes = new PieChartModel(); 
+                   pieModelRubro = new PieChartModel();  
             for(PresupuestoRubro pre : getSelected().getPresupuestoRubroList()){
                 pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
                 
             }
+              //pieModelRubro.setDiameter(150);
+                pieModelRubro.setLegendPosition("e");
+                pieModelRubro.setTitle("Rubros");
+                pieModelRubro.setSliceMargin(5); 
+                pieModelRubro.setShowDataLabels(true);
                 
                 // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
                   //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");

@@ -466,6 +466,11 @@ public class PresupuestoRubroitemController implements Serializable {
       this.pieModelAportes.set("Gasto Organismo", Integer.valueOf(0));
       this.pieModelAportes.set("Gasto Comitente", Integer.valueOf(0));
       this.pieModelAportes.set("Gasto Universidad", Integer.valueOf(0));
+     // pieModelAportes.setDiameter(150);
+      pieModelAportes.setLegendPosition("e");
+      pieModelAportes.setTitle("Aportes");
+      pieModelAportes.setSliceMargin(5); 
+      pieModelAportes.setShowDataLabels(true);
     }
     return this.pieModelAportes;
   }
@@ -483,6 +488,11 @@ public class PresupuestoRubroitemController implements Serializable {
       for (Rubro r : this.ejbFacadeRubro.findAll()) {
         this.pieModelRubros.set(r.getRubro(), Integer.valueOf(0));
       }
+      //pieModelRubros.setDiameter(150);
+        pieModelRubros.setLegendPosition("e");
+        pieModelRubros.setTitle("Rubros");
+        pieModelRubros.setSliceMargin(5); 
+        pieModelRubros.setShowDataLabels(true);
     }
     return this.pieModelRubros;
   }
