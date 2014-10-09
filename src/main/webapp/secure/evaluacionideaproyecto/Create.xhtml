@@ -103,12 +103,14 @@
                             <p:panelGrid style="width: 100%;" styleClass="sinBordes">
                                 <p:row>
                                     <p:column>
-                                        <p:outputLabel value="Documentación" style="font-weight: bold;" />
-                                    </p:column>
-                                    <p:column>
-                                        <p:commandLink id="downloadLink" value="#{proyectoController.selected.documentacionnombre}" ajax="false" process="@this" onclick="PrimeFaces.monitorDownload(showStatus, hideStatus)" >
-                                            <p:fileDownload id="f1" value="#{proyectoController.selected.documentacion}" contentDisposition="inline" />
-                                        </p:commandLink>
+                                        <p:dataTable id="tArchivosProyecto" var="archivo" value="#{archivoproyectoController.collectorArchivoProyecto}" emptyMessage="Este proyecto no tiene archivos subidos" >  
+                                           
+                                            <p:column headerText="Archivos">  
+                                                <p:commandLink id="downloadLink" value="#{archivo.nombre}" ajax="false" process="@this"  >
+                                                    <p:fileDownload id="f1" value="#{archivo.file}"  />
+                                                </p:commandLink>
+                                            </p:column>
+                                        </p:dataTable>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>

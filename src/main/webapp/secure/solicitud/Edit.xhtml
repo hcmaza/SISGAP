@@ -17,7 +17,7 @@
              <f:event type="preRenderView" listener="#{proyectoAgenteController.buscarEquipoTrabajoEditar(proyectoController.selected.id)}" />
              <f:event type="preRenderView" listener="#{archivoproyectoController.findporProyectoEdit(proyectoController.selected.id)}" />
            <f:event type="preRenderView" listener="#{presupuestoRubroController.findporPresupuestoEdit(presupuestoController.selected.id)}" />
-            
+           
              <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
               
         <p:dialog modal="true" widgetVar="statusDialog" header="Espere Por Favor"   

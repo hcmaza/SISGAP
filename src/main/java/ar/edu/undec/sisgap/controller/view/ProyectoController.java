@@ -285,7 +285,9 @@ public class ProyectoController implements Serializable {
                     EnviarMail enviarmail = new EnviarMail();
                     //enviarmail.enviarMailIngresoIdeaProyecto(FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName(),current.getAgenteid().getEmail() , habilitarcomitente);
                    
-                     RequestContext.getCurrentInstance().execute("dfinal.show()"); 
+         
+      
+                     RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
                    //  FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
                 // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
                     
@@ -660,7 +662,7 @@ public class ProyectoController implements Serializable {
                 
                todobien=true;
                 
-               //  RequestContext.getCurrentInstance().execute("dfinal.show()"); 
+               //  RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
                  
              }else{
                  FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ","No se pudo evaluar del Proyecto.")); 
@@ -671,14 +673,14 @@ public class ProyectoController implements Serializable {
                 current.setEstadoproyectoid(ep);
                 this.ejbFacade.edit(current);
                 
-//                HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
-//                try {
-//                    response.sendRedirect("List.xhtml");
-//                } catch (IOException ex) {
-//                    Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
+//--                HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
+// --               try {
+// --                   response.sendRedirect("List.xhtml");
+//--                } catch (IOException ex) {
+//--                    Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, ex);
+// --               }
                 
-                RequestContext.getCurrentInstance().execute("dfinalerror.show()"); 
+                RequestContext.getCurrentInstance().execute("PF('dfinalerror').show()"); 
              
              }
         }catch(Exception e){
@@ -696,16 +698,16 @@ public class ProyectoController implements Serializable {
 //                } catch (IOException ex) {
 //                    Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-             RequestContext.getCurrentInstance().execute("dfinalerror.show()"); 
+             RequestContext.getCurrentInstance().execute("PF('dfinalerror').show()"); 
         }
         }else{
-             RequestContext.getCurrentInstance().execute("dfinalerrore.show()"); 
+             RequestContext.getCurrentInstance().execute("PF('dfinalerrore').show()"); 
 //            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error!", "Seleccione el Estado del Proyecto! Muchas Gracias ");
 //            RequestContext.getCurrentInstance().showMessageInDialog(message);
 //            FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ","Seleccione el Estado del Proyecto! Muchas Gracias "));
         }
          if(todobien){
-            RequestContext.getCurrentInstance().execute("dfinal.show()"); 
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
         }
                 
        
@@ -866,7 +868,7 @@ public class ProyectoController implements Serializable {
 
                todobien=true;       
         
-           // RequestContext.getCurrentInstance().execute("dfinal.show()");
+           // RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
            // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
             // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
         } catch (Exception e) {
@@ -879,7 +881,7 @@ public class ProyectoController implements Serializable {
             Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, e);
         }
          if(todobien){
-            RequestContext.getCurrentInstance().execute("dfinal.show()"); 
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
         }
                 
         return null;
@@ -1352,7 +1354,7 @@ public class ProyectoController implements Serializable {
             return null;
         }
         if(todobien){
-            RequestContext.getCurrentInstance().execute("dfinal.show()"); 
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
         }
          return null;
         
@@ -1360,14 +1362,15 @@ public class ProyectoController implements Serializable {
     
     public String prepareEditEtapa() {
         current = (Proyecto) getItems().getRowData();
-          
+           System.out.println("fffffffffffff1fffffffffff");
            FacesContext context = FacesContext.getCurrentInstance();
            EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-           
+            System.out.println("ffffffffffff2ffffffffffff");
         etapacontroller.setEtapas(this.ejbetapa.findByProyecto(current));
         //etapacontroller.agregaralListadoEtapas();
        etapacontroller.prepareEditarListadoEtapas();
-      
+       etapacontroller.agentesProyecto();
+       System.out.println("ffffffffffffff3ffffffffff");
        //proyecto Agente
         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
         List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
@@ -1382,6 +1385,9 @@ public class ProyectoController implements Serializable {
             
         }
         proyectoagentecontroller.setEquipotrabajo(pa);
+        ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
+        archivoproyectoController.findporProyectoEdit(current.getId());
+            
         
 //        //Presupuesto Rubro Item
 //        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
@@ -1392,6 +1398,7 @@ public class ProyectoController implements Serializable {
 //        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
 //            System.out.println("Presupuesto Rubro Item "+ pri.getRubro());
 //        }
+        System.out.println("ffffffffffffffffffffffff");
         return "Edit";
     }
     
@@ -1576,7 +1583,7 @@ public class ProyectoController implements Serializable {
 
                todobien=true;       
         
-           // RequestContext.getCurrentInstance().execute("dfinal.show()");
+           // RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
            // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
             // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
         } catch (Exception e) {
@@ -1589,7 +1596,7 @@ public class ProyectoController implements Serializable {
             Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, e);
         }
          if(todobien){
-            RequestContext.getCurrentInstance().execute("dfinal.show()"); 
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
         }
                 
         return null;
@@ -1743,9 +1750,9 @@ public class ProyectoController implements Serializable {
         
         JRBeanArrayDataSource evaluacion = new JRBeanArrayDataSource(new Evaluacion[]{e});
         
-//        for(EvaluacionPregunta ep : e.getEvaluacionPreguntaList()){
-//            System.out.println("Pregunta: " + ep.getPregunta().getPregunta());
-//        }
+        for(EvaluacionPregunta ep : e.getEvaluacionPreguntaList()){
+            System.out.println("Pregunta: -----------------------" + ep.getPregunta().getPregunta());
+        }
         
         JRDataSource preguntas = new JRBeanCollectionDataSource(e.getEvaluacionPreguntaList());
         
@@ -1903,6 +1910,11 @@ public class ProyectoController implements Serializable {
         this.tareaagentesproyecto = tareaagentesproyecto;
     }
     
-    
+    public void prepareSolicitud() {
+        
+        current = null;
+       this.recreateModel();
+        
+    }
     
 }

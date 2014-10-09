@@ -209,8 +209,13 @@ public class AgenteController implements Serializable {
     
     public void findAgente(String nombreusuario){
         if(current==null){
+        //if(getFacade().findAgente(nombreusuario)!=null){
              current= (Agente) getFacade().findAgente(nombreusuario);
-            System.out.println("9999999999999999999999999999999999999999999999999"+current.getId());
+           // System.out.println("9999999999999999999999999999999999999999999999999"+current.getId());
+       
+        }else{
+             current= (Agente) getFacade().findAgente(nombreusuario);
+        //System.out.println("222222222222222222222222222222222222222222222"+current.getId());
         }
     }
 

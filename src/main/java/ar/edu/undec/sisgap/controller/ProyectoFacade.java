@@ -81,6 +81,7 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
         List<Proyecto> proyecto;
         
        try{
+           System.out.println("agente "+agenteid+"----------------------"+em.createQuery(consulta , Proyecto.class).getResultList().size());
            return em.createQuery(consulta , Proyecto.class).getResultList();
        }catch(Exception e){
            System.out.println("No se pudo realizar la consulta"+e);

@@ -112,10 +112,14 @@ public class AgenteFacade extends AbstractFacade<Agente> {
 //        
 //        }
     public Agente filtroDocumentooCuil(String documentoocuil){
+        Agente a = new Agente();
         try{
            //System.out.println("ffffffffffffffffffffffffffffffff"+em.createNativeQuery("select * from ap.agente where numerodocumento like '%"+documentooapellido+"%' or apellido like '%"+documentooapellido+"%'", Agente.class).getResultList().size()); 
-           return em.createQuery("select a from Agente a where a.numerodocumento like '"+documentoocuil+"%' or a.cuil like '%"+documentoocuil+"%'", Agente.class).getSingleResult(); 
+            a = em.createQuery("select a from Agente a where a.numerodocumento like '"+documentoocuil+"%' or a.cuil like '"+documentoocuil+"%'", Agente.class).getSingleResult(); 
+            System.out.println("Agente try "+a.getApellido());
+            return a;
         }catch(Exception e){
+            System.out.println("Agente cacth "+a.getApellido());
             return null;
         }
     }

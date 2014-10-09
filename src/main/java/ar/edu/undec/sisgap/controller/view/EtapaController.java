@@ -4,6 +4,7 @@ import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.EtapaFacade;
+import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
@@ -289,10 +290,11 @@ public class EtapaController implements Serializable {
     
     public void agregaralListadoEtapas(){
         System.out.println("Aceptar para editar "+this.paraeditar);
+        
         FacesContext context = FacesContext.getCurrentInstance();
             TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
-          
-        if(this.paraeditar){
+         PresupuestoRubroitemController presupuestorubroitemcontroller= (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
+          if(this.paraeditar){
             editarListadoEtapas();
         }else{
          if(this.current.getEtapa()!=null) {
@@ -344,6 +346,8 @@ public class EtapaController implements Serializable {
              }   
              crearChart();
               this.agentesProyecto();
+              presupuestorubroitemcontroller.agregarPresupuestoRRHHCONSULTOR();
+              
               current=null;
               tareacontroller.setTareasdeproyecto(null);
         }else{
@@ -674,6 +678,19 @@ public class EtapaController implements Serializable {
         this.paprincipal = paprincipal;
     }
 
-    
+   public int contarTotalDiasAgente(Agente a){
+       int suma = 0;
+       for(Etapa e:this.etapas){
+           for(Tarea t:e.getTareaList()){
+              for(TareaAgente ta : t.getTareaAgenteList()){
+                  if(ta.getAgenteid().equals(a)){
+                      System.out.println("nnnnnnnnnnnnnnnnnnnnnn"+a.getApellido()+" cccccccccccccc "+t.getDias());
+                      suma += t.getDias();
+                  }
+              }
+           }
+       }
+       return suma;
+   } 
     
 }

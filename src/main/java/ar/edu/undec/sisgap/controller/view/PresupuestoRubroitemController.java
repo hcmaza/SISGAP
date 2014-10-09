@@ -7,6 +7,7 @@ import ar.edu.undec.sisgap.controller.PresupuestoRubroitemFacade;
 import ar.edu.undec.sisgap.controller.RubroFacade;
 import ar.edu.undec.sisgap.model.Presupuesto;
 import ar.edu.undec.sisgap.model.Proyecto;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
 
 import java.io.Serializable;
@@ -28,6 +29,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.chart.PieChartModel;
@@ -44,7 +46,7 @@ public class PresupuestoRubroitemController implements Serializable {
     private RubroFacade ejbFacadeRubro;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private List<PresupuestoRubroitem> presupuestosrubrositems = new ArrayList();
+    private List<PresupuestoRubroitem> presupuestosrubrositems ;
     private PresupuestoRubroitem current2 = new PresupuestoRubroitem();
     private TreeNode root = new DefaultTreeNode();
     private PieChartModel pieModelAportes;
@@ -260,6 +262,34 @@ public class PresupuestoRubroitemController implements Serializable {
     
     public List<PresupuestoRubroitem> getPresupuestosrubrositems()
   {
+      if(this.presupuestosrubrositems==null){
+          this.presupuestosrubrositems = new ArrayList<PresupuestoRubroitem>();
+          FacesContext context = FacesContext.getCurrentInstance();
+      ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+      PresupuestoController presupuestocontroller= (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+       for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
+           PresupuestoRubroitem pri = new PresupuestoRubroitem();
+           
+            pri.setPresupuesto(presupuestocontroller.getSelected());
+            Rubro r = new Rubro();
+            
+            if(pa.getConsultorexterno()){
+                r = ejbFacadeRubro.findbyId(4); 
+            }else{
+               r= ejbFacadeRubro.findbyId(5); 
+            }
+           pri.setRubro(r);
+           pri.setDescripcion(pa.getAgente().toString());
+           pri.setCostounitario(BigDecimal.valueOf(pa.contarHoras()));
+           pri.setCantidad( BigDecimal.valueOf(Math.ceil(pa.contarDiasTareas()/30)) );
+           pri.setAportecomitente(BigDecimal.ZERO);
+           pri.setAporteorganismo(BigDecimal.ZERO);
+           pri.setAporteuniversidad(BigDecimal.ZERO);
+           pri.setTotal(pri.getCantidad().multiply(pri.getCostounitario()));
+           this.presupuestosrubrositems.add(pri);
+       }
+      }
+      this.acomodarTablapresupuestorubroitem();
     return this.presupuestosrubrositems;
   }
   
@@ -308,6 +338,7 @@ public class PresupuestoRubroitemController implements Serializable {
     return true;
   }
   
+  @Deprecated
   public void armarPresupuestoNodos()
   {
     PresupuestoRubroitem pri;
@@ -380,23 +411,82 @@ public class PresupuestoRubroitemController implements Serializable {
   
   public void agregarPresupuesto()
   {
+      
     if (verificarAportes()){
       this.presupuestosrubrositems.add(this.current2);
       this.sumarGastos();
-      armarPresupuestoNodos();
+      this.acomodarTablapresupuestorubroitem();
+     //this. armarPresupuestoNodos();
      }
     else
     {
       reinit();
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La suma de Aportes no puede superar al Total"));
     }
+    
     armarGraficosPresupuesto();
+  }
+  
+  public void agregarPresupuestoRRHHCONSULTOR()
+  {
+      FacesContext context = FacesContext.getCurrentInstance();
+      ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+      PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+      EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+    
+      
+      for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
+          int suma =  etapacontroller.contarTotalDiasAgente(pa.getAgente());
+           PresupuestoRubroitem pri = new PresupuestoRubroitem();
+           
+            pri.setPresupuesto(presupuestocontroller.getSelected());
+            Rubro r = new Rubro();
+            
+            if(pa.getConsultorexterno()){
+              r = ejbFacadeRubro.findbyId(4); 
+            }else{
+              r = ejbFacadeRubro.findbyId(5); 
+            }
+           pri.setRubro(r);
+           
+           int i = 0;
+           int lugar = -1;
+           for(PresupuestoRubroitem pris:presupuestosrubrositems){
+               
+               if(pris.getDescripcion().equals(pa.getAgente().toString())){
+                   lugar = i;
+               }else{
+                   
+               }
+               ++i;
+           }
+           
+           if(lugar==-1){
+               
+                pri.setCostounitario(BigDecimal.valueOf(pa.contarHoras()));
+                pri.setCantidad( BigDecimal.valueOf(Math.ceil(suma/30)) );
+                    System.out.println("entrada uno costo unitario"+pri.getCostounitario());
+                pri.setDescripcion(pa.getAgente().toString());
+                 pri.setAportecomitente(BigDecimal.ZERO);
+                pri.setAporteorganismo(BigDecimal.ZERO);
+                pri.setAporteuniversidad(BigDecimal.ZERO);
+                pri.setTotal(pri.getCantidad().multiply(pri.getCostounitario()));
+                this.presupuestosrubrositems.add(pri);
+           }else{
+                PresupuestoRubroitem prin = this.presupuestosrubrositems.get(lugar);
+
+                prin.setCostounitario(BigDecimal.valueOf(pa.contarHoras()));
+                prin.setCantidad( BigDecimal.valueOf(Math.ceil(suma/30)) );
+                prin.setTotal(prin.getCantidad().multiply(prin.getCostounitario()));
+                System.out.println("entrada dos dias"+suma/30);
+                System.out.println("entrada dos dias ceil"+Math.ceil(suma/30));
+                     this.presupuestosrubrositems.set(lugar, prin);
+           }
+       }
   }
   
   public void eliminarPresupuesto(PresupuestoRubroitem pri)
   {
-      
-      
     int contador = 0;
     int posicion = 0;
     for (PresupuestoRubroitem p : getPresupuestosrubrositems())
@@ -563,6 +653,33 @@ public class PresupuestoRubroitemController implements Serializable {
         this.sumatotal = sumatotal;
     }
   
+  public void acomodarTablapresupuestorubroitem(){
+      List<PresupuestoRubroitem> prin = new ArrayList<PresupuestoRubroitem>();
+      for(Rubro r:this.ejbFacadeRubro.findAll())
+        for(PresupuestoRubroitem pri:this.presupuestosrubrositems){
+                if(pri.getRubro().equals(r)){
+                    prin.add(pri);
+                }
+        }
+      this.presupuestosrubrositems = prin;
+  }
   
+  public void onCellEdit(CellEditEvent event) {
+      current2 = this.presupuestosrubrositems.get(event.getRowIndex());
+      if (verificarAportes()){
+        this.presupuestosrubrositems.set(event.getRowIndex(),current2);
+        this.sumarGastos();
+        this.acomodarTablapresupuestorubroitem();
+       //this. armarPresupuestoNodos();
+     }
+    else
+    {
+      
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La suma de Aportes no puede superar al Total en el rubro "+ current2.getRubro().getRubro() +" y descripcion " +current2.getDescripcion()));
+    }
+    
+    armarGraficosPresupuesto();
+      
+  }
   
 }

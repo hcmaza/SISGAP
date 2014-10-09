@@ -209,7 +209,7 @@ public class UsuarioController implements Serializable {
             }else{
                current=null;
                currenta=null;
-              //RequestContext.getCurrentInstance().execute("dregistrar.hide()");
+              //RequestContext.getCurrentInstance().execute("PF('dregistrar').hide()");
                FacesContext.getCurrentInstance().getExternalContext().redirect("./registracionexitosa.xhtml");
                
                return "registracionexitosa";
@@ -275,7 +275,7 @@ public class UsuarioController implements Serializable {
             }else{
                current=null;
                currenta=null;
-              //RequestContext.getCurrentInstance().execute("dregistrar.hide()");
+              //RequestContext.getCurrentInstance().execute("PF('dregistrar').hide()");
                FacesContext.getCurrentInstance().getExternalContext().redirect("./index.xhtml");
                
                return "index";

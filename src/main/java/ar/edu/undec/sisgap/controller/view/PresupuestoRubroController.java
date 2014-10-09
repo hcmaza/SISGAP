@@ -309,7 +309,9 @@ public void init() {
 //        Object newValue = event.getNewValue();  
 //           DataTable s = (DataTable) event.getSource();
        // MyEntity d = (MyEntity) s.getRowData();
-       
+       if(presupuestosrubros==null){
+           presupuestosrubros = new ArrayList<PresupuestoRubro>();
+       }
                     Iterator it=presupuestosrubros.iterator();
                  BigDecimal totalcomitente=BigDecimal.ZERO;
                 BigDecimal totaluniversidad=BigDecimal.ZERO;

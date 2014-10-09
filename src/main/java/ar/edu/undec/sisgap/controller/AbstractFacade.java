@@ -79,12 +79,16 @@ public abstract class AbstractFacade<T> {
     }
      
      public Agente findAgente(String nombreusuario){
+         try{
          String queryStr = "Select a from Agente a JOIN a.usuarioid u where u.usuarionombre like :usuarionombre ";
             TypedQuery<Agente> query = getEntityManager().createQuery(queryStr, Agente.class);
             query.setParameter("usuarionombre", nombreusuario.trim());
-         
+            return (Agente) query.getSingleResult();
+         }catch(Exception e){
+             return null;
+         }
        
-        return (Agente) query.getSingleResult();
+        
     }
     public Usuario findUsuarioNombreEmail(String nombreusuario){
          String queryStr = "Select u from Usuario u where u.usuarionombre like :usuarionombre  ";

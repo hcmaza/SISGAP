@@ -5,9 +5,11 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ArchivoproyectoFacade;
 import ar.edu.undec.sisgap.model.Proyecto;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 @ManagedBean(name = "archivoproyectoController")
@@ -42,6 +46,7 @@ public class ArchivoproyectoController implements Serializable {
     private List<Archivoproyecto> collectorArchivoProyecto= new ArrayList<Archivoproyecto>();
     private int contador=0;
     private boolean iseditar=true;
+    private StreamedContent file;
 
     public ArchivoproyectoController() {
     }
@@ -305,4 +310,7 @@ public class ArchivoproyectoController implements Serializable {
         }
         
     }
+
+        
+     
 }

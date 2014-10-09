@@ -232,7 +232,7 @@ public class ProyectoAgente implements Serializable {
                 System.out.println("Agente  --"+ta.getAgenteid());
                 if(ta.getAgenteid().equals(sagenteold)){
                     System.out.println("Agente horas"+ta.getHorasdedicadas());
-                    if(!this.consultorexterno){
+                    if(this.consultorexterno==null | !this.consultorexterno){
                         System.out.println("Agente horas 2"+ta.getHorasdedicadas());
                         if(ta.getHorasdedicadas()==null){
                             horas+= 0;

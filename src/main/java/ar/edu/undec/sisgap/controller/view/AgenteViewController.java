@@ -422,7 +422,7 @@ public class AgenteViewController implements Serializable {
             Logger.getLogger(AgenteViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            PreparedStatement ps= connectjdbcpostgresql.getConn().prepareStatement(" select dh01.nro_legaj, desc_appat,desc_apmat,desc_nombr,tipo_docum,nro_docum,nro_cuil1, nro_cuil, nro_cuil2,tipo_sexo,fec_nacim, sum(cant_horas) as cant_horas " +
+            PreparedStatement ps= connectjdbcpostgresql.getConn().prepareStatement(" select dh01.nro_legaj, desc_appat,desc_apmat,desc_nombr,tipo_docum,nro_docum,nro_cuil1, nro_cuil, nro_cuil2,tipo_sexo,fec_nacim, sum(cant_horas) as cant_horas, max(cant_horas) as horasmayordedicacion " +
                     "	from mapuche.dh03 \n" +
                     "left join mapuche.dh01 on (dh01.nro_legaj=dh03.nro_legaj)\n" +
                     "left join mapuche.dh11 on (dh03.codc_categ=dh11.codc_categ)\n" +
@@ -430,18 +430,26 @@ public class AgenteViewController implements Serializable {
                     "	where dh03.vig_caano > " + (año-1) +" and (fec_baja > '"+año+"-"+mes+"-"+dia+"' or fec_baja is NULL) and dh11.codc_dedic != 'NODO' group by dh01.nro_legaj ");
            ResultSet rs = ps.executeQuery();
            while(rs.next()){
-               Agente ai =new Agente();
+               Agente ai = new Agente();
                
-            ai.setLegajo(rs.getInt("nro_legaj"));
-            ai.setApellido(rs.getString("desc_appat"));
-            ai.setNombres(rs.getString("desc_nombr"));
-            ai.setNumerodocumento(rs.getString("nro_docum"));
-            ai.setCuil(rs.getString("nro_cuil1")+"-"+rs.getString("nro_cuil")+"-"+rs.getString("nro_cuil2"));
-            ai.setTipodocumentoid(new Tipodocumento(1));
-            ai.setHoraslaborales(rs.getInt("cant_horas"));
-            if(ejbFacade.filtroDocumentooCuil(ai.getNumerodocumento())==null){
+           ai = ejbFacade.filtroDocumentooCuil(rs.getString("nro_docum"));
+            if(ai == null){
+                ai = new Agente();
+                 ai.setLegajo(rs.getInt("nro_legaj"));
+                ai.setApellido(rs.getString("desc_appat"));
+                ai.setNombres(rs.getString("desc_nombr"));
+                ai.setNumerodocumento(rs.getString("nro_docum"));
+                ai.setCuil(rs.getString("nro_cuil1")+"-"+rs.getString("nro_cuil")+"-"+rs.getString("nro_cuil2"));
+                ai.setTipodocumentoid(new Tipodocumento(1));
+                ai.setHoraslaborales(rs.getInt("cant_horas"));
+                ai.setHorasmayordedicacion(rs.getInt("horasmayordedicacion"));
                 this.ejbFacade.create(ai);
+                
             
+            }else{
+                 ai.setHoraslaborales(rs.getInt("cant_horas"));
+                ai.setHorasmayordedicacion(rs.getInt("horasmayordedicacion"));
+                this.ejbFacade.edit(ai);
             }
            }
         

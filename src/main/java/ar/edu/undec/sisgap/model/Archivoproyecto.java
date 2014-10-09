@@ -6,6 +6,8 @@
 
 package ar.edu.undec.sisgap.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -19,8 +21,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -54,6 +59,8 @@ public class Archivoproyecto implements Serializable {
     @JoinColumn(name = "proyectoid", referencedColumnName = "id")
     @ManyToOne
     private Proyecto proyectoid;
+    @Transient
+    private StreamedContent file;
     
 
     public Archivoproyecto() {
@@ -129,6 +136,15 @@ public class Archivoproyecto implements Serializable {
     @Override
     public String toString() {
         return "ar.edu.undec.sisgap.model.Archivoproyecto[ id=" + id + " ]";
+    }
+    
+    public StreamedContent getFile() {
+         InputStream is = new ByteArrayInputStream(this.getArchivo());
+
+        file = new DefaultStreamedContent(is);
+       file =  new DefaultStreamedContent(is,file.getContentType(),this.getNombre());
+
+        return file;
     }
     
 }

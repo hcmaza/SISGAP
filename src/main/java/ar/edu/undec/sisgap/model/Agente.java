@@ -102,6 +102,9 @@ public class Agente implements Serializable {
     private Integer legajo;
     @Column(name = "horaslaborales")
     private Integer horaslaborales;
+    @Column(name = "horasmayordedicacion")
+    private Integer horasmayordedicacion;
+    
     
     public Agente() {
     }
@@ -245,6 +248,15 @@ public class Agente implements Serializable {
     public void setHoraslaborales(Integer horaslaborales) {
         this.horaslaborales = horaslaborales;
     }
+
+    public Integer getHorasmayordedicacion() {
+        return horasmayordedicacion;
+    }
+
+    public void setHorasmayordedicacion(Integer horasmayordedicacion) {
+        this.horasmayordedicacion = horasmayordedicacion;
+    }
+    
     
     
     

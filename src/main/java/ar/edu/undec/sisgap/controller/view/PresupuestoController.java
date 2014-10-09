@@ -43,8 +43,8 @@ public class PresupuestoController implements Serializable {
     private BigDecimal sumagastocomitente=BigDecimal.ZERO;
     private BigDecimal sumagastouniversidad=BigDecimal.ZERO;
     private BigDecimal sumatotal=BigDecimal.ZERO;
-    private PieChartModel pieModelAportes;
-    private PieChartModel pieModelRubro;
+    private PieChartModel pieModelAportes = new PieChartModel();
+    private PieChartModel pieModelRubro = new PieChartModel();
     private List<PresupuestoRubro> presupuestosrubrosedilist=null;
 
     public PresupuestoController() {
@@ -256,62 +256,66 @@ public class PresupuestoController implements Serializable {
     }
     
     public void sumarGastosView(){
-        
-
-                    Iterator it=this.getSelected().getPresupuestoRubroList().iterator();
-                 BigDecimal totalcomitente=BigDecimal.ZERO;
-                BigDecimal totaluniversidad=BigDecimal.ZERO;
-                BigDecimal totalorganismo=BigDecimal.ZERO;
-                 sumagastoorganismo=BigDecimal.ZERO;
-                  sumagastocomitente=BigDecimal.ZERO;
-                  sumagastouniversidad=BigDecimal.ZERO;
-                    int contador=-1;
-                 while(it.hasNext()){
-                     contador++;
-                     PresupuestoRubro pr=(PresupuestoRubro)it.next();
-                    totalcomitente=totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
-                   totaluniversidad=totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
-                    totalorganismo=totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
-                  // sumagastoentidad=new BigDecimal(totalentidad).setScale(2);
-                  // sumagastouniversidad=new BigDecimal(totaluniversidad).setScale(2);
-                 
-                   // pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
-                 
-                   // this.presupuestosrubros.get(contador).setTotal(pr.getTotal());
-                 }
-                 sumagastocomitente=totalcomitente;
-                 sumagastouniversidad=totaluniversidad;
-                 sumagastoorganismo=totalorganismo;
-                 sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
-                 
-                  pieModelAportes = new PieChartModel();  
-  
-                pieModelAportes.set("Aporte Organismo", sumagastoorganismo);  
-                pieModelAportes.set("Aporte Comitente", sumagastocomitente);  
-                pieModelAportes.set("Aporte Universidad", sumagastouniversidad);  
-                //pieModelAportes.setDiameter(150);
-                pieModelAportes.setLegendPosition("e");
-                pieModelAportes.setTitle("Aportes");
-                pieModelAportes.setSliceMargin(5);
-                pieModelAportes.setShowDataLabels(true);
-                  pieModelAportes = new PieChartModel(); 
-                   pieModelRubro = new PieChartModel();  
-            for(PresupuestoRubro pre : getSelected().getPresupuestoRubroList()){
-                pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
-                
-            }
-              //pieModelRubro.setDiameter(150);
-                pieModelRubro.setLegendPosition("e");
-                pieModelRubro.setTitle("Rubros");
-                pieModelRubro.setSliceMargin(5); 
-                pieModelRubro.setShowDataLabels(true);
-                
-                // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
-                  //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
-  //               System.out.println("gggggggggggggggggggggggggggggg");
-//                  UIData table = (UIData) event.getComponent();
-//                    String updateClientId = table.getClientId() + ":" + table.getRowIndex() + ":total";
-//                    FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(updateClientId);
+         FacesContext context = FacesContext.getCurrentInstance();
+           PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController)context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+         // if(presupuestorubrocontroller.getPresupuestosrubros()==null){
+              presupuestorubrocontroller.findporPresupuestoEdit(current.getId());
+         // }
+            presupuestorubrocontroller.sumarGastos(null);
+//                    Iterator it=this.getSelected().getPresupuestoRubroList().iterator();
+//                 BigDecimal totalcomitente=BigDecimal.ZERO;
+//                BigDecimal totaluniversidad=BigDecimal.ZERO;
+//                BigDecimal totalorganismo=BigDecimal.ZERO;
+//                 sumagastoorganismo=BigDecimal.ZERO;
+//                  sumagastocomitente=BigDecimal.ZERO;
+//                  sumagastouniversidad=BigDecimal.ZERO;
+//                    int contador=-1;
+//                 while(it.hasNext()){
+//                     contador++;
+//                     PresupuestoRubro pr=(PresupuestoRubro)it.next();
+//                    totalcomitente=totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
+//                   totaluniversidad=totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
+//                    totalorganismo=totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
+//                  // sumagastoentidad=new BigDecimal(totalentidad).setScale(2);
+//                  // sumagastouniversidad=new BigDecimal(totaluniversidad).setScale(2);
+//                 
+//                   // pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
+//                 
+//                   // this.presupuestosrubros.get(contador).setTotal(pr.getTotal());
+//                 }
+//                 sumagastocomitente=totalcomitente;
+//                 sumagastouniversidad=totaluniversidad;
+//                 sumagastoorganismo=totalorganismo;
+//                 sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+//                 
+//                  pieModelAportes = new PieChartModel();  
+//  
+//                pieModelAportes.set("Aporte Organismo", sumagastoorganismo);  
+//                pieModelAportes.set("Aporte Comitente", sumagastocomitente);  
+//                pieModelAportes.set("Aporte Universidad", sumagastouniversidad);  
+//                //pieModelAportes.setDiameter(150);
+//                pieModelAportes.setLegendPosition("e");
+//                pieModelAportes.setTitle("Aportes");
+//                pieModelAportes.setSliceMargin(5);
+//                pieModelAportes.setShowDataLabels(true);
+//                  pieModelAportes = new PieChartModel(); 
+//                   pieModelRubro = new PieChartModel();  
+//            for(PresupuestoRubro pre : getSelected().getPresupuestoRubroList()){
+//                pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
+//                
+//            }
+//              //pieModelRubro.setDiameter(150);
+//                pieModelRubro.setLegendPosition("e");
+//                pieModelRubro.setTitle("Rubros");
+//                pieModelRubro.setSliceMargin(5); 
+//                pieModelRubro.setShowDataLabels(true);
+//                
+//                // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
+//                  //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
+//  //               System.out.println("gggggggggggggggggggggggggggggg");
+////                  UIData table = (UIData) event.getComponent();
+////                    String updateClientId = table.getClientId() + ":" + table.getRowIndex() + ":total";
+////                    FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(updateClientId);
 
         
     }
@@ -319,47 +323,52 @@ public class PresupuestoController implements Serializable {
      public void sumarGastosEdit(){
          
             
-                 BigDecimal totalcomitente=BigDecimal.ZERO;
-                BigDecimal totaluniversidad=BigDecimal.ZERO;
-                BigDecimal totalorganismo=BigDecimal.ZERO;
-                 sumagastoorganismo=BigDecimal.ZERO;
-                  sumagastocomitente=BigDecimal.ZERO;
-                  sumagastouniversidad=BigDecimal.ZERO;
-                    int contador=-1;
-                    if(presupuestosrubrosedilist!=null){
-                    Iterator it=this.presupuestosrubrosedilist.iterator();
-                    
-                 while(it.hasNext()){
-                     contador++;
-                     PresupuestoRubro pr=(PresupuestoRubro)it.next();
-                    totalcomitente=totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
-                   totaluniversidad=totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
-                    totalorganismo=totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
-                  
-                   pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
-                  
-                   this.presupuestosrubrosedilist.get(contador).setTotal(pr.getTotal());
-                 }
-                    }
-                 sumagastocomitente=totalcomitente;
-                 sumagastouniversidad=totaluniversidad;
-                 sumagastoorganismo=totalorganismo;
-                 sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
-                 
-                   pieModelAportes=new PieChartModel();
-                    pieModelRubro=new PieChartModel();
-                    pieModelAportes.set("Aporte Organismo", sumagastoorganismo);  
-                    pieModelAportes.set("Aporte Comitente", sumagastocomitente);  
-                    pieModelAportes.set("Aporte Universidad", sumagastouniversidad);  
-                
-                   
-            for(PresupuestoRubro pre : this.getPresupuestosrubrosedilist()){
-                pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
-                
-            }
-                
-              
-        
+//                 BigDecimal totalcomitente=BigDecimal.ZERO;
+//                BigDecimal totaluniversidad=BigDecimal.ZERO;
+//                BigDecimal totalorganismo=BigDecimal.ZERO;
+//                 sumagastoorganismo=BigDecimal.ZERO;
+//                  sumagastocomitente=BigDecimal.ZERO;
+//                  sumagastouniversidad=BigDecimal.ZERO;
+//                    int contador=-1;
+//                    if(presupuestosrubrosedilist!=null){
+//                    Iterator it=this.presupuestosrubrosedilist.iterator();
+//                    
+//                 while(it.hasNext()){
+//                     contador++;
+//                     PresupuestoRubro pr=(PresupuestoRubro)it.next();
+//                    totalcomitente=totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
+//                   totaluniversidad=totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
+//                    totalorganismo=totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
+//                  
+//                   pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
+//                  
+//                   this.presupuestosrubrosedilist.get(contador).setTotal(pr.getTotal());
+//                 }
+//                    }
+//                 sumagastocomitente=totalcomitente;
+//                 sumagastouniversidad=totaluniversidad;
+//                 sumagastoorganismo=totalorganismo;
+//                 sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+//                 
+//                   pieModelAportes=new PieChartModel();
+//                    pieModelRubro=new PieChartModel();
+//                    pieModelAportes.set("Aporte Organismo", sumagastoorganismo);  
+//                    pieModelAportes.set("Aporte Comitente", sumagastocomitente);  
+//                    pieModelAportes.set("Aporte Universidad", sumagastouniversidad);  
+//                
+//                   
+//            for(PresupuestoRubro pre : this.getPresupuestosrubrosedilist()){
+//                pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
+//                
+//            }
+//                
+//              
+         FacesContext context = FacesContext.getCurrentInstance();
+           PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController)context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+         // if(presupuestorubrocontroller.getPresupuestosrubros()==null){
+              presupuestorubrocontroller.findporPresupuestoEdit(current.getId());
+         // }
+            presupuestorubrocontroller.sumarGastos(null);
     }
 
     public BigDecimal getSumagastoorganismo() {

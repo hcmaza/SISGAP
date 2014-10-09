@@ -29,4 +29,16 @@ public class RubroFacade extends AbstractFacade<Rubro> {
         super(Rubro.class);
     }
     
+    public Rubro findbyId(int rubroid){
+        
+        
+       try{
+           return em.createQuery("select r from Rubro r where r.id = :id ", Rubro.class).setParameter("id", rubroid).getSingleResult();
+       }catch(Exception e){
+           System.out.println("No se pudo realizar la consulta"+e);
+           return null;
+       }
+        
+         
+    } 
 }
