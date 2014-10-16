@@ -289,7 +289,7 @@ public class EtapaController implements Serializable {
     }
     
     public void agregaralListadoEtapas(){
-        System.out.println("Aceptar para editar "+this.paraeditar);
+        
         
         FacesContext context = FacesContext.getCurrentInstance();
             TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
@@ -344,10 +344,10 @@ public class EtapaController implements Serializable {
 
                  }
              }   
-             crearChart();
+             
               this.agentesProyecto();
               presupuestorubroitemcontroller.agregarPresupuestoRRHHCONSULTOR();
-              
+              crearChart();
               current=null;
               tareacontroller.setTareasdeproyecto(null);
         }else{
@@ -611,9 +611,9 @@ public class EtapaController implements Serializable {
                             
                             if(pa.getAgente().getId().equals(ta.getAgenteid().getId())){
                                 if(ta.getTareaid()!=null){
-                                    System.out.println("rrrrrrrrrrrrrrrr"+ta.getTareaid().getId());
+                                   
                                 }
-                                System.out.println("rrrrrrrrrrtarea agente"+ta.getTareaid());
+                               
                                 tareaagentelista.add(ta);
                                 
                                 
@@ -623,7 +623,7 @@ public class EtapaController implements Serializable {
                     }
                  }
                  pa.setTareasagentes(tareaagentelista);
-                 System.out.println("rrrrrrrrrrproyecto agente"+pa.getAgente().getApellido());
+                 
                  paprincipal.add(pa);
         }
         
@@ -684,7 +684,7 @@ public class EtapaController implements Serializable {
            for(Tarea t:e.getTareaList()){
               for(TareaAgente ta : t.getTareaAgenteList()){
                   if(ta.getAgenteid().equals(a)){
-                      System.out.println("nnnnnnnnnnnnnnnnnnnnnn"+a.getApellido()+" cccccccccccccc "+t.getDias());
+                      System.out.println("-------------------------"+suma);
                       suma += t.getDias();
                   }
               }

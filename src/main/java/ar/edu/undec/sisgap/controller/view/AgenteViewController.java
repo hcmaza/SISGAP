@@ -11,6 +11,7 @@ import ar.edu.undec.sisgap.controller.EncriptarSHA256;
 import ar.edu.undec.sisgap.controller.UsuarioFacade;
 import ar.edu.undec.sisgap.controller.view.util.ConnectJDBCPostgresql;
 import ar.edu.undec.sisgap.model.Agente;
+import ar.edu.undec.sisgap.model.Agentecargo;
 import ar.edu.undec.sisgap.model.DatosMapuche;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Tipodocumento;
@@ -50,6 +51,8 @@ public class AgenteViewController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.AgenteFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.AgentecargoFacade ejbFacadeac;
     @EJB
     private ar.edu.undec.sisgap.controller.UsuarioFacade ejbFacadeu;
     @EJB
@@ -330,7 +333,7 @@ public class AgenteViewController implements Serializable {
     
     public void agregarEquipo(){
         boolean inserto =false;
-        System.out.println("-----"+current.getApellido());
+        
         for(Agente a:collectoragentes){
             if((current.getId().equals(a.getId())) | (current.getApellido().isEmpty()) ){
                 inserto=true;
@@ -370,14 +373,14 @@ public class AgenteViewController implements Serializable {
     }
     
     public void registrar(){
-        System.out.println("oooooooooo");
+        
         if((this.ejbFacade.agentedocumento(agente1.getNumerodocumento())==null) || (ejbFacade.filtroDocumentooCuil(agente1.getCuil())==null)  ){
                   
             ejbFacade.createWithPersist(agente1);
            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "La registracion fue Satisfactoria")); 
         }else{
-            System.out.println("8888888888888888");
+           
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya Existe Una Persona con Ese Numero de Documento/CUIL")); 
         }
     }
@@ -469,6 +472,42 @@ public class AgenteViewController implements Serializable {
 //            
 //            }
 //        }
+        // Importo Cargos
+        try {
+            PreparedStatement ps= connectjdbcpostgresql.getConn().prepareStatement(" select nro_cargo, cant_horas, dh01.nro_legaj, codc_uacad, impp_basic" +
+                    "	from mapuche.dh03 \n" +
+                    "left join mapuche.dh01 on (dh01.nro_legaj=dh03.nro_legaj)\n" +
+                    "left join mapuche.dh11 on (dh03.codc_categ=dh11.codc_categ)\n" +
+                    "left join mapuche.dh31 on (dh11.codc_dedic=dh31.codc_dedic)\n" +
+                    "	where dh03.vig_caano > " + (año-1) +" and (fec_baja > '"+año+"-"+mes+"-"+dia+"' or fec_baja is NULL) and dh11.codc_dedic != 'NODO'  ");
+           ResultSet rs = ps.executeQuery();
+           while(rs.next()){
+               Agentecargo aci = new Agentecargo();
+               
+           aci = ejbFacadeac.filtrolegajo(rs.getInt("nro_legaj"));
+            if(aci == null){
+                aci = new Agentecargo();
+                 aci.setNroLegajo(rs.getInt("nro_legaj"));
+                aci.setCant_horas(rs.getInt("cant_horas"));
+                aci.setNroCargo(rs.getInt("nro_cargo"));
+                aci.setCodcUacad(rs.getString("codc_uacad"));
+               aci.setImppBasic(rs.getBigDecimal("impp_basic"));
+                this.ejbFacadeac.create(aci);
+                
+            
+            }else{
+                 aci.setCant_horas(rs.getInt("cant_horas"));
+                aci.setImppBasic(rs.getBigDecimal("impp_basic"));
+                this.ejbFacadeac.edit(aci);
+            }
+           }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(AgenteViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
     }
     
     public SelectItem[] getItemsAvailableSelectOneProyectoAgente() {

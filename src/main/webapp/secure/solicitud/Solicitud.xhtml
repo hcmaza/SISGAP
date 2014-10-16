@@ -398,100 +398,102 @@
                         </p:tab>
 
                         <p:tab title="Equipo de trabajo">
-                            <p:panel>
-                                <h:panelGrid columns="2" style="width: 100%;">
-                                            <p:outputLabel style="font-weight:bold;"  value="Ingrese el Documento/Apellido"  />                 
+                             <div align="right" >
+                                    <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
+                                </div>
+                                <h:panelGrid columns="4">
+                                    <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Cuil " ></p:outputLabel>
+                                    <p:selectOneMenu  id="advancedfiltroa" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"    >
+                                        <p:ajax update="@this" />
+                                        <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}"  />
+ 
+                                           </p:selectOneMenu> 
+                                    
+                                    <h:panelGrid columns="6" id="agenteselecciona" >
                                         
-                                            <p:selectOneMenu id="advancedfiltro"  value="#{agenteViewController.selected}" label="Agente" filter="true" filterMatchMode="contains"  >
-                                                <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}" />
-                                                <p:ajax update="tagenteseleccion" />
-                                            </p:selectOneMenu>                                                    
-                                        
+                                        <p:commandButton immediate="true" update="agentesa" value="Agregar al equipo de trabajo" action="#{proyectoAgenteController.agregarEquipo}" >
+                                               
+                                                </p:commandButton>
+                                    </h:panelGrid>
+                                
                                 </h:panelGrid>
-                            </p:panel>
-
-                            <p:panel>
-                                <p:panelGrid id="tagenteseleccion" styleClass="sinBordes sinFondo" style="width: 100%;" >
-                                    <p:row >
-                                        <p:column><p:outputLabel style="font-weight:bold;" value="Documento"/></p:column>
-                                        <p:column><p:outputLabel style="font-weight:bold;" value="Nombre"/></p:column>
-                                        <p:column><p:outputLabel style="font-weight:bold;" value="Email"/></p:column>
-                                        <p:column><p:outputLabel style="font-weight:bold;" value="Profesión" /></p:column>
-                                        <p:column><p:outputLabel style="font-weight:bold;" value="Dependencia" /></p:column>
-                                    </p:row>
-                                    <p:row >
-                                        <p:column>
-                                            <p:outputLabel value="#{agenteViewController.selected.tipodocumentoid.tipodocumento} - #{agenteViewController.selected.numerodocumento}" title="Documento" />                                                                                                                        
-                                        </p:column> 
-                                        <p:column>
-                                            <p:outputLabel value="#{agenteViewController.selected.apellido}, #{agenteViewController.selected.nombres}" title="Nombre" />
-                                        </p:column> 
-                                        <p:column>
-                                            <p:outputLabel value="#{agenteViewController.selected.email}" title="Email" />
-                                        </p:column> 
-                                        <p:column>
-                                            <p:outputLabel value="#{agenteViewController.selected.profesion}" title="Profesión" />
-                                        </p:column> 
-                                        <p:column>
-                                            <p:outputLabel value="#{agenteViewController.selected.dependenciaid.dependencia}" title="Dependencia" />
-                                        </p:column>                                         
-                                    </p:row>
-                                </p:panelGrid>                                                    
-                            </p:panel>
-
-                            <p:separator />
-                            
-                            <p:commandButton value="Nueva Persona" onclick="PF('dregistrar').show();" icon="ui-icon-contact" style="display: inline-block;" />
-                            <p:commandButton immediate="true" update="tagentes" value="Agregar al equipo" action="#{agenteViewController.agregarEquipo}" icon="ui-icon-plus" style="display: inline-block; float: right;"/>
-
-                            <p:separator />
-
-                            <p:dataTable id="tagentes" value="#{agenteViewController.collectoragentes}" var="agente" editable="true" editMode="cell" emptyMessage="Agregue integrantes al Equipo de Trabajo" >
-                                <f:facet name="header">
-                                    Equipo de Trabajo
-                                </f:facet>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="N° Documento"/>
-                                    </f:facet>
-                                    <h:outputText value="#{agente.numerodocumento}"/>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Apellido"/>
-                                    </f:facet>
-                                    <h:outputText value="#{agente.apellido}"/>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Nombres"/>
-                                    </f:facet>
-                                    <h:outputText value="#{agente.nombres}"/>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Email"/>
-                                    </f:facet>
-                                    <h:outputText value="#{agente.email}"/>
-                                </p:column>
-
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Profesion"/>
-                                    </f:facet>
-                                    <h:outputText value="#{agente.profesion}"/>
-                                </p:column>
-
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="&nbsp;"/>
-                                    </f:facet>
-                                    <p:commandButton immediate="true" id="cborrara" value="Eliminar" update="tagentes"  >
-                                        <p:collector value="#{agente}" removeFrom="#{agenteViewController.collectoragentes}" unique="true"/>
-                                    </p:commandButton>
-                                </p:column>
-                            </p:dataTable>
-
+                                <div align="center">
+                                    <p:dataTable id="agentesa" value="#{proyectoAgenteController.equipotrabajo}" var="agentea" editable="true" editMode="cell" >
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Cuil"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.cuil}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Apellido"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.apellido}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombres"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.nombres}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Email"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.email}"/>
+                                    </p:column>
+                                    
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Profesion"/>
+                                        </f:facet>
+                                        <h:outputText value="#{agentea.agente.profesion}"/>
+                                    </p:column>
+                                   
+                                        
+                                        <p:column headerText="Horas Disponibles / Semanales">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{agentea.horasdisponibles}"  />
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                   <p:inputText id="ihorasdisponibles" value="#{agentea.horasdisponibles}"  />
+                                                </f:facet>
+                                            </p:cellEditor>
+                                    </p:column>
+                                   
+                                        <p:column headerText="Es Consultor Externo?" styleClass="text-align: center" >
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"> <h:selectBooleanCheckbox  id="ssconsultorexterno" value="#{agentea.consultorexterno}" readonly="true" style="width:70px"  /> </f:facet>
+                                            <f:facet name="input">
+                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px" />
+                                            </f:facet>    
+                                        </p:cellEditor>
+                                    </p:column>    
+                                        
+                                      <p:column headerText="Función en el Proyecto">
+                                        
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputLabel value="#{agentea.funcionproyecto}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ifuncion" value="#{agentea.funcionproyecto}"  /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>   
+                                    
+                                    
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="&nbsp;"/>
+                                        </f:facet>
+                                        <p:commandButton immediate="true" id="cborrara" value="Eliminar" update="agentesa"  >
+                                            <p:collector value="#{agentea}" removeFrom="#{proyectoAgenteController.equipotrabajo}" unique="true"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                                
+                                </div>
+                    
                         </p:tab>
                     </p:tabView>
 
@@ -666,65 +668,75 @@
             </h:form>
 
             <h:form id="formresgistrar">
-                <p:dialog id="dialogoregistrar" maximizable="false" 
-                          minimizable="false"  header="Registrar Persona" closable="true"
-                          resizable="false" widgetVar="dregistrar" >
-
-
-                    <p:remoteCommand name="rc" update="msgs" actionListener="#{agenteViewController.registrar}" />
-
-                    <p:growl id="msgs" showDetail="true" />
-                    <h:panelGrid id="panel" columns="3">
-                        <h:outputLabel value="Apellido" for="apellido" />
-                        <h:inputText maxlength="30" id="apellido" value="#{agenteViewController.selected.apellido}" title="Apellido" required="true" />
-                        <p:message for="apellido" /> 
-                        <h:outputLabel value="Nombres" for="nombres" />
-                        <h:inputText maxlength="45" id="nombres" value="#{agenteViewController.selected.nombres}" title="Nombres" required="true" />
-                        <p:message for="nombres" /> 
-                        <p:outputLabel value="Tipo de Documento" for="tipodocumentoid" />
-                        <h:selectOneMenu id="tipodocumentoid" value="#{agenteViewController.selected.tipodocumentoid}" title="Tipo de Documento" required="true" >
-                            <f:selectItems value="#{tipodocumentoController.itemsAvailableSelectOne}"/>
-                        </h:selectOneMenu>
-                        <p:message for="tipodocumentoid" /> 
-                        <h:outputLabel value="N° de Documento" for="numerodocumento" />
-                        <h:inputText id="numerodocumento" value="#{agenteViewController.selected.numerodocumento}" title="Numero de Documento" required="true" />
-                        <p:message for="numerodocumento" /> 
-                        <h:outputLabel value="Teléfono" for="telefono" />
-                        <h:inputText id="telefono" value="#{agenteViewController.selected.telefono}" title="Telefono" required="true" />
-                        <p:message for="telefono" /> 
-                        <h:outputLabel value="Celular" for="celular" />
-                        <h:inputText id="celular" value="#{agenteViewController.selected.celular}" title="Celular" required="false" />
-                        <p:message for="celular" /> 
-                        <h:outputLabel value="Email" for="email" />
-                        <h:inputText id="email" value="#{agenteViewController.selected.email}" validatorMessage="Email Incorrecto" required="true" >
-                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
-                        </h:inputText>
-                        <p:message for="email" /> 
-                        <h:outputLabel value="Otro Email" for="otroemail" />
-
-                        <h:inputText id="otroemail" value="#{agenteViewController.selected.otroemail}" validatorMessage="Email Incorrecto" required="false" >
-                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
-                        </h:inputText>   
-                        <p:message for="otroemail" /> 
-
-                        <h:outputLabel value="Domicilio" for="domicilio" />
-                        <h:inputText maxlength="200"  id="domicilio" value="#{agenteViewController.selected.domicilio}" title="Domicilio" required="true" />
-                        <p:message for="domicilio" />
-                        <h:outputLabel value="Profesion" for="profesion" />
-                        <h:inputText maxlength="70" id="profesion" value="#{agenteViewController.selected.profesion}" title="Profesion" required="true" />
-                        <p:message for="profesion" /> 
-                        <h:outputLabel value="Especialidad" for="especialidad" />
-                        <h:inputText maxlength="70" id="especialidad" value="#{agenteViewController.selected.especialidad}" title="Especialidad" required="true" />
-                        <p:message for="especialidad" /> 
-
-                        <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formprincipal:tabviewTodo:tagenteseleccion" value="Crear" />
-                        <br />
-
-                    </h:panelGrid>
-
-                </p:dialog>
-
-            </h:form>
+            <p:dialog id="dialogoregistrar" maximizable="false" 
+                  minimizable="false"  header="Registrar Persona" closable="true"
+                  resizable="false" widgetVar="dregistrar" >
+            
+                
+               <p:remoteCommand name="rc" update="msgs" actionListener="#{agenteViewController.registrar}" />
+ 
+                <p:growl id="msgs" showDetail="true" />
+                <h:panelGrid id="panel" columns="3">
+                    <h:outputLabel value="Apellido" for="apellido" />
+                    <h:inputText maxlength="30" id="apellido" value="#{agenteViewController.agente1.apellido}" title="Apellido" required="true" />
+                    <p:message for="apellido" /> 
+                    <h:outputLabel value="Nombres" for="nombres" />
+                    <h:inputText maxlength="45" id="nombres" value="#{agenteViewController.agente1.nombres}" title="Nombres" required="true" />
+                    <p:message for="nombres" /> 
+                    <p:outputLabel value="Tipo de Documento" for="tipodocumentoid" />
+                    <h:selectOneMenu id="tipodocumentoid" value="#{agenteViewController.agente1.tipodocumentoid}" title="Tipo de Documento" required="true" >
+                        <f:selectItems value="#{tipodocumentoController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <p:message for="tipodocumentoid" /> 
+                    <h:outputLabel value="N° de Documento" for="numerodocumento" />
+                    <h:inputText id="numerodocumento" value="#{agenteViewController.agente1.numerodocumento}" title="Numero de Documento" required="true" />
+                    <p:message for="numerodocumento" />
+                     <h:outputLabel value="Cuil" for="cuil" />
+                     <p:inputMask id="cuil" value="#{agenteViewController.agente1.cuil}" mask="99-99999999-9"/>
+                      <p:message for="cuil" />             
+                    <h:outputLabel value="Teléfono" for="telefono" />
+                    <h:inputText id="telefono" value="#{agenteViewController.agente1.telefono}" title="Telefono" required="true" />
+                    <p:message for="telefono" /> 
+                    <h:outputLabel value="Celular" for="celular" />
+                    <h:inputText id="celular" value="#{agenteViewController.agente1.celular}" title="Celular" required="false" />
+                    <p:message for="celular" /> 
+                    <h:outputLabel value="Email" for="email" />
+                    <h:inputText id="email" value="#{agenteViewController.agente1.email}" validatorMessage="Email Incorrecto" required="true" >
+                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                    </h:inputText>
+                    <p:message for="email" /> 
+                    <h:outputLabel value="Otro Email" for="otroemail" />
+                     
+                    <h:inputText id="otroemail" value="#{agenteViewController.agente1.otroemail}" >
+                     <!--   <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" /> -->
+                    </h:inputText>   
+                    <p:message for="otroemail" /> 
+                    
+                    <h:outputLabel value="Domicilio" for="domicilio" />
+                    <h:inputText maxlength="200"  id="domicilio" value="#{agenteViewController.agente1.domicilio}" title="Domicilio" required="true" />
+                    <p:message for="domicilio" />
+                    <h:outputLabel value="Profesion" for="profesion" />
+                    <h:inputText maxlength="70" id="profesion" value="#{agenteViewController.agente1.profesion}" title="Profesion" required="true" />
+                    <p:message for="profesion" /> 
+                    <h:outputLabel value="Especialidad" for="especialidad" />
+                    <h:inputText maxlength="70" id="especialidad" value="#{agenteViewController.agente1.especialidad}" title="Especialidad" required="true" />
+                    <p:message for="especialidad" /> 
+                    
+                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formprincipal:tabviewTodo:agentesa  :formprincipal:tabviewTodo:advancedfiltroa" value="Crear" />
+                    <br />
+             
+              
+                       
+                   
+                    
+                </h:panelGrid>
+                    
+             
+         
+           
+             </p:dialog>
+            
+             </h:form>
 
         </ui:define>
     </ui:composition>

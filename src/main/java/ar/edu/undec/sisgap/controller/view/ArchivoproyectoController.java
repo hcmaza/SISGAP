@@ -269,7 +269,13 @@ public class ArchivoproyectoController implements Serializable {
     } 
 
     public List<Archivoproyecto> getCollectorArchivoProyecto() {
-        
+         FacesContext context = FacesContext.getCurrentInstance();
+        ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+       
+       
+       if(collectorArchivoProyecto == null){
+           collectorArchivoProyecto = new ArrayList<Archivoproyecto>();
+       }
         return collectorArchivoProyecto;
     }
 

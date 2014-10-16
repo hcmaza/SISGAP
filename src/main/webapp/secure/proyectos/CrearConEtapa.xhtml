@@ -335,9 +335,11 @@
                                         <p:column headerText="Es Consultor Externo?" styleClass="text-align: center" >
                                         
                                         <p:cellEditor>
-                                            <f:facet name="output"> <h:selectBooleanCheckbox  id="ssconsultorexterno" value="#{agentea.consultorexterno}" readonly="true" style="width:70px"  /> </f:facet>
+                                            <f:facet name="output"> <h:outputLabel  id="ssconsultorexterno" value="#{agentea.consultorexterno eq 'TRUE' ? 'SI':'NO'}" style="width:70px"  /> </f:facet>
                                             <f:facet name="input">
-                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px" />
+                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px" >
+                                                 <p:ajax update="@this :form:tabview1:agentesa" />
+                                                </p:selectBooleanCheckbox>
                                             </f:facet>    
                                         </p:cellEditor>
                                     </p:column>    
@@ -352,8 +354,8 @@
                                     <p:column headerText="Honorario">
                                         
                                         <p:cellEditor>
-                                            <f:facet name="output"><h:outputLabel value="#{agentea.honorario}" /></f:facet>
-                                            <f:facet name="input"><p:inputText id="ihonorario" value="#{agentea.honorario}"  /></f:facet>
+                                            <f:facet name="output"><h:outputLabel value="#{agentea.consultorexterno ? agentea.honorario:'No aplicable' }" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="ihonorario" value="#{agentea.honorario}" disabled="#{!agentea.consultorexterno}"  /></f:facet>
                                         </p:cellEditor>
                                     </p:column>   
                                     
@@ -564,7 +566,7 @@
                                             <h:outputText value="#{arc.nombre}" />  
                                         </p:column> 
                                         <p:column headerText="">  
-                                            <p:commandLink immediate="true" value="Eliminar" action="#{archivoproyectoController.removerArchivoCollection}" update=":form:tabview1:tdocumentacionnombre1"  >
+                                            <p:commandLink rendered="#{arc.proyectoid.id ==null}" immediate="true" value="Eliminar" action="#{archivoproyectoController.removerArchivoCollection}" update=":form:tabview1:tdocumentacionnombre1"  >
                                                 <f:setPropertyActionListener value="#{arc}" target="#{archivoproyectoController.selected}" />  
                                             </p:commandLink>
                                         </p:column> 
@@ -735,7 +737,9 @@
                                 </h:panelGrid>
                                 <div align="center">
                                     <p:dataTable id="tagentes" value="#{tareaAgenteController.tareasagentes}" var="tareaagente" editable="true" editMode="cell" >
-                                    <p:column>
+                                    <p:ajax event="cellEdit" listener="#{tareaAgenteController.onCellEdit}"  update=":formd:wizardtarea:tagentes" />
+ 
+                                     <p:column>
                                         <f:facet name="header">
                                             <h:outputText value="N° Documento"/>
                                         </f:facet>
@@ -777,8 +781,8 @@
                                         <p:column headerText="Horas Dedicadas" >
                                         
                                         <p:cellEditor>
-                                            <f:facet name="output"><h:outputLabel value="#{tareaagente.horasdedicadas}" /></f:facet>
-                                            <f:facet name="input"><p:inputText id="ihorasdedicadas" value="#{tareaagente.horasdedicadas}"  /></f:facet>
+                                            <f:facet name="output"><h:outputLabel value="#{tareaagente.horasdedicadas eq null ? 'No aplicable':tareaagente.horasdedicadas}" /></f:facet>
+                                            <f:facet name="input"><p:inputText disabled="#{tareaagente.horasdedicadas eq null}" id="ihorasdedicadas" value="#{tareaagente.horasdedicadas}"  /></f:facet>
                                         </p:cellEditor>
                                     </p:column>
                                     
@@ -817,7 +821,7 @@
             <h:form id="forme" >
                 <p:dialog id="dialogoetapa" maximizable="false" minimizable="false" header="Agregar Etapa"
                           resizable="false" widgetVar="dialogoetapa" modal="true" style="width: 80%;" >
-                       
+                       <p:growl id="msgs" showDetail="true" />
                             <div align="center" >
                                     <h:panelGrid styleClass="right,left" columns="2">
                                         <p:outputLabel style="font-weight: bold" value="Etapa:" for="etapa" />

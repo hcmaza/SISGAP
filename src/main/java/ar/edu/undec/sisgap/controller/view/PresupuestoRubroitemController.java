@@ -5,13 +5,18 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.PresupuestoRubroitemFacade;
 import ar.edu.undec.sisgap.controller.RubroFacade;
+import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.Presupuesto;
 import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
+import ar.edu.undec.sisgap.model.Tarea;
+import ar.edu.undec.sisgap.model.TareaAgente;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -265,9 +270,9 @@ public class PresupuestoRubroitemController implements Serializable {
       if(this.presupuestosrubrositems==null){
           this.presupuestosrubrositems = new ArrayList<PresupuestoRubroitem>();
           FacesContext context = FacesContext.getCurrentInstance();
-      ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-      PresupuestoController presupuestocontroller= (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
-       for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
+          ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+           PresupuestoController presupuestocontroller= (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+            for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
            PresupuestoRubroitem pri = new PresupuestoRubroitem();
            
             pri.setPresupuesto(presupuestocontroller.getSelected());
@@ -280,12 +285,12 @@ public class PresupuestoRubroitemController implements Serializable {
             }
            pri.setRubro(r);
            pri.setDescripcion(pa.getAgente().toString());
-           pri.setCostounitario(BigDecimal.valueOf(pa.contarHoras()));
-           pri.setCantidad( BigDecimal.valueOf(Math.ceil(pa.contarDiasTareas()/30)) );
+           pri.setCostounitario(pa.costoUnitarioCargoLegajo());
+           pri.setCantidad( BigDecimal.valueOf(pa.contarDiasTareas()) );
            pri.setAportecomitente(BigDecimal.ZERO);
            pri.setAporteorganismo(BigDecimal.ZERO);
            pri.setAporteuniversidad(BigDecimal.ZERO);
-           pri.setTotal(pri.getCantidad().multiply(pri.getCostounitario()));
+           //pri.setTotal(pri.getCantidad().multiply(pa.costoUnitarioCargoLegajo()));
            this.presupuestosrubrositems.add(pri);
        }
       }
@@ -359,7 +364,7 @@ public class PresupuestoRubroitemController implements Serializable {
         for (PresupuestoRubroitem p : getPresupuestosrubrositems()) {
           if (p.getRubro().equals(pri.getRubro())) {
             treeNodech = new DefaultTreeNode(p, treeNode);
-              System.out.println("xxxxxxxxxxxxxx " +p.getId());
+             
               
           }
         }
@@ -420,7 +425,7 @@ public class PresupuestoRubroitemController implements Serializable {
      }
     else
     {
-      reinit();
+      //reinit();
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La suma de Aportes no puede superar al Total"));
     }
     
@@ -433,8 +438,7 @@ public class PresupuestoRubroitemController implements Serializable {
       ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
       PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
       EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-    
-      
+     
       for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
           int suma =  etapacontroller.contarTotalDiasAgente(pa.getAgente());
            PresupuestoRubroitem pri = new PresupuestoRubroitem();
@@ -463,26 +467,39 @@ public class PresupuestoRubroitemController implements Serializable {
            
            if(lugar==-1){
                
-                pri.setCostounitario(BigDecimal.valueOf(pa.contarHoras()));
-                pri.setCantidad( BigDecimal.valueOf(Math.ceil(suma/30)) );
-                    System.out.println("entrada uno costo unitario"+pri.getCostounitario());
+                pri.setCostounitario(pa.costoUnitarioCargoLegajo());
+                 
+                pri.setCantidad( BigDecimal.valueOf(suma) );
+                
                 pri.setDescripcion(pa.getAgente().toString());
                  pri.setAportecomitente(BigDecimal.ZERO);
                 pri.setAporteorganismo(BigDecimal.ZERO);
                 pri.setAporteuniversidad(BigDecimal.ZERO);
-                pri.setTotal(pri.getCantidad().multiply(pri.getCostounitario()));
+                if(pri.getCantidad().equals(BigDecimal.ZERO)){
+                    
+                }else{
+                    pri.setTotal((pri.getCantidad().divide(BigDecimal.valueOf(7), RoundingMode.HALF_UP)).multiply(pri.getCostounitario()));
+                }
+                
                 this.presupuestosrubrositems.add(pri);
            }else{
                 PresupuestoRubroitem prin = this.presupuestosrubrositems.get(lugar);
 
-                prin.setCostounitario(BigDecimal.valueOf(pa.contarHoras()));
-                prin.setCantidad( BigDecimal.valueOf(Math.ceil(suma/30)) );
-                prin.setTotal(prin.getCantidad().multiply(prin.getCostounitario()));
-                System.out.println("entrada dos dias"+suma/30);
-                System.out.println("entrada dos dias ceil"+Math.ceil(suma/30));
+                prin.setCostounitario(pa.costoUnitarioCargoLegajo());
+                
+                prin.setCantidad( BigDecimal.valueOf(suma) );
+               
+                System.out.println("cantidad"+prin.getCantidad());
+                System.out.println("");
+                if(prin.getCantidad().equals(BigDecimal.ZERO)){
+                    
+                }else{
+                    prin.setTotal((pri.getCantidad().divide(BigDecimal.valueOf(7), RoundingMode.HALF_UP)).multiply(pri.getCostounitario()));
+                }
                      this.presupuestosrubrositems.set(lugar, prin);
            }
        }
+      armarGraficosPresupuesto();
   }
   
   public void eliminarPresupuesto(PresupuestoRubroitem pri)

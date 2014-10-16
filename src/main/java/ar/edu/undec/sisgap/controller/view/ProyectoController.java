@@ -198,6 +198,7 @@ public class ProyectoController implements Serializable {
            if(convocatoria.getSelected()!=null){
                     FacesContext context = FacesContext.getCurrentInstance();
                     AgenteController agente= (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
+                    ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
                     FacesContext context3 = FacesContext.getCurrentInstance();
                     PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
                     FacesContext context2 = FacesContext.getCurrentInstance();
@@ -253,22 +254,18 @@ public class ProyectoController implements Serializable {
 
                 
 
-                List<Agente> listaAgentes = agenteViewController.getCollectoragentes();
-               
 
-                for (Agente a : listaAgentes) {
-                    ProyectoAgente proyectoAgente = new ProyectoAgente();
-
+                for (ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()) {
+                    
                     ProyectoAgentePK paPK = new ProyectoAgentePK();
                     paPK.setProyectoid(current.getId());
-                    paPK.setAgenteid(a.getId());
+                    paPK.setAgenteid(pa.getAgente().getId());
 
-                    proyectoAgente.setProyectoAgentePK(paPK);
-                    proyectoAgente.setAgente(a);
-                    proyectoAgente.setProyecto(current);
-                    proyectoAgente.setFuncionproyecto("solicitud");
-
-                    ejbproyectoagente.createWithPersist(proyectoAgente);
+                    pa.setProyectoAgentePK(paPK);
+                    pa.setAgente(pa.getAgente());
+                    pa.setProyecto(current);
+                    
+                    ejbproyectoagente.createWithPersist(pa);
                    
                 }
 
@@ -896,6 +893,7 @@ public class ProyectoController implements Serializable {
         current = (Proyecto) getItems().getRowData();
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        ArchivoproyectoController archivoproyectocontroller = (ArchivoproyectoController) context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
         List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
         
         for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
@@ -908,6 +906,7 @@ public class ProyectoController implements Serializable {
             
         }
         proyectoagentecontroller.setEquipotrabajo(pa);
+        archivoproyectocontroller.setCollectorArchivoProyecto(this.ejbarchivoproyecto.buscarArchivosProyecto(this.current.getId()));
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "CrearConEtapa";
     }
@@ -1240,6 +1239,7 @@ public class ProyectoController implements Serializable {
         try{
                            FacesContext context = FacesContext.getCurrentInstance();
                     AgenteController agente= (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
+                    ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
                     FacesContext context3 = FacesContext.getCurrentInstance();
                     PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
                     FacesContext context2 = FacesContext.getCurrentInstance();
@@ -1287,8 +1287,7 @@ public class ProyectoController implements Serializable {
                    
                    // EQUIPO DE TRABAJO ***********************
                 FacesContext contextpa = FacesContext.getCurrentInstance();
-                ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) contextpa.getApplication().evaluateExpressionGet(contextpa, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-              
+               
               encontrado = 0;
               for(ProyectoAgente pa2 : ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
                   for(ProyectoAgente pa1 : proyectoagentecontroller.getEquipotrabajo()){
