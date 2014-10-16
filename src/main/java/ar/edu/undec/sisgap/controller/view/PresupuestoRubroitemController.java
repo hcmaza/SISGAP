@@ -489,12 +489,14 @@ public class PresupuestoRubroitemController implements Serializable {
                 
                 prin.setCantidad( BigDecimal.valueOf(suma) );
                
-                System.out.println("cantidad"+prin.getCantidad());
-                System.out.println("");
-                if(prin.getCantidad().equals(BigDecimal.ZERO)){
+               
+                if((prin.getCantidad().equals(BigDecimal.ZERO)) | (prin.getCantidad()==null)){
                     
                 }else{
-                    prin.setTotal((pri.getCantidad().divide(BigDecimal.valueOf(7), RoundingMode.HALF_UP)).multiply(pri.getCostounitario()));
+                    System.out.println("Cantidad------"+prin.getCantidad());
+                    System.out.println("Costo Unitario -----"+ prin.getCostounitario());
+                    prin.setTotal((prin.getCantidad().divide(BigDecimal.valueOf(7),1, RoundingMode.HALF_UP)).multiply(prin.getCostounitario()));
+                    
                 }
                      this.presupuestosrubrositems.set(lugar, prin);
            }
@@ -555,7 +557,10 @@ public class PresupuestoRubroitemController implements Serializable {
     {
       for (PresupuestoRubroitem p : getPresupuestosrubrositems()) {
         if (rub.getRubro().equals(p.getRubro().getRubro())) {
-          sumarubro = sumarubro.add(p.getTotal());
+            if(p.getTotal()==null){
+                p.setTotal(BigDecimal.ZERO);
+            }
+            sumarubro = sumarubro.add(p.getTotal());
         }
       }
       this.pieModelRubros.set(rub.getRubro(), sumarubro);
