@@ -466,9 +466,11 @@ public class PresupuestoRubroitemController implements Serializable {
            }
            
            if(lugar==-1){
-               
-                pri.setCostounitario(pa.costoUnitarioCargoLegajo());
-                 
+               if(pa.getConsultorexterno()){
+                   pri.setCostounitario(pa.getHonorario());
+               }else{
+                    pri.setCostounitario(pa.costoUnitarioCargoLegajo());
+               } 
                 pri.setCantidad( BigDecimal.valueOf(suma) );
                 
                 pri.setDescripcion(pa.getAgente().toString());
@@ -478,14 +480,22 @@ public class PresupuestoRubroitemController implements Serializable {
                 if(pri.getCantidad().equals(BigDecimal.ZERO)){
                     
                 }else{
-                    pri.setTotal((pri.getCantidad().divide(BigDecimal.valueOf(7), RoundingMode.HALF_UP)).multiply(pri.getCostounitario()));
+                    if(pa.getConsultorexterno()){
+                        pri.setTotal(pri.getCantidad().divide(BigDecimal.valueOf(30),0, RoundingMode.HALF_UP));
+                    }else{
+                       pri.setTotal((pri.getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(pri.getCostounitario())); 
+                    }
                 }
                 
                 this.presupuestosrubrositems.add(pri);
            }else{
                 PresupuestoRubroitem prin = this.presupuestosrubrositems.get(lugar);
 
-                prin.setCostounitario(pa.costoUnitarioCargoLegajo());
+                if(pa.getConsultorexterno()){
+                   prin.setCostounitario(pa.getHonorario());
+               }else{
+                    prin.setCostounitario(pa.costoUnitarioCargoLegajo());
+               } 
                 
                 prin.setCantidad( BigDecimal.valueOf(suma) );
                
@@ -495,12 +505,17 @@ public class PresupuestoRubroitemController implements Serializable {
                 }else{
                     System.out.println("Cantidad------"+prin.getCantidad());
                     System.out.println("Costo Unitario -----"+ prin.getCostounitario());
-                    prin.setTotal((prin.getCantidad().divide(BigDecimal.valueOf(7),1, RoundingMode.HALF_UP)).multiply(prin.getCostounitario()));
-                    
+                    if(pa.getConsultorexterno()){
+                        prin.setTotal((prin.getCantidad().divide(BigDecimal.valueOf(30),0, RoundingMode.HALF_UP)).multiply(prin.getCostounitario()));
+                    }else{
+                        prin.setTotal((prin.getCantidad().divide(BigDecimal.valueOf(7),1, RoundingMode.HALF_UP)).multiply(prin.getCostounitario()));
+                    }
                 }
                      this.presupuestosrubrositems.set(lugar, prin);
            }
        }
+      
+      this.sumarGastos();
       armarGraficosPresupuesto();
   }
   
@@ -575,9 +590,9 @@ public class PresupuestoRubroitemController implements Serializable {
     {
       this.pieModelAportes = new PieChartModel();
       
-      this.pieModelAportes.set("Gasto Organismo", Integer.valueOf(0));
-      this.pieModelAportes.set("Gasto Comitente", Integer.valueOf(0));
-      this.pieModelAportes.set("Gasto Universidad", Integer.valueOf(0));
+      this.pieModelAportes.set("Gasto Organismo", 0);
+      this.pieModelAportes.set("Gasto Comitente", 0);
+      this.pieModelAportes.set("Gasto Universidad", 0);
      // pieModelAportes.setDiameter(150);
       pieModelAportes.setLegendPosition("e");
       pieModelAportes.setTitle("Aportes");
@@ -613,34 +628,49 @@ public class PresupuestoRubroitemController implements Serializable {
   {
     this.pieModelRubros = pieModelRubros;
   }
-   
+  //sumo gasto por rubro agregado 
   public void sumarGastos(){
-
-
-        Iterator it=this.presupuestosrubrositems.iterator();
-     BigDecimal totalcomitente=BigDecimal.ZERO;
-    BigDecimal totaluniversidad=BigDecimal.ZERO;
-    BigDecimal totalorganismo=BigDecimal.ZERO;
-    sumagastoorganismo=BigDecimal.ZERO;
+//
+//
+//        Iterator it=this.presupuestosrubrositems.iterator();
+//     BigDecimal totalcomitente=BigDecimal.ZERO;
+//    BigDecimal totaluniversidad=BigDecimal.ZERO;
+//    BigDecimal totalorganismo=BigDecimal.ZERO;
+      sumagastoorganismo=BigDecimal.ZERO;
         sumagastocomitente=BigDecimal.ZERO;
         sumagastouniversidad=BigDecimal.ZERO;
         sumatotal=BigDecimal.ZERO;
-        int contador=-1;
-     while(it.hasNext()){
-         contador++;
-         PresupuestoRubroitem pri=(PresupuestoRubroitem)it.next();
-        totalcomitente=totalcomitente.add(new BigDecimal(pri.getAportecomitente().setScale(2).toString()));
-       totaluniversidad=totaluniversidad.add(new BigDecimal(pri.getAporteuniversidad().setScale(2).toString()));
-        totalorganismo=totalorganismo.add(new BigDecimal(pri.getAporteorganismo().setScale(2).toString()));
-       pri.setTotal(pri.getAporteorganismo().add(pri.getAportecomitente()).add(pri.getAporteuniversidad()));
-
-        this.presupuestosrubrositems.get(contador).setTotal(pri.getTotal());
-     }
-     sumagastocomitente=totalcomitente;
-     sumagastouniversidad=totaluniversidad;
-     sumagastoorganismo=totalorganismo;
-     sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
-        
+//        int contador=-1;
+//     while(it.hasNext()){
+//         contador++;
+//         PresupuestoRubroitem pri=(PresupuestoRubroitem)it.next();
+//        totalcomitente=totalcomitente.add(new BigDecimal(pri.getAportecomitente().setScale(2).toString()));
+//       totaluniversidad=totaluniversidad.add(new BigDecimal(pri.getAporteuniversidad().setScale(2).toString()));
+//        totalorganismo=totalorganismo.add(new BigDecimal(pri.getAporteorganismo().setScale(2).toString()));
+//      
+//        pri.setTotal(pri.getAporteorganismo().add(pri.getAportecomitente()).add(pri.getAporteuniversidad()));
+//
+//        this.presupuestosrubrositems.get(contador).setTotal(pri.getTotal());
+//     }
+//     sumagastocomitente=totalcomitente;
+//     sumagastouniversidad=totaluniversidad;
+//     sumagastoorganismo=totalorganismo;
+//     sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+        for(PresupuestoRubroitem pri:this.getPresupuestosrubrositems()){
+            
+            this.sumagastocomitente=this.sumagastocomitente.add(pri.getAportecomitente());
+            this.sumagastoorganismo=this.sumagastoorganismo.add(pri.getAporteorganismo());
+            this.sumagastouniversidad=this.sumagastouniversidad.add(pri.getAporteuniversidad());
+            System.out.println("--------------suma comitente--x----------------"+this.sumagastocomitente);
+      System.out.println("--------------suma organismo--------x----------"+this.sumagastoorganismo);
+      System.out.println("--------------suma universidad-----x-------------"+this.sumagastouniversidad);
+      System.out.println("--------------suma total----------x--------"+this.sumatotal);
+        }
+        this.sumatotal = (sumagastoorganismo.add(sumagastocomitente)).add(sumagastouniversidad);
+        System.out.println("--------------suma comitente------------------"+this.sumagastocomitente);
+      System.out.println("--------------suma organismo------------------"+this.sumagastoorganismo);
+      System.out.println("--------------suma universidad------------------"+this.sumagastouniversidad);
+      System.out.println("--------------suma total------------------"+this.sumatotal);
     }
 
     public BigDecimal getSumagastoorganismo() {
@@ -692,6 +722,8 @@ public class PresupuestoRubroitemController implements Serializable {
         this.presupuestosrubrositems.set(event.getRowIndex(),current2);
         this.sumarGastos();
         this.acomodarTablapresupuestorubroitem();
+        this.sumarGastos();
+        this.armarGraficosPresupuesto();
        //this. armarPresupuestoNodos();
      }
     else

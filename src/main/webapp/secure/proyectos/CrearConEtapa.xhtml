@@ -460,28 +460,20 @@
                     <p:dataTable id="tablepresupuesto" value="#{presupuestoRubroitemController.presupuestosrubrositems}" var="item" editable="true" editMode="cell" >
                                 <p:ajax event="cellEdit" listener="#{presupuestoRubroitemController.onCellEdit}" update=":form:tabview1:tablepresupuesto" />
  
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Rubro"/>
-                                    </f:facet>
+                                <p:column headerText="Rubro">
+                                    
                                     <h:outputText value="#{item.rubro.rubro}" />
                                 </p:column>    
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Descripcion"/>
-                                    </f:facet>
+                                <p:column headerText="Descripcion">
+                                   
                                     <h:outputText value="#{item.descripcion}"/>
                                 </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Costo unitario"/>
-                                    </f:facet>
+                                <p:column headerText="Costo Unitario">
+                                    
                                     <h:outputText value="#{item.costounitario}"/>
                                 </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Cantidad"/>
-                                    </f:facet>
+                                <p:column headerText="Cantidad">
+                                    
                                     <h:outputText value="#{item.cantidad}"/>
                                 </p:column>
                                 
@@ -515,29 +507,36 @@
                                          </f:facet>
                                      </p:cellEditor>
                                 </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Total"/>
-                                    </f:facet>
+                                <p:column headerText="Total">
+                                    
                                     <h:outputText value="#{item.total}"/>
                                 </p:column>
                             <p:column headerText="">
-                                <p:commandLink rendered="#{item.rubro.id ne 4 or item.rubro.id ne 5}" value="Eliminar" update=":form:tabview1:tablepresupuesto" action="#{presupuestoRubroitemController.eliminarPresupuesto(item)}" process=":form:tabview1:tablepresupuesto">
+                                <p:commandLink rendered="#{item.rubro.id != 4 and (item.rubro.id != 5) }" value="Eliminar" update=":form:tabview1:tablepresupuesto" action="#{presupuestoRubroitemController.eliminarPresupuesto(item)}" process=":form:tabview1:tablepresupuesto">
                                     
                                 </p:commandLink>
                             </p:column>
-                               <f:facet name="footer">
+                             <p:columnGroup type="footer">
+                                <p:row>
+                                   <p:column footerText="" />
+                                    
+                                    <p:column footerText="" />
+                                    
+                                    <p:column footerText="" />
+                                    
+                                    <p:column footerText="" />
                                    
-                                    <p:column>
-                                        Total Aporte Comitente = $#{presupuestoRubroitemController.sumagastocomitente} ,
-                                   </p:column>
-                                    <p:column>
-                                       Total Aporte Universidad = $#{presupuestoRubroitemController.sumagastouniversidad} ,
-                                   </p:column>
-                                    <p:column>
-                                       Total Aporte Organismo = $#{presupuestoRubroitemController.sumagastoorganismo}
-                                   </p:column>
-                                </f:facet>         
+                                    <p:column footerText="T. Comitente = $#{presupuestoRubroitemController.sumagastocomitente}" />
+                                   
+                                    <p:column footerText="T. Universidad = $#{presupuestoRubroitemController.sumagastouniversidad}" />
+                                   
+                                    <p:column footerText="T. Organismo = $#{presupuestoRubroitemController.sumagastoorganismo}" />
+                                   
+                                    <p:column footerText=" TOTAL $#{presupuestoRubroitemController.sumatotal}" />
+                                    <p:column footerText="" />
+                                </p:row>
+                             </p:columnGroup>
+                                       
                         </p:dataTable>
                     <div align="center" >
                     <h:panelGrid id="pchartpresupuesto" columns="2" styleClass="left,right" >
