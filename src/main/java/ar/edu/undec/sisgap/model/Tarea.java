@@ -103,6 +103,9 @@ public class Tarea implements Serializable {
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "tareaid" )
     @Fetch(value = FetchMode.SUBSELECT)
     private List<TareaAgente> tareaAgenteList;
+     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "tarea" )
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<PresupuestoTarea> presupuestoTareaList;
 
     public Tarea() {
     }
@@ -214,6 +217,15 @@ public class Tarea implements Serializable {
     public void setTareaAgenteList(List<TareaAgente> tareaAgenteList) {
         this.tareaAgenteList = tareaAgenteList;
     }
+
+    public List<PresupuestoTarea> getPresupuestoTareaList() {
+        return presupuestoTareaList;
+    }
+
+    public void setPresupuestoTareaList(List<PresupuestoTarea> presupuestoTareaList) {
+        this.presupuestoTareaList = presupuestoTareaList;
+    }
+    
     
     
 

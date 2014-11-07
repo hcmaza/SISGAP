@@ -1,9 +1,13 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.RubroFacade;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TareaFacade;
+import ar.edu.undec.sisgap.model.PresupuestoTarea;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
+import ar.edu.undec.sisgap.model.Rubro;
 import ar.edu.undec.sisgap.model.TareaAgente;
 import com.google.gson.Gson;
 
@@ -34,6 +38,8 @@ public class TareaController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.TareaFacade ejbFacade;
+    @EJB
+    private RubroFacade ejbFacadeRubro;
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private List<Tarea> tareasdeproyecto = new ArrayList<Tarea>() ;
@@ -42,7 +48,9 @@ public class TareaController implements Serializable {
     private Tarea tarea1=new Tarea();
     @ManagedProperty("#{tareaAgenteController}")
     private TareaAgenteController tareaagentecontroller;
-
+    @ManagedProperty("#{presupuestoTareaController}")
+    private PresupuestoTareaController presupuestotareacontroller;
+    
     public TareaController() {
     }
 
@@ -56,6 +64,7 @@ public class TareaController implements Serializable {
             current.setDias(0);
             current.setEstado(0);
             current.setTareaAgenteList(null);
+            current.setPresupuestoTareaList(null);
             selectedItemIndex = -1;
         }
         return current;
@@ -261,6 +270,7 @@ public class TareaController implements Serializable {
      public void rearmarTareasProyecto(){
          
          tareaagentecontroller.setTareasagentes(new ArrayList<TareaAgente>() );
+         presupuestotareacontroller.setPresupuestostareasitems(new ArrayList<PresupuestoTarea>() );
          current=null;
          tarea1=null;
         
@@ -279,11 +289,12 @@ public class TareaController implements Serializable {
         
             current.setId(tareasdeproyecto.size()+1);
             //current.setEstado("0");
-            for(TareaAgente ta:tareaagentecontroller.getTareasagentes()){
-               
-            }
+//            for(TareaAgente ta:tareaagentecontroller.getTareasagentes()){
+//               
+//            }
            current.setTareaAgenteList(tareaagentecontroller.getTareasagentes());
-            tareasdeproyecto.add(current);
+           current.setPresupuestoTareaList(this.presupuestotareacontroller.getPresupuestostareasitems()); 
+           tareasdeproyecto.add(current);
         }
         
         current=null;
@@ -388,7 +399,7 @@ public class TareaController implements Serializable {
     public void editarTarea(Tarea t){
         current = t;
        tareaagentecontroller.setTareasagentes(current.getTareaAgenteList());
-        
+        presupuestotareacontroller.setPresupuestostareasitems(current.getPresupuestoTareaList());
     }
 
     public TareaAgenteController getTareaagentecontroller() {
@@ -398,7 +409,15 @@ public class TareaController implements Serializable {
     public void setTareaagentecontroller(TareaAgenteController tareaagentecontroller) {
         this.tareaagentecontroller = tareaagentecontroller;
     }
+
+    public PresupuestoTareaController getPresupuestotareacontroller() {
+        return presupuestotareacontroller;
+    }
+
+    public void setPresupuestotareacontroller(PresupuestoTareaController presupuestotareacontroller) {
+        this.presupuestotareacontroller = presupuestotareacontroller;
+    }
     
-    
+       
 
 }

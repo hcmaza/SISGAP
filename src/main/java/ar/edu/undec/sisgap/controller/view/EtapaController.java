@@ -346,7 +346,7 @@ public class EtapaController implements Serializable {
              }   
              
               this.agentesProyecto();
-              presupuestorubroitemcontroller.agregarPresupuestoRRHHCONSULTOR();
+             
               crearChart();
               current=null;
               tareacontroller.setTareasdeproyecto(null);

@@ -7,6 +7,7 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Rubro;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -40,5 +41,18 @@ public class RubroFacade extends AbstractFacade<Rubro> {
        }
         
          
-    } 
+    }
+    
+    public List<Rubro> findwithoutRRHHCONSULTOR(){
+        
+        
+       try{
+           return em.createQuery("select r from Rubro r where r.id != 4 and r.id != 5", Rubro.class).getResultList();
+       }catch(Exception e){
+           System.out.println("No se pudo realizar la consulta"+e);
+           return null;
+       }
+        
+         
+    }
 }

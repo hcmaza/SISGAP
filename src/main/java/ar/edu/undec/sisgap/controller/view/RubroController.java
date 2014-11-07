@@ -6,6 +6,8 @@ import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.RubroFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -29,7 +31,7 @@ public class RubroController implements Serializable {
     @EJB private ar.edu.undec.sisgap.controller.RubroFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-
+    private List<Rubro> rubroslist = new ArrayList<Rubro>();
     public RubroController() {
     }
 
@@ -228,5 +230,16 @@ public class RubroController implements Serializable {
         }
 
     }
+
+    public List<Rubro> getRubroslist() {
+        rubroslist = this.ejbFacade.findAll();
+        return rubroslist;
+    }
+
+    public void setRubroslist(List<Rubro> rubroslist) {
+        this.rubroslist = rubroslist;
+    }
+    
+    
 
 }

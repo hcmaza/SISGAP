@@ -262,6 +262,7 @@ public class TareaAgenteController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         AgenteViewController agenteviewcontrol= (AgenteViewController) context.getApplication().evaluateExpressionGet(context, "#{agenteViewController}", AgenteViewController.class);
         TareaController tareacontrol= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         EtapaController etapacontrol= (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
         TareaAgente ta = new TareaAgente();
@@ -294,6 +295,7 @@ public class TareaAgenteController implements Serializable {
                 }
             }
             tareasagentes.add(ta);
+             presupuestotareacontroller.agregarPresupuestoRRHHCONSULTOR();
         }
     }
     
@@ -346,7 +348,7 @@ public class TareaAgenteController implements Serializable {
         boolean resultado = false;
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-        TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
 //        for(TareaAgente ta:this.ejbFacade.findByTareaAgente(current2.getAgenteid())){
 //            if((ta.getTareaid().getFechainicio().before(current2.getTareaid().getFechainicio())) & (ta.getTareaid().getFechainicio().after(current2.getTareaid().getFechainicio())) ){
 //                 if((ta.getTareaid().getFechafin().before(current2.getTareaid().getFechafin())) & (ta.getTareaid().getFechafin().after(current2.getTareaid().getFechafin())) ){
@@ -399,6 +401,8 @@ public class TareaAgenteController implements Serializable {
                   
                     resultado = false;
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Las horas del Agente "+ current2.getAgenteid()  +" no puede sobrepasar las " +pa.getHorasdisponibles()+" horas que se han establecido en el proyecto"));
+                }else{
+                     presupuestotareacontroller.agregarPresupuestoRRHHCONSULTOR();
                 }
             }
         }

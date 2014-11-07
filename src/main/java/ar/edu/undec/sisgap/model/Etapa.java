@@ -75,6 +75,9 @@ public class Etapa implements Serializable {
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="etapaid")
     private List<Tarea> tareaList;
+    @Size(max = 2147483647)
+    @Column(name = "resultadoesperado")
+    private String resultadoesperado;
 
     public Etapa() {
     }
@@ -149,6 +152,16 @@ public class Etapa implements Serializable {
     public void setTareaList(List<Tarea> tareaList) {
         this.tareaList = tareaList;
     }
+
+    public String getResultadoesperado() {
+        return resultadoesperado;
+    }
+
+    public void setResultadoesperado(String resultadoesperado) {
+        this.resultadoesperado = resultadoesperado;
+    }
+    
+    
 
     @Override
     public int hashCode() {
