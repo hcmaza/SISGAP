@@ -341,12 +341,20 @@ public class PresupuestoTareaController implements Serializable {
     BigDecimal sumaaportes = BigDecimal.ZERO;
     
     sumaaportes = this.current2.getAportecomitente().add(this.current2.getAporteorganismo()).add(this.current2.getAporteuniversidad());
-     sumaaportes.compareTo(this.current2.getTotal());
-    valor = sumaaportes.compareTo(this.current2.getTotal());
-    if (valor == 1) {
+      System.out.println("sumaaportes"+sumaaportes.longValue());
+      System.out.println("totalaportes"+this.current2.getTotal());
+   // valor = sumaaportes.compareTo(this.current2.getTotal());
+    /*if (valor == 1) {
       return false;
+    }else{
+        return true;
     }
-    return true;
+    */
+      if(sumaaportes.longValue()==this.current2.getTotal().longValue()){
+         return true; 
+      }else{
+          return false;
+      }
   }
   
   @Deprecated
@@ -442,7 +450,7 @@ public class PresupuestoTareaController implements Serializable {
     
     armarGraficosPresupuesto();
   }
-  
+  @Deprecated
   public void agregarPresupuestoRRHHCONSULTOR()
   {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -493,7 +501,7 @@ public class PresupuestoTareaController implements Serializable {
                 pt.setCantidad( BigDecimal.valueOf(tareacontroller.getSelected().getDias()) );
                 
                 pt.setDescripcion(ta.getAgenteid().toString());
-                 pt.setAportecomitente(BigDecimal.ZERO);
+                pt.setAportecomitente(BigDecimal.ZERO);
                 pt.setAporteorganismo(BigDecimal.ZERO);
                 pt.setAporteuniversidad(BigDecimal.ZERO);
                 if(pt.getCantidad().equals(BigDecimal.ZERO)){
@@ -549,35 +557,21 @@ public class PresupuestoTareaController implements Serializable {
       //armarGraficosPresupuesto();
   }
   
-  public void agregarPresupuestoRRHHCONSULTOR(TareaAgente taprincipal)
+  public boolean agregarPresupuestoRRHHCONSULTOR(TareaAgente taprincipal)
   {
-      FacesContext context = FacesContext.getCurrentInstance();
+       FacesContext context = FacesContext.getCurrentInstance();
       ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-      TareaAgenteController tareaagentecontroller = (TareaAgenteController) context.getApplication().evaluateExpressionGet(context, "#{tareaAgenteController}", TareaAgenteController.class);
+      ProyectoAgente pax= new ProyectoAgente();
+    boolean resultado = false;
       
-      TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
-      EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-     ProyectoAgente pax= new ProyectoAgente();
       
-          
-          PresupuestoTarea pt = new PresupuestoTarea();
-           
-            pt.setTarea(taprincipal.getTareaid());
-            Rubro r = new Rubro();
-            for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+       for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
                     if(pa.getAgente().equals(taprincipal.getAgenteid())){
-                       
-                        if(pa.getConsultorexterno()){
-                          r = ejbFacadeRubro.findbyId(4); 
-                        }else{
-                          r = ejbFacadeRubro.findbyId(5); 
-                        }
                         pax = pa;
                     }
-            }
-           pt.setRubro(r);
-           
-           int i = 0;
+       }
+       
+       int i = 0;
            int lugar = -1;
            for(PresupuestoTarea pts:presupuestostareasitems){
                
@@ -590,68 +584,42 @@ public class PresupuestoTareaController implements Serializable {
            }
            
            if(lugar==-1){
-               
-               if(pax.getConsultorexterno()){
-                   pt.setCostounitario(pax.getHonorario());
-               }else{
-                    pt.setCostounitario(taprincipal.costoUnitarioCargoLegajo());
-               } 
-                pt.setCantidad( BigDecimal.valueOf(tareacontroller.getSelected().getDias()) );
-                
-                pt.setDescripcion(taprincipal.getAgenteid().toString());
-                 pt.setAportecomitente(BigDecimal.ZERO);
-                pt.setAporteorganismo(BigDecimal.ZERO);
-                pt.setAporteuniversidad(BigDecimal.ZERO);
-                if(pt.getCantidad().equals(BigDecimal.ZERO)){
-                    
-                }else{
-                    if(pax.getConsultorexterno()){
-                        pt.setTotal(pt.getCantidad().divide(BigDecimal.valueOf(30),2, RoundingMode.HALF_UP));
+               System.out.println("verifico 1"+verificarAportes() );
+                 if (verificarAportes()){
+                     this.presupuestostareasitems.add(current2);
+                     this.sumarGastos();
+                    this.armarGraficosPresupuesto();
+                      resultado = true;
                        
-                    }else{
-                       pt.setTotal((pt.getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(pt.getCostounitario())); 
-                       
-                       System.out.println("--------TOTAL1"+pt.getTotal());
-                       pt.setTotal(pt.getTotal().multiply(BigDecimal.valueOf(taprincipal.getHorasdedicadas())));
-                      System.out.println("--------TOTAL2"+pt.getTotal()+" horas dedicadas  "+taprincipal.getHorasdedicadas());
-                       pt.setTotal(pt.getTotal().setScale(2, BigDecimal.ROUND_HALF_UP));
-                       System.out.println("--------TOTAL3"+pt.getTotal());
-                    }
-                }
-                
-                this.presupuestostareasitems.add(pt);
-           }else{
-                PresupuestoTarea ptn = this.presupuestostareasitems.get(lugar);
+                     }
+                    else
+                    {
 
-                if(pax.getConsultorexterno()){
-                   ptn.setCostounitario(pax.getHonorario());
-               }else{
-                    ptn.setCostounitario(taprincipal.costoUnitarioCargoLegajo());
-               } 
-                
-                ptn.setCantidad( BigDecimal.valueOf(tareacontroller.getSelected().getDias()) );
-               
-               
-                if((ptn.getCantidad().equals(BigDecimal.ZERO)) | (ptn.getCantidad()==null)){
-                    
-                }else{
-                    if(pax.getConsultorexterno()){
-                        ptn.setTotal((ptn.getCantidad().divide(BigDecimal.valueOf(30),2, RoundingMode.HALF_UP)).multiply(ptn.getCostounitario()));
-                        ptn.setTotal(ptn.getTotal().setScale(2));
-                    }else{
-                        ptn.setTotal((ptn.getCantidad().divide(BigDecimal.valueOf(7),2, RoundingMode.HALF_UP)).multiply(ptn.getCostounitario()));
-                        System.out.println("--------TOTAL1"+ptn.getTotal());
-                        ptn.setTotal(ptn.getTotal().multiply(BigDecimal.valueOf(taprincipal.getHorasdedicadas())));
-                        System.out.println("--------TOTAL2"+ptn.getTotal()+"   horas dedicasd "+taprincipal.getHorasdedicadas());
-                        ptn.setTotal(ptn.getTotal().setScale(2, BigDecimal.ROUND_HALF_UP));
-                        System.out.println("--------TOTAL3"+ptn.getTotal());
+                      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La suma de Aportes no puede superar al Total en el rubro "+ current2.getRubro().getRubro() +" y descripcion " +current2.getDescripcion()));
+                      resultado = false;
                     }
-                }
-                     this.presupuestostareasitems.set(lugar, ptn);
+
+                
+           }else{
+               System.out.println("verifico 2"+verificarAportes() );
+                if (verificarAportes()){
+                 this.presupuestostareasitems.set(lugar, current2);
+                  this.sumarGastos();
+                 this.armarGraficosPresupuesto();
+                    resultado = true;   
+                     }
+                    else
+                    {
+
+                      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La suma de Aportes no puede superar al Total en el rubro "+ current2.getRubro().getRubro() +" y descripcion " +current2.getDescripcion()));
+                    resultado = false;
+                    }
+
            }
+           System.out.println(" resultqado" + resultado);
        
-      
-      this.sumarGastos();
+     return resultado;  
+      //this. armarPresupuestoNodos();
       //armarGraficosPresupuesto();
   }
   
@@ -934,6 +902,7 @@ public class PresupuestoTareaController implements Serializable {
       }
       return sumagastototalrubro;
   }
+  
   
 
 }

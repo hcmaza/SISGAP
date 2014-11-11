@@ -1,15 +1,20 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.RubroFacade;
 import ar.edu.undec.sisgap.model.TareaAgente;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TareaAgenteFacade;
 import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.Etapa;
+import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
+import ar.edu.undec.sisgap.model.Rubro;
 import ar.edu.undec.sisgap.model.Tarea;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -25,6 +30,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 
 @ManagedBean(name = "tareaAgenteController")
@@ -38,6 +44,8 @@ public class TareaAgenteController implements Serializable {
     private ar.edu.undec.sisgap.controller.TareaAgenteFacade ejbFacade;
     @EJB
     private ar.edu.undec.sisgap.controller.ProyectoAgenteFacade ejbProyectoAgenteFacade;
+     @EJB
+    private RubroFacade ejbFacadeRubro;
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private List<TareaAgente> tareasagentes ;
@@ -265,17 +273,12 @@ public class TareaAgenteController implements Serializable {
         PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         EtapaController etapacontrol= (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-        TareaAgente ta = new TareaAgente();
-        
-        ta.setAgenteid(agenteviewcontrol.getSelected());
-        tareacontrol.getSelected().setEtapaid(etapacontrol.getSelected());
-        ta.setTareaid(tareacontrol.getSelected());
         
         if(tareasagentes==null){
             tareasagentes= new ArrayList<TareaAgente>();
         }
         for (TareaAgente ta1:tareasagentes){
-            if(ta1.getAgenteid().getId().equals(agenteviewcontrol.getSelected().getId())){
+            if(ta1.getAgenteid().getId().equals(this.current2.getAgenteid().getId())){
                 existe=true;
             }
         }
@@ -285,17 +288,22 @@ public class TareaAgenteController implements Serializable {
             //tapk.setAgenteid(agenteviewcontrol.getSelected().getId());
             //tapk.setTareaid(tareasagentes.size()+1);
             //ta.setTareaAgentePK(tapk);
-            for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-                if(ta.getAgenteid().getId().equals(pa.getAgente().getId())){
-                    if(pa.getConsultorexterno()){
-                       ta.setHorasdedicadas(null);
-                    }else{
-                        ta.setHorasdedicadas(0);
-                    }
-                }
-            }
-            tareasagentes.add(ta);
-             presupuestotareacontroller.agregarPresupuestoRRHHCONSULTOR();
+            RequestContext requestContext = RequestContext.getCurrentInstance();
+                
+           if(presupuestotareacontroller.agregarPresupuestoRRHHCONSULTOR(this.current2)){
+               tareasagentes.add(this.current2);
+                 requestContext.addCallbackParam("validation", true);
+              // requestContext.execute("dialogotareaagentepresupuesto.hide();");
+          
+           }else{
+                 requestContext.addCallbackParam("validation", false);
+             
+                 // context.getExternalContext().getContext().
+           }
+           
+            
+            
+            
         }
     }
     
@@ -334,8 +342,7 @@ public class TareaAgenteController implements Serializable {
         return this.ejbProyectoAgenteFacade.sumarHorasAgenteProyectos(current.getAgenteid().getId());
     }
    
-     public void onCellEdit(CellEditEvent event) {
-        current2 = this.tareasagentes.get(event.getRowIndex());
+     public void onCellEdit() {
         if(!verificarAgentesHoras()){
            
        }
@@ -349,51 +356,7 @@ public class TareaAgenteController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
         PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
-//        for(TareaAgente ta:this.ejbFacade.findByTareaAgente(current2.getAgenteid())){
-//            if((ta.getTareaid().getFechainicio().before(current2.getTareaid().getFechainicio())) & (ta.getTareaid().getFechainicio().after(current2.getTareaid().getFechainicio())) ){
-//                 if((ta.getTareaid().getFechafin().before(current2.getTareaid().getFechafin())) & (ta.getTareaid().getFechafin().after(current2.getTareaid().getFechafin())) ){
-//                     for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-//                            if(pa.getAgente().equals(current2.getAgenteid())){
-//                                if(current2.getHorasdedicadas()<=pa.getHorasdisponibles()){
-//                                   resultado = true; 
-//                                   
-//                                }else{
-//                                     resultado = false; 
-//                                       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Las horas del Agente "+ current2.getAgenteid()  +" no puede sobrepasar las " +pa.getHorasdisponibles()+" horas que se han establecido en el proyecto"));
-//                                }    
-//                            }  
-//
-//                    }
-//                 }else{
-//                      for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-//                            if(pa.getAgente().equals(current2.getAgenteid())){
-//                                  if(current2.getHorasdedicadas()<=pa.getHorasdisponibles()){
-//                                      resultado = true; 
-//                                   
-//                                    }else{
-//                                     resultado = false; 
-//                                      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Las horas del Agente "+ current2.getAgenteid()  +" no puede sobrepasar las " +pa.getHorasdisponibles()+" horas que se han establecido en el proyecto"));
-//                                    }    
-//                            }  
-//
-//                    }
-//                      
-//                 }
-//            }else{
-//                for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-//                     if(pa.getAgente().equals(current2.getAgenteid())){
-//                           if(current2.getHorasdedicadas()<=pa.getHorasdedicadas()){
-//                                   resultado = true; 
-//                                   
-//                            }else{
-//                                     resultado = false; 
-//                                   FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Las horas del Agente "+ current2.getAgenteid()  +" no puede sobrepasar las " +pa.getHorasdisponibles()+" horas que se han establecido en el proyecto"));
-//                            }    
-//                     }  
-//
-//                }
-//            }
-//        }  
+
         for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
             if(pa.getAgente().getId().equals(current2.getAgenteid().getId())){
                
@@ -402,14 +365,125 @@ public class TareaAgenteController implements Serializable {
                     resultado = false;
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Las horas del Agente "+ current2.getAgenteid()  +" no puede sobrepasar las " +pa.getHorasdisponibles()+" horas que se han establecido en el proyecto"));
                 }else{
-                     presupuestotareacontroller.agregarPresupuestoRRHHCONSULTOR();
+                    
+                     presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario())); 
+                   presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
+                    // cgvkhjbl.n presupuestotareacontroller.agregarPresupuestoRRHHCONSULTOR(current2);
                 }
             }
         }
         
          return resultado;
      }
-     
+    
+     public void armarTareaAgentePresupuesto(){
+          FacesContext context = FacesContext.getCurrentInstance();
+        AgenteViewController agenteviewcontroller= (AgenteViewController) context.getApplication().evaluateExpressionGet(context, "#{agenteViewController}", AgenteViewController.class);
+        TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+        ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        EtapaController etapacontrol= (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+         System.out.println("Agente -----"+agenteviewcontroller.getSelected());
+        this.current2 = new TareaAgente();
+         this.current2.setAgenteid(agenteviewcontroller.getSelected());
+       
+         tareacontroller.getSelected().setEtapaid(etapacontrol.getSelected());
+        this.current2.setTareaid(tareacontroller.getSelected());
+        
+         for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+                if(agenteviewcontroller.getSelected().getId().equals(pa.getAgente().getId())){
+                    if(pa.getConsultorexterno()){
+                       this.current2.setHorasdedicadas(null);
+                    }else{
+                        this.current2.setHorasdedicadas(0);
+                    }
+                }
+            }
+         ProyectoAgente pax = new ProyectoAgente();
+         presupuestotareacontroller.setCurrent2(new PresupuestoTarea());
+          
+            presupuestotareacontroller.getCurrent2().setTarea(this.current2.getTareaid());
+            Rubro r = new Rubro();
+            for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
+                    if(pa.getAgente().equals(current2.getAgenteid())){
+                       
+                        if(pa.getConsultorexterno()){
+                          r = ejbFacadeRubro.findbyId(4); 
+                        }else{
+                          r = ejbFacadeRubro.findbyId(5); 
+                        }
+                        pax = pa;
+                    }
+            }
+           presupuestotareacontroller.getCurrent2().setRubro(r);
+           
+           
+               if(pax.getConsultorexterno()){
+                   presupuestotareacontroller.getCurrent2().setCostounitario(pax.getHonorario());
+               }else{
+                    presupuestotareacontroller.getCurrent2().setCostounitario(current2.costoUnitarioCargoLegajo());
+               } 
+                presupuestotareacontroller.getCurrent2().setCantidad( BigDecimal.valueOf(tareacontroller.getSelected().getDias()) );
+                
+                presupuestotareacontroller.getCurrent2().setDescripcion(current2.getAgenteid().toString());
+                presupuestotareacontroller.getCurrent2().setAportecomitente(BigDecimal.ZERO);
+                presupuestotareacontroller.getCurrent2().setAporteorganismo(BigDecimal.ZERO);
+                presupuestotareacontroller.getCurrent2().setAporteuniversidad(BigDecimal.ZERO);
+                if(presupuestotareacontroller.getCurrent2().getCantidad().equals(BigDecimal.ZERO)){
+                    
+                }else{
+                    if(pax.getConsultorexterno()){
+                        presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(30),2, RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario()));
+                        presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
+                        System.out.println("totl -consultor---"+presupuestotareacontroller.getCurrent2().getTotal());
+                    }else{
+                       presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario())); 
+                       presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
+                        System.out.println("totl ----"+presupuestotareacontroller.getCurrent2().getTotal());
+                      }
+                }
+                
+           
+         
+    }
+
+    public TareaAgente getCurrent2() {
+        if(current2==null){
+            current2 = new TareaAgente();
+        }
+        return current2;
+    }
+
+    public void setCurrent2(TareaAgente current2) {
+        this.current2 = current2;
+    }
+    
+    public void eliminarTareaAgente(TareaAgente ta){
+       int lugar = -1;
+       int contador=0;
+        for(TareaAgente tan : this.tareasagentes){
+            
+           if(tan.getAgenteid().equals(ta.getAgenteid())){
+               lugar = contador;
+           }
+           contador++;
+       }
+        this.tareasagentes.remove(lugar);
+         FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+         contador=0;
+         lugar=0;
+        for(PresupuestoTarea pt:presupuestotareacontroller.getPresupuestostareasitems()){
+             System.out.println("igual agente"+pt.getDescripcion());
+             System.out.println("igual agente 2"+ta.getAgenteid().toString());
+                if(pt.getDescripcion().equals(ta.getAgenteid().toString())){
+                  lugar=contador;   
+                 }
+            
+            ++contador;
+         }
+        presupuestotareacontroller.getPresupuestostareasitems().remove(lugar);
+    }
      
     
 }
