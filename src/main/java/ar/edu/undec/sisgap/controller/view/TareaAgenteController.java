@@ -343,9 +343,18 @@ public class TareaAgenteController implements Serializable {
     }
    
      public void onCellEdit() {
-        if(!verificarAgentesHoras()){
-           
-       }
+          FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+        
+         
+        if(verificarAgentesHoras()){
+             }else{
+            presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario())); 
+            presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getTotal().multiply(BigDecimal.valueOf(this.current2.getHorasdedicadas()))));
+            presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
+              System.out.println("onceledit "+ presupuestotareacontroller.getCurrent2().getTotal());     
+        
+        }
       
      }
       

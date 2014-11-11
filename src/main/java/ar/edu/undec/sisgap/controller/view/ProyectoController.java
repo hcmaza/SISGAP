@@ -16,6 +16,7 @@ import ar.edu.undec.sisgap.model.EvaluacionPreguntaPK;
 import ar.edu.undec.sisgap.model.Presupuesto;
 import ar.edu.undec.sisgap.model.PresupuestoRubro;
 import ar.edu.undec.sisgap.model.PresupuestoRubroitem;
+import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.ProyectoAgentePK;
 import ar.edu.undec.sisgap.model.Tarea;
@@ -101,7 +102,7 @@ public class ProyectoController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.PresupuestoFacade ejbpresupuesto;
     @EJB
-    private ar.edu.undec.sisgap.controller.PresupuestoRubroitemFacade ejbpresupuestorubroitem;
+    private ar.edu.undec.sisgap.controller.PresupuestoTareaFacade ejbpresupuestotarea;
     @EJB
     private ar.edu.undec.sisgap.controller.ProyectoAgenteFacade ejbproyectoagente;
     @EJB
@@ -783,7 +784,7 @@ public class ProyectoController implements Serializable {
          FacesContext context = FacesContext.getCurrentInstance();
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         
-        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
+        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
         
@@ -841,12 +842,10 @@ public class ProyectoController implements Serializable {
            }
         }
         
-        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
+        for(PresupuestoTarea pt : presupuestotareacontroller.getPresupuestostareasitems()){
            
-           
-             pri.setPresupuesto(presupuestocontroller.getSelected());
-            
-            ejbpresupuestorubroitem.createWithPersist(pri);
+         
+            ejbpresupuestotarea.createWithPersist(pt);
            
         }
         
@@ -1387,17 +1386,7 @@ public class ProyectoController implements Serializable {
         ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
         archivoproyectoController.findporProyectoEdit(current.getId());
             
-        
-//        //Presupuesto Rubro Item
-//        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
-//        presupuestorubroitemcontroller.setPresupuestosrubrositems(this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbpresupuesto.findporProyecto(current.getId())));
-//        System.out.println("Presupuesto "+this.ejbpresupuesto.findporProyecto(current.getId()).getId());
-//        presupuestorubroitemcontroller.armarPresupuestoNodos();
-//        presupuestorubroitemcontroller.armarGraficosPresupuesto();
-//        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
-//            System.out.println("Presupuesto Rubro Item "+ pri.getRubro());
-//        }
-        System.out.println("ffffffffffffffffffffffff");
+      System.out.println("ffffffffffffffffffffffff");
         return "Edit";
     }
     
@@ -1562,7 +1551,7 @@ public class ProyectoController implements Serializable {
     
     
       //Eliminacion de presupuestosrubrositem
-      for(PresupuestoRubroitem pri: ejbpresupuestorubroitem.findByPresupuesto(presupuestocontroller.getSelected())){
+    /*  for(PresupuestoRubroitem pri: ejbpresupuestorubroitem.findByPresupuesto(presupuestocontroller.getSelected())){
           if(presupuestorubroitemcontroller.getPresupuestosrubrositems().contains(pri)){
               
           }else{
@@ -1576,7 +1565,7 @@ public class ProyectoController implements Serializable {
              pri.setPresupuesto(presupuestocontroller.getSelected());
              ejbpresupuestorubroitem.create(pri);
            
-        }
+        } */
          EnviarMail enviarmail = new EnviarMail();
         // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
@@ -1808,18 +1797,18 @@ public class ProyectoController implements Serializable {
         JRBeanCollectionDataSource tareas = new JRBeanCollectionDataSource(listaTareas);
 
         // PRESUPUESTO
-        List<PresupuestoRubroitem> listaPresupuestoItems = this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbFacadep.findporProyecto(current.getId()));
+       /* List<PresupuestoRubroitem> listaPresupuestoItems = this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbFacadep.findporProyecto(current.getId()));
 
         for (PresupuestoRubroitem pri : listaPresupuestoItems) {
             System.out.println("PRI" + pri.getDescripcion() + " - " + pri.getCantidad().toString() + " - " + pri.getTotal().toString());
         }
 
         JRBeanCollectionDataSource presupuesto = new JRBeanCollectionDataSource(listaPresupuestoItems);
-
+        */
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("idProyecto", this.getSelected().getId());
-        parametros.put("presupuesto", presupuesto);
+        //parametros.put("presupuesto", presupuesto);
         parametros.put("tareas", tareas);
 
         // Llenamos el reporte con la fuente de datos

@@ -782,7 +782,7 @@
                                     <p:tabView style="width: 100%" id="tabrubros" value="#{rubroController.rubroslist}" var="rub" >
                                         <p:tab title="#{rub.rubro}" >
                                             
-                                            <p:commandButton rendered="#{item.rubro.id ne 4 }" id="cagregarpresupuestotarea" value="Agregar Presupuesto a la Tarea" onclick="PF('dialogopresupuesto').show()" update=":formd:wizardtarea:tabrubros :formpresupuesto:panelpresupuesto" action="#{presupuestoTareaController.reinit(rub)}"  >
+                                            <p:commandButton rendered="#{item.rubro.id.intValue() ne 5}" id="cagregarpresupuestotarea" value="Agregar Presupuesto a la Tarea" onclick="PF('dialogopresupuesto').show()" update=":formd:wizardtarea:tabrubros :formpresupuesto:panelpresupuesto" action="#{presupuestoTareaController.reinit(rub)}"  >
                                             </p:commandButton>
                                             <p:dataTable id="tablepresupuestotarea" value="#{presupuestoTareaController.buscarRubroenlistaPresupuestoTarea(rub)}"  var="item" >
                                                
@@ -878,7 +878,7 @@
                             <h:panelGrid columns="2">
                                 <p:outputLabel rendered="#{tareaAgenteController.current2.horasdedicadas > -1}" value="Horas dedicadas:" for="horasdedicadas" />
                                 <p:inputText size="10" rendered="#{tareaAgenteController.current2.horasdedicadas > -1}" id="horasdedicadas" value="#{tareaAgenteController.current2.horasdedicadas}" title="Horas Dedicadas" >
-                                    <p:ajax event="keyup" listener="#{tareaAgenteController.onCellEdit()}"  />
+                                    <p:ajax event="keyup" listener="#{tareaAgenteController.onCellEdit()}" update=":formd:totalpresupuesto" />
                                 </p:inputText>
                             </h:panelGrid>
                              <br />
