@@ -25,7 +25,7 @@
                         <h:commandLink action="#{proyectoController.previous}" value="#{bundle.Previous} #{proyectoController.pagination.pageSize}" rendered="#{proyectoController.pagination.hasPreviousPage}"/>&nbsp;
                         <h:commandLink action="#{proyectoController.next}" value="#{bundle.Next} #{proyectoController.pagination.pageSize}" rendered="#{proyectoController.pagination.hasNextPage}"/>&nbsp;
                         
-                        <p:dataTable scrollWidth="95%" scrollable="true"
+                        <p:dataTable 
                             id="tbl" 
                             value="#{proyectoController.items}"  
                             var="item" 
@@ -56,12 +56,12 @@
                                 </f:facet>
                                 <h:outputText value="#{item.agenteid.apellido}, #{item.agenteid.nombres}"/>
                             </p:column>
-                            <p:column id="columnaDuracion" filterBy="#{item.duracion}" filterMatchMode="contains" sortBy="#{item.duracion}">
+<!--                            <p:column id="columnaDuracion" filterBy="#{item.duracion}" filterMatchMode="contains" sortBy="#{item.duracion}">
                                 <f:facet name="header">
                                     <h:outputText value="DuraciÃ³n (Meses)"/>
                                 </f:facet>
                                 <h:outputText value="#{item.duracion}"/>
-                            </p:column>
+                            </p:column>-->
                             <p:column id="columnaTipoProyecto" filterBy="#{item.tipoproyectoid}" filterMatchMode="exact" filterOptions="#{tipoproyectoController.itemsAvailableSelectOne}" sortBy="#{item.tipoproyectoid.tipo}">
                                 <f:facet name="header">
                                     <h:outputText value="Tipo de Proyecto"/>
@@ -80,13 +80,12 @@
                                 </f:facet>                        
                                 <h:outputText value="#{item.estadoproyectoid.estado}"/>
                             </p:column>
-                            <p:column style="width:4%" exportable="false">
+                            <p:column style="width: 30px;" exportable="false">
                                 <f:facet name="header">
                                     <h:outputText value=""/>
                                 </f:facet>
-                                <p:commandButton action="#{proyectoController.CrearConEtapa}" title="Crear" ajax="false" icon="ui-icon-plus" />
-                                <h:outputText value=" "/>
-                                <p:commandButton action="#{proyectoController.prepareEditEtapa}" title="Editar" ajax="false" icon="ui-icon-pencil" />
+                                <p:commandButton action="#{proyectoController.CrearConEtapa}" title="Crear" ajax="false" icon="ui-icon-plus" style="margin: 1px;" />
+                                <p:commandButton action="#{proyectoController.prepareEditEtapa}" title="Editar" ajax="false" icon="ui-icon-pencil" style="margin: 1px;" />
                             </p:column>
                         </p:dataTable>
                     </h:panelGroup>

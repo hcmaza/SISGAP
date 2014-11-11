@@ -19,7 +19,8 @@
                 <h:panelGroup id="messagePanel" layout="block">
                     <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
                 </h:panelGroup>
-                <p:panel header="Proyecto N° #{proyectoController.selected.id} - #{proyectoController.selected.nombre}" toggleable="true" collapsed="true" toggleTitle="Descripcion del Proyecto" >
+                
+                <p:panel header="Proyecto N° #{proyectoController.selected.id} - #{proyectoController.selected.nombre}" toggleable="true" collapsed="true" toggleTitle="Descripcion del Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;" >
                                     <p:growl  for="growlprincipal" id="growlprincipal" showDetail="true" sticky="true" />
                        
 
@@ -112,7 +113,7 @@
                 </p:panel>
                 
                 <p:separator />
-                <p:panel header="Crear Plan y Equipo de Trabajo">
+                <p:panel header="Crear Plan y Equipo de Trabajo" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
                         <p:commandButton id="btn_add" actionListener="#{tareaController.rearmarTareasProyecto}" value="Agregar Tarea" update=":formd:dtarea" oncomplete="PF('dtarea').show()" >  
 
                         </p:commandButton> 
