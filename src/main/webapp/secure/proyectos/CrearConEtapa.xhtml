@@ -646,8 +646,8 @@
                 <h:form id="formd">
                     
                     <p:dialog id="dtarea" header="Tarea en Etapa #{etapaController.selected.etapa}" widgetVar="dtarea" resizable="false" onShow="PF('wizardtarea').select(0);" 
-                          showEffect="clip" hideEffect="fold" modal="true">  
-                        <p:tabView id="wizardtarea" style="width: 800px; height: 330px" activeIndex="0" widgetVar="wizardtarea" >
+                              showEffect="clip" hideEffect="fold" modal="true" style="height: 450px; min-height: 450px;">  
+                        <p:tabView id="wizardtarea" style="width: 800px;" activeIndex="0" widgetVar="wizardtarea" >
                           
                             <p:tab id="tab1" title="Tarea" >
                                 
@@ -804,13 +804,13 @@
                                 </div>
                             </p:tab>
                               <p:tab id="tab3" title="Presupuesto / Tarea">
-                                    
-
-                                    <p:separator />
-                                    <p:tabView style="width: 100%; font-size: 9px;" id="tabrubros" value="#{rubroController.rubroslist}" var="rub" >
-                                        <p:tab title="#{rub.rubro}" titletip="#{rub.rubro}" >
+                                  
+                                  <p:separator />
+                                  
+                                  <p:accordionPanel id="tabrubros" value="#{rubroController.rubroslist}" var="rub" style="width: 780px; height: 350px; min-height: 350px;" >
+                                      <p:tab title="#{rub.rubro}" titletip="#{rub.rubro}" >
                                             
-                                            <p:commandButton rendered="#{item.rubro.id != 4 and (item.rubro.id != 5) }" id="cagregarpresupuestotarea" value="Agregar Presupuesto a la Tarea" onclick="PF('dialogopresupuesto').show()" update=":formd:wizardtarea:tabrubros :formpresupuesto:panelpresupuesto" action="#{presupuestoTareaController.reinit(rub)}" style="margin-bottom: 5px;"  />
+                                            <p:commandButton rendered="#{item.rubro.id != 4 and (item.rubro.id != 5) }" id="cagregarpresupuestotarea" value="Agregar Presupuesto a la Tarea" onclick="PF('dialogopresupuesto').show()" update=":formd:wizardtarea:tabrubros :formpresupuesto:panelpresupuesto" action="#{presupuestoTareaController.reinit(rub)}" style="margin-bottom: 5px; "  />
 
                                             <p:dataTable id="tablepresupuestotarea" value="#{presupuestoTareaController.buscarRubroenlistaPresupuestoTarea(rub)}"  var="item" >
                                                
@@ -874,7 +874,9 @@
                                     
 
                                         </p:tab>
-                                    </p:tabView>
+                                  </p:accordionPanel>
+                                  
+                                  
                                     
                               </p:tab>
                             
