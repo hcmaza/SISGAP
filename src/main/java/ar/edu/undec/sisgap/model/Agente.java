@@ -22,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.Fetch;
@@ -74,6 +75,7 @@ public class Agente implements Serializable {
     @Size(max = 100)
     @Column(name = "profesion")
     private String profesion;
+    @Pattern(regexp="/^\\d{2}\\-\\d{8}\\-\\d{1}$/")
     @Size(max = 15)
     @Column(name = "cuil")
     private String cuil;
