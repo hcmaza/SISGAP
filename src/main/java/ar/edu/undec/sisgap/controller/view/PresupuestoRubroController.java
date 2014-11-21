@@ -491,5 +491,10 @@ public void init() {
                iseditar=false;
           }
      }
+     
+     public void invalidar(){
+         FacesContext.getCurrentInstance().addMessage("Valor Inválido", new FacesMessage());
+         FacesContext.getCurrentInstance().validationFailed();
+     }
 
 }

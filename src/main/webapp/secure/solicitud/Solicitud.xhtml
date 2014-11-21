@@ -291,9 +291,10 @@
                         <p:tab title="Presupuesto">
                             
                             <p:fieldset legend="Presupuesto" style="margin-bottom:5px">
-                                <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" styleClass="sinBordesVerticales" >
+                                <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" styleClass="sinBordesVerticales">
                                     <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="#{presupuestoRubroController.sumarGastos}" /> -->
-                                    <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros" oncomplete="updatetotales()" />  
+                                    <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros,:formprincipal:growlprincipal" oncomplete="updatetotales()" onerror="invalidar()"  />  
+
                                     <f:facet name="header">  
                                         Presupuesto  
                                     </f:facet>  
@@ -313,8 +314,8 @@
                                                 <h:outputText value="#{item.gastoorganismo}" />
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%" id="gastoorganismo" value="#{item.gastoorganismo}" validatorMessage="El valor ingresado no es válido">
-                                                    <p:ajax update=":formprincipal:growlprincipal" />
+                                                <p:inputText style="width:96%" id="gastoorganismo" value="#{item.gastoorganismo}" >
+                                                    <f:validator validatorId="validadorNumeroPositivo" />
                                                 </p:inputText>
                                             </f:facet> 
                                         </p:cellEditor> 
@@ -329,7 +330,8 @@
                                                 <h:outputText value="#{item.gastocomitente}" />
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%" id="gastocomitente" value="#{item.gastocomitente}" validatorMessage="El valor ingresado no es válido" >
+                                                <p:inputText style="width:96%" id="gastocomitente" value="#{item.gastocomitente}" >
+                                                    <f:validator validatorId="validadorNumeroPositivo" />
                                                     <p:ajax update=":formprincipal:growlprincipal" />
                                                 </p:inputText>
                                             </f:facet> 
@@ -345,8 +347,9 @@
                                                 <h:outputText value="#{item.gastouniversidad}" />
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%" id="gastouniversidad" value="#{item.gastouniversidad}" validatorMessage="El valor ingresado no es válido" >
-                                                     <p:ajax update=":formprincipal:growlprincipal" />
+                                                <p:inputText style="width:96%" id="gastouniversidad" value="#{item.gastouniversidad}" >
+                                                    <p:ajax update=":formprincipal:growlprincipal" />
+                                                    <f:validator validatorId="validadorNumeroPositivo" />
                                                 </p:inputText>
                                             </f:facet>  
                                         </p:cellEditor> 
@@ -365,6 +368,7 @@
                                 </p:dataTable> 
                                 
                                 <p:remoteCommand name="updatetotales" update="tpresupuesto,:formprincipal:growlprincipal"></p:remoteCommand>
+                                <p:remoteCommand name="invalidar" actionListener="#{presupuestoRubroController.invalidar}" update="tpresupuesto,:formprincipal:growlprincipal"></p:remoteCommand>
                             </p:fieldset>
 
                             <br />
