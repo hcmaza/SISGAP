@@ -291,7 +291,7 @@
                         <p:tab title="Presupuesto">
                             
                             <p:fieldset legend="Presupuesto" style="margin-bottom:5px">
-                                <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" >
+                                <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" styleClass="sinBordesVerticales" >
                                     <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="#{presupuestoRubroController.sumarGastos}" /> -->
                                     <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros" oncomplete="updatetotales()" />  
                                     <f:facet name="header">  
@@ -313,7 +313,9 @@
                                                 <h:outputText value="#{item.gastoorganismo}" />
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%" id="gastoorganismo" value="#{item.gastoorganismo}" />
+                                                <p:inputText style="width:96%" id="gastoorganismo" value="#{item.gastoorganismo}" validatorMessage="El valor ingresado no es válido">
+                                                    <p:ajax update=":formprincipal:growlprincipal" />
+                                                </p:inputText>
                                             </f:facet> 
                                         </p:cellEditor> 
                                         <f:facet name="footer">  
@@ -327,7 +329,9 @@
                                                 <h:outputText value="#{item.gastocomitente}" />
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%" id="gastocomitente" value="#{item.gastocomitente}" />
+                                                <p:inputText style="width:96%" id="gastocomitente" value="#{item.gastocomitente}" validatorMessage="El valor ingresado no es válido" >
+                                                    <p:ajax update=":formprincipal:growlprincipal" />
+                                                </p:inputText>
                                             </f:facet> 
                                         </p:cellEditor>  
                                         <f:facet name="footer">  
@@ -341,7 +345,9 @@
                                                 <h:outputText value="#{item.gastouniversidad}" />
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%" id="gastouniversidad" value="#{item.gastouniversidad}" />
+                                                <p:inputText style="width:96%" id="gastouniversidad" value="#{item.gastouniversidad}" validatorMessage="El valor ingresado no es válido" >
+                                                     <p:ajax update=":formprincipal:growlprincipal" />
+                                                </p:inputText>
                                             </f:facet>  
                                         </p:cellEditor> 
                                         <f:facet name="footer">  
@@ -358,7 +364,7 @@
                                     
                                 </p:dataTable> 
                                 
-                                <p:remoteCommand name="updatetotales" update="tpresupuesto"></p:remoteCommand>
+                                <p:remoteCommand name="updatetotales" update="tpresupuesto,:formprincipal:growlprincipal"></p:remoteCommand>
                             </p:fieldset>
 
                             <br />
@@ -368,11 +374,9 @@
 
                             <h:panelGrid columns="2" style="margin: 5 auto;">
 
-                                <p:chart type="pie" id="caportes" model="#{presupuestoRubroController.pieModel}"  
-                                            style="width:100%;height:300px"  /> 
-
-                                <p:chart type="pie" id="crubros" model="#{presupuestoRubroController.pieModelRubro}"  
-                                            style="width:100%;height:300px"  /> 
+                                <p:chart type="pie" id="caportes" model="#{presupuestoRubroController.pieModel}" style="width:100%;height:300px"  /> 
+                                
+                                <p:chart type="pie" id="crubros" model="#{presupuestoRubroController.pieModelRubro}" style="width:100%;height:300px" /> 
 
                             </h:panelGrid>
 
