@@ -67,7 +67,7 @@ table {
     border: none;
 }
 
-.ui-datatable-tablewrapper table th:first-child {
+/*.ui-datatable-tablewrapper table th:first-child {
     border-left: inherit;
     border-right: none;
 }
@@ -85,7 +85,7 @@ table {
 .ui-datatable.sinBordesVerticales .ui-datatable-data-empty td{
     border-left: none !important;
     border-right: none !important;
-}
+}*/
 
 /*.sinBordesVerticales tr, .sinBordesVerticales td{
     border-left: none !important;

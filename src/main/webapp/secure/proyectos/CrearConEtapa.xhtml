@@ -191,7 +191,7 @@
                     </p:panel>
 
                     <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
-                        <p:dataTable value="#{presupuestoRubroController.presupuestosrubros}" var="item">
+                        <p:dataTable value="#{presupuestoRubroController.presupuestosrubros}" var="item" rowIndexVar="indice">
                             <f:attribute name="”collectionType”" value="”java.util.ArrayList”/">
                             </f:attribute>
                             <p:column>
@@ -199,60 +199,50 @@
                                     <p:outputLabel value="Rubro"/>
                                 </f:facet>
                                 <p:outputLabel value="#{item.rubro.rubro}"/>
+                                <f:facet name="footer">  
+                                    <p:outputLabel id="fRubro" value="Total Rubros"/>
+                                </f:facet> 
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <p:outputLabel value="Gastocomitente"/>
                                 </f:facet>
                                 <p:outputLabel value="#{item.gastocomitente}"/>
+                                <f:facet name="footer">  
+                                    <p:outputLabel id="fComitente" value="$#{presupuestoRubroController.sumagastocomitente}"/>
+                                </f:facet>                                
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <p:outputLabel value="Gastoorganismo"/>
                                 </f:facet>
                                 <p:outputLabel value="#{item.gastoorganismo}"/>
+                                <f:facet name="footer">  
+                                    <p:outputLabel id="fOrganismo" value="$#{presupuestoRubroController.sumagastoorganismo}"/>
+                                </f:facet>                                
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <p:outputLabel value="Gastouniversidad"/>
                                 </f:facet>
                                 <p:outputLabel value="#{item.gastouniversidad}"/>
+                                <f:facet name="footer">  
+                                    <p:outputLabel id="fUniversidad" value="$#{presupuestoRubroController.sumagastouniversidad}"/>
+                                </f:facet>                                
+                            </p:column>
+                            <p:column style="width:20%;" headerText="Totales Rubros">
+                                <h:outputText id="totalesRubro" value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" />
+                                <f:facet name="footer">  
+                                    <h:outputText id="fTotal" value="$#{presupuestoRubroController.sumatotal}" />
+                                </f:facet> 
                             </p:column>
                         </p:dataTable>
 
                         <h:panelGrid columns="2">
-                            <p:panelGrid style="font-weight:bold;" id="paportes" columns="2">
-                                <f:facet name="header">  
-                                    Total de Aportes  
-                                </f:facet>
-                                <p:outputLabel value="Aportes Organismo"/>
-                                <p:outputLabel value="$#{presupuestoRubroController.sumagastoorganismo}"/>
-                                <p:outputLabel value="Aportes Comitente"/>
-                                <p:outputLabel value="$#{presupuestoRubroController.sumagastocomitente}"/>
-                                <p:outputLabel value="Aportes Universidad"/>
-                                <p:outputLabel value="$#{presupuestoRubroController.sumagastouniversidad}"/>
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoRubroController.sumatotal}  
-                                </f:facet>
-                            </p:panelGrid>
 
                             <p:chart type="pie" id="caportes" model="#{presupuestoRubroController.pieModel}"
                                      style="width:100%;height:300px"  /> 
 
-                            <p:dataTable value="#{presupuestoRubroController.presupuestosrubros}" var="data" >
-                                <f:facet name="header">  
-                                    Total de Rubros  
-                                </f:facet>
-                                <p:column >
-                                    <p:outputLabel style="font-weight:bold;" value="#{data.rubro.rubro}"/>
-                                </p:column>
-                                <p:column>
-                                    <p:outputLabel style="font-weight:bold;" value="$#{data.total}"/>
-                                </p:column>    
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoRubroController.sumatotal}  
-                                </f:facet>
-                            </p:dataTable>
                             <p:chart type="pie" id="crubros" model="#{presupuestoRubroController.pieModelRubro}"
                                       style="width:100%;height:300px"  />  
 
