@@ -45,7 +45,7 @@ public class Tipodocumento implements Serializable {
     private Integer tipodocumentoid;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Size(min = 1, max = 2147483647, message="Solo se permiten números positivos")
     @Column(name = "tipodocumento")
     private String tipodocumento;
     @OneToMany(mappedBy = "tipodocumentoid")
