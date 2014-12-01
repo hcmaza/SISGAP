@@ -5,6 +5,12 @@
 
 html {
 	height: 100%;
+        
+        background: url("#{resource['img:/fondo2.jpg']}") no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
 }
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
 	display: block;
@@ -15,8 +21,8 @@ body {
     
     font-size: 12px !important;
 
-    background-image: url("#{resource['img:/tramaMediaClara.jpg']}");
-    background-repeat: repeat;
+/*    background-image: url("#{resource['img:/tramaMediaClara.jpg']}");
+    background-repeat: repeat;*/
     
     height: 100%;
 }
