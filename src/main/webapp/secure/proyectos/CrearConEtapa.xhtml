@@ -198,47 +198,49 @@
                                 <f:facet name="header">
                                     <p:outputLabel value="Rubro"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.rubro.rubro}"/>
+                                <p:outputLabel value="#{item.rubro.rubro}" style="float: right;"/>
                                 <f:facet name="footer">  
                                     <p:outputLabel id="fRubro" value="Total Rubros"/>
                                 </f:facet> 
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <p:outputLabel value="Gastocomitente"/>
+                                    <p:outputLabel value="Gasto Comitente"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.gastocomitente}"/>
+                                <p:outputLabel value="#{item.gastocomitente}" style="float: right;"/>
                                 <f:facet name="footer">  
-                                    <p:outputLabel id="fComitente" value="$#{presupuestoRubroController.sumagastocomitente}"/>
+                                    <p:outputLabel id="fComitente" value="$#{presupuestoRubroController.sumagastocomitente}" style="float: right;"/>
                                 </f:facet>                                
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <p:outputLabel value="Gastoorganismo"/>
+                                    <p:outputLabel value="Gasto Organismo"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.gastoorganismo}"/>
+                                <p:outputLabel value="#{item.gastoorganismo}" style="float: right;"/>
                                 <f:facet name="footer">  
-                                    <p:outputLabel id="fOrganismo" value="$#{presupuestoRubroController.sumagastoorganismo}"/>
+                                    <p:outputLabel id="fOrganismo" value="$#{presupuestoRubroController.sumagastoorganismo}" style="float: right;"/>
                                 </f:facet>                                
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <p:outputLabel value="Gastouniversidad"/>
+                                    <p:outputLabel value="Gasto Universidad"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.gastouniversidad}"/>
+                                <p:outputLabel value="#{item.gastouniversidad}" style="float: right;"/>
                                 <f:facet name="footer">  
-                                    <p:outputLabel id="fUniversidad" value="$#{presupuestoRubroController.sumagastouniversidad}"/>
+                                    <p:outputLabel id="fUniversidad" value="$#{presupuestoRubroController.sumagastouniversidad}" style="float: right;"/>
                                 </f:facet>                                
                             </p:column>
+                            
                             <p:column style="width:20%;" headerText="Totales Rubros">
-                                <h:outputText id="totalesRubro" value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" />
+                                <h:outputText id="totalesRubro" value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" style="float: right;" />
                                 <f:facet name="footer">  
-                                    <h:outputText id="fTotal" value="$#{presupuestoRubroController.sumatotal}" />
+                                    <h:outputText id="fTotal" value="$#{presupuestoRubroController.sumatotal}" style="float: right;" />
                                 </f:facet> 
                             </p:column>
                         </p:dataTable>
 
-                        <h:panelGrid columns="2">
+                        
+                        <h:panelGrid columns="2" style="margin-left: auto; margin-right: auto;">
 
                             <p:chart type="pie" id="caportes" model="#{presupuestoRubroController.pieModel}"
                                      style="width:100%;height:300px"  /> 
@@ -352,9 +354,9 @@
                             <br />
                             
                             <p:commandButton id="btn_addetapa" update=":forme:etapa :forme:tareasdeproyecto" action="#{etapaController.rearmarEtapasProyecto}" onclick="PF('dialogoetapa').show();" value="Agregar Etapa" immediate="true" style="margin-bottom: 5px;" > </p:commandButton>  
-                             <br />
+                            <br />
                             
-                             <p:treeTable id="treetableetapas" value="#{etapaController.root}" var="document" style="margin-bottom: 5px;">
+                            <p:treeTable id="treetableetapas" value="#{etapaController.root}" var="document" style="margin-bottom: 5px;">
                                     <p:column headerText="Etapa/Tarea">
                                         <h:outputText value="#{document.tarea}" />
                                     </p:column>
@@ -382,14 +384,10 @@
                                  </ui:repeat>
                                     </p:column>
                                     <p:column style="width:24px">
-                                        <p:commandButton value="Editar" rendered="#{document.estado eq null}" onclick="PF('dialogoetapa').show()" update=":forme:etapa :forme:tareasdeproyecto :forme:cetapa " action="#{etapaController.prepararEditarEtapaTreeTable(document)}" icon="ui-icon-search" immediate="true" >
-                                           
-                                        </p:commandButton>
+                                        <p:commandButton title="Editar" rendered="#{document.estado eq null}" onclick="PF('dialogoetapa').show()" update=":forme:etapa :forme:tareasdeproyecto :forme:cetapa " action="#{etapaController.prepararEditarEtapaTreeTable(document)}" icon="ui-icon-pencil" immediate="true" />
                                     </p:column>
                                  <p:column style="width:24px">
-                                     <p:commandButton value="Eliminar" update=":form:tabview1:treetableetapas :form:tabview1:contenedor :form:beanvalue" rendered="#{document.estado eq null}"  onclick="crearGrafico();" title="Eliminar" actionListener="#{etapaController.eliminarEtapaTreeTable(document)}" icon="ui-icon-trash">
-                                            
-                                        </p:commandButton>
+                                     <p:commandButton title="Eliminar" update=":form:tabview1:treetableetapas :form:tabview1:contenedor :form:beanvalue" rendered="#{document.estado eq null}"  onclick="crearGrafico();" actionListener="#{etapaController.eliminarEtapaTreeTable(document)}" icon="ui-icon-trash" />
                                     </p:column>
                                 </p:treeTable>
                     
@@ -516,8 +514,10 @@
                              </p:columnGroup>
                                        
                         </p:dataTable>
+                    
                     <div align="center" >
-                    <h:panelGrid id="pchartpresupuesto" columns="2" styleClass="left,right" >
+                    
+                        <h:panelGrid id="pchartpresupuesto" columns="2" styleClass="left,right" >
                         <p:chart type="pie" id="chartaportes" model="#{presupuestoTareaController.pieModelAportes}" 
                                     style="width:15%;height:300px" /> 
                         <p:chart type="pie" id="chartrubros" model="#{presupuestoTareaController.pieModelRubros}" 
@@ -636,8 +636,8 @@
                 <h:form id="formd">
                     
                     <p:dialog id="dtarea" header="Tarea en Etapa #{etapaController.selected.etapa}" widgetVar="dtarea" resizable="false" onShow="PF('wizardtarea').select(0);" 
-                              showEffect="clip" hideEffect="fold" modal="true" style="height: 450px; min-height: 450px;">  
-                        <p:tabView id="wizardtarea" style="width: 800px;" activeIndex="0" widgetVar="wizardtarea" >
+                              showEffect="clip" hideEffect="fold" modal="true" style="height: 450px; min-height: 450px; width: 900px; max-width: 900px;">  
+                        <p:tabView id="wizardtarea" style="width: 875px;" activeIndex="0" widgetVar="wizardtarea" >
                           
                             <p:tab id="tab1" title="Tarea" >
                                 
@@ -805,12 +805,7 @@
 
                                             <p:dataTable id="tablepresupuestotarea" value="#{presupuestoTareaController.buscarRubroenlistaPresupuestoTarea(rub)}"  var="item" >
                                                
-                                                <p:column headerText="Rubro">
-
-                                                    <h:outputText value="#{item.rubro.rubro}" />
-                                                </p:column>    
                                                 <p:column headerText="Descripcion">
-
                                                     <h:outputText value="#{item.descripcion}"/>
                                                 </p:column>
                                                 <p:column headerText="Costo Unitario">
@@ -835,16 +830,14 @@
 
                                                     <h:outputText value="#{item.total}"/>
                                                 </p:column>
-                                            <p:column headerText="">
-                                                <p:commandLink rendered="#{item.rubro.id != 4 and (item.rubro.id != 5) }" value="Eliminar" update=":form:tabview1:tablepresupuesto" action="#{presupuestoTareaController.eliminarPresupuesto(item)}" process=":formd:wizardtarea:tabrubros">
-
-                                                </p:commandLink>
+                                            <p:column style="width: 30px;" headerText="">
+                                                
+                                                <p:commandButton rendered="#{item.rubro.id != 4 and (item.rubro.id != 5) }" title="Eliminar" icon="ui-icon-trash" style="margin: 1px;" update=":form:tabview1:tablepresupuesto" action="#{presupuestoTareaController.eliminarPresupuesto(item)}" process=":formd:wizardtarea:tabrubros" />
+                                            
                                             </p:column>
                                              <p:columnGroup type="footer">
                                                 <p:row>
                                                    <p:column footerText="Totales" />
-
-                                                    <p:column footerText="" />
 
                                                     <p:column footerText="" />
 
@@ -857,6 +850,7 @@
                                                     <p:column footerText="$#{presupuestoTareaController.sumaraportesOrganismoRubroenlistaPresupuestoTarea(rub)}" />
 
                                                     <p:column footerText="$#{presupuestoTareaController.sumaraportesTotalesRubroenlistaPresupuestoTarea(rub)}" />
+                                                    
                                                     <p:column footerText="" />
                                                 </p:row>
                                              </p:columnGroup>
@@ -888,11 +882,11 @@
                           resizable="false" widgetVar="dialogoetapa" modal="true" style="padding: 0px; width: 900px; max-width: 900px; margin: 0 auto; overflow: hidden;" >
                        <p:growl id="msgs" showDetail="true"  />
 
-                        <h:panelGrid styleClass="right,left" columns="2">
+                       <h:panelGrid styleClass="right,left" columns="2" style="width: 100%;">
                             <p:outputLabel style="font-weight: bold; float: right;" value="Etapa:" for="etapa" />
-                            <p:inputText id="etapa" size="60" value="#{etapaController.selected.etapa}" title="Etapa" style="width: 100%;"  />
+                            <p:inputText id="etapa" size="60" value="#{etapaController.selected.etapa}" title="Etapa" style="width: 100%;" required="true" requiredMessage="El campo Etapa es obligatorio" />
                                         
-                            <p:outputLabel style="font-weight: bold" value="Resultado Esperado:" for="etapa" />
+                            <p:outputLabel style="font-weight: bold; float: right;" value="Resultado Esperado:" for="etapa" />
                             <p:inputTextarea id="resultadoesperado" rows="3" cols="100"  value="#{etapaController.selected.resultadoesperado}" title="Etapa"  style="width: 100%;" />
                                        
                         </h:panelGrid>
