@@ -56,14 +56,30 @@ table {
 
 // Todas las cabeceras
 
-.ui-widget-header{
-  background: none !important;
-  background-color: #878787 !important;
+// Color: #82CADC Seleccion de Dario
+// Color anterior: #21B2CE
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+    background: none !important;
+    background-image: none !important;
+    background-color: #82CADC !important;
 }
 
+.ui-state-default{
+    background: none !important;
+    background-image: none !important;
+    background-color: #D0DBDF !important;
+}
+
+
+/*.ui-widget-header{
+  background: none !important;
+  background-color: #878787 !important;
+}*/
+
 .ui-datatable-header {
-    background: #21B2CE !important;
-    background-color: #21B2CE !important;
+    background: #82CADC !important;
+    background-color: #82CADC !important;
     border: none;
 }
 
