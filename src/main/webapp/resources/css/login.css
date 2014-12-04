@@ -5,6 +5,12 @@
 
 html {
 	height: 100%;
+        
+        background: url("#{resource['img:/fondo3.jpg']}") no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
 }
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
 	display: block;
@@ -15,8 +21,8 @@ body {
     
     font-size: 12px !important;
 
-    background-image: url("#{resource['img:/tramaMediaClara.jpg']}");
-    background-repeat: repeat;
+/*    background-image: url("#{resource['img:/tramaMediaClara.jpg']}");
+    background-repeat: repeat;*/
     
     height: 100%;
 }
@@ -56,34 +62,18 @@ table {
 
 // Todas las cabeceras
 
-// Color: #82CADC Seleccion de Dario
-// Color anterior: #21B2CE
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
-    background: none !important;
-    background-image: none !important;
-    background-color: #82CADC !important;
-}
-
-.ui-state-default{
-    background: none !important;
-    background-image: none !important;
-    background-color: #D0DBDF !important;
-}
-
-
-/*.ui-widget-header{
+.ui-widget-header{
   background: none !important;
   background-color: #878787 !important;
-}*/
+}
 
 .ui-datatable-header {
-    background: #82CADC !important;
-    background-color: #82CADC !important;
+    background: #21B2CE !important;
+    background-color: #21B2CE !important;
     border: none;
 }
 
-/*.ui-datatable-tablewrapper table th:first-child {
+.ui-datatable-tablewrapper table th:first-child {
     border-left: inherit;
     border-right: none;
 }
@@ -101,7 +91,7 @@ table {
 .ui-datatable.sinBordesVerticales .ui-datatable-data-empty td{
     border-left: none !important;
     border-right: none !important;
-}*/
+}
 
 /*.sinBordesVerticales tr, .sinBordesVerticales td{
     border-left: none !important;

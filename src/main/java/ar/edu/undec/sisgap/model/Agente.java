@@ -22,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.Fetch;
@@ -59,9 +60,11 @@ public class Agente implements Serializable {
     @Column(name = "numerodocumento")
     private String numerodocumento;
     @Size(max = 25)
+    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números")
     @Column(name = "telefono")
     private String telefono;
     @Size(max = 25)
+    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números")
     @Column(name = "celular")
     private String celular;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
@@ -74,6 +77,7 @@ public class Agente implements Serializable {
     @Size(max = 100)
     @Column(name = "profesion")
     private String profesion;
+    @Pattern(regexp="/^\\d{2}\\-\\d{8}\\-\\d{1}$/")
     @Size(max = 15)
     @Column(name = "cuil")
     private String cuil;
@@ -99,6 +103,7 @@ public class Agente implements Serializable {
     @Column(name = "especialidad")
     private String especialidad;
     @Column(name = "legajo")
+    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números positivos")
     private Integer legajo;
     @Column(name = "horaslaborales")
     private Integer horaslaborales;

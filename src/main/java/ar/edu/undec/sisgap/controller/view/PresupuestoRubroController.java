@@ -344,12 +344,14 @@ public void init() {
                 pieModel.set("Aporte Organismo", sumagastoorganismo);  
                 pieModel.set("Aporte Comitente", sumagastocomitente);  
                 pieModel.set("Aporte Universidad", sumagastouniversidad);  
+                pieModel.setSeriesColors("21B2CE,9C4DAD,FF964A");
                 // pieModel.setDiameter(150);
                 pieModel.setLegendPosition("e");
                 pieModel.setTitle("Aportes");
                 pieModel.setSliceMargin(5); 
                 pieModel.setShowDataLabels(true);
-                  pieModelRubro = new PieChartModel();  
+                pieModelRubro = new PieChartModel();  
+                pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
             for(PresupuestoRubro pre : presupuestosrubros){
                 pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
                 
@@ -431,6 +433,8 @@ public void init() {
 
     }
 
+    // Colores >> seriesColors="21B2CE, 9C4DAD, FF964A, DED7A5, CE4131, 9CDFF7" 
+    
     public PieChartModel getPieModel() {
         if(pieModel==null){
             pieModel = new PieChartModel();  
@@ -438,6 +442,7 @@ public void init() {
                 pieModel.set("Gasto Organismo", sumagastoorganismo);  
                 pieModel.set("Gasto Comitente", sumagastocomitente);  
                 pieModel.set("Gasto Universidad", sumagastouniversidad); 
+                pieModel.setSeriesColors("21B2CE,9C4DAD,FF964A");
             //    pieModel.setDiameter(150);
                 pieModel.setLegendPosition("e");
                 pieModel.setTitle("Aportes");
@@ -460,8 +465,9 @@ public void init() {
                 
             }
           //  pieModelRubro.setDiameter(150);
-                pieModelRubro.setLegendPosition("e");
-                pieModelRubro.setTitle("Rubros");
+             pieModelRubro.setLegendPosition("e");
+             pieModelRubro.setTitle("Rubros");
+             pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
              pieModelRubro.setSliceMargin(5); 
              pieModelRubro.setShowDataLabels(true);
                 
@@ -484,6 +490,11 @@ public void init() {
                this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);
                iseditar=false;
           }
+     }
+     
+     public void invalidar(){
+         FacesContext.getCurrentInstance().addMessage("Valor Inválido", new FacesMessage());
+         FacesContext.getCurrentInstance().validationFailed();
      }
 
 }

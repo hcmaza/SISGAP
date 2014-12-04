@@ -163,6 +163,18 @@
             <artifactId>all-themes</artifactId>  
             <version>1.0.10</version>  
         </dependency> 
+        
+        <!--Logging --> 
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-aspects</artifactId>
+            <version>0.20.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -213,7 +225,19 @@
                     </execution>
                 </executions>
             </plugin>
-          
+            
+            <!-- Logging -->
+<!--            <plugin>
+                <groupId>com.jcabi</groupId>
+                <artifactId>jcabi-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>ajc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
     </build>
     <repositories>
@@ -224,24 +248,24 @@
             <name>Repository for library PrimeFaces-maven-lib</name>
         </repository>
     </repositories>
-   <profiles> 
-    <profile>
-    <id>arquillian-jbossas-managed</id>
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-7.0</artifactId>
-            <version>1.0.1.Final</version>
-            <type>pom</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-arquillian-container-managed</artifactId>
-            <version>7.2.0.Final</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</profile>
-   </profiles>
+    <profiles> 
+        <profile>
+            <id>arquillian-jbossas-managed</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.spec</groupId>
+                    <artifactId>jboss-javaee-7.0</artifactId>
+                    <version>1.0.1.Final</version>
+                    <type>pom</type>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                    <version>7.2.0.Final</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

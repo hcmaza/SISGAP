@@ -699,6 +699,7 @@ public class PresupuestoTareaController implements Serializable {
       this.pieModelAportes.set("Gasto Universidad", 0);
      // pieModelAportes.setDiameter(150);
       pieModelAportes.setLegendPosition("e");
+      pieModelAportes.setSeriesColors("21B2CE,9C4DAD,FF964A");
       pieModelAportes.setTitle("Aportes");
       pieModelAportes.setSliceMargin(5); 
       pieModelAportes.setShowDataLabels(true);
@@ -721,6 +722,7 @@ public class PresupuestoTareaController implements Serializable {
       }
       //pieModelRubros.setDiameter(150);
         pieModelRubros.setLegendPosition("e");
+        pieModelRubros.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
         pieModelRubros.setTitle("Rubros");
         pieModelRubros.setSliceMargin(5); 
         pieModelRubros.setShowDataLabels(true);
