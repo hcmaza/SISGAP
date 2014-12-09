@@ -269,32 +269,16 @@
                     <p:separator/>
                     <p:commandButton action="#{proyectoController.prepareList}" value="Lista de Ideas-Proyecto" immediate="true" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="#{proyectoController.pdfEtapas()}" value="Etapas de Proyecto" icon="ui-icon-document" ajax="false" />
-                    <p:commandButton action="#{proyectoController.pdfEvaluacionIdeaProyecto()}" value="Evaluacion Idea-Proyecto" immediate="true" icon="ui-icon-document" ajax="false" />
+                    <p:commandButton action="#{proyectoController.pdfEvaluacionIdeaProyecto()}" value="Evaluacion Idea-Proyecto" immediate="true" icon="ui-icon-document" ajax="false" rendered="#{agenteController.selected.usuarioid.usuariorol.rol eq 'Administrador'}" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
 
                 </p:panel>
 
-                <p:panel header="Exportar" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">  
-                    <p:commandLink action="#{proyectoController.imprimirIdeaProyecto()}" ajax="false">  
+                <p:panel header="Imprimir" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">  
+                    <p:commandLink action="#{proyectoController.pdfIdeaProyecto()}" ajax="false">  
                         <p:graphicImage value="/resources/img/print_printer.png" />  
                     </p:commandLink>                          
-                    <p:commandLink action="#{proyectoController.pdfIdeaProyecto()}" ajax="false">  
-                        <p:graphicImage value="/resources/img/pdf.png" />  
-                    </p:commandLink>                          
-                    <p:commandLink>  
-                        <p:graphicImage value="/resources/img/excel.png" />  
-                        <p:dataExporter type="xls" target="tbl" fileName="datos" pageOnly="true"/>  
-                    </p:commandLink>  
-                    <p:commandLink>  
-                        <p:graphicImage value="/resources/img/csv.png" />  
-                        <p:dataExporter type="csv" target="tbl" fileName="datos" pageOnly="true"/>  
-                    </p:commandLink>  
-
-                    <p:commandLink>  
-                        <p:graphicImage value="/resources/img/xml.png" />  
-                        <p:dataExporter type="xml" target="tbl" fileName="datos" pageOnly="true"/>  
-                    </p:commandLink>  
                 </p:panel>  
 
             </h:form>

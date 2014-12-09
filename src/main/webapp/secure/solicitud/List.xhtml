@@ -72,13 +72,6 @@
                                 <h:outputText value="#{item.fuentefinanciamientoid.fuentefinanciamiento}"/>
                             </p:column>                    
 
-                            <p:column id="columnaResponsable" filterBy="#{item.agenteid}" filterMatchMode="exact" filterOptions="#{agenteController.itemsAvailableSelectOne}" sortBy="#{item.agenteid.apellido}">
-                                <f:facet name="header">
-                                    <h:outputText value="Responsable" />
-                                </f:facet>                                                                        
-                                <h:outputText value="#{item.agenteid.apellido}, #{item.agenteid.nombres}"/>
-                            </p:column>           
-
                             <p:column id="columnaConvocatoria" filterBy="#{item.convocatoriaid}" filterMatchMode="exact" filterOptions="#{convocatoriaController.itemsAvailableSelectOne}" sortBy="#{item.convocatoriaid.convocatoria}">
                                 <f:facet name="header">
                                     <h:outputText value="Convocatoria" />
