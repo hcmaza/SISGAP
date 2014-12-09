@@ -109,15 +109,19 @@
                                                             <p:outputLabel value="#{proyectoController.selected.comitenteid.sectorid.sector}" title="Sector" rendered="#{not empty proyectoController.selected.comitenteid.sectorid.sector}"/>
                                                         </p:column> 
                                                         <p:column>
+
                                                             <p:commandButton rendered="#{proyectoController.selected.comitenteid ne null}" id="detalleComitenteBtn" value="Detalles" icon="ui-icon-search"  
-                                                                             update="@widgetVar(detallesComitente)" onclick="PF('detallesComitente').show()" />  
+                                                                             onclick="PF('detallesComitente').show()" immediate="true" />  
                                                         </p:column> 
                                                     </p:row>
                                                 </p:panelGrid>                                                    
 
 
                                                 <p:separator />
-                                                <p:commandButton value="Crear Comitente" onclick="dcomitentecrear.show()" />
+                                                
+                                                <!--<p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>-->
+                                                <!--<p:commandButton value="Crear Comitente" onclick="dcomitentecrear.show()" immediate="true"  />-->
+                                                <p:commandButton value="Crear Comitente" onclick="PF('dcomitentecrear').show();" immediate="true"  />
 
                                             </p:panel>
 
