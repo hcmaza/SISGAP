@@ -5,15 +5,14 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.PresupuestoTareaFacade;
 import ar.edu.undec.sisgap.controller.RubroFacade;
-import ar.edu.undec.sisgap.model.Agente;
+import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
+import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,7 +20,6 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -29,7 +27,6 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.chart.PieChartModel;
@@ -47,6 +44,7 @@ public class PresupuestoTareaController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private List<PresupuestoTarea> presupuestostareasitems ;
+     private List<PresupuestoTarea> presupuestostareas ;
     private PresupuestoTarea current2 = new PresupuestoTarea();
     private TreeNode root = new DefaultTreeNode();
     private PieChartModel pieModelAportes;
@@ -259,36 +257,7 @@ public class PresupuestoTareaController implements Serializable {
     
   public List<PresupuestoTarea> getPresupuestostareasitems()
   {
-//      if(this.presupuestostareasitems ==null){
-//          this.presupuestostareasitems = new ArrayList<PresupuestoTarea>();
-//          FacesContext context = FacesContext.getCurrentInstance();
-//          ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-//           TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
-//            for(ProyectoAgente pa:proyectoagentecontroller.getEquipotrabajo()){
-//           PresupuestoTarea pt = new PresupuestoTarea();
-//           
-//           pt.setTarea(tareacontroller.getSelected());
-//            Rubro r = new Rubro();
-//            
-//            if(pa.getConsultorexterno()){
-//                r = ejbFacadeRubro.findbyId(4); 
-//            }else{
-//               r= ejbFacadeRubro.findbyId(5); 
-//            }
-//           pt.setRubro(r);
-//           pt.setDescripcion(pa.getAgente().toString());
-//           pt.setCostounitario(pa.costoUnitarioCargoLegajo());
-//           pt.setCantidad( BigDecimal.valueOf(pa.contarDiasTareas()) );
-//           pt.setAportecomitente(BigDecimal.ZERO);
-//           pt.setAporteorganismo(BigDecimal.ZERO);
-//           pt.setAporteuniversidad(BigDecimal.ZERO);
-//           //pri.setTotal(pri.getCantidad().multiply(pa.costoUnitarioCargoLegajo()));
-//           this.presupuestostareasitems.add(pt);
-//           tareacontroller.getSelected().setPresupuestoTareaList(presupuestostareasitems);
-//       }
-//      }
-//      this.acomodarTablapresupuestotareaitem();
-    return this.presupuestostareasitems;
+       return this.presupuestostareasitems;
   }
   
   public void setPresupuestostareasitems(List<PresupuestoTarea> presupuestostareasitems)
@@ -310,13 +279,13 @@ public class PresupuestoTareaController implements Serializable {
    public String reinit(Rubro rubro)
   {
      
-    this.current2 = new PresupuestoTarea();
-    this.current2.setRubro(rubro);
-    this.current2.setAportecomitente(BigDecimal.ZERO);
-    this.current2.setAporteorganismo(BigDecimal.ZERO);
-    this.current2.setAporteuniversidad(BigDecimal.ZERO);
-    this.current2.setCantidad(BigDecimal.ONE);
-    this.current2.setCostounitario(BigDecimal.ZERO);
+    this.current = new PresupuestoTarea();
+    this.current.setRubro(rubro);
+    this.current.setAportecomitente(BigDecimal.ZERO);
+    this.current.setAporteorganismo(BigDecimal.ZERO);
+    this.current.setAporteuniversidad(BigDecimal.ZERO);
+    this.current.setCantidad(BigDecimal.ONE);
+    this.current.setCostounitario(BigDecimal.ZERO);
     return null;
   }
   
@@ -332,7 +301,7 @@ public class PresupuestoTareaController implements Serializable {
   
   public void sumarTotalCurrent()
   {
-    this.current2.setTotal(this.current2.getCostounitario().multiply(this.current2.getCantidad()));
+    this.current.setTotal(this.current.getCostounitario().multiply(this.current.getCantidad()));
   }
   
   public boolean verificarAportes()
@@ -340,16 +309,22 @@ public class PresupuestoTareaController implements Serializable {
     int valor = 0;
     BigDecimal sumaaportes = BigDecimal.ZERO;
     
+    sumaaportes = this.current.getAportecomitente().add(this.current.getAporteorganismo()).add(this.current.getAporteuniversidad());
+   
+      if(sumaaportes.longValue()==this.current.getTotal().longValue()){
+         return true; 
+      }else{
+          return false;
+      }
+  }
+  
+  public boolean verificarAportes2()
+  {
+    int valor = 0;
+    BigDecimal sumaaportes = BigDecimal.ZERO;
+    
     sumaaportes = this.current2.getAportecomitente().add(this.current2.getAporteorganismo()).add(this.current2.getAporteuniversidad());
-      System.out.println("sumaaportes"+sumaaportes.longValue());
-      System.out.println("totalaportes"+this.current2.getTotal());
-   // valor = sumaaportes.compareTo(this.current2.getTotal());
-    /*if (valor == 1) {
-      return false;
-    }else{
-        return true;
-    }
-    */
+   
       if(sumaaportes.longValue()==this.current2.getTotal().longValue()){
          return true; 
       }else{
@@ -360,30 +335,48 @@ public class PresupuestoTareaController implements Serializable {
   @Deprecated
   public void armarPresupuestoNodos()
   {
-    PresupuestoTarea pt;
-    TreeNode treeNode;
-    TreeNode treeNodech;
     
-      this.root = new DefaultTreeNode("INICIO", null);
+     FacesContext context = FacesContext.getCurrentInstance();
+      EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+      BigDecimal sumatotal = BigDecimal.ZERO;
+      BigDecimal sumaaportecomitente = BigDecimal.ZERO;
+      BigDecimal sumaaporteuniversidad = BigDecimal.ZERO;
+      BigDecimal sumaaporteorganismo = BigDecimal.ZERO;
+     
       this.root.setExpanded(true);
-      this.root.setSelectable(false);
-      
-      for (Rubro rub : this.ejbFacadeRubro.findAll())
-      {
-          
-        pt = new PresupuestoTarea();
-        pt.setRubro(rub);
-        treeNode = new DefaultTreeNode(pt, this.root);
-        treeNode.setExpanded(true);
-        for (PresupuestoTarea p : getPresupuestostareasitems()) {
-          if (p.getRubro().equals(pt.getRubro())) {
-            treeNodech = new DefaultTreeNode(p, treeNode);
-             
+      root = new DefaultTreeNode(new PresupuestoTarea(),null);
+                 root.setExpanded(true);
+                
+                 for(Etapa etapa: etapacontroller.getEtapas()){
+                     
+                     PresupuestoTarea e = new PresupuestoTarea();
+                     e.setDescripcion("Etapa - " + etapa.getEtapa());
+                     
+                     TreeNode et = new DefaultTreeNode(e,root);
+                     et.setExpanded(true);
+                     sumaaportecomitente=BigDecimal.ZERO;
+                     sumaaporteuniversidad=BigDecimal.ZERO;
+                     sumaaporteorganismo=BigDecimal.ZERO;
+                     sumatotal=BigDecimal.ZERO;
+                     for(Tarea tarea:etapa.getTareaList()){
+                         PresupuestoTarea t = new PresupuestoTarea();
+                            t.setDescripcion("Tarea - "+tarea.getTarea());
+                         TreeNode tar = new DefaultTreeNode(t,et);
+                          tar.setExpanded(true);
+                         for(PresupuestoTarea p :tarea.getPresupuestoTareaList()){
+                             
+                             TreeNode tp = new DefaultTreeNode(p,tar);
+                            
+                         }
+                     }
+
+                 }
+                 
+                 
+                 
               
-          }
-        }
-      }
-   
+      System.out.println("");
+
   }
   
 //  public void armarPresupuestosNodos2(Tarea presu){
@@ -436,8 +429,8 @@ public class PresupuestoTareaController implements Serializable {
     if (verificarAportes()){
       
       current2.setTarea(tareacontroller.getSelected());
-      this.presupuestostareasitems.add(this.current2);
-      this.sumarGastos();
+      this.presupuestostareasitems.add(this.current);
+      this.armarPresupuestoGeneral();
       this.acomodarTablapresupuestotareaitem();
       
      //this. armarPresupuestoNodos();
@@ -450,112 +443,7 @@ public class PresupuestoTareaController implements Serializable {
     
     armarGraficosPresupuesto();
   }
-  @Deprecated
-  public void agregarPresupuestoRRHHCONSULTOR()
-  {
-      FacesContext context = FacesContext.getCurrentInstance();
-      ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-      TareaAgenteController tareaagentecontroller = (TareaAgenteController) context.getApplication().evaluateExpressionGet(context, "#{tareaAgenteController}", TareaAgenteController.class);
-      
-      TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
-      EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-     ProyectoAgente pax= new ProyectoAgente();
-      for(TareaAgente ta:tareaagentecontroller.getTareasagentes()){
-          
-          PresupuestoTarea pt = new PresupuestoTarea();
-           
-            pt.setTarea(tareacontroller.getSelected());
-            Rubro r = new Rubro();
-            for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-                    if(pa.getAgente().equals(ta.getAgenteid())){
-                       
-                        if(pa.getConsultorexterno()){
-                          r = ejbFacadeRubro.findbyId(4); 
-                        }else{
-                          r = ejbFacadeRubro.findbyId(5); 
-                        }
-                        pax = pa;
-                    }
-            }
-           pt.setRubro(r);
-           
-           int i = 0;
-           int lugar = -1;
-           for(PresupuestoTarea pts:presupuestostareasitems){
-               
-               if(pts.getDescripcion().equals(ta.getAgenteid().toString())){
-                   lugar = i;
-               }else{
-                   
-               }
-               ++i;
-           }
-           
-           if(lugar==-1){
-               
-               if(pax.getConsultorexterno()){
-                   pt.setCostounitario(pax.getHonorario());
-               }else{
-                    pt.setCostounitario(ta.costoUnitarioCargoLegajo());
-               } 
-                pt.setCantidad( BigDecimal.valueOf(tareacontroller.getSelected().getDias()) );
-                
-                pt.setDescripcion(ta.getAgenteid().toString());
-                pt.setAportecomitente(BigDecimal.ZERO);
-                pt.setAporteorganismo(BigDecimal.ZERO);
-                pt.setAporteuniversidad(BigDecimal.ZERO);
-                if(pt.getCantidad().equals(BigDecimal.ZERO)){
-                    
-                }else{
-                    if(pax.getConsultorexterno()){
-                        pt.setTotal(pt.getCantidad().divide(BigDecimal.valueOf(30),2, RoundingMode.HALF_UP));
-                       
-                    }else{
-                       pt.setTotal((pt.getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(pt.getCostounitario())); 
-                       
-                       System.out.println("--------TOTAL1"+pt.getTotal());
-                       pt.setTotal(pt.getTotal().multiply(BigDecimal.valueOf(ta.getHorasdedicadas())));
-                      System.out.println("--------TOTAL2"+pt.getTotal()+" horas dedicadas  "+ta.getHorasdedicadas());
-                       pt.setTotal(pt.getTotal().setScale(2, BigDecimal.ROUND_HALF_UP));
-                       System.out.println("--------TOTAL3"+pt.getTotal());
-                    }
-                }
-                
-                this.presupuestostareasitems.add(pt);
-           }else{
-                PresupuestoTarea ptn = this.presupuestostareasitems.get(lugar);
-
-                if(pax.getConsultorexterno()){
-                   ptn.setCostounitario(pax.getHonorario());
-               }else{
-                    ptn.setCostounitario(ta.costoUnitarioCargoLegajo());
-               } 
-                
-                ptn.setCantidad( BigDecimal.valueOf(tareacontroller.getSelected().getDias()) );
-               
-               
-                if((ptn.getCantidad().equals(BigDecimal.ZERO)) | (ptn.getCantidad()==null)){
-                    
-                }else{
-                    if(pax.getConsultorexterno()){
-                        ptn.setTotal((ptn.getCantidad().divide(BigDecimal.valueOf(30),2, RoundingMode.HALF_UP)).multiply(ptn.getCostounitario()));
-                        ptn.setTotal(ptn.getTotal().setScale(2));
-                    }else{
-                        ptn.setTotal((ptn.getCantidad().divide(BigDecimal.valueOf(7),2, RoundingMode.HALF_UP)).multiply(ptn.getCostounitario()));
-                        System.out.println("--------TOTAL1"+ptn.getTotal());
-                        ptn.setTotal(ptn.getTotal().multiply(BigDecimal.valueOf(ta.getHorasdedicadas())));
-                        System.out.println("--------TOTAL2"+ptn.getTotal()+"   horas dedicasd "+ta.getHorasdedicadas());
-                        ptn.setTotal(ptn.getTotal().setScale(2, BigDecimal.ROUND_HALF_UP));
-                        System.out.println("--------TOTAL3"+ptn.getTotal());
-                    }
-                }
-                     this.presupuestostareasitems.set(lugar, ptn);
-           }
-       }
-      
-      this.sumarGastos();
-      //armarGraficosPresupuesto();
-  }
+  
   
   public boolean agregarPresupuestoRRHHCONSULTOR(TareaAgente taprincipal)
   {
@@ -584,10 +472,10 @@ public class PresupuestoTareaController implements Serializable {
            }
            
            if(lugar==-1){
-               System.out.println("verifico 1"+verificarAportes() );
-                 if (verificarAportes()){
+              
+                 if (verificarAportes2()){
                      this.presupuestostareasitems.add(current2);
-                     this.sumarGastos();
+                    this.armarPresupuestoGeneral();
                     this.armarGraficosPresupuesto();
                       resultado = true;
                        
@@ -601,10 +489,10 @@ public class PresupuestoTareaController implements Serializable {
 
                 
            }else{
-               System.out.println("verifico 2"+verificarAportes() );
-                if (verificarAportes()){
+               
+                if (verificarAportes2()){
                  this.presupuestostareasitems.set(lugar, current2);
-                  this.sumarGastos();
+                  this.armarPresupuestoGeneral();
                  this.armarGraficosPresupuesto();
                     resultado = true;   
                      }
@@ -616,7 +504,7 @@ public class PresupuestoTareaController implements Serializable {
                     }
 
            }
-           System.out.println(" resultqado" + resultado);
+          
        
      return resultado;  
       //this. armarPresupuestoNodos();
@@ -638,16 +526,17 @@ public class PresupuestoTareaController implements Serializable {
       contador++;
     }
     getPresupuestostareasitems().remove(posicion);
+    this.armarPresupuestoGeneral();
     //getPresupuestosrubrositems().remove(pri);
      
-    armarPresupuestoNodos();
+   // armarPresupuestoNodos();
   }
   
   public void eliminarPresupuesto2(PresupuestoTarea pt)
   {
       
     getPresupuestostareasitems().remove(pt);
-     
+     this.armarPresupuestoGeneral();
     //ejbFacade.remove(pri);
   }
   
@@ -734,43 +623,23 @@ public class PresupuestoTareaController implements Serializable {
   {
     this.pieModelRubros = pieModelRubros;
   }
-  //sumo gasto por rubro agregado 
+  //sumo gastos 
   public void sumarGastos(){
-//
-//
-//        Iterator it=this.presupuestosrubrositems.iterator();
-//     BigDecimal totalcomitente=BigDecimal.ZERO;
-//    BigDecimal totaluniversidad=BigDecimal.ZERO;
-//    BigDecimal totalorganismo=BigDecimal.ZERO;
-      sumagastoorganismo=BigDecimal.ZERO;
+     sumagastoorganismo=BigDecimal.ZERO;
         sumagastocomitente=BigDecimal.ZERO;
         sumagastouniversidad=BigDecimal.ZERO;
         sumatotal=BigDecimal.ZERO;
-//        int contador=-1;
-//     while(it.hasNext()){
-//         contador++;
-//         PresupuestoRubroitem pri=(PresupuestoRubroitem)it.next();
-//        totalcomitente=totalcomitente.add(new BigDecimal(pri.getAportecomitente().setScale(2).toString()));
-//       totaluniversidad=totaluniversidad.add(new BigDecimal(pri.getAporteuniversidad().setScale(2).toString()));
-//        totalorganismo=totalorganismo.add(new BigDecimal(pri.getAporteorganismo().setScale(2).toString()));
-//      
-//        pri.setTotal(pri.getAporteorganismo().add(pri.getAportecomitente()).add(pri.getAporteuniversidad()));
-//
-//        this.presupuestosrubrositems.get(contador).setTotal(pri.getTotal());
-//     }
-//     sumagastocomitente=totalcomitente;
-//     sumagastouniversidad=totaluniversidad;
-//     sumagastoorganismo=totalorganismo;
-//     sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
-        for(PresupuestoTarea pt:this.getPresupuestostareasitems()){
-            
-            this.sumagastocomitente=this.sumagastocomitente.add(pt.getAportecomitente());
-            this.sumagastoorganismo=this.sumagastoorganismo.add(pt.getAporteorganismo());
-            this.sumagastouniversidad=this.sumagastouniversidad.add(pt.getAporteuniversidad());
-           }
-        this.sumatotal = (sumagastoorganismo.add(sumagastocomitente)).add(sumagastouniversidad);
-       }
+         
+            for(PresupuestoTarea pt:this.getPresupuestostareas()){
 
+                this.sumagastocomitente=this.sumagastocomitente.add(pt.getAportecomitente());
+                this.sumagastoorganismo=this.sumagastoorganismo.add(pt.getAporteorganismo());
+                this.sumagastouniversidad=this.sumagastouniversidad.add(pt.getAporteuniversidad());
+               }
+            this.sumatotal = (sumagastoorganismo.add(sumagastocomitente)).add(sumagastouniversidad);
+   
+       
+  }
     public BigDecimal getSumagastoorganismo() {
         return sumagastoorganismo;
     }
@@ -814,25 +683,6 @@ public class PresupuestoTareaController implements Serializable {
       this.presupuestostareasitems = ptn;
   }
   
-  public void onCellEdit(CellEditEvent event) {
-      current2 = this.presupuestostareasitems.get(event.getRowIndex());
-      if (verificarAportes()){
-        this.presupuestostareasitems.set(event.getRowIndex(),current2);
-        this.sumarGastos();
-        this.acomodarTablapresupuestotareaitem();
-        this.sumarGastos();
-        this.armarGraficosPresupuesto();
-       //this. armarPresupuestoNodos();
-     }
-    else
-    {
-      
-      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La suma de Aportes no puede superar al Total en el rubro "+ current2.getRubro().getRubro() +" y descripcion " +current2.getDescripcion()));
-    }
-    
-    armarGraficosPresupuesto();
-      
-  }
   
   public List<PresupuestoTarea> buscarRubroenlistaPresupuestoTarea(Rubro rubro){
       List<PresupuestoTarea> pt= new ArrayList<PresupuestoTarea>();
@@ -904,6 +754,40 @@ public class PresupuestoTareaController implements Serializable {
       }
       return sumagastototalrubro;
   }
+
+    public List<PresupuestoTarea> getPresupuestostareas() {
+                
+        return presupuestostareas;
+    }
+
+    public void setPresupuestostareas(List<PresupuestoTarea> presupuestostareas) {
+        this.presupuestostareas = presupuestostareas;
+    }
+  
+    public void armarPresupuestoGeneral(){
+        
+        presupuestostareas = new ArrayList<PresupuestoTarea>();
+        FacesContext context = FacesContext.getCurrentInstance();
+        EtapaController etapacontroller= (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+          
+          for(Etapa e : etapacontroller.getEtapas()){
+              for(Tarea t : e.getTareaList()){
+                  for(PresupuestoTarea pt : t.getPresupuestoTareaList()){
+                      System.out.println("-------desc----------------"+pt.getDescripcion());
+                      System.out.println("---------comitente--------------"+pt.getAportecomitente());
+                      System.out.println("---------universidad--------------"+pt.getAporteuniversidad());
+                      System.out.println("---------organismo--------------"+pt.getAporteorganismo());
+                      System.out.println("----------cantidaad-------------"+pt.getCantidad());
+                      System.out.println("---------costounitario--------------"+pt.getCostounitario());
+                      this.presupuestostareas.add(pt);
+                       }
+           
+              }
+           
+          }
+            this.sumarGastos();
+             this.armarPresupuestoNodos();
+    }
   
   
 

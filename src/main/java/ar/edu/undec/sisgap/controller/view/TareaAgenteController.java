@@ -352,8 +352,7 @@ public class TareaAgenteController implements Serializable {
             presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario())); 
             presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getTotal().multiply(BigDecimal.valueOf(this.current2.getHorasdedicadas()))));
             presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
-              System.out.println("onceledit "+ presupuestotareacontroller.getCurrent2().getTotal());     
-        
+            
         }
       
      }
@@ -392,7 +391,6 @@ public class TareaAgenteController implements Serializable {
         PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
         EtapaController etapacontrol= (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-         System.out.println("Agente -----"+agenteviewcontroller.getSelected());
         this.current2 = new TareaAgente();
          this.current2.setAgenteid(agenteviewcontroller.getSelected());
        
@@ -444,11 +442,9 @@ public class TareaAgenteController implements Serializable {
                     if(pax.getConsultorexterno()){
                         presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(30),2, RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario()));
                         presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
-                        System.out.println("totl -consultor---"+presupuestotareacontroller.getCurrent2().getTotal());
-                    }else{
+                        }else{
                        presupuestotareacontroller.getCurrent2().setTotal((presupuestotareacontroller.getCurrent2().getCantidad().divide(BigDecimal.valueOf(7), 2,RoundingMode.HALF_UP)).multiply(presupuestotareacontroller.getCurrent2().getCostounitario())); 
                        presupuestotareacontroller.getCurrent2().setTotal(presupuestotareacontroller.getCurrent2().getTotal().setScale(2, RoundingMode.HALF_UP));
-                        System.out.println("totl ----"+presupuestotareacontroller.getCurrent2().getTotal());
                       }
                 }
                 
@@ -483,8 +479,6 @@ public class TareaAgenteController implements Serializable {
          contador=0;
          lugar=0;
         for(PresupuestoTarea pt:presupuestotareacontroller.getPresupuestostareasitems()){
-             System.out.println("igual agente"+pt.getDescripcion());
-             System.out.println("igual agente 2"+ta.getAgenteid().toString());
                 if(pt.getDescripcion().equals(ta.getAgenteid().toString())){
                   lugar=contador;   
                  }

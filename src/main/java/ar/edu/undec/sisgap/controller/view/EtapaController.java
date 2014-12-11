@@ -293,7 +293,7 @@ public class EtapaController implements Serializable {
         
         FacesContext context = FacesContext.getCurrentInstance();
             TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
-         PresupuestoRubroitemController presupuestorubroitemcontroller= (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
+         PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
           if(this.paraeditar){
             editarListadoEtapas();
         }else{
@@ -346,7 +346,7 @@ public class EtapaController implements Serializable {
              }   
              
               this.agentesProyecto();
-             
+             presupuestotareacontroller.armarPresupuestoGeneral();
               crearChart();
               current=null;
               tareacontroller.setTareasdeproyecto(null);
@@ -513,6 +513,7 @@ public class EtapaController implements Serializable {
     public void editarListadoEtapas(){
         FacesContext context = FacesContext.getCurrentInstance();
             TareaController tareacontroller= (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+          PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
           
         Date mindia = new Date("2999/12/12");
         Date maxdia = new Date("2001/01/01");
@@ -547,7 +548,9 @@ public class EtapaController implements Serializable {
             }
              
         }
+        
         crearChart();
+        presupuestotareacontroller.armarPresupuestoGeneral();
         this.agentesProyecto();
          current=null;
          tareacontroller.setTareasdeproyecto(null);

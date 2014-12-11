@@ -830,7 +830,11 @@ public class ProyectoController implements Serializable {
                 for(Tarea t : OldTarea ){
                     t.setEtapaid(e);
                     List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
+                     List<PresupuestoTarea> OldPresupuestoTarea = t.getPresupuestoTareaList();
+                   
                     t.setTareaAgenteList(null);
+                    t.setPresupuestoTareaList(null);
+                    
                     this.ejbtarea.createWithPersist(t);
                     if(OldTareaAgente != null){
                          for (TareaAgente ta : OldTareaAgente){
@@ -838,16 +842,18 @@ public class ProyectoController implements Serializable {
                            ejbtareaagente.create(ta);
                          }
                     }
+                    
+                    if(OldPresupuestoTarea != null){
+                         for (PresupuestoTarea pt : OldPresupuestoTarea){
+                             pt.setTarea(t);
+                           ejbpresupuestotarea.create(pt);
+                         }
+                    }
                 }
            }
+           
         }
         
-        for(PresupuestoTarea pt : presupuestotareacontroller.getPresupuestostareasitems()){
-           
-         
-            ejbpresupuestotarea.createWithPersist(pt);
-           
-        }
         
         // crear archivos del proyecto
         
@@ -859,7 +865,7 @@ public class ProyectoController implements Serializable {
          }
         
         
-         EnviarMail enviarmail = new EnviarMail();
+         //EnviarMail enviarmail = new EnviarMail();
         // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
                todobien=true;       
@@ -1371,22 +1377,12 @@ public class ProyectoController implements Serializable {
        System.out.println("ffffffffffffff3ffffffffff");
        //proyecto Agente
         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-        List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
-        
-        for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
-           // pa1.setFuncionproyecto("");
-            if(pa1.getAgente().getHoraslaborales()!=null){
-               pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2)); 
-            }
-            //pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
-            pa.add(pa1);
-            
-        }
-        proyectoagentecontroller.setEquipotrabajo(pa);
+       
+        proyectoagentecontroller.setEquipotrabajo(ejbproyectoagente.buscarEquipoTrabajo(current.getId()));
         ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
         archivoproyectoController.findporProyectoEdit(current.getId());
             
-      System.out.println("ffffffffffffffffffffffff");
+      System.out.println("fffffffffffff4fffffffffff");
         return "Edit";
     }
     

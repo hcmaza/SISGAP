@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core" >
 
     <ui:composition template="/template.xhtml">
        
@@ -14,8 +14,7 @@
 <script src="#{request.contextPath}/resources/js/highcharts-more.js"></script>
 <script src="#{request.contextPath}/resources/js/exporting.js"></script>
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
-            <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosEdit}" />
-           
+            <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView()}" />
             
         <!--     <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
               
@@ -26,7 +25,7 @@
             </div>
         </p:dialog>  -->
 
-             
+            
             <h:form id="form" >
                 
                 <p:panel header="Proyecto N° #{proyectoController.selected.id} - #{proyectoController.selected.nombre}" toggleable="true" collapsed="true" toggleTitle="Descripcion del Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;" >
@@ -457,64 +456,35 @@
                 <p:tab title="Presupuesto" >
                     
                     
-                    <p:dataTable id="tablepresupuesto" value="#{presupuestoTareaController.presupuestostareas}" var="item" >
+                    <p:treeTable id="tablepresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" scrollable="true" >
                                 
+                               <p:column headerText="Etapa">
+                                    <h:outputText value="#{item.descripcion}" />
+                                </p:column>
                                 <p:column headerText="Rubro">
-                                    
                                     <h:outputText value="#{item.rubro.rubro}" />
-                                </p:column>    
-                                <p:column headerText="Descripcion">
-                                   
-                                    <h:outputText value="#{item.descripcion}"/>
                                 </p:column>
                                 <p:column headerText="Costo Unitario">
-                                    
-                                    <h:outputText value="#{item.costounitario}"/>
+                                    <h:outputText value="#{item.costounitario}" />
                                 </p:column>
                                 <p:column headerText="Cantidad">
-                                    
-                                    <h:outputText value="#{item.cantidad}"/>
+                                    <h:outputText value="#{item.cantidad}" />
                                 </p:column>
-                                
                                 <p:column headerText="Aporte Comitente">
-                                            <h:outputText value="#{item.aportecomitente}" />
-                                         
+                                    <h:outputText value="#{item.aportecomitente}" />
                                 </p:column>
-                                <p:column headerText="Aporte Universidad">
-                                           <h:outputText value="#{item.aporteuniversidad}" />
-                                       
+                                <p:column headerText="Aporte Univeridad">
+                                    <h:outputText value="#{item.aporteuniversidad}" />
                                 </p:column>
                                 <p:column headerText="Aporte Organismo">
-                                             <h:outputText value="#{item.aporteorganismo}" />
-                                     
+                                    <h:outputText value="#{item.aporteorganismo}" />
                                 </p:column>
                                 <p:column headerText="Total">
-                                    
-                                    <h:outputText value="#{item.total}"/>
+                                    <h:outputText value="#{item.total}" />
                                 </p:column>
-                            
-                             <p:columnGroup type="footer">
-                                <p:row>
-                                   <p:column footerText="" />
-                                    
-                                    <p:column footerText="" />
-                                    
-                                    <p:column footerText="" />
-                                    
-                                    <p:column footerText="" />
-                                   
-                                    <p:column footerText="Total $#{presupuestoTareaController.sumagastocomitente}" />
-                                   
-                                    <p:column footerText="Total $#{presupuestoTareaController.sumagastouniversidad}" />
-                                   
-                                    <p:column footerText="Total $#{presupuestoTareaController.sumagastoorganismo}" />
-                                   
-                                    <p:column footerText=" TOTAL $#{presupuestoTareaController.sumatotal}" />
-                                    
-                                </p:row>
-                             </p:columnGroup>
+                               
                                        
-                        </p:dataTable>
+                        </p:treeTable>
                     <div align="center" >
                     <h:panelGrid id="pchartpresupuesto" columns="2" styleClass="left,right" >
                         <p:chart type="pie" id="chartaportes" model="#{presupuestoTareaController.pieModelAportes}" 
@@ -626,15 +596,13 @@
               </p:panel>
               
                 
-                
                         <br />
-
                         <div align="center" >
-                            <p:commandButton value="Enviar para evaluacion" actionListener="#{proyectoController.enviarEditarEvaluarProyecto}" />
+                            <p:commandButton value="Enviar para evaluacion" actionListener="#{proyectoController.enviarEvaluarProyecto}" />
                         </div>
                         <br />
                       
-                    <h:link outcome="/index" value="INICIO"/>
+                <h:link outcome="/index" value="INICIO"/>
                  <h:inputHidden value="#{etapaController.gsoncategoria}" id="beanvalue"  />
                
                 </h:form>
@@ -904,17 +872,17 @@
                                  <p:inputText size="10"  id="aportecomitente" value="#{presupuestoTareaController.current2.aportecomitente}" title="Aportecomitente" validatorMessage="Ingrese solo números"  >
                                    <!--<f:validateDoubleRange minimum="0.00" maximum="15000000.00" />-->
                                     <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
-                                    <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes}"  />
+                                    <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes2}"  />
                                 </p:inputText>
                                 <p:outputLabel value="Aporte universidad:" for="aporteuniversidad" />
                                 <p:inputText size="10" id="aporteuniversidad" value="#{presupuestoTareaController.current2.aporteuniversidad}" title="Aporteuniversidad" >
                                     <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
-                                    <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes}"  />
+                                    <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes2}"  />
                                 </p:inputText>
                                 <p:outputLabel value="Aporte organismo:" for="aporteorganismo" />
                                 <p:inputText size="10" id="aporteorganismo" value="#{presupuestoTareaController.current2.aporteorganismo}" title="Aporteorganismo" >
                                    <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
-                                    <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes}"  />
+                                    <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes2}"  />
                                 </p:inputText>
                              </h:panelGrid>
                            </div>
@@ -1123,21 +1091,21 @@
                                  
                                 <p:outputLabel value="Rubro:" for="rubro" />
                                 
-                                <p:inputText id="rubro" readonly="true" value="#{presupuestoTareaController.current2.rubro.rubro}" />
+                                <p:inputText id="rubro" readonly="true" value="#{presupuestoTareaController.selected.rubro.rubro}" />
                                     
                                 <p:outputLabel value="Descripcion:" for="descripcion" />
-                                <p:inputText size="50"  id="descripcion" value="#{presupuestoTareaController.current2.descripcion}" required="true" title="Descripcion" />
+                                <p:inputText size="50"  id="descripcion" value="#{presupuestoTareaController.selected.descripcion}" required="true" title="Descripcion" />
                             </h:panelGrid>
                              <h:panelGrid columns="5">
                              
                                 <p:outputLabel value="Costo unitario:" for="costounitario" />
-                                <p:inputText id="costounitario" value="#{presupuestoTareaController.current2.costounitario}" title="Costounitario" >
+                                <p:inputText id="costounitario" value="#{presupuestoTareaController.selected.costounitario}" title="Costounitario" >
                                     <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
                                     <p:ajax event="keyup" listener="#{presupuestoTareaController.sumarTotalCurrent}" update="totalpresupuesto" />
                                 </p:inputText>
                                 <p:message for="costounitario"  />
                                 <p:outputLabel value="Cantidad:" for="cantidad" />
-                                <p:inputText size="10"  id="cantidad" value="#{presupuestoTareaController.current2.cantidad}" title="Cantidad" >
+                                <p:inputText size="10"  id="cantidad" value="#{presupuestoTareaController.selected.cantidad}" title="Cantidad" >
                                     <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
                                     <p:ajax event="keyup" listener="#{presupuestoTareaController.sumarTotalCurrent}" update="totalpresupuesto" />
                                 </p:inputText>
@@ -1145,18 +1113,18 @@
                              <h:panelGrid columns="6">
                                  <p:outputLabel value="Aporte comitente:" for="aportecomitente" />
                              
-                                 <p:inputText size="10"  id="aportecomitente" value="#{presupuestoTareaController.current2.aportecomitente}" title="Aportecomitente" validatorMessage="Ingrese solo números"  >
+                                 <p:inputText size="10"  id="aportecomitente" value="#{presupuestoTareaController.selected.aportecomitente}" title="Aportecomitente" validatorMessage="Ingrese solo números"  >
                                    <!--<f:validateDoubleRange minimum="0.00" maximum="15000000.00" />-->
                                     <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
                                     <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes}"  />
                                 </p:inputText>
                                 <p:outputLabel value="Aporte universidad:" for="aporteuniversidad" />
-                                <p:inputText size="10" id="aporteuniversidad" value="#{presupuestoTareaController.current2.aporteuniversidad}" title="Aporteuniversidad" >
+                                <p:inputText size="10" id="aporteuniversidad" value="#{presupuestoTareaController.selected.aporteuniversidad}" title="Aporteuniversidad" >
                                     <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
                                     <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes}"  />
                                 </p:inputText>
                                 <p:outputLabel value="Aporte organismo:" for="aporteorganismo" />
-                                <p:inputText size="10" id="aporteorganismo" value="#{presupuestoTareaController.current2.aporteorganismo}" title="Aporteorganismo" >
+                                <p:inputText size="10" id="aporteorganismo" value="#{presupuestoTareaController.selected.aporteorganismo}" title="Aporteorganismo" >
                                    <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
                                     <p:ajax event="keyup" listener="#{presupuestoTareaController.verificarAportes}"  />
                                 </p:inputText>
@@ -1165,7 +1133,7 @@
                              <h:panelGrid columns="2">
                              
                                 <p:outputLabel value="Total:" for="totalpresupuesto" />
-                                <p:outputLabel id="totalpresupuesto" value="$#{presupuestoTareaController.current2.total}" title="Total" >
+                                <p:outputLabel id="totalpresupuesto" value="$#{presupuestoTareaController.selected.total}" title="Total" >
                                     
                                 </p:outputLabel>
                                 

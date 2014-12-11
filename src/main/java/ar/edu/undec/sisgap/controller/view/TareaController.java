@@ -279,22 +279,19 @@ public class TareaController implements Serializable {
      }
     
     public void armarTareasProyecto(){
-        
         if(tareasdeproyecto==null){
             tareasdeproyecto = new ArrayList();
         }
         
         if(current.getId()==null){
-            
-        
             current.setId(tareasdeproyecto.size()+1);
             //current.setEstado("0");
-//            for(TareaAgente ta:tareaagentecontroller.getTareasagentes()){
-//               
-//            }
+           
            current.setTareaAgenteList(tareaagentecontroller.getTareasagentes());
-           current.setPresupuestoTareaList(this.presupuestotareacontroller.getPresupuestostareasitems()); 
+           current.setPresupuestoTareaList(this.presupuestotareacontroller.getPresupuestostareasitems());
+           
            tareasdeproyecto.add(current);
+           presupuestotareacontroller.armarPresupuestoGeneral();
         }
         
         current=null;
