@@ -115,7 +115,16 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
            System.out.println("No se pudo realizar la consulta"+e);
            return 0;
        }
-        
+         
+    }
+    
+    public List<Proyecto> buscarProyectosaEvaluar(){
+       try{
+           return em.createQuery("select p from Proyecto p where p.estadoproyectoid.id = 6 and p.estadoproyectoid.id = 11 ", Proyecto.class).getResultList();
+       }catch(Exception e){
+           System.out.println("No se pudo realizar la consulta"+e);
+           return null;
+       }
          
     }
     

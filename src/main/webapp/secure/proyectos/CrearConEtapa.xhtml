@@ -482,7 +482,18 @@
                                 <p:column headerText="Total">
                                     <h:outputText value="#{item.total}" />
                                 </p:column>
-                               
+                               <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                                      
+                                        <p:column footerText="#{presupuestoTareaController.sumagastouniversidad}" />
+                                    
+                                   <p:column footerText="#{presupuestoTareaController.sumagastoorganismo}" />
+                                    
+                                   <p:column footerText="#{presupuestoTareaController.sumatotal}" />
+                                    
+                                    </p:row>
+                                </p:columnGroup>
                                        
                         </p:treeTable>
                     <div align="center" >
