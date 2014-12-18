@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateDesembolsoTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateDesembolsoLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{desembolsoController.selected.id}" title="#{bundle.CreateDesembolsoTitle_id}" required="true" requiredMessage="#{bundle.CreateDesembolsoRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateDesembolsoLabel_fechadesembolso}" for="fechadesembolso" />
+                    <h:inputText id="fechadesembolso" value="#{desembolsoController.selected.fechadesembolso}" title="#{bundle.CreateDesembolsoTitle_fechadesembolso}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateDesembolsoLabel_fechacarga}" for="fechacarga" />
+                    <h:inputText id="fechacarga" value="#{desembolsoController.selected.fechacarga}" title="#{bundle.CreateDesembolsoTitle_fechacarga}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateDesembolsoLabel_numerodesembolso}" for="numerodesembolso" />
+                    <h:inputText id="numerodesembolso" value="#{desembolsoController.selected.numerodesembolso}" title="#{bundle.CreateDesembolsoTitle_numerodesembolso}" />
+                    <h:outputLabel value="#{bundle.CreateDesembolsoLabel_numerocuentabancaria}" for="numerocuentabancaria" />
+                    <h:selectOneMenu id="numerocuentabancaria" value="#{desembolsoController.selected.numerocuentabancaria}" title="#{bundle.CreateDesembolsoTitle_numerocuentabancaria}" >
+                        <f:selectItems value="#{cuentabancariaController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{desembolsoController.create}" value="#{bundle.CreateDesembolsoSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{desembolsoController.prepareList}" value="#{bundle.CreateDesembolsoShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateDesembolsoIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
