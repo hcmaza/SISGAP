@@ -801,8 +801,9 @@ public class ProyectoController implements Serializable {
                     pa.setProyectoAgentePK(paPK);     
            ejbproyectoagente.create(pa);
        }
-        
-           
+        Estadoproyecto ep= new Estadoproyecto();
+        ep.setId(6); 
+       current.setEstadoproyectoid(ep);
         
         //Creacion de etapas
         for (Etapa e : etapacontroller.getEtapas()) {
@@ -1381,6 +1382,13 @@ public class ProyectoController implements Serializable {
         proyectoagentecontroller.setEquipotrabajo(ejbproyectoagente.buscarEquipoTrabajo(current.getId()));
         ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
         archivoproyectoController.findporProyectoEdit(current.getId());
+        
+        etapacontroller.agentesProyecto();
+        
+        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController)context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+           
+        
+        presupuestotareacontroller.armarPresupuestoNodos();
             
       System.out.println("fffffffffffff4fffffffffff");
         return "Edit";
@@ -1899,6 +1907,12 @@ public class ProyectoController implements Serializable {
         current = null;
        this.recreateModel();
         
+    }
+    
+     public void buscarProyectosaEvaluar(){
+        recreateModel();
+       
+        items=new ListDataModel(getFacade().buscarProyectosaEvaluar());
     }
     
 }

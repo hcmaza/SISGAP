@@ -342,22 +342,60 @@ public class PresupuestoTareaController implements Serializable {
       BigDecimal sumaaportecomitente = BigDecimal.ZERO;
       BigDecimal sumaaporteuniversidad = BigDecimal.ZERO;
       BigDecimal sumaaporteorganismo = BigDecimal.ZERO;
+      Etapa etapaold = new Etapa();
+      Tarea tareaold = new Tarea();
+      List<PresupuestoTarea> sumatoriaporetapa = new ArrayList<PresupuestoTarea>();
+      List<PresupuestoTarea> sumatoriaportarea = new ArrayList<PresupuestoTarea>();
+      int ie = 0;
+      int it = 0;
+      for(Etapa etapa : etapacontroller.getEtapas()){
+          for(Tarea tarea : etapa.getTareaList()){
+              for(PresupuestoTarea pt : tarea.getPresupuestoTareaList()){
+                  
+//                 if(sumatoriaporetapa.get(ie)==null){
+//                    PresupuestoTarea ptx = new PresupuestoTarea();
+//                    sumatoriaporetapa.set(ie,ptx);
+//                 }
+                   sumaaportecomitente = sumaaportecomitente.add(pt.getAportecomitente());
+                   sumaaporteuniversidad = sumaaporteuniversidad.add(pt.getAporteuniversidad());
+                   sumaaporteorganismo = sumaaporteorganismo.add(pt.getAporteorganismo());
+                   
+                
+                    
+                
+                 it++; 
+              }
+              sumatotal = sumaaportecomitente.add(sumaaporteuniversidad.add(sumaaporteorganismo));
+             PresupuestoTarea ptx = new PresupuestoTarea();
+             ptx.setDescripcion("Etapa - "+etapa.getEtapa());
+             ptx.setAportecomitente(sumaaportecomitente);
+             ptx.setAporteuniversidad(sumaaporteuniversidad);
+             ptx.setAporteorganismo(sumaaporteorganismo);
+             ptx.setTotal(sumatotal);
+              sumatoriaporetapa.add(ie,ptx);
+              ie++;
+               sumaaportecomitente=BigDecimal.ZERO;
+                sumaaporteuniversidad=BigDecimal.ZERO;
+                sumaaporteorganismo=BigDecimal.ZERO;
+                sumatotal=BigDecimal.ZERO;
+          }
+         
+      }
      
       this.root.setExpanded(true);
+      
       root = new DefaultTreeNode(new PresupuestoTarea(),null);
                  root.setExpanded(true);
-                
+      ie=0;          
                  for(Etapa etapa: etapacontroller.getEtapas()){
+                   
+                    // PresupuestoTarea e = new PresupuestoTarea();
+                       
+                    // e.setDescripcion("Etapa - " + etapa.getEtapa());
                      
-                     PresupuestoTarea e = new PresupuestoTarea();
-                     e.setDescripcion("Etapa - " + etapa.getEtapa());
-                     
-                     TreeNode et = new DefaultTreeNode(e,root);
+                     TreeNode et = new DefaultTreeNode(sumatoriaporetapa.get(ie),root);
                      et.setExpanded(true);
-                     sumaaportecomitente=BigDecimal.ZERO;
-                     sumaaporteuniversidad=BigDecimal.ZERO;
-                     sumaaporteorganismo=BigDecimal.ZERO;
-                     sumatotal=BigDecimal.ZERO;
+                     
                      for(Tarea tarea:etapa.getTareaList()){
                          PresupuestoTarea t = new PresupuestoTarea();
                             t.setDescripcion("Tarea - "+tarea.getTarea());
@@ -369,10 +407,8 @@ public class PresupuestoTareaController implements Serializable {
                             
                          }
                      }
-
+                        ie++;
                  }
-                 
-                 
                  
               
       System.out.println("");
