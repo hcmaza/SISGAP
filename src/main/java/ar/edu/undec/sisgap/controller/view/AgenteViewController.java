@@ -39,6 +39,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -367,6 +368,13 @@ public class AgenteViewController implements Serializable {
         }
         return agente1;
     }
+    
+    public void dialogo(){
+        System.out.println("dialogoCrearAgente");
+        //RequestContext.getCurrentInstance().openDialog("/secure/solicitud/dialogo.xhtml");
+        RequestContext.getCurrentInstance().openDialog("dialogo");
+        System.out.println("dialogoCrearAgente fin");
+    }
 
     public void setAgente1(Agente agente1) {
         this.agente1 = agente1;
@@ -374,9 +382,15 @@ public class AgenteViewController implements Serializable {
     
     public void registrar(){
         
+        System.out.println("agenteViewController -  registrar");
+        
         if((this.ejbFacade.agentedocumento(agente1.getNumerodocumento())==null) || (ejbFacade.filtroDocumentooCuil(agente1.getCuil())==null)  ){
-                  
+             
+            System.out.println("agenteViewController -  registrar - if");
+            
             ejbFacade.createWithPersist(agente1);
+            
+            System.out.println("agenteViewController -  registrar - if - persistido");
            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "La registracion fue Satisfactoria")); 
         }else{

@@ -8,6 +8,9 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <ui:composition template="/template.xhtml">
+        <ui:define name="head">
+            
+        </ui:define>
 
         <ui:define name="body">
 
@@ -152,7 +155,9 @@
                                     <p:outputLabel value="#{agenteController.selected.dependenciaid.dependencia}" title="Dependencia" />
                                 </p:panelGrid>       
                                 <p:separator />
-                                <p:commandButton onclick="dagenteeditar.show()" type="button" value="Editar Responsable Técnico" />                                 
+                                
+                                <!--<p:commandButton onclick="dagenteeditar.show()" type="button" value="Editar Responsable Técnico" />-->                                 
+                                <p:commandButton value="Editar Responsable Técnico" onclick="PF('dagenteeditar').show();" immediate="true"  />
                             </p:fieldset>
 
 
@@ -393,6 +398,8 @@
                         <p:tab title="Equipo de trabajo">
                              <div align="right" >
                                     <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
+                                    
+                                    <p:commandButton value="Agregar Persona 2" actionListener="#{agenteViewController.dialogo()}" />
                                 </div>
                                 <h:panelGrid columns="4">
                                     <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Cuil " ></p:outputLabel>
@@ -404,13 +411,11 @@
                                            </p:selectOneMenu> 
                                     
                                     <h:panelGrid columns="6" id="agenteselecciona" >
-                                        
                                         <p:commandButton id="agregaraequipo" immediate="true" update="agentesa" value="Agregar al equipo de trabajo" action="#{proyectoAgenteController.agregarEquipo}" disabled="${empty agenteViewController.selected.apellido ? 'true' : 'false'}" >
-                                               
                                         </p:commandButton>
                                     </h:panelGrid>
-                                
                                 </h:panelGrid>
+                            
                                 <div align="center">
                                     <p:dataTable id="agentesa" value="#{proyectoAgenteController.equipotrabajo}" var="agentea" editable="true" editMode="cell" >
                                     <p:column>
@@ -446,7 +451,7 @@
                                     </p:column>
                                    
                                         
-                                        <p:column headerText="Horas Disponibles / Semanales">
+                                    <p:column headerText="Horas Disponibles / Semanales">
                                             <p:cellEditor>
                                                 <f:facet name="output">
                                                     <h:outputText value="#{agentea.horasdisponibles}"  />
@@ -724,7 +729,7 @@
                     <h:inputText maxlength="70" id="especialidad" value="#{agenteViewController.agente1.especialidad}" title="Especialidad" required="true" />
                     <p:message for="especialidad" /> 
                     
-                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formprincipal:tabviewTodo:agentesa  :formprincipal:tabviewTodo:advancedfiltroa" value="Crear" />
+                    <p:commandButton onclick="rc()" oncomplete="PF('dregistrar').hide()" update=":formprincipal:tabviewTodo:agentesa :formprincipal:tabviewTodo:advancedfiltroa" value="Crear" />
                     <br />
              
               

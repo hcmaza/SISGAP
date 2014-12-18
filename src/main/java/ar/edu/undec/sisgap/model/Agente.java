@@ -104,7 +104,7 @@ public class Agente implements Serializable {
     @Column(name = "especialidad")
     private String especialidad;
     @Column(name = "legajo")
-    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números positivos")
+    //@Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números positivos")
     private Integer legajo;
     @Column(name = "horaslaborales")
     private Integer horaslaborales;
@@ -262,11 +262,6 @@ public class Agente implements Serializable {
     public void setHorasmayordedicacion(Integer horasmayordedicacion) {
         this.horasmayordedicacion = horasmayordedicacion;
     }
-    
-    
-    
-    
-       
 
     @Override
     public int hashCode() {
