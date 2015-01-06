@@ -60,11 +60,11 @@ public class Agente implements Serializable {
     @Column(name = "numerodocumento")
     private String numerodocumento;
     @Size(max = 25)
-    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números")
+//    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números")
     @Column(name = "telefono")
     private String telefono;
     @Size(max = 25)
-    @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números")
+    // @Pattern(regexp = "[\\s]*[0-9]*[1-9]+",message="Sólo se permiten números")
     @Column(name = "celular")
     private String celular;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation

@@ -369,13 +369,6 @@ public class AgenteViewController implements Serializable {
         return agente1;
     }
     
-    public void dialogo(){
-        System.out.println("dialogoCrearAgente");
-        //RequestContext.getCurrentInstance().openDialog("/secure/solicitud/dialogo.xhtml");
-        RequestContext.getCurrentInstance().openDialog("dialogo");
-        System.out.println("dialogoCrearAgente fin");
-    }
-
     public void setAgente1(Agente agente1) {
         this.agente1 = agente1;
     }
