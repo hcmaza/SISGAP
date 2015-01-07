@@ -5,9 +5,13 @@
  */
 package ar.edu.undec.sisgap.controller.view;
 
+import java.io.IOException;
 import java.io.Serializable;
+import javax.faces.FacesException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -25,5 +29,48 @@ public class DialogosController implements Serializable{
         //RequestContext.getCurrentInstance().openDialog("/secure/solicitud/dialogo.xhtml");
         RequestContext.getCurrentInstance().openDialog("/secure/dialogos/dialogo.xhtml");
         System.out.println("dialogoCrearAgente fin");
+    }
+    
+    public void dialogoVolverLista(){
+        RequestContext.getCurrentInstance().openDialog("/secure/dialogos/dialogoVolverLista.xhtml");
+    }
+    
+    public void cerrarYRedireccionar(){
+        
+        // Cerrar el dialogo
+        RequestContext.getCurrentInstance().closeDialog(this);
+ 
+        // Redireccionar
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ExternalContext extContext = ctx.getExternalContext();
+
+        String url = extContext.encodeActionURL(ctx.getApplication().getViewHandler().getActionURL(ctx, "/secure/agente/List.xhtml"));
+
+        try {
+             extContext.redirect(url);
+        } catch (IOException ioe) {
+            throw new FacesException(ioe);
+        }
+        
+        //return "/secure/agente/List?faces-redirect=true";
+    }
+    
+    public void cerrar(){
+        // Cerrar el dialogo
+        RequestContext.getCurrentInstance().closeDialog(this);
+    }
+    
+    public void redireccionar(){
+        // Redireccionar
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ExternalContext extContext = ctx.getExternalContext();
+
+        String url = extContext.encodeActionURL(ctx.getApplication().getViewHandler().getActionURL(ctx, "/secure/agente/List.xhtml"));
+
+        try {
+             extContext.redirect(url);
+        } catch (IOException ioe) {
+            throw new FacesException(ioe);
+        }
     }
 }

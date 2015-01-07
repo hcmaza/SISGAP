@@ -82,8 +82,9 @@ public class ComitenteController implements Serializable {
     public String create() {
         try {
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("EntidadbeneficiariaCreated"));
-            return prepareCreate();
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ComitenteCreated"));
+            //return prepareCreate();
+            return null;
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
@@ -113,7 +114,8 @@ public class ComitenteController implements Serializable {
         try {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ComitenteUpdated"));
-            return "View";
+            //return "View";
+            return null;
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;

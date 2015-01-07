@@ -31,7 +31,7 @@
                     </p:fieldset>
 
                     <p:separator/>
-                    <p:commandButton action="#{avanceproyectoController.create}" value="Crear Avance de Proyecto" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();" />
+                    <p:commandButton action="#{avanceproyectoController.create}" value="Crear Avance de Proyecto" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{avanceproyectoController.prepareList}" value="Lista de Avances de Proyecto" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false"/>
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
@@ -39,7 +39,7 @@
 
             </h:form>
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinalW" modal="true" header="Alta de Avance de Proyecto" >
+                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Alta de Avance de Proyecto" >
                     <h:panelGroup id="messagePanel" layout="block">
                         <p:messages autoUpdate="true"/>
                     </h:panelGroup>

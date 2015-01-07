@@ -114,7 +114,7 @@
                     <br style="clear: both;"/>
 
                     <p:separator />
-                    <p:commandButton action="#{comitenteController.create}" value="Crear Comitente" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();" />
+                    <p:commandButton action="#{comitenteController.create}" value="Crear Comitente" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{comitenteController.prepareList}" value="Lista de Comitentes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
@@ -124,7 +124,7 @@
 
             </h:form>
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinalW"  modal="true" header="Alta de Comitente" >
+                <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" header="Alta de Comitente" >
                     <h:panelGroup id="messagePanel" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>

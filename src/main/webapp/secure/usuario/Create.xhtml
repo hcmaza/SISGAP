@@ -133,7 +133,7 @@
                     <br style="clear: both;"/>
 
                     <p:separator/>
-                    <p:commandButton action="#{usuarioController.create}" value="Crear Usuario" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();" />
+                    <p:commandButton action="#{usuarioController.create}" value="Crear Usuario" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{usuarioController.prepareList}" value="Lista de Usuarios" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document"/>
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
@@ -143,7 +143,7 @@
             </h:form>
 
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinalW" modal="true" header="Alta de Usuario" >
+                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Alta de Usuario" >
                     <h:panelGroup id="messagePanel" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>

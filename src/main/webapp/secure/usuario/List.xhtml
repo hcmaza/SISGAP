@@ -82,9 +82,9 @@
                                 <f:facet name="header">
                                     <h:outputText value="&nbsp;"/>
                                 </f:facet>
-                                <p:commandButton action="#{usuarioController.prepareView}" title="Ver" icon="ui-icon-search"/>
+                                <p:commandButton action="#{usuarioController.prepareView}" title="Ver" icon="ui-icon-search" ajax="false" />
                                 <h:outputText value=" "/>
-                                <p:commandButton action="#{usuarioController.prepareEdit}" title="Editar" icon="ui-icon-pencil"/>
+                                <p:commandButton action="#{usuarioController.prepareEdit}" title="Editar" icon="ui-icon-pencil" ajax="false" />
                                 <h:outputText value=" "/>
                                 <p:commandButton action="#{usuarioController.destroy}" title="Desactivar" icon="ui-icon-cancel" update=":form:tbl,:form" >
                                     <p:confirm header="Eliminar" message="¿Esta seguro que desea desactivar el Usuario?" icon="ui-icon-alert"   />
@@ -93,7 +93,7 @@
                         </p:dataTable>
 
                         <p:separator/>
-                        <p:commandButton action="#{usuarioController.prepareCreate}" value="Nuevo Usuario"/>
+                        <p:commandButton action="#{usuarioController.prepareCreate}" value="Nuevo Usuario" ajax="false" />
                         <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />                        
                         <p:separator/>
 

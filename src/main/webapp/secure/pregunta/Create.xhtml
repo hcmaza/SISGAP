@@ -40,7 +40,7 @@
                     </p:fieldset>
 
                     <p:separator/>
-                    <p:commandButton action="#{preguntaController.create}" value="Crear Pregunta" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();" />
+                    <p:commandButton action="#{preguntaController.create}" value="Crear Pregunta" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{preguntaController.prepareList}" value="Lista de Preguntas" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false"/>
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
@@ -50,7 +50,7 @@
             </h:form>
 
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinalW"  modal="true" header="Alta de Pregunta" >
+                <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" header="Alta de Pregunta" >
                     <h:panelGroup id="messagePanel" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>

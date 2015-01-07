@@ -14,18 +14,15 @@
             <h:form id="form" styleClass="jsfcrud_list_form">
 
                 <p:panel id="pprincipal" header="Lista de Agentes" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
-                    
+
                     <p:growl id="message" autoUpdate="true" />
-                    
-<!--                    <h:panelGroup id="messagePanel" layout="block">
-                        <p:messages autoUpdate="true"/>
-                    </h:panelGroup>-->
 
                     <h:outputText escape="false" value="Lista de agentes vacia" rendered="#{agenteController.items.rowCount == 0}"/>
                     <p:separator rendered="#{agenteController.items.rowCount == 0}" />
                     <p:commandButton action="#{agenteController.prepareCreate}" value="Nuevo Agente" rendered="#{agenteController.items.rowCount == 0}"/>
 
                     <h:panelGroup rendered="#{agenteController.items.rowCount > 0}">
+
                         <p:dataTable
                             id="tbl" 
                             value="#{agenteController.items}" 

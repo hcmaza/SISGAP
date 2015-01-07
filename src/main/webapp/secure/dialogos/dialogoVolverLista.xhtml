@@ -1,31 +1,26 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-xmlns:ui="http://java.sun.com/jsf/facelets"
-xmlns:h="http://java.sun.com/jsf/html"
-xmlns:f="http://java.sun.com/jsf/core"
-xmlns:p="http://primefaces.org/ui">
-<h:head>
-<title>Zaraza agsdhqbsdjajs</title>
-</h:head>
-<h:body>
-<h:form id="form">
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Nuevo Agente [Toma 2]</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
 
-<h:panelGrid id="grid" columns="3">
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages autoUpdate="true" />
+            </h:panelGroup>
+            <p:separator />
+            <div align="center" >
+                <p:commandButton actionListener="#{dialogosController.cerrar()}" value="Volver a la Lista" icon="ui-icon-document" />
+            </div>
 
-<f:facet name="header">
-<p:messages for="query" />
-</f:facet>
+        </h:form>
 
-    <h1>zxczxc 4</h1>
-    
-<h:outputLabel value="Username" />
-<p:inputText id="username" value="akjsdhasdjk" />
-<p:message for="username" />
-
-</h:panelGrid>
-</h:form>
-
-</h:body>
+    </h:body>
 
 </ui:composition>
