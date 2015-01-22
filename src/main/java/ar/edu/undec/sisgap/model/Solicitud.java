@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author mpaez
  */
 @Entity
-@Table(name = "solicitud", catalog = "SISGAP", schema = "POSTGRES")
+@Table(name = "solicitud", schema = "ap")
+@SequenceGenerator(name="solicitud_id_seq", sequenceName="ap.solicitud_id_seq", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Solicitud.findAll", query = "SELECT s FROM Solicitud s"),
@@ -42,7 +44,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Solicitud implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="solicitud_id_seq")
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private Integer id;
@@ -67,7 +69,7 @@ public class Solicitud implements Serializable {
     
     @OneToMany(mappedBy = "solicitudid")
     private List<SolicitudItem> listaSolicitudItems;
-
+    
     public Solicitud() {
     }
 

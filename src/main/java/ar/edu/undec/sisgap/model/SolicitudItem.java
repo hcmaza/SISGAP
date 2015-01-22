@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,6 +36,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SolicitudItem.findByObservacion", query = "SELECT s FROM SolicitudItem s WHERE s.observacion = :observacion"),
     @NamedQuery(name = "SolicitudItem.findByMonto", query = "SELECT s FROM SolicitudItem s WHERE s.monto = :monto")})
 public class SolicitudItem implements Serializable {
+    @JoinColumn(name = "presupuesto_tareaid", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private PresupuestoTarea presupuestoTareaid;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -123,6 +127,14 @@ public class SolicitudItem implements Serializable {
     @Override
     public String toString() {
         return "ar.edu.undec.sisgap.model.SolicitudItem[ id=" + id + " ]";
+    }
+
+    public PresupuestoTarea getPresupuestoTareaid() {
+        return presupuestoTareaid;
+    }
+
+    public void setPresupuestoTareaid(PresupuestoTarea presupuestoTareaid) {
+        this.presupuestoTareaid = presupuestoTareaid;
     }
     
 }

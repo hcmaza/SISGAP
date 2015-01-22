@@ -6,6 +6,7 @@ import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -81,6 +82,11 @@ public class SolicitudController implements Serializable {
 
     public String create() {
         try {
+            current.setFechaaprobacion(new Date());
+            current.setFechaejecucion(new Date());
+            current.setFechasolicitud(new Date());
+            current.setObservacion("asdasdasd");
+            
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudCreated"));
             return prepareCreate();

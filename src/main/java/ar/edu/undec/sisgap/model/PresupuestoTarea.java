@@ -7,9 +7,11 @@ package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,10 +19,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -41,6 +45,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PresupuestoTarea.findByAporteorganismo", query = "SELECT p FROM PresupuestoTarea p WHERE p.aporteorganismo = :aporteorganismo"),
     @NamedQuery(name = "PresupuestoTarea.findById", query = "SELECT p FROM PresupuestoTarea p WHERE p.id = :id")})
 public class PresupuestoTarea implements Serializable {
+    @OneToMany(mappedBy = "presupuestoTareaid", fetch = FetchType.EAGER)
+    private List<SolicitudItem> solicitudItemList;
     private static final long serialVersionUID = 1L;
     @Size(max = 2147483647)
     @Column(name = "descripcion")
@@ -184,6 +190,15 @@ public class PresupuestoTarea implements Serializable {
     @Override
     public String toString() {
         return "ar.edu.undec.sisgap.model.PresupuestoTarea[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<SolicitudItem> getSolicitudItemList() {
+        return solicitudItemList;
+    }
+
+    public void setSolicitudItemList(List<SolicitudItem> solicitudItemList) {
+        this.solicitudItemList = solicitudItemList;
     }
     
 }
