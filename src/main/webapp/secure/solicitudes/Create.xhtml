@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateSolicitudTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{solicitudController.selected.id}" title="#{bundle.CreateSolicitudTitle_id}" required="true" requiredMessage="#{bundle.CreateSolicitudRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechasolicitud}" for="fechasolicitud" />
+                    <h:inputText id="fechasolicitud" value="#{solicitudController.selected.fechasolicitud}" title="#{bundle.CreateSolicitudTitle_fechasolicitud}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechaaprobacion}" for="fechaaprobacion" />
+                    <h:inputText id="fechaaprobacion" value="#{solicitudController.selected.fechaaprobacion}" title="#{bundle.CreateSolicitudTitle_fechaaprobacion}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechaejecucion}" for="fechaejecucion" />
+                    <h:inputText id="fechaejecucion" value="#{solicitudController.selected.fechaejecucion}" title="#{bundle.CreateSolicitudTitle_fechaejecucion}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_observacion}" for="observacion" />
+                    <h:inputText id="observacion" value="#{solicitudController.selected.observacion}" title="#{bundle.CreateSolicitudTitle_observacion}" />
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_tiposolicitudid}" for="tiposolicitudid" />
+                    <h:selectOneMenu id="tiposolicitudid" value="#{solicitudController.selected.tiposolicitudid}" title="#{bundle.CreateSolicitudTitle_tiposolicitudid}" >
+                        <f:selectItems value="#{tiposolicitudController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateSolicitudLabel_estadosolicitudid}" for="estadosolicitudid" />
+                    <h:selectOneMenu id="estadosolicitudid" value="#{solicitudController.selected.estadosolicitudid}" title="#{bundle.CreateSolicitudTitle_estadosolicitudid}" >
+                        <f:selectItems value="#{estadosolicitudController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{solicitudController.create}" value="#{bundle.CreateSolicitudSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{solicitudController.prepareList}" value="#{bundle.CreateSolicitudShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateSolicitudIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
