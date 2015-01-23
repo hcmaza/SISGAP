@@ -1,9 +1,11 @@
-package ar.edu.undec.sisgap.controller.view;
+package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Desembolso;
-import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
-import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
-import ar.edu.undec.sisgap.controller.DesembolsoFacade;
+import ar.edu.undec.sisgap.controller.util.JsfUtil;
+import ar.edu.undec.sisgap.controller.util.PaginationHelper;
+import ar.edu.undec.sisgap.controller.view.AgenteController;
+import ar.edu.undec.sisgap.controller.view.ProyectoController;
+import ar.edu.undec.sisgap.model.Proyecto;
 
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -73,8 +75,14 @@ public class DesembolsoController implements Serializable {
         return "View";
     }
 
-    public String prepareCreate() {
+    public String prepareCreate(int proyectoId) {
         current = new Desembolso();
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProyectoController proyectoController= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        Proyecto p = (Proyecto)proyectoController.getItems().getRowData();
+        current.setProyectoid(p);
+        
         selectedItemIndex = -1;
         return "Create";
     }
@@ -83,7 +91,7 @@ public class DesembolsoController implements Serializable {
         try {
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoCreated"));
-            return prepareCreate();
+            return prepareList();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
@@ -226,10 +234,6 @@ public class DesembolsoController implements Serializable {
             }
         }
 
-    }
-    
-    public void obtenerPorProyecto(int proyectoId){
-        this.items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoId));
     }
 
 }

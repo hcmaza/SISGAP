@@ -11,6 +11,8 @@
             <h:outputText value="Lista de Desenbolsos"></h:outputText>
         </ui:define>
         <ui:define name="body">
+            <f:event type="preRenderView" listener="#{desembolsoController.obtenerPorProyecto(21)}" ></f:event>
+            
             <h:form id="form" styleClass="jsfcrud_list_form">
 
                 <p:panel id="pprincipal" header="Lista de Desenbolsos" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
@@ -48,7 +50,7 @@
                                     <h:outputText value="Proyecto"/>
                                 </f:facet>
                                 <h:outputText value="#{item.proyectoid.nombre}" />
-                            </p:column>                            
+                            </p:column>  
                             <p:column id="columnaFechaDesembolso" filterBy="fechadesembolso" filterMatchMode="contains" sortBy="fechadesembolso">
                                 <f:facet name="header">
                                     <h:outputText value="Fecha de Desembolso"/>

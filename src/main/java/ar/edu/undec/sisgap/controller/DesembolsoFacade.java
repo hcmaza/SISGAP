@@ -6,13 +6,15 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Desembolso;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
- * @author gongono
+ * @author mpaez
  */
 @Stateless
 public class DesembolsoFacade extends AbstractFacade<Desembolso> {
@@ -26,6 +28,12 @@ public class DesembolsoFacade extends AbstractFacade<Desembolso> {
 
     public DesembolsoFacade() {
         super(Desembolso.class);
+    }
+    
+    public List<Desembolso> obtenerPorProyecto(int proyectoid){
+        Query consulta = em.createQuery("SELECT d FROM Desembolso d WHERE d.proyectoid.id = :proyectoid");
+        consulta.setParameter("proyectoid", proyectoid);
+        return consulta.getResultList();
     }
     
 }
