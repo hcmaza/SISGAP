@@ -13,8 +13,8 @@
         </ui:define>
         <ui:define name="body">
             <!--<f:event type="preRenderView" listener="{presupuestoController.findProyecto(proyectoController.selected.id)}" />-->
-            
-            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.items.rowData.id)}" />
+
+            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
             <h:panelGroup id="messagePanel" layout="block">
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
@@ -218,10 +218,8 @@
 
                         </h:panelGrid>
                     </p:panel>
-                    
+
                     <p:panel header="Desenbolso" >
-                        
-                    </p:panel>
                         <h:panelGrid columns="2">
                             <h:outputLabel value="#{bundle.CreateDesembolsoLabel_fechadesembolso}" for="fechadesembolso" />
                             <h:inputText id="fechadesembolso" value="#{desembolsoController.selected.fechadesembolso}" title="#{bundle.CreateDesembolsoTitle_fechadesembolso}" >
@@ -245,6 +243,8 @@
                             <h:inputText id="monto" value="#{desembolsoController.selected.monto}" title="#{bundle.CreateDesembolsoTitle_monto}" />
 
                         </h:panelGrid>
+                    </p:panel>
+
                     <br />
                     <h:commandLink action="#{desembolsoController.create}" value="#{bundle.CreateDesembolsoSaveLink}" />
                     <br />

@@ -67,6 +67,7 @@ import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.FilterEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -1914,5 +1915,13 @@ public class ProyectoController implements Serializable {
        
         items=new ListDataModel(getFacade().buscarProyectosaEvaluar());
     }
-    
+     
+//     public void onRowSelect(SelectEvent event) {
+//        current = (Proyecto) event.getObject();
+//    }
+
+    public void setSelected(Proyecto current) {
+        this.current = current;
+    }
+
 }

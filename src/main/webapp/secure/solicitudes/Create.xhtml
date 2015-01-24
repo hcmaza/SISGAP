@@ -12,7 +12,7 @@
             <h:outputText value="#{bundle.CreateSolicitudTitle}"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
+            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.items.rowData.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
             <h:panelGroup id="messagePanel" layout="block">
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
@@ -218,7 +218,43 @@
                     </p:panel>
                     
                     <p:panel header="Desenbolsos" >
-                        
+                        <p:dataTable
+                            id="tbl" 
+                            value="#{desembolsoController.items}" 
+                            var="item" 
+                            widgetVar="tblW"
+                            rowKey="#{item.id}" 
+                            emptyMessage="No se encontraron resultados para el criterio de busqueda"
+                            paginator="true" rows="10" paginatorPosition="bottom"
+                            draggableColumns="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="10,15,30">
+
+                            <p:column id="columnaId" sortBy="id" width="10px" style="width: 10px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Nº" />
+                                </f:facet>
+                                <h:outputText value="#{item.id}" />
+                            </p:column>
+                            <p:column id="columnaMonto" filterBy="monto" filterMatchMode="contains" sortBy="monto">
+                                <f:facet name="header">
+                                    <h:outputText value="Monto"/>
+                                </f:facet>
+                                <h:outputText value="#{item.monto}"/>
+                            </p:column>
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="&nbsp;"/>
+                                </f:facet>
+                                <p:commandButton action="#{tipoproyectoController.prepareView}" title="Ver" icon="ui-icon-search" ajax="false" />
+                                <h:outputText value=" "/>
+                                <p:commandButton action="#{tipoproyectoController.prepareEdit}" title="Editar" icon="ui-icon-pencil" ajax="false" />
+                                <h:outputText value=" "/>
+                                <p:commandButton action="#{tipoproyectoController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" >
+                                    <p:confirm header="Eliminar" message="¿Esta seguro que desea eliminar el Tipo de Proyecto?" icon="ui-icon-alert"   />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
                     </p:panel>
 
                     <p:panel header="Solicitud" >
@@ -258,25 +294,7 @@
                     
                     <p:panel header="Items de Solicitud" >
                         
-                        <h3>Items de Presupuesto</h3>
                         
-                        <p:pickList id="plItemsSolicitud" value="#{pickListView.themes}" var="theme" effect="bounce"
-                                    itemValue="#{theme}" itemLabel="#{theme.displayName}" showSourceControls="true" showTargetControls="true" showCheckbox="true"
-                                    showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="theme">
-
-                            <f:facet name="sourceCaption">Disponibles</f:facet>
-                            <f:facet name="targetCaption">Solicitados</f:facet>
-
-                            <p:ajax event="transfer" listener="#{pickListView.onTransfer}" update="msg" />
-
-                            <p:column style="width:25%">
-                                <h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
-                            </p:column>
-
-                            <p:column style="width:75%;">
-                                <h:outputText value="#{theme.displayName}" />
-                            </p:column>
-                        </p:pickList>
                     </p:panel>
 
 

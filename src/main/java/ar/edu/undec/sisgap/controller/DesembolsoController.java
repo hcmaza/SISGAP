@@ -3,7 +3,6 @@ package ar.edu.undec.sisgap.controller;
 import ar.edu.undec.sisgap.model.Desembolso;
 import ar.edu.undec.sisgap.controller.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.util.PaginationHelper;
-import ar.edu.undec.sisgap.controller.view.AgenteController;
 import ar.edu.undec.sisgap.controller.view.ProyectoController;
 import ar.edu.undec.sisgap.model.Proyecto;
 
@@ -75,14 +74,8 @@ public class DesembolsoController implements Serializable {
         return "View";
     }
 
-    public String prepareCreate(int proyectoId) {
+    public String prepareCreate() {
         current = new Desembolso();
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        ProyectoController proyectoController= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-        Proyecto p = (Proyecto)proyectoController.getItems().getRowData();
-        current.setProyectoid(p);
-        
         selectedItemIndex = -1;
         return "Create";
     }
