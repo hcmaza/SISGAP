@@ -77,12 +77,6 @@ public class SolicitudController implements Serializable {
 
     public String prepareCreate() {
         current = new Solicitud();
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        ProyectoController proyectoController= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-        Proyecto p = (Proyecto)proyectoController.getItems().getRowData();
-        //current.setProyectoid(p);
-        
         selectedItemIndex = -1;
         return "Create";
     }
