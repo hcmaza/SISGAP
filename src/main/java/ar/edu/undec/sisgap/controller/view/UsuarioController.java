@@ -113,7 +113,35 @@ public class UsuarioController implements Serializable {
 
     public String create() {
         try {
-            getFacade().create(current);
+            current.setUsuarioclave(new EncriptarSHA256().hash256(current.getUsuarioclave().trim()) );
+            current.setUsuariofechaalta(new java.sql.Timestamp(new Date().getTime()));
+            getFacade().createWithPersist(current);
+            
+            FacesContext context = FacesContext.getCurrentInstance();    
+            AgenteViewController avController = (AgenteViewController) context.getApplication().evaluateExpressionGet(context, "#{agenteViewController}", AgenteViewController.class);
+            
+            currenta = avController.getAgente1();
+            currenta.setUsuarioid(current);
+            getFacadea().edit(currenta);
+            
+//            if(!new EnviarMail().enviarMailConfirmacion(currenta, current)){
+//                JsfUtil.addErrorMessage("No se pudo enviar el mail para activar su cuenta!");
+//                
+//                //getFacadea().remove(currenta);
+//                getFacade().remove(current);
+//                current=null;
+//               currenta=null;
+//                return null;
+//            }else{
+//               current=null;
+//               currenta=null;
+//              //RequestContext.getCurrentInstance().execute("PF('dregistrar').hide()");
+//               FacesContext.getCurrentInstance().getExternalContext().redirect("./registracionexitosa.xhtml");
+//               
+//               return "registracionexitosa";
+//            }
+            
+            
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UsuarioCreated"));
             //return prepareCreate();
             return null;
