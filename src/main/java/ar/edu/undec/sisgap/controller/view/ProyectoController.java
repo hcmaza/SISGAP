@@ -776,7 +776,12 @@ public class ProyectoController implements Serializable {
     public void buscarProyectosAgenteTrue(int agenteid){
         recreateModel();
        
-        items=new ListDataModel(getFacade().buscarProyectosAgente(true,agenteid));
+        if (agenteid != 0){
+            items=new ListDataModel(getFacade().buscarProyectosAgente(true,agenteid));
+        }else{
+            items=new ListDataModel(getFacade().findAll());
+        }
+        
     }
     
     public String enviarEvaluarProyecto(){

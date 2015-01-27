@@ -133,6 +133,14 @@ public class Solicitud implements Serializable {
         this.estadosolicitudid = estadosolicitudid;
     }
 
+    public List<SolicitudItem> getListaSolicitudItems() {
+        return listaSolicitudItems;
+    }
+
+    public void setListaSolicitudItems(List<SolicitudItem> listaSolicitudItems) {
+        this.listaSolicitudItems = listaSolicitudItems;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

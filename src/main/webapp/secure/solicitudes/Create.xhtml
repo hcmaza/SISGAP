@@ -216,7 +216,7 @@
 
                         </h:panelGrid>
                     </p:panel>
-                    
+
                     <p:panel header="Desembolsos" >
                         <p:dataTable
                             id="tbl" 
@@ -286,12 +286,79 @@
 
                         </h:panelGrid>
                     </p:panel>
-                    
-                    <p:panel header="Items de Solicitud" >
-                        
-                        
-                    </p:panel>
 
+                    <p:panel header="Items de Solicitud" >
+
+                        <p:panelGrid>
+                            <p:column style="width: 50%;">
+                                <p:treeTable id="tablepresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" scrollable="true" >
+
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.descripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.rubro.rubro}" />
+                                    </p:column>
+                                    <p:column headerText="Costo Unitario">
+                                        <h:outputText value="#{item.costounitario}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad">
+                                        <h:outputText value="#{item.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Aporte Comitente">
+                                        <h:outputText value="#{item.aportecomitente}" />
+                                    </p:column>
+                                    <p:column headerText="Aporte Univeridad">
+                                        <h:outputText value="#{item.aporteuniversidad}" />
+                                    </p:column>
+                                    <p:column headerText="Aporte Organismo">
+                                        <h:outputText value="#{item.aporteorganismo}" />
+                                    </p:column>
+                                    <p:column headerText="Total">
+                                        <h:outputText value="#{item.total}" />
+                                    </p:column>
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+
+                                            <p:column footerText="#{presupuestoTareaController.sumagastouniversidad}" />
+
+                                            <p:column footerText="#{presupuestoTareaController.sumagastoorganismo}" />
+
+                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" />
+
+                                        </p:row>
+                                    </p:columnGroup>
+
+                                </p:treeTable>
+                            </p:column>
+                            <p:column style="width: 50%;">
+                                <p:pickList id="plItemsSolicitud" value="#{solicitudController.solicitudItems}" var="item" effect="bounce"
+                                            itemValue="#{item}" itemLabel="#{item.presupuestoTareaid.descripcion}" showSourceControls="true" showTargetControls="true" showCheckbox="true"
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >
+
+                                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                                    <f:facet name="targetCaption">Solicitados</f:facet>
+
+                                    <p:ajax event="transfer" listener="#{solicitudController.onTransfer}" update=":formprincipal:growlprincipal" />
+                                    <!--<p:ajax event="select" listener="{solicitudController.onSelect}" update="msg" />-->
+                                    <!--<p:ajax event="unselect" listener="{solicitudController.onUnselect}" update="msg" />-->
+                                    <!--<p:ajax event="reorder" listener="{solicitudController.onReorder}" update="msg" />-->
+
+                                    <p:column style="width:25%">
+                                        <h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
+                                    </p:column>
+
+                                    <p:column style="width:75%;">
+                                        <h:outputText value="#{theme.displayName}" />
+                                    </p:column>
+                                </p:pickList>   
+                            </p:column>
+                        </p:panelGrid>
+
+
+
+                    </p:panel>
 
                     <br />
                     <h:commandLink action="#{solicitudController.create}" value="#{bundle.CreateSolicitudSaveLink}" />

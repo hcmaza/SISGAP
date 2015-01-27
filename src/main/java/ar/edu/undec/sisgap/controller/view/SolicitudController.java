@@ -5,11 +5,14 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
 import ar.edu.undec.sisgap.model.Proyecto;
+import ar.edu.undec.sisgap.model.SolicitudItem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -19,6 +22,10 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DualListModel;
 
 @ManagedBean(name = "solicitudController")
 @SessionScoped
@@ -30,6 +37,8 @@ public class SolicitudController implements Serializable {
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
+
+    private DualListModel<SolicitudItem> solicitudItems;
 
     public SolicitudController() {
     }
@@ -87,7 +96,7 @@ public class SolicitudController implements Serializable {
             current.setFechaejecucion(new Date());
             current.setFechasolicitud(new Date());
             current.setObservacion("asdasdasd");
-            
+
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudCreated"));
             return prepareCreate();
@@ -195,6 +204,17 @@ public class SolicitudController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
+    public DualListModel<SolicitudItem> getSolicitudItems() {
+        if (solicitudItems == null) {
+            solicitudItems =  new DualListModel<SolicitudItem>(new ArrayList<SolicitudItem>(), new ArrayList<SolicitudItem>());
+        }
+        return solicitudItems;
+    }
+
+    public void setSolicitudItems(DualListModel<SolicitudItem> solicitudItems) {
+        this.solicitudItems = solicitudItems;
+    }
+
     @FacesConverter(forClass = Solicitud.class)
     public static class SolicitudControllerConverter implements Converter {
 
@@ -233,6 +253,36 @@ public class SolicitudController implements Serializable {
             }
         }
 
+    }
+    
+    public void obtenerSolicitudItemsDisponibles(Proyecto p){
+        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
+        
+        
+    }
+    
+    public void onTransfer(TransferEvent event) {
+        StringBuilder builder = new StringBuilder();
+        for(Object item : event.getItems()) {
+            builder.append(((SolicitudItem) item).getPresupuestoTareaid().getDescripcion()).append("<br />");
+        }
+         
+        FacesMessage msg = new FacesMessage();
+        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+        msg.setSummary("Items Transferred");
+        msg.setDetail(builder.toString());
+         
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    } 
+ 
+    public void onSelect(SelectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Selected", event.getObject().toString()));
+    }
+     
+    public void onUnselect(UnselectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
     }
 
 }
