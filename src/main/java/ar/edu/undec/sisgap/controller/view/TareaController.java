@@ -5,6 +5,7 @@ import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TareaFacade;
+import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
@@ -415,6 +416,29 @@ public class TareaController implements Serializable {
         this.presupuestotareacontroller = presupuestotareacontroller;
     }
     
-       
+    /**
+     * Llenar la lista de tareas con las tareas de una etapa
+     * 
+     * @param etapa 
+     */
+    public void establecerTareasPorEtapa(int etapaId){
+        tareasdeproyecto = this.getFacade().buscarTareasEtapa(etapaId);
+        
+        
+    }
+    
+    /**
+     * Llenar la lista de tareas con las tareas de un proyecto
+     * 
+     * @param proyectoId 
+     */
+    public void establecerTareasPorProyecto(int proyectoId){
+        try{
+            tareasdeproyecto = this.getFacade().buscarTareasProyecto(proyectoId);
+        }catch(Exception e){
+            System.out.println("Excepcion en TareaController: establecerTareasPorProyecto(int proyectoId)");
+        }
+    }
+   
 
 }

@@ -8,6 +8,7 @@ import ar.edu.undec.sisgap.controller.RubroFacade;
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
+import ar.edu.undec.sisgap.model.SolicitudItem;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
 
@@ -27,7 +28,11 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.chart.PieChartModel;
 
@@ -44,7 +49,7 @@ public class PresupuestoTareaController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private List<PresupuestoTarea> presupuestostareasitems ;
-     private List<PresupuestoTarea> presupuestostareas ;
+    private List<PresupuestoTarea> presupuestostareas ;
     private PresupuestoTarea current2 = new PresupuestoTarea();
     private TreeNode root = new DefaultTreeNode();
     private PieChartModel pieModelAportes;
@@ -54,6 +59,20 @@ public class PresupuestoTareaController implements Serializable {
     private BigDecimal sumagastouniversidad;
     private BigDecimal sumatotal;
     
+    // Para el pick list de solicitudes
+    private DualListModel<PresupuestoTarea> plPresupuestoTarea;
+    
+    public DualListModel<PresupuestoTarea> getPlPresupuestoTarea() {
+        if (plPresupuestoTarea == null) {
+            plPresupuestoTarea =  new DualListModel<PresupuestoTarea>(new ArrayList<PresupuestoTarea>(), new ArrayList<PresupuestoTarea>());
+            //plPresupuestoTarea =  new DualListModel<PresupuestoTarea>(this.getPresupuestostareas(), new ArrayList<PresupuestoTarea>());
+        }
+        return plPresupuestoTarea;
+    }
+
+    public void setPlPresupuestoTarea(DualListModel<PresupuestoTarea> plPresupuestoTarea) {
+        this.plPresupuestoTarea = plPresupuestoTarea;
+    }
     
 
     public PresupuestoTareaController() {
@@ -332,7 +351,6 @@ public class PresupuestoTareaController implements Serializable {
       }
   }
   
-  @Deprecated
   public void armarPresupuestoNodos()
   {
     
@@ -825,6 +843,61 @@ public class PresupuestoTareaController implements Serializable {
              this.armarPresupuestoNodos();
     }
   
+    
+    public void establecerListaPresupuestoTareaPorProyecto(int proyectoid){
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        //ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        //EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        
+        
+        // Seteamos las etapas del proyecto en la lista del controlador
+        //etapacontroller.establecerEtapasPorProyecto(proyectoid);
+        
+        System.out.println("proyecto " + proyectoid);
+        
+        // Seteamos las tareas de las etapas del proyecto en el controlador de tareas
+        tareacontroller.establecerTareasPorProyecto(proyectoid);
+        
+        List<PresupuestoTarea> resultado = new ArrayList<PresupuestoTarea>();
+        
+        for (Tarea t : tareacontroller.getTareasdeproyecto()){
+            for (PresupuestoTarea p : t.getPresupuestoTareaList()){
+                resultado.add(p);
+            }
+        }
+        
+        System.out.println("RESULTADO: " + resultado.size());
+        
+        presupuestostareas = resultado;
+        
+        this.setPlPresupuestoTarea(new DualListModel(presupuestostareas,new ArrayList<PresupuestoTarea>()));
+        
+    }
   
+        public void onTransfer(TransferEvent event) {
+        StringBuilder builder = new StringBuilder();
+        for(Object item : event.getItems()) {
+            builder.append(((PresupuestoTarea) item).getDescripcion()).append("<br />");
+        }
+         
+        FacesMessage msg = new FacesMessage();
+        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+        msg.setSummary("Items Transferred");
+        msg.setDetail(builder.toString());
+         
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    } 
+ 
+    public void onSelect(SelectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Selected", event.getObject().toString()));
+    }
+     
+    public void onUnselect(UnselectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
+    }
 
 }

@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,7 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author mpaez
  */
 @Entity
-@Table(name = "solicitud_item", catalog = "SISGAP", schema = "POSTGRES")
+@Table(name = "solicitud_item", schema = "ap")
+@SequenceGenerator(name="solicitud_item_id_seq", sequenceName="ap.solicitud_item_id_seq", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "SolicitudItem.findAll", query = "SELECT s FROM SolicitudItem s"),
@@ -37,11 +39,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SolicitudItem.findByMonto", query = "SELECT s FROM SolicitudItem s WHERE s.monto = :monto")})
 public class SolicitudItem implements Serializable {
     @JoinColumn(name = "presupuesto_tareaid", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private PresupuestoTarea presupuestoTareaid;
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="solicitud_item_id_seq")
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private Integer id;
@@ -53,6 +55,7 @@ public class SolicitudItem implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "monto", precision = 10, scale = 2)
     private BigDecimal monto;
+    
     @JoinColumn(name = "solicitudid", referencedColumnName = "id")
     @ManyToOne
     private Solicitud solicitudid;

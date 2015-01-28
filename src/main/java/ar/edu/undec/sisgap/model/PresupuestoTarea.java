@@ -7,6 +7,7 @@ package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -149,6 +150,10 @@ public class PresupuestoTarea implements Serializable {
     }
 
     public Rubro getRubro() {
+        if (rubro == null){
+            rubro = new Rubro();
+        }
+        
         return rubro;
     }
 
@@ -192,7 +197,7 @@ public class PresupuestoTarea implements Serializable {
         return "ar.edu.undec.sisgap.model.PresupuestoTarea[ id=" + id + " ]";
     }
 
-    @XmlTransient
+    //@XmlTransient
     public List<SolicitudItem> getSolicitudItemList() {
         return solicitudItemList;
     }

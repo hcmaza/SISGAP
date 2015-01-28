@@ -12,8 +12,13 @@
             <h:outputText value="#{bundle.CreateSolicitudTitle}"></h:outputText>
         </ui:define>
         <ui:define name="body">
+            
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            
+            <f:event type="preRenderView" listener="#{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />
+            
+            
             <h:panelGroup id="messagePanel" layout="block">
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             </h:panelGroup>
@@ -253,7 +258,7 @@
                     </p:panel>
 
                     <p:panel header="Solicitud" >
-
+                        
                         <h:panelGrid columns="2">
 
                             <h:outputLabel value="#{bundle.CreateSolicitudLabel_estadosolicitudid}" for="estadosolicitudid" />
@@ -288,9 +293,9 @@
                     </p:panel>
 
                     <p:panel header="Items de Solicitud" >
-
+                        
                         <p:panelGrid>
-                            <p:column style="width: 50%;">
+                            <p:column style="width: 30%;">
                                 <p:treeTable id="tablepresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" scrollable="true" >
 
                                     <p:column headerText="Etapa">
@@ -304,15 +309,6 @@
                                     </p:column>
                                     <p:column headerText="Cantidad">
                                         <h:outputText value="#{item.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Aporte Comitente">
-                                        <h:outputText value="#{item.aportecomitente}" />
-                                    </p:column>
-                                    <p:column headerText="Aporte Univeridad">
-                                        <h:outputText value="#{item.aporteuniversidad}" />
-                                    </p:column>
-                                    <p:column headerText="Aporte Organismo">
-                                        <h:outputText value="#{item.aporteorganismo}" />
                                     </p:column>
                                     <p:column headerText="Total">
                                         <h:outputText value="#{item.total}" />
@@ -332,27 +328,8 @@
 
                                 </p:treeTable>
                             </p:column>
-                            <p:column style="width: 50%;">
-                                <p:pickList id="plItemsSolicitud" value="#{solicitudController.solicitudItems}" var="item" effect="bounce"
-                                            itemValue="#{item}" itemLabel="#{item.presupuestoTareaid.descripcion}" showSourceControls="true" showTargetControls="true" showCheckbox="true"
-                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >
-
-                                    <f:facet name="sourceCaption">Disponibles</f:facet>
-                                    <f:facet name="targetCaption">Solicitados</f:facet>
-
-                                    <p:ajax event="transfer" listener="#{solicitudController.onTransfer}" update=":formprincipal:growlprincipal" />
-                                    <!--<p:ajax event="select" listener="{solicitudController.onSelect}" update="msg" />-->
-                                    <!--<p:ajax event="unselect" listener="{solicitudController.onUnselect}" update="msg" />-->
-                                    <!--<p:ajax event="reorder" listener="{solicitudController.onReorder}" update="msg" />-->
-
-                                    <p:column style="width:25%">
-                                        <h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
-                                    </p:column>
-
-                                    <p:column style="width:75%;">
-                                        <h:outputText value="#{theme.displayName}" />
-                                    </p:column>
-                                </p:pickList>   
+                            <p:column style="width: 70%;">
+                                <p:pickList id="pickList" value="#{presupuestoTareaController.plPresupuestoTarea}" var="item" itemLabel="#{item}" itemValue="#{item.descripcion}" />
                             </p:column>
                         </p:panelGrid>
 

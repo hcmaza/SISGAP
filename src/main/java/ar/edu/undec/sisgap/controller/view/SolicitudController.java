@@ -10,6 +10,7 @@ import ar.edu.undec.sisgap.model.SolicitudItem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -38,7 +39,8 @@ public class SolicitudController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    private DualListModel<SolicitudItem> solicitudItems;
+    private List<SolicitudItem> listaSolicitudItems;
+   
 
     public SolicitudController() {
     }
@@ -204,17 +206,6 @@ public class SolicitudController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    public DualListModel<SolicitudItem> getSolicitudItems() {
-        if (solicitudItems == null) {
-            solicitudItems =  new DualListModel<SolicitudItem>(new ArrayList<SolicitudItem>(), new ArrayList<SolicitudItem>());
-        }
-        return solicitudItems;
-    }
-
-    public void setSolicitudItems(DualListModel<SolicitudItem> solicitudItems) {
-        this.solicitudItems = solicitudItems;
-    }
-
     @FacesConverter(forClass = Solicitud.class)
     public static class SolicitudControllerConverter implements Converter {
 
@@ -254,35 +245,32 @@ public class SolicitudController implements Serializable {
         }
 
     }
-    
-    public void obtenerSolicitudItemsDisponibles(Proyecto p){
-        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
-        
-        
+
+    public List<SolicitudItem> getListaSolicitudItems() {
+        return listaSolicitudItems;
+    }
+
+    public void setListaSolicitudItems(List<SolicitudItem> listaSolicitudItems) {
+        this.listaSolicitudItems = listaSolicitudItems;
     }
     
-    public void onTransfer(TransferEvent event) {
-        StringBuilder builder = new StringBuilder();
-        for(Object item : event.getItems()) {
-            builder.append(((SolicitudItem) item).getPresupuestoTareaid().getDescripcion()).append("<br />");
-        }
-         
-        FacesMessage msg = new FacesMessage();
-        msg.setSeverity(FacesMessage.SEVERITY_INFO);
-        msg.setSummary("Items Transferred");
-        msg.setDetail(builder.toString());
-         
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    } 
- 
-    public void onSelect(SelectEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Selected", event.getObject().toString()));
-    }
-     
-    public void onUnselect(UnselectEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
-    }
+    
+    
+//    public void establecerSolicitudItemsDisponibles(Proyecto p){
+//        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
+//        
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        
+//        //ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+//        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+//        
+//        // Obtener los presupuestos_tarea del proyecto
+//        presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(p.getId());
+//        
+//        // Setear la lista dual del pick list
+//        plSolicitudItems = new DualListModel<SolicitudItem>(presupuestotareacontroller.getPresupuestostareas(),new ArrayList<SolicitudItem>());
+//    }
+    
+
 
 }

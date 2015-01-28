@@ -696,4 +696,12 @@ public class EtapaController implements Serializable {
        return suma;
    } 
     
+   /**
+    * Obtener las etapas de un proyecto y setearlas en el controller
+    * @param proyectoId 
+    */
+   public void establecerEtapasPorProyecto(int proyectoId){
+       etapas = this.getFacade().buscarEtapasProyecto(proyectoId);
+   }
+           
 }
