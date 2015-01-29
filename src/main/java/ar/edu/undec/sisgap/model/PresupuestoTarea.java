@@ -194,7 +194,8 @@ public class PresupuestoTarea implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.edu.undec.sisgap.model.PresupuestoTarea[ id=" + id + " ]";
+        //return "ar.edu.undec.sisgap.model.PresupuestoTarea[ id=" + id + " ]";
+        return this.descripcion;
     }
 
     //@XmlTransient

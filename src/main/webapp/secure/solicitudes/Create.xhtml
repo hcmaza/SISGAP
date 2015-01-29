@@ -12,19 +12,20 @@
             <h:outputText value="#{bundle.CreateSolicitudTitle}"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            
+
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
-            
+            <f:event type="preRenderView" listener="#{etapaController.armarTreeEtapasYTareas}" />
             <f:event type="preRenderView" listener="#{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />
             
-            
+
+
             <h:panelGroup id="messagePanel" layout="block">
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             </h:panelGroup>
 
             <h:form id="formprincipal" enctype="multipart/form-data" >
-                <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" showDetail="true" sticky="true" />
+                <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" autoUpdate="true" showDetail="true" sticky="true" />
 
                 <p:panel id="pprincipal" header="Alta Idea-Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
@@ -258,7 +259,7 @@
                     </p:panel>
 
                     <p:panel header="Solicitud" >
-                        
+
                         <h:panelGrid columns="2">
 
                             <h:outputLabel value="#{bundle.CreateSolicitudLabel_estadosolicitudid}" for="estadosolicitudid" />
@@ -293,43 +294,77 @@
                     </p:panel>
 
                     <p:panel header="Items de Solicitud" >
-                        
+
                         <p:panelGrid>
                             <p:column style="width: 30%;">
-                                <p:treeTable id="tablepresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" scrollable="true" >
-
-                                    <p:column headerText="Etapa">
-                                        <h:outputText value="#{item.descripcion}" />
+                                <p:treeTable id="treetableetapas" value="#{etapaController.root}" var="document">
+                                    <p:column headerText="Etapa/Tarea">
+                                        <h:outputText value="#{document.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Rubro">
-                                        <h:outputText value="#{item.rubro.rubro}" />
+                                    <p:column headerText="Fecha Inicio">
+                                        <h:outputText value="#{document.fechainicio}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Costo Unitario">
-                                        <h:outputText value="#{item.costounitario}" />
+                                    <p:column headerText="Fecha Fin">
+                                        <h:outputText value="#{document.fechafin}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.cantidad}" />
+                                 <p:column headerText="Dias">
+                                        <h:outputText value="#{document.dias}" >
+                                            
+                                        </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Total">
-                                        <h:outputText value="#{item.total}" />
+                                 <p:column headerText="Equipo">
+                                     
+                                     <ui:repeat value="#{document.tareaAgenteList}" var="ta"  >
+                                     <p:outputLabel value="#{ta.agenteid.apellido},#{ta.agenteid.nombres} (#{ta.funcion})"  />
+                                      <br />      
+                                                
+                                 </ui:repeat>
                                     </p:column>
-                                    <p:columnGroup type="footer">
-                                        <p:row>
-                                            <p:column colspan="4" style="text-align:right" footerText="Totales:" />
-
-                                            <p:column footerText="#{presupuestoTareaController.sumagastouniversidad}" />
-
-                                            <p:column footerText="#{presupuestoTareaController.sumagastoorganismo}" />
-
-                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" />
-
-                                        </p:row>
-                                    </p:columnGroup>
-
+                                    <p:column style="width:24px">
+                                        <p:commandButton value="Editar" rendered="#{document.estado eq null}" onclick="PF('dialogoetapa').show()" update=":forme:etapa :forme:tareasdeproyecto :forme:cetapa " action="#{etapaController.prepararEditarEtapaTreeTable(document)}" icon="ui-icon-search" immediate="true" >
+                                           
+                                        </p:commandButton>
+                                    </p:column>
+                                 <p:column style="width:24px">
+                                     <p:commandButton value="Eliminar" update=":form:tabview1:treetableetapas :form:tabview1:contenedor :form:beanvalue" rendered="#{document.estado eq null}"  onclick="crearGrafico();" title="Eliminar" actionListener="#{etapaController.eliminarEtapaTreeTable(document)}" icon="ui-icon-trash">
+                                            
+                                        </p:commandButton>
+                                    </p:column>
                                 </p:treeTable>
                             </p:column>
                             <p:column style="width: 70%;">
-                                <p:pickList id="pickList" value="#{presupuestoTareaController.plPresupuestoTarea}" var="item" itemLabel="#{item}" itemValue="#{item.descripcion}" />
+                                <p:pickList id="plItemsSolicitud" value="#{presupuestoTareaController.plPresupuestoTarea}" converter="entityConverter" var="item" effect="bounce"
+                                            itemValue="#{item}" itemLabel="#{item.descripcion}" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >
+
+                                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                                    <f:facet name="targetCaption">Solicitados</f:facet>
+
+                                    <p:ajax event="transfer" listener="#{presupuestoTareaController.onTransfer}" update=":formprincipal:growlprincipal" />
+                                    <!--<p:ajax event="select" listener="{solicitudController.onSelect}" update="msg" />-->
+                                    <!--<p:ajax event="unselect" listener="{solicitudController.onUnselect}" update="msg" />-->
+                                    <!--<p:ajax event="reorder" listener="{solicitudController.onReorder}" update="msg" />-->
+
+                                    <p:column headerText="Descripcion">
+                                        <h:outputText value="#{item.descripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Costo Un.">
+                                        <h:outputText value="#{item.costounitario}" />
+                                    </p:column>
+
+                                    <p:column headerText="Cantidad">
+                                        <h:outputText value="#{item.cantidad}" />
+                                    </p:column>
+
+                                    <p:column headerText="Total">
+                                        <h:outputText value="#{item.total}" />
+                                    </p:column>
+                                </p:pickList>  
+
                             </p:column>
                         </p:panelGrid>
 
