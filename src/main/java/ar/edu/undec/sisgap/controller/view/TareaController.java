@@ -439,6 +439,5 @@ public class TareaController implements Serializable {
             System.out.println("Excepcion en TareaController: establecerTareasPorProyecto(int proyectoId)");
         }
     }
-   
 
 }

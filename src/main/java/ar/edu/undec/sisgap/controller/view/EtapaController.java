@@ -31,6 +31,9 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -47,6 +50,7 @@ public class EtapaController implements Serializable {
 
     //private TareaController tareacontroller;
     private TreeNode root = new DefaultTreeNode();
+    private TreeNode nodoSeleccionado;
     private List<Etapa> etapas = new ArrayList<Etapa>();
     private String gsoncategoria = "[]";
     private String data = "[0]";
@@ -277,6 +281,14 @@ public class EtapaController implements Serializable {
         this.root = root;
     }
 
+    public TreeNode getNodoSeleccionado() {
+        return nodoSeleccionado;
+    }
+
+    public void setNodoSeleccionado(TreeNode nodoSeleccionado) {
+        this.nodoSeleccionado = nodoSeleccionado;
+    }
+    
     public List<Etapa> getEtapas() {
         return etapas;
     }
@@ -694,32 +706,26 @@ public class EtapaController implements Serializable {
         etapas = this.getFacade().buscarEtapasProyecto(proyectoId);
     }
 
-    public void armarTreeEtapasYTareas() {
+    /**
+     * Armar Tree de Etapas y Tareas
+     */
+    public void armarTreeEtapasYTareasPorProyecto() {
+        
+        System.out.println("armarTreeEtapasYTareasPorProyecto inicio");
+        
         FacesContext context = FacesContext.getCurrentInstance();
-        TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
-        Date mindia = new Date("2999/12/12");
-        Date maxdia = new Date("2001/01/01");
-        int contardias = 0;
+        // setar la lista de etapas para el proyecto actual
+        establecerEtapasPorProyecto(proyectocontroller.getSelected().getId());
+        
+        // Vaciar la raiz
         root = new DefaultTreeNode(new Tarea(), null);
-        root.setExpanded(true);
-        //current.setTareaList(tareacontroller.getTareasdeproyecto());
-        for (Tarea t : tareacontroller.getTareasdeproyecto()) {
-            contardias = contardias + t.getDias();
-            if (t.getFechainicio().before(mindia)) {
-                mindia = t.getFechainicio();
-            }
-            if (t.getFechafin().after(maxdia)) {
-                maxdia = t.getFechafin();
-            }
-        }
-        current.setFechainicio(mindia);
-        current.setFechafin(maxdia);
-        current.setDias(contardias);
-        //etapas.add(current);
+        
         for (Etapa etapa : etapas) {
 
             Tarea t = new Tarea();
+            t.setId(etapa.getId());
             t.setTarea(etapa.getEtapa());
             t.setFechainicio(etapa.getFechainicio());
             t.setFechafin(etapa.getFechafin());
@@ -729,7 +735,32 @@ public class EtapaController implements Serializable {
             for (Tarea tarea : etapa.getTareaList()) {
                 TreeNode tar = new DefaultTreeNode(tarea, et);
             }
-
         }
+    }
+    
+    // Eventos de Tree de Etapas y Tareas
+    public void onTreeNodeSelect(NodeSelectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+        
+        Tarea t = (Tarea) event.getTreeNode().getData();
+        Boolean a = event.getTreeNode().isLeaf();
+        int c = event.getTreeNode().getChildCount();
+        
+        System.out.println("onTreeNodeSelect: " + t.getTarea() + " Cantidad: " + c + " es Hoja? " + a.toString());
+        
+        // Si es etapa
+        if (!event.getTreeNode().isLeaf()){
+            Etapa e = this.getFacade().find(t.getId());
+        }//Si es tarea
+        else{
+            
+        }
+                
+    }
+ 
+    public void onTreeNodeUnselect(NodeUnselectEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Unselected", event.getTreeNode().toString());
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 }
