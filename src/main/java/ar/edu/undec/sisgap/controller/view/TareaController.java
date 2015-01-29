@@ -419,7 +419,7 @@ public class TareaController implements Serializable {
     /**
      * Llenar la lista de tareas con las tareas de una etapa
      * 
-     * @param etapa 
+     * @param etapaId
      */
     public void establecerTareasPorEtapa(int etapaId){
         tareasdeproyecto = this.getFacade().buscarTareasEtapa(etapaId);

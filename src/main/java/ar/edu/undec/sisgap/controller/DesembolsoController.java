@@ -7,6 +7,7 @@ import ar.edu.undec.sisgap.controller.view.ProyectoController;
 import ar.edu.undec.sisgap.model.Proyecto;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -189,6 +190,16 @@ public class DesembolsoController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
+    public String sumarDesembolsos() {
+        Iterator i = this.getItems().iterator();
+        float total = 0;
+
+        while (i.hasNext()) {
+            total += ((Desembolso) i.next()).getMonto().floatValue();
+        }
+        return String.valueOf(total);
+    }
+
     @FacesConverter(forClass = Desembolso.class)
     public static class DesembolsoControllerConverter implements Converter {
 
@@ -228,5 +239,4 @@ public class DesembolsoController implements Serializable {
         }
 
     }
-
 }

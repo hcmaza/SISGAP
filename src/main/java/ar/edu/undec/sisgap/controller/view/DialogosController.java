@@ -31,6 +31,12 @@ public class DialogosController implements Serializable{
         System.out.println("dialogoCrearAgente fin");
     }
     
+    public void dialogoSolicitudItem(){
+        System.out.println("dialogoSolicitudItem");
+        RequestContext.getCurrentInstance().openDialog("/secure/dialogos/dialogoSolicitudItem.xhtml");
+        System.out.println("dialogoSolicitudItem fin");
+    }
+    
     public void dialogoVolverLista(){
         RequestContext.getCurrentInstance().openDialog("/secure/dialogos/dialogoVolverLista.xhtml");
     }

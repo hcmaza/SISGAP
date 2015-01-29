@@ -86,6 +86,10 @@ public class PresupuestoTareaController implements Serializable {
         return current;
     }
 
+    public void setSelected(PresupuestoTarea nuevoCurrent) {
+        current = nuevoCurrent;
+    }
+
     private PresupuestoTareaFacade getFacade() {
         return ejbFacade;
     }
@@ -275,6 +279,10 @@ public class PresupuestoTareaController implements Serializable {
     }
 
     public List<PresupuestoTarea> getPresupuestostareasitems() {
+        if (presupuestostareasitems == null) {
+            presupuestostareasitems = new ArrayList<PresupuestoTarea>();
+        }
+
         return this.presupuestostareasitems;
     }
 
@@ -395,7 +403,7 @@ public class PresupuestoTareaController implements Serializable {
         for (Etapa etapa : etapacontroller.getEtapas()) {
 
                     // PresupuestoTarea e = new PresupuestoTarea();
-                    // e.setDescripcion("Etapa - " + etapa.getEtapa());
+            // e.setDescripcion("Etapa - " + etapa.getEtapa());
             TreeNode et = new DefaultTreeNode(sumatoriaporetapa.get(ie), root);
             et.setExpanded(true);
 
@@ -530,7 +538,7 @@ public class PresupuestoTareaController implements Serializable {
         }
 
         return resultado;
-      //this. armarPresupuestoNodos();
+        //this. armarPresupuestoNodos();
         //armarGraficosPresupuesto();
     }
 
@@ -634,7 +642,6 @@ public class PresupuestoTareaController implements Serializable {
     }
 
     //sumo gastos 
-
     public void sumarGastos() {
         sumagastoorganismo = BigDecimal.ZERO;
         sumagastocomitente = BigDecimal.ZERO;
@@ -802,12 +809,12 @@ public class PresupuestoTareaController implements Serializable {
 
     public void establecerListaPresupuestoTareaPorProyecto(int proyectoid) {
 
-        // La lista de presupuestos de tarea
-        List<PresupuestoTarea> resultado = new ArrayList<PresupuestoTarea>();
-
         // Obtenemos el controlador de tarea
         FacesContext context = FacesContext.getCurrentInstance();
         TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+
+        // La lista de presupuestos de tarea
+        List<PresupuestoTarea> resultado = new ArrayList<PresupuestoTarea>();
 
         // Seteamos las tareas de las etapas del proyecto en el controlador de tareas
         tareacontroller.establecerTareasPorProyecto(proyectoid);
@@ -816,7 +823,7 @@ public class PresupuestoTareaController implements Serializable {
         for (Tarea t : tareacontroller.getTareasdeproyecto()) {
             for (PresupuestoTarea p : t.getPresupuestoTareaList()) {
                 // Se filtra que no sea de los rubros recursos humanos y servicios de terceros
-                if (!esRubroPorId(p,4) && !esRubroPorId(p,5)){
+                if (!esRubroPorId(p, 4) && !esRubroPorId(p, 5)) {
                     resultado.add(p);
                 }
             }
@@ -826,53 +833,89 @@ public class PresupuestoTareaController implements Serializable {
         presupuestostareas = resultado;
 
         // La lista dual de presupuesto tareas para el pick list
-        this.setPlPresupuestoTarea(new DualListModel(presupuestostareas, new ArrayList<PresupuestoTarea>()));
+        //this.setPlPresupuestoTarea(new DualListModel(presupuestostareas, new ArrayList<PresupuestoTarea>()));
 
+//        // Vaciar lista de presupuestos items a solicitar
+//        this.presupuestostareasitems = new ArrayList<PresupuestoTarea>();
     }
-    
+
     /**
-     * Condicion que devuelve verdadero si el presupuesto tarea es de un rubro determinado,
-     * dado por la id del rubro
-     * 
+     * Condicion que devuelve verdadero si el presupuesto tarea es de un rubro
+     * determinado, dado por la id del rubro
+     *
      * @param p
      * @param rubroId
-     * @return 
+     * @return
      */
-    public boolean esRubroPorId(PresupuestoTarea p, int rubroId){
-        if (p.getRubro().getId() == rubroId){
+    public boolean esRubroPorId(PresupuestoTarea p, int rubroId) {
+        if (p.getRubro().getId() == rubroId) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public void onTransfer(TransferEvent event) {
-        StringBuilder builder = new StringBuilder();
-        
-        for (Object item : event.getItems()) {
-            builder.append(((PresupuestoTarea) item).getDescripcion()).append("<br />");
+//    public void onPLTransfer(TransferEvent event) {
+////        StringBuilder builder = new StringBuilder();
+////        
+////        for (Object item : event.getItems()) {
+////            builder.append(((PresupuestoTarea) item).getDescripcion()).append("<br />");
+////        }
+//        
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        DialogosController dialogoscontroller = (DialogosController) context.getApplication().evaluateExpressionGet(context, "#{dialogosController}", DialogosController.class);
+//        
+//        System.out.println("onTransfer pick list");
+//        
+//        //dialogoscontroller.dialogoSolicitudItem();
+//        dialogoscontroller.dialogo();
+//
+////        FacesMessage msg = new FacesMessage();
+////        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+////        msg.setSummary("Items Transferred");
+////        msg.setDetail(builder.toString());
+////
+////        FacesContext.getCurrentInstance().addMessage(null, msg);
+//        
+//        System.out.println("onTransfer pick list fin");
+//    }
+//
+//    public void onPLSelect(SelectEvent event) {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Selected", event.getObject().toString()));
+//    }
+//
+//    public void onPLUnselect(UnselectEvent event) {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
+//    }
+    public void agregarItemSolcitado() {
+        System.out.println("solicitarItem");
+
+        // Agregar en la lista de solicitados
+        this.presupuestostareasitems.add(current);
+
+        // Quitar de la lista de disponibles
+        this.presupuestostareas.remove(current);
+
+        for (PresupuestoTarea p : presupuestostareas) {
+            System.out.println("PresupuestoTarea DISPONIBLE: " + p.getDescripcion());
         }
-        
-        
 
-        FacesMessage msg = new FacesMessage();
-        msg.setSeverity(FacesMessage.SEVERITY_INFO);
-        msg.setSummary("Items Transferred");
-        msg.setDetail(builder.toString());
+        for (PresupuestoTarea p : presupuestostareasitems) {
+            System.out.println("PresupuestoTarea SOLICITADO: " + p.getDescripcion());
+        }
 
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        
-        System.out.println("onTransfer pick list");
+        System.out.println("solicitarItem FIN");
     }
 
-    public void onSelect(SelectEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Selected", event.getObject().toString()));
-    }
+    public void quitarItemSolicitado(PresupuestoTarea item) {
 
-    public void onUnselect(UnselectEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
+        // Quita de la lista de solicitados
+        this.presupuestostareasitems.remove(item);
+
+        // Devuelve el item a la lista de disponibles
+        this.presupuestostareas.add(item);
     }
 
 }

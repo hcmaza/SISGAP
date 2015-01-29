@@ -89,6 +89,19 @@ public class SolicitudController implements Serializable {
     public String prepareCreate() {
         current = new Solicitud();
         selectedItemIndex = -1;
+        
+        // Obtenemos el controlador de PresupuestoTarea
+        FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        EtapaController etapacontroller  = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        
+        // Seteamos la lista de presupuesto tareas para el proyecto actual
+        presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(proyectocontroller.getSelected().getId());
+        
+        // Seteamos el tree de etapas y tareas para el proyecto actual
+        etapacontroller.armarTreeEtapasYTareasPorProyecto();
+       
         return "Create";
     }
 

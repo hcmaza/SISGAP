@@ -15,8 +15,8 @@
 
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
-            <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
-            <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
+            <f:event type="preRenderView" listener="#{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />
+            <f:event type="preRenderView" listener="#{etapaController.armarTreeEtapasYTareasPorProyecto}" />
 
             <h:panelGroup id="messagePanel" layout="block">
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
@@ -130,6 +130,28 @@
                         </p:tab>
                     </p:accordionPanel>
 
+                    <p:panel header="Descripción" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;" collapsed="true">
+                        <p:panelGrid styleClass="sinBordes" >
+                            <p:row>
+                                <p:column style="width: 150px; vertical-align: top;">
+                                    <p:outputLabel value="Resumen" style="font-weight: bold;" />
+                                </p:column>
+                                <p:column style="width: 100%;">
+                                    <p:inputTextarea rows="5" value="#{proyectoController.selected.resumen}" readonly="true" style="width: 100%;" autoResize="true" />
+                                </p:column>                                    
+                            </p:row>
+
+                            <p:row>
+                                <p:column style="width: 150px; vertical-align: top;">
+                                    <p:outputLabel value="Diagnóstico" style="font-weight: bold;" />
+                                </p:column>
+                                <p:column style="width: 100%;">
+                                    <p:inputTextarea rows="5" value="#{proyectoController.selected.observaciones}" readonly="true" style="width: 100%;" autoResize="true" />
+                                </p:column>                                    
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
                     <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
                         <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item">
                             <f:attribute name="”collectionType”" value="”java.util.ArrayList”/">
@@ -212,21 +234,13 @@
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="10,15,30">
 
-                            <p:column id="columnaNro" sortBy="id" width="10px" style="width: 15px;">
+                            <p:column id="columnaId" sortBy="id" width="10px" style="width: 10px;">
                                 <f:facet name="header">
                                     <h:outputText value="Nº" />
                                 </f:facet>
-                                <h:outputText value="#{item.numerodesembolso}" />
+                                <h:outputText value="#{item.id}" />
                             </p:column>
-                            <p:column id="columnaFecha" sortBy="fechadesembolso" width="10px">
-                                <f:facet name="header">
-                                    <h:outputText value="Fecha de Desembolso" />
-                                </f:facet>
-                                <h:outputText value="#{item.fechadesembolso}"> 
-                                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                                </h:outputText>
-                            </p:column>
-                            <p:column id="columnaMonto" filterBy="monto" filterMatchMode="contains" sortBy="monto" style="text-align: right;">
+                            <p:column id="columnaMonto" filterBy="monto" filterMatchMode="contains" sortBy="monto">
                                 <f:facet name="header">
                                     <h:outputText value="Monto"/>
                                 </f:facet>
@@ -239,9 +253,6 @@
                                 <p:commandButton action="#{desembolsoController.prepareView}" title="Ver Detalle" icon="ui-icon-search" ajax="false" />
                                 <h:outputText value=" "/>
                             </p:column>
-                            <f:facet name="footer">
-                                El total de desembolsos es $ #{desembolsoController.sumarDesembolsos()}
-                            </f:facet>
                         </p:dataTable>
                     </p:panel>
 
@@ -282,7 +293,7 @@
 
                     <p:panel header="Items de Solicitud" >
 
-                        <p:panelGrid styleClass="" >
+                        <p:panelGrid styleClass="">
                             <p:column style="width: 20%;">
                                 <p:tree value="#{etapaController.root}" var="item"
                                         selectionMode="single"
@@ -291,61 +302,37 @@
 
                                     <p:ajax event="select" update=":formprincipal:growlprincipal" listener="#{etapaController.onTreeNodeSelect}" />
                                     <p:ajax event="unselect" update=":formprincipal:growlprincipal" listener="#{etapaController.onTreeNodeUnselect}" />
-
+                                    
                                     <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
                                         <h:outputText value="#{item.tarea}"/>
                                     </p:treeNode>
                                 </p:tree>
                             </p:column>
-                            <p:column style="width: 40%;">
-                                <p:dataTable id="pDisponibles" var="item" value="#{presupuestoTareaController.presupuestostareas}">
-                                    <f:facet name="header">
-                                        Items Disponibles
-                                    </f:facet>
-                                    <p:column headerText="Descipcion">
+                            <p:column style="width: 80%;">
+                                <p:pickList id="plItemsSolicitud" value="#{presupuestoTareaController.plPresupuestoTarea}" converter="entityConverter" var="item" effect="bounce"
+                                            itemValue="#{item}" itemLabel="#{item.descripcion}" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" style="width: 100%;">
+
+                                    <f:facet name="sourceCaption">Disponibles</f:facet>
+                                    <f:facet name="targetCaption">Solicitados</f:facet>
+
+                                    <p:ajax event="transfer" listener="#{presupuestoTareaController.onPLTransfer}" update=":formprincipal:growlprincipal" />
+                                    <!--<p:ajax event="select" listener="{solicitudController.onSelect}" update="msg" />-->
+                                    <!--<p:ajax event="unselect" listener="{solicitudController.onUnselect}" update="msg" />-->
+                                    <!--<p:ajax event="reorder" listener="{solicitudController.onReorder}" update="msg" />-->
+
+                                    <p:column headerText="Descripcion">
                                         <h:outputText value="#{item.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.costounitario}" />
-                                    </p:column>
+
                                     <p:column headerText="Total">
                                         <h:outputText value="#{item.total}" />
                                     </p:column>
-                                    <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formprincipal:itemSolicitud" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar">
-                                            <f:setPropertyActionListener value="#{item}" target="#{presupuestoTareaController.selected}" />
-                                        </p:commandButton>
-                                    </p:column>
-                                </p:dataTable>
-                            </p:column>
-                            <p:column style="width: 40%;">
-                                <p:dataTable id="pSolicitados" var="item" value="#{presupuestoTareaController.presupuestostareasitems}">
-                                    <f:facet name="header">
-                                        Items Solicitados
-                                    </f:facet>
-                                    <p:column headerText="Descipcion">
-                                        <h:outputText value="#{item.descripcion}" />
-                                    </p:column>
-                                    <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.costounitario}" />
-                                    </p:column>
-                                    <p:column headerText="Total">
-                                        <h:outputText value="#{item.total}" />
-                                    </p:column>
-                                    <p:column style="width:32px;text-align: center">
-                                        <p:commandButton action="#{presupuestoTareaController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" >
-                                            <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"   />
-                                        </p:commandButton>
-                                    </p:column>
-                                </p:dataTable>
+                                </p:pickList>  
+
                             </p:column>
                         </p:panelGrid>
+
+
 
                     </p:panel>
 
@@ -358,35 +345,6 @@
                     <br />
                     <h:link outcome="/index" value="#{bundle.CreateSolicitudIndexLink}"/>
                 </p:panel>
-
-                <p:dialog header="Item Solicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="itemSolicitud" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty presupuestoTareaController.selected}" columnClasses="label,value">
-                            <f:facet name="header">
-                                <h:outputText value="#{presupuestoTareaController.selected.descripcion}" />
-                            </f:facet>
-
-                            <p:outputLabel value="Costo Unitario" />
-                            <h:outputText id="costounitario" value="#{presupuestoTareaController.selected.costounitario}" />
-
-                            <p:outputLabel value="Year" />
-                            <h:outputText id="cantidad" value="#{presupuestoTareaController.selected.cantidad}" />
-
-                            <p:outputLabel value="Color:" />
-                            <h:outputText id="total" value="#{presupuestoTareaController.selected.total}" />
-
-                        </p:panelGrid>
-                    </p:outputPanel>
-
-                    <p:separator/>
-
-                    <p:commandButton value="Solicitar" action="#{presupuestoTareaController.agregarItemSolcitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" oncomplete="PF('dialogoItemSolicitud').hide();" />
-                </p:dialog>
-
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" style="float:left;" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
-                </p:confirmDialog>
             </h:form>
         </ui:define>
     </ui:composition>
