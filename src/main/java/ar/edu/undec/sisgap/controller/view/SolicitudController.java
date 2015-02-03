@@ -4,12 +4,14 @@ import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
+import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.model.SolicitudItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
@@ -36,6 +38,8 @@ public class SolicitudController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.SolicitudItemFacade ejbFacadesi;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -51,6 +55,10 @@ public class SolicitudController implements Serializable {
             selectedItemIndex = -1;
         }
         return current;
+    }
+    
+    public void setSelected(Solicitud solicitud){
+        current = solicitud;
     }
 
     private SolicitudFacade getFacade() {
@@ -77,12 +85,12 @@ public class SolicitudController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "List";
+        return "ListPorProyecto";
     }
 
     public String prepareView() {
-        current = (Solicitud) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Solicitud) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
@@ -99,6 +107,9 @@ public class SolicitudController implements Serializable {
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(proyectocontroller.getSelected().getId());
         
+        // Vaciamos la lista de presupuestos tareas solicitados
+        presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
+        
         // Seteamos el tree de etapas y tareas para el proyecto actual
         etapacontroller.armarTreeEtapasYTareasPorProyecto();
        
@@ -111,10 +122,27 @@ public class SolicitudController implements Serializable {
             current.setFechaejecucion(new Date());
             current.setFechasolicitud(new Date());
             current.setObservacion("asdasdasd");
+            
+            // guardamos solicitud
+            getFacade().createWithPersist(current);
+            
+            // Obtenemos el controlador de PresupuestoTarea
+            FacesContext context = FacesContext.getCurrentInstance();
+            PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+            
+            // para cada presupuestotarea solicitado, creamos un SolicitudItem y lo guardamos
+            for(PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareasitems()){
+                SolicitudItem si = new SolicitudItem();
+                si.setPresupuestoTareaid(p);
+                si.setMonto(p.getTotal());
+                si.setSolicitudid(current);
+                si.setObservacion("askjdajksdk");
+                ejbFacadesi.create(si);
+            }
 
-            getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudCreated"));
-            return prepareCreate();
+            
+            return prepareList();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
@@ -122,8 +150,8 @@ public class SolicitudController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Solicitud) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Solicitud) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
 
@@ -139,12 +167,12 @@ public class SolicitudController implements Serializable {
     }
 
     public String destroy() {
-        current = (Solicitud) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Solicitud) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
         recreateModel();
-        return "List";
+        return "ListPorProyecto";
     }
 
     public String destroyAndView() {
@@ -267,7 +295,15 @@ public class SolicitudController implements Serializable {
         this.listaSolicitudItems = listaSolicitudItems;
     }
     
-    
+    public void obtenerPorProyecto(int proyectoid){
+        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
+        
+        Iterator i = items.iterator();
+        
+        while(i.hasNext()){
+            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud)i.next()).getId()); 
+       }
+    }
     
 //    public void establecerSolicitudItemsDisponibles(Proyecto p){
 //        //this.setSolicitudItems(new DualListModel<SolicitudItem>);

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -67,7 +68,7 @@ public class Solicitud implements Serializable {
     @ManyToOne
     private Estadosolicitud estadosolicitudid;
     
-    @OneToMany(mappedBy = "solicitudid")
+    @OneToMany(mappedBy = "solicitudid", cascade = CascadeType.ALL)
     private List<SolicitudItem> listaSolicitudItems;
     
     public Solicitud() {

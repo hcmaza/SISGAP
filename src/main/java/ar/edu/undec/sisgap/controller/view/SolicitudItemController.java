@@ -1,13 +1,11 @@
 package ar.edu.undec.sisgap.controller.view;
 
-import ar.edu.undec.sisgap.model.Desembolso;
+import ar.edu.undec.sisgap.model.SolicitudItem;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
-import ar.edu.undec.sisgap.controller.DesembolsoFacade;
+import ar.edu.undec.sisgap.controller.SolicitudItemFacade;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -20,35 +18,29 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
-@ManagedBean(name = "desembolsoController")
+@ManagedBean(name = "solicitudItemController")
 @SessionScoped
-public class DesembolsoController implements Serializable {
+public class SolicitudItemController implements Serializable {
 
-    private Desembolso current;
+    private SolicitudItem current;
     private DataModel items = null;
     @EJB
-    private ar.edu.undec.sisgap.controller.DesembolsoFacade ejbFacade;
+    private ar.edu.undec.sisgap.controller.SolicitudItemFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    public DesembolsoController() {
+    public SolicitudItemController() {
     }
 
-    public Desembolso getSelected() {
+    public SolicitudItem getSelected() {
         if (current == null) {
-            current = new Desembolso();
+            current = new SolicitudItem();
             selectedItemIndex = -1;
         }
         return current;
     }
-    
-    public void setSelected(Desembolso desembolso){
-        current = desembolso;
-        
-        System.out.println("DESEMBOLSO setSelected: " + current.getId());
-    }
 
-    private DesembolsoFacade getFacade() {
+    private SolicitudItemFacade getFacade() {
         return ejbFacade;
     }
 
@@ -72,35 +64,25 @@ public class DesembolsoController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "ListPorProyecto";
+        return "List";
     }
 
     public String prepareView() {
-        //current = (Desembolso) getItems().getRowData();
-        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        current = (SolicitudItem) getItems().getRowData();
+        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
     public String prepareCreate() {
-        current = new Desembolso();
+        current = new SolicitudItem();
         selectedItemIndex = -1;
         return "Create";
     }
 
     public String create() {
         try {
-            
-            FacesContext context = FacesContext.getCurrentInstance();
-            ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-            
-            // obtenermos el proyecto actual y lo guardamos en el desembolso a guardar
-            current.setProyectoid(proyectocontroller.getSelected());
-            
-            // fecha de carga actual
-            current.setFechacarga(new Date());
-            
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoCreated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudItemCreated"));
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -109,15 +91,15 @@ public class DesembolsoController implements Serializable {
     }
 
     public String prepareEdit() {
-        //current = (Desembolso) getItems().getRowData();
-        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        current = (SolicitudItem) getItems().getRowData();
+        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
 
     public String update() {
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoUpdated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudItemUpdated"));
             return "View";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -126,12 +108,12 @@ public class DesembolsoController implements Serializable {
     }
 
     public String destroy() {
-        //current = (Desembolso) getItems().getRowData();
-        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        current = (SolicitudItem) getItems().getRowData();
+        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
         recreateModel();
-        return "ListPorProyecto";
+        return "List";
     }
 
     public String destroyAndView() {
@@ -150,7 +132,7 @@ public class DesembolsoController implements Serializable {
     private void performDestroy() {
         try {
             getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoDeleted"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudItemDeleted"));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
         }
@@ -206,16 +188,16 @@ public class DesembolsoController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    @FacesConverter(forClass = Desembolso.class)
-    public static class DesembolsoControllerConverter implements Converter {
+    @FacesConverter(forClass = SolicitudItem.class)
+    public static class SolicitudItemControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            DesembolsoController controller = (DesembolsoController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "desembolsoController");
+            SolicitudItemController controller = (SolicitudItemController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "solicitudItemController");
             return controller.ejbFacade.find(getKey(value));
         }
 
@@ -236,36 +218,14 @@ public class DesembolsoController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Desembolso) {
-                Desembolso o = (Desembolso) object;
+            if (object instanceof SolicitudItem) {
+                SolicitudItem o = (SolicitudItem) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Desembolso.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + SolicitudItem.class.getName());
             }
         }
 
-    }
-    
-    /**
-     * Llena la coleccion de desembolsos con los desembolsos de un proyecto determinado
-     * 
-     * @param proyectoId 
-     */
-    public void obtenerPorProyecto(int proyectoId){
-        
-        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoId));
-    }
-    
-    public float sumarDesembolsos(){
-        float resultado = 0;
-        Iterator i = items.iterator();
-        
-        while(i.hasNext()){
-            resultado += ((Desembolso)i.next()).getMonto().floatValue();
-        }
-        
-        return resultado;
-        
     }
 
 }

@@ -6,9 +6,11 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Solicitud;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -16,6 +18,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class SolicitudFacade extends AbstractFacade<Solicitud> {
+
     @PersistenceContext(unitName = "ar.edu.undec_SYSGAP_war_1.0-SNAPSHOTPU")
     private EntityManager em;
 
@@ -27,5 +30,24 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
     public SolicitudFacade() {
         super(Solicitud.class);
     }
-    
+
+//    select p from Person p where
+//    p.email in(
+//        select q.email
+//        from Person q
+//        group by q.email having count(q.email)>1)
+//    order by p.email, p.id
+
+    /**
+     * Obtiene una lista de solicitud por proyecto (solicitud no tiene relacion con proyecto, solo a traves de SolicitudItem > PresupuestoTarea)
+     * 
+     * @param proyectoid
+     * @return 
+     */
+    public List<Solicitud> obtenerPorProyecto(int proyectoid) {
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.id IN (SELECT si.solicitudid.id FROM SolicitudItem si WHERE si.presupuestoTareaid.tarea.etapaid.proyectoid.id = :proyectoid)", Solicitud.class);
+        consulta.setParameter("proyectoid", proyectoid);
+        return consulta.getResultList();
+        
+    }
 }

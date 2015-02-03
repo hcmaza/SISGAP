@@ -807,6 +807,11 @@ public class PresupuestoTareaController implements Serializable {
         this.armarPresupuestoNodos();
     }
 
+    /**
+     * se llena la lista [presupuestostareas] para un proyecto determinado
+     * 
+     * @param proyectoid 
+     */
     public void establecerListaPresupuestoTareaPorProyecto(int proyectoid) {
 
         // Obtenemos el controlador de tarea
@@ -822,7 +827,7 @@ public class PresupuestoTareaController implements Serializable {
         // Para cada tarea en el controlador, obtenermos su lista de [PresupuestoTarea]
         for (Tarea t : tareacontroller.getTareasdeproyecto()) {
             for (PresupuestoTarea p : t.getPresupuestoTareaList()) {
-                // Se filtra que no sea de los rubros recursos humanos y servicios de terceros
+                // Se filtra que no sea de los rubros recursos humanos y servicios de terceros [POR AHORA]
                 if (!esRubroPorId(p, 4) && !esRubroPorId(p, 5)) {
                     resultado.add(p);
                 }
@@ -837,6 +842,13 @@ public class PresupuestoTareaController implements Serializable {
 
 //        // Vaciar lista de presupuestos items a solicitar
 //        this.presupuestostareasitems = new ArrayList<PresupuestoTarea>();
+    }
+    
+    /**
+     * vacia la lista [presupuestostareasitems] que es la que mantiene los presupuestostarea solicitados
+     */
+    public void vaciarListaPresupuestoTareaSolicitadosPorProyecto(){
+        presupuestostareasitems = new ArrayList<PresupuestoTarea>();
     }
 
     /**
@@ -889,6 +901,10 @@ public class PresupuestoTareaController implements Serializable {
 //        FacesContext context = FacesContext.getCurrentInstance();
 //        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
 //    }
+    
+    /**
+     * Agrega el item seleccionado de la lista [presupuestostareas] en la lista [presupuestostareas]
+     */
     public void agregarItemSolcitado() {
         System.out.println("solicitarItem");
 
