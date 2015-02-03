@@ -245,15 +245,26 @@
                         </h:panelGrid>
                     </p:panel>
 
-                    <br />
-                    <h:commandLink action="#{desembolsoController.create}" value="#{bundle.CreateDesembolsoSaveLink}" />
-                    <br />
-                    <br />
-                    <h:commandLink action="#{desembolsoController.prepareList}" value="#{bundle.CreateDesembolsoShowAllLink}" immediate="true"/>
-                    <br />
-                    <br />
-                    <h:link outcome="/index" value="#{bundle.CreateDesembolsoIndexLink}"/>
+                    <br style="clear: both;"/>
+
+                    <p:separator />
+                    <p:commandButton action="#{desembolsoController.create}" value="Crear Desembolso" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
+                    <p:commandButton action="#{desembolsoController.prepareList}" value="Lista de Desembolsos" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
+                    <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
+                    <p:separator/>
+                    
                 </p:panel>
+            </h:form>
+            <h:form>
+                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Nuevo Desembolso" >
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
+                    <p:separator />
+                    <div align="center" >
+                        <p:commandButton value="Volver a la Lista" action="#{desembolsoController.prepareList()}" ajax="false" />
+                    </div>
+                </p:dialog>
             </h:form>
         </ui:define>
     </ui:composition>

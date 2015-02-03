@@ -6,6 +6,7 @@ import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.DesembolsoFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -39,6 +40,12 @@ public class DesembolsoController implements Serializable {
         }
         return current;
     }
+    
+    public void setSelected(Desembolso desembolso){
+        current = desembolso;
+        
+        System.out.println("DESEMBOLSO setSelected: " + current.getId());
+    }
 
     private DesembolsoFacade getFacade() {
         return ejbFacade;
@@ -64,12 +71,12 @@ public class DesembolsoController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "List";
+        return "ListPorProyecto";
     }
 
     public String prepareView() {
-        current = (Desembolso) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Desembolso) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
@@ -81,6 +88,16 @@ public class DesembolsoController implements Serializable {
 
     public String create() {
         try {
+            
+            FacesContext context = FacesContext.getCurrentInstance();
+            ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+            
+            // obtenermos el proyecto actual y lo guardamos en el desembolso a guardar
+            current.setProyectoid(proyectocontroller.getSelected());
+            
+            // fecha de carga actual
+            current.setFechacarga(new Date());
+            
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoCreated"));
             return prepareCreate();
@@ -91,8 +108,8 @@ public class DesembolsoController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Desembolso) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Desembolso) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
 
@@ -108,12 +125,12 @@ public class DesembolsoController implements Serializable {
     }
 
     public String destroy() {
-        current = (Desembolso) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Desembolso) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
         recreateModel();
-        return "List";
+        return "ListPorProyecto";
     }
 
     public String destroyAndView() {
@@ -229,7 +246,7 @@ public class DesembolsoController implements Serializable {
     }
     
     public void obtenerPorProyecto(int proyectoId){
-        this.items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoId));
+        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoId));
     }
 
 }

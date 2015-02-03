@@ -1925,8 +1925,8 @@ public class ProyectoController implements Serializable {
 //        current = (Proyecto) event.getObject();
 //    }
 
-    public void setSelected(Proyecto current) {
-        this.current = current;
+    public void setSelected(Proyecto proyecto) {
+        current = proyecto;
     }
 
 }
