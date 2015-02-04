@@ -776,12 +776,11 @@ public class ProyectoController implements Serializable {
     public void buscarProyectosAgenteTrue(Agente agente){
         recreateModel();
         
-        System.out.println("ProyectoController - buscarProyectosAgenteTrue - ROL = " + agente.getUsuarioid().getUsuariorol().getRolid());
-        
         switch (agente.getUsuarioid().getUsuariorol().getRolid()){
             // Administrador
             case 1:
                 items = new ListDataModel(getFacade().buscarTodos());
+                break;
             // Docente
             case 2:
                 items = new ListDataModel(getFacade().buscarProyectosAgente(true,agente.getId()));

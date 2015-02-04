@@ -23,7 +23,7 @@
 
                     <h:outputText escape="false" value="La lista de solicitudes está vacía" rendered="#{solicitudController.items.rowCount == 0}"/>
                     <p:separator rendered="#{solicitudController.items.rowCount == 0}" />
-                    <p:commandButton action="#{solicitudController.prepareCreate}" value="Nueva Solicitud" rendered="#{solicitudController.items.rowCount == 0}"/>
+                    <p:commandButton action="#{solicitudController.prepareCreate}" value="Nueva Solicitud" rendered="#{solicitudController.items.rowCount == 0 and agenteController.selected.usuarioid.usuariorol.rol == 'Docente'}"/>
 
                     <h:panelGroup rendered="#{solicitudController.items.rowCount > 0}">
 
@@ -44,6 +44,24 @@
                                     <h:outputText value="Nº" />
                                 </f:facet>
                                 <h:outputText value="#{item.id}" />
+                            </p:column>
+                            <p:column id="columnaItems" width="20px" style="width: 20px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Items" />
+                                </f:facet>
+                                <h:outputText value="#{item.listaSolicitudItems.size}" />
+                            </p:column>
+                            <p:column id="columnaTipo" sortBy="tiposolicitud">
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo" />
+                                </f:facet>
+                                <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                            </p:column>
+                            <p:column id="columnaEstado" sortBy="estadosolicitud" width="10px" style="width: 10px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" />
+                                </f:facet>
+                                <h:outputText value="#{item.estadosolicitudid.estadosolicitud}" />
                             </p:column>
                             <p:column id="columnaProyecto" filterBy="nombre" filterMatchMode="contains" sortBy="nombre">
                                 <f:facet name="header">
@@ -72,7 +90,7 @@
                         </p:dataTable>
 
                         <p:separator/>
-                        <p:commandButton action="#{solicitudController.prepareCreate}" value="Nueva Solicitud" ajax="false" />
+                        <p:commandButton action="#{solicitudController.prepareCreate}" value="Nueva Solicitud" ajax="false" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Docente'}" />
                         <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                         <p:separator/>
 

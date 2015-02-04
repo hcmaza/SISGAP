@@ -23,7 +23,7 @@
 
                     <h:outputText escape="false" value="La lista de desembolsos está vacía" rendered="#{desembolsoController.items.rowCount == 0}"/>
                     <p:separator rendered="#{desembolsoController.items.rowCount == 0}" />
-                    <p:commandButton action="#{desembolsoController.prepareCreate}" value="Nuevo Desembolso" rendered="#{desembolsoController.items.rowCount == 0}"/>
+                    <p:commandButton action="#{desembolsoController.prepareCreate}" value="Nuevo Desembolso" rendered="#{desembolsoController.items.rowCount == 0 and agenteController.selected.usuarioid.usuariorol.rol == 'Administrador'}"/>
 
                     <h:panelGroup rendered="#{desembolsoController.items.rowCount > 0}">
 
@@ -100,7 +100,7 @@
                         </p:dataTable>
 
                         <p:separator/>
-                        <p:commandButton action="#{desembolsoController.prepareCreate}" value="Nuevo Desembolso" ajax="false" />
+                        <p:commandButton action="#{desembolsoController.prepareCreate}" value="Nuevo Desembolso" ajax="false" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Administrador'}" />
                         <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                         <p:separator/>
 

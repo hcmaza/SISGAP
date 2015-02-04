@@ -129,6 +129,11 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
          
     }
     
+    /**
+     * Obtiene una lista de todos los proyectos
+     * 
+     * @return Todos los Proyectos
+     */
     public List<Proyecto> buscarTodos(){
         try{
             return em.createQuery("SELECT p FROM Proyecto p").getResultList();
