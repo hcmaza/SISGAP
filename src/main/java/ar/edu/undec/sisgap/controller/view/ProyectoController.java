@@ -773,13 +773,25 @@ public class ProyectoController implements Serializable {
         
     }
     
-    public void buscarProyectosAgenteTrue(int agenteid){
+    public void buscarProyectosAgenteTrue(Agente agente){
         recreateModel();
-       
-        if (agenteid != 0){
-            items=new ListDataModel(getFacade().buscarProyectosAgente(true,agenteid));
-        }else{
-            items=new ListDataModel(getFacade().findAll());
+        
+        System.out.println("ProyectoController - buscarProyectosAgenteTrue - ROL = " + agente.getUsuarioid().getUsuariorol().getRolid());
+        
+        switch (agente.getUsuarioid().getUsuariorol().getRolid()){
+            // Administrador
+            case 1:
+                items = new ListDataModel(getFacade().buscarTodos());
+            // Docente
+            case 2:
+                items = new ListDataModel(getFacade().buscarProyectosAgente(true,agente.getId()));
+                break;
+            // Empleado
+            case 3:
+                items = new ListDataModel(getFacade().buscarTodos());
+                break;
+            default:
+                items = new ListDataModel(getFacade().buscarTodos());
         }
         
     }

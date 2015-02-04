@@ -11,9 +11,7 @@
 
         <ui:define name="body">
             <f:event type="preRenderView" listener="#{agenteController.findAgente(request.getUserPrincipal().toString())}" ></f:event>
-            
-            <f:event type="preRenderView" listener="#{proyectoController.buscarProyectosAgenteTrue(agenteController.selected.id)}" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Docente'}" ></f:event>
-            <f:event type="preRenderView" listener="#{proyectoController.buscarProyectosAgenteTrue(0)}" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Administrador'}" ></f:event>
+            <f:event type="preRenderView" listener="#{proyectoController.buscarProyectosAgenteTrue(agenteController.selected)}"></f:event>
 
             <h:form >
                 <p:panel id="pprincipal" header="Lista de Proyectos" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">

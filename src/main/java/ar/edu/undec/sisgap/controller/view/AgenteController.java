@@ -217,6 +217,8 @@ public class AgenteController implements Serializable {
              current= (Agente) getFacade().findAgente(nombreusuario);
         //System.out.println("222222222222222222222222222222222222222222222"+current.getId());
         }
+        
+        System.out.println("AgenteController findAgente: " + current.getId() + " - " + current.getApellido() );
     }
 
     @FacesConverter(forClass = Agente.class)
