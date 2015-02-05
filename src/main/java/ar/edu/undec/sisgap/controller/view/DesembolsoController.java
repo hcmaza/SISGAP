@@ -256,6 +256,12 @@ public class DesembolsoController implements Serializable {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoId));
     }
     
+    
+    /**
+     * Suma y devuelve la suma de todos los desembolsos en la lista
+     * 
+     * @return 
+     */
     public float sumarDesembolsos(){
         float resultado = 0;
         Iterator i = items.iterator();
@@ -267,5 +273,4 @@ public class DesembolsoController implements Serializable {
         return resultado;
         
     }
-
 }

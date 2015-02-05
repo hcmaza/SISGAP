@@ -103,6 +103,7 @@ public class SolicitudController implements Serializable {
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         EtapaController etapacontroller  = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        DesembolsoController desembolsocontroller  = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
         
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(proyectocontroller.getSelected().getId());
@@ -112,6 +113,9 @@ public class SolicitudController implements Serializable {
         
         // Seteamos el tree de etapas y tareas para el proyecto actual
         etapacontroller.armarTreeEtapasYTareasPorProyecto();
+        
+        // Seteamos la lista de desembolsos para el proyecto actual
+        desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
        
         return "Create";
     }
