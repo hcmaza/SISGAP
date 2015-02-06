@@ -8,7 +8,6 @@ import ar.edu.undec.sisgap.controller.RubroFacade;
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
-import ar.edu.undec.sisgap.model.SolicitudItem;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
 
@@ -907,7 +906,8 @@ public class PresupuestoTareaController implements Serializable {
      */
     public void agregarItemSolcitado() {
         System.out.println("solicitarItem");
-
+        
+        
         // Agregar en la lista de solicitados
         this.presupuestostareasitems.add(current);
 

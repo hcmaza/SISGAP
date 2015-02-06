@@ -12,7 +12,7 @@
         </ui:define>
         <ui:define name="body">
             <f:event type="preRenderView" listener="#{solicitudController.obtenerPorProyecto(proyectoController.selected.id)}" ></f:event>
-            
+
             <h:form id="form" styleClass="jsfcrud_list_form">
 
                 <p:panel id="pprincipal" header="Lista de Solicitudes" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
@@ -39,17 +39,11 @@
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="10,15,30">
 
-                            <p:column id="columnaId" sortBy="id" width="10px" style="width: 10px;">
+                            <p:column id="columnaDescripcion">
                                 <f:facet name="header">
-                                    <h:outputText value="Nº" />
+                                    <h:outputText value="Descripción" />
                                 </f:facet>
-                                <h:outputText value="#{item.id}" />
-                            </p:column>
-                            <p:column id="columnaItems" width="20px" style="width: 20px;">
-                                <f:facet name="header">
-                                    <h:outputText value="Items" />
-                                </f:facet>
-                                <h:outputText value="#{item.listaSolicitudItems.size}" />
+                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
                             </p:column>
                             <p:column id="columnaTipo" sortBy="tiposolicitud">
                                 <f:facet name="header">
@@ -57,18 +51,24 @@
                                 </f:facet>
                                 <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
                             </p:column>
-                            <p:column id="columnaEstado" sortBy="estadosolicitud" width="10px" style="width: 10px;">
+                            <p:column id="columnaEstado" sortBy="estadosolicitud">
                                 <f:facet name="header">
                                     <h:outputText value="Estado" />
                                 </f:facet>
                                 <h:outputText value="#{item.estadosolicitudid.estadosolicitud}" />
                             </p:column>
-                            <p:column id="columnaProyecto" filterBy="nombre" filterMatchMode="contains" sortBy="nombre">
+                            <p:column id="columnaImporte" filterBy="importe" filterMatchMode="contains" sortBy="importe">
                                 <f:facet name="header">
-                                    <h:outputText value="Proyecto"/>
+                                    <h:outputText value="Importe"/>
                                 </f:facet>
-                                <h:outputText value="#{item.observacion}" />
-                            </p:column>  
+                                <h:outputText value="#{item.importe}" />
+                            </p:column>
+                            <p:column id="columnaAprobado" filterBy="importe" filterMatchMode="contains" sortBy="importe">
+                                <f:facet name="header">
+                                    <h:outputText value="Aprobado?"/>
+                                </f:facet>
+                                <h:outputText value="#{item.aprobado}" />
+                            </p:column>
 
                             <p:column >
                                 <f:facet name="header">

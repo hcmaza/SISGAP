@@ -6,7 +6,6 @@ import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Proyecto;
-import ar.edu.undec.sisgap.model.SolicitudItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,13 +37,11 @@ public class SolicitudController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacade;
-    @EJB
-    private ar.edu.undec.sisgap.controller.SolicitudItemFacade ejbFacadesi;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    private List<SolicitudItem> listaSolicitudItems;
-   
+    private List<Solicitud> itemsDisponibles;
+    private List<Solicitud> itemsSolicitados;
 
     public SolicitudController() {
     }
@@ -56,13 +53,29 @@ public class SolicitudController implements Serializable {
         }
         return current;
     }
-    
-    public void setSelected(Solicitud solicitud){
+
+    public void setSelected(Solicitud solicitud) {
         current = solicitud;
     }
 
     private SolicitudFacade getFacade() {
         return ejbFacade;
+    }
+
+    public List<Solicitud> getItemsDisponibles() {
+        return itemsDisponibles;
+    }
+
+    public void setItemsDisponibles(List<Solicitud> itemsDisponibles) {
+        this.itemsDisponibles = itemsDisponibles;
+    }
+
+    public List<Solicitud> getItemsSolicitados() {
+        return itemsSolicitados;
+    }
+
+    public void setItemsSolicitados(List<Solicitud> itemsSolicitados) {
+        this.itemsSolicitados = itemsSolicitados;
     }
 
     public PaginationHelper getPagination() {
@@ -97,55 +110,90 @@ public class SolicitudController implements Serializable {
     public String prepareCreate() {
         current = new Solicitud();
         selectedItemIndex = -1;
-        
+
+        // Borramos la lista de items disponibles
+        itemsDisponibles = new ArrayList<Solicitud>();
+
+        // Borramos la lista items solicitados
+        itemsSolicitados = new ArrayList<Solicitud>();
+
         // Obtenemos el controlador de PresupuestoTarea
         FacesContext context = FacesContext.getCurrentInstance();
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-        EtapaController etapacontroller  = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-        DesembolsoController desembolsocontroller  = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
-        
+        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(proyectocontroller.getSelected().getId());
-        
+
+        // Llenamos la lista de items disponibles
+        for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
+            Solicitud solicitud = new Solicitud();
+            solicitud.setPresupuestotarea(p);
+            solicitud.setImporte(p.getTotal());
+            
+            itemsDisponibles.add(solicitud);
+        }
+
         // Vaciamos la lista de presupuestos tareas solicitados
-        presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
-        
+        //presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
+        //items = new ListDataModel(new ArrayList<Solicitud>());
         // Seteamos el tree de etapas y tareas para el proyecto actual
         etapacontroller.armarTreeEtapasYTareasPorProyecto();
-        
+
         // Seteamos la lista de desembolsos para el proyecto actual
         desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
-       
+
         return "Create";
     }
 
     public String create() {
         try {
-            current.setFechaaprobacion(new Date());
-            current.setFechaejecucion(new Date());
-            current.setFechasolicitud(new Date());
-            current.setObservacion("asdasdasd");
-            
-            // guardamos solicitud
-            getFacade().createWithPersist(current);
-            
-            // Obtenemos el controlador de PresupuestoTarea
-            FacesContext context = FacesContext.getCurrentInstance();
-            PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
-            
-            // para cada presupuestotarea solicitado, creamos un SolicitudItem y lo guardamos
-            for(PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareasitems()){
-                SolicitudItem si = new SolicitudItem();
-                si.setPresupuestoTareaid(p);
-                si.setMonto(p.getTotal());
-                si.setSolicitudid(current);
-                si.setObservacion("askjdajksdk");
-                ejbFacadesi.create(si);
+//            current.setFechaaprobacion(new Date());
+//            current.setFechaejecucion(new Date());
+//            current.setFechasolicitud(new Date());
+//            current.setObservacion("asdasdasd");
+//            
+//            // guardamos solicitud
+//            getFacade().createWithPersist(current);
+//            
+//            // Obtenemos el controlador de PresupuestoTarea
+//            FacesContext context = FacesContext.getCurrentInstance();
+//            PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+//            
+//            // para cada presupuestotarea solicitado, creamos un SolicitudItem y lo guardamos
+////            for(PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareasitems()){
+////                SolicitudItem si = new SolicitudItem();
+////                si.setPresupuestoTareaid(p);
+////                si.setMonto(p.getTotal());
+////                si.setSolicitudid(current);
+////                si.setObservacion("askjdajksdk");
+////                ejbFacadesi.create(si);
+////            }
+
+            try {
+                for (Solicitud s : itemsSolicitados) {
+                    s.setFechaaprobacion(new Date());
+                    s.setFechaejecucion(new Date());
+                    s.setFechasolicitud(new Date());
+                    s.setObservacion("Observacion askdjlkasd");
+                    s.setEstadosolicitudid(current.getEstadosolicitudid());
+                    s.setTiposolicitudid(current.getTiposolicitudid());
+                    s.setAprobado(false);
+                    
+                    // Guardamos la solicitud
+                    getFacade().create(s);
+                }
+                System.out.println("SolicitudController - Creacion Finalizada");
+            } catch (Exception e) {
+                System.out.println("Error en creacion de solicitud");
+
+                e.printStackTrace();
             }
 
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudCreated"));
-            
+
             return prepareList();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -291,24 +339,21 @@ public class SolicitudController implements Serializable {
 
     }
 
-    public List<SolicitudItem> getListaSolicitudItems() {
-        return listaSolicitudItems;
+    /**
+     * Obtener Solicitudes por proyecto
+     *
+     * @param proyectoid
+     */
+    public void obtenerPorProyecto(int proyectoid) {
+        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
+
+        Iterator i = items.iterator();
+
+        while (i.hasNext()) {
+            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud) i.next()).getId());
+        }
     }
 
-    public void setListaSolicitudItems(List<SolicitudItem> listaSolicitudItems) {
-        this.listaSolicitudItems = listaSolicitudItems;
-    }
-    
-    public void obtenerPorProyecto(int proyectoid){
-        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
-        
-        Iterator i = items.iterator();
-        
-        while(i.hasNext()){
-            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud)i.next()).getId()); 
-       }
-    }
-    
 //    public void establecerSolicitudItemsDisponibles(Proyecto p){
 //        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
 //        
@@ -323,7 +368,22 @@ public class SolicitudController implements Serializable {
 //        // Setear la lista dual del pick list
 //        plSolicitudItems = new DualListModel<SolicitudItem>(presupuestotareacontroller.getPresupuestostareas(),new ArrayList<SolicitudItem>());
 //    }
-    
+    public void agregarItemSolicitado() {
 
+        // agregamos en la lista de solicitados
+        itemsSolicitados.add(current);
+
+        // borramos de la lista de disponibles
+        itemsDisponibles.remove(current);
+    }
+
+    public void quitarItemSolicitado(Solicitud solicitud) {
+
+        // Quita de la lista de solicitados
+        this.itemsSolicitados.remove(solicitud);
+
+        // Devuelve el item a la lista de disponibles
+        this.itemsDisponibles.add(solicitud);
+    }
 
 }

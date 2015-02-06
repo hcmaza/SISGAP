@@ -46,8 +46,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "PresupuestoTarea.findByAporteorganismo", query = "SELECT p FROM PresupuestoTarea p WHERE p.aporteorganismo = :aporteorganismo"),
     @NamedQuery(name = "PresupuestoTarea.findById", query = "SELECT p FROM PresupuestoTarea p WHERE p.id = :id")})
 public class PresupuestoTarea implements Serializable {
-    @OneToMany(mappedBy = "presupuestoTareaid", fetch = FetchType.EAGER)
-    private List<SolicitudItem> solicitudItemList;
+    @OneToMany(mappedBy = "presupuestotarea", fetch = FetchType.EAGER)
+    private List<Solicitud> solicitud;
     private static final long serialVersionUID = 1L;
     @Size(max = 2147483647)
     @Column(name = "descripcion")
@@ -168,10 +168,15 @@ public class PresupuestoTarea implements Serializable {
     public void setTarea(Tarea tarea) {
         this.tarea = tarea;
     }
-    
-    
-    
 
+    public List<Solicitud> getSolicitud() {
+        return solicitud;
+    }
+
+    public void setSolicitud(List<Solicitud> solicitud) {
+        this.solicitud = solicitud;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -196,15 +201,6 @@ public class PresupuestoTarea implements Serializable {
     public String toString() {
         //return "ar.edu.undec.sisgap.model.PresupuestoTarea[ id=" + id + " ]";
         return this.descripcion;
-    }
-
-    //@XmlTransient
-    public List<SolicitudItem> getSolicitudItemList() {
-        return solicitudItemList;
-    }
-
-    public void setSolicitudItemList(List<SolicitudItem> solicitudItemList) {
-        this.solicitudItemList = solicitudItemList;
     }
     
 }

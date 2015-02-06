@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author mpaez
+ * @author mPY
  */
 @Entity
 @Table(name = "solicitud", schema = "ap")
@@ -61,16 +60,23 @@ public class Solicitud implements Serializable {
     @Size(max = 100)
     @Column(name = "observacion", length = 100)
     private String observacion;
+    @Column(name = "importe")
+    private BigDecimal importe;
+    @Column(name = "aprobado")
+    private boolean aprobado;
+    
+    @ManyToOne
+    @JoinColumn(name = "presupuestotareaid", referencedColumnName = "id")
+    private PresupuestoTarea presupuestotarea;
+    
     @JoinColumn(name = "tiposolicitudid", referencedColumnName = "id")
     @ManyToOne
     private Tiposolicitud tiposolicitudid;
+    
     @JoinColumn(name = "estadosolicitudid", referencedColumnName = "id")
     @ManyToOne
     private Estadosolicitud estadosolicitudid;
-    
-    @OneToMany(mappedBy = "solicitudid", cascade = CascadeType.ALL)
-    private List<SolicitudItem> listaSolicitudItems;
-    
+
     public Solicitud() {
     }
 
@@ -118,6 +124,22 @@ public class Solicitud implements Serializable {
         this.observacion = observacion;
     }
 
+    public BigDecimal getImporte() {
+        return importe;
+    }
+
+    public void setImporte(BigDecimal importe) {
+        this.importe = importe;
+    }
+    
+    public PresupuestoTarea getPresupuestotarea() {
+        return presupuestotarea;
+    }
+
+    public void setPresupuestotarea(PresupuestoTarea presupuestotarea) {
+        this.presupuestotarea = presupuestotarea;
+    }
+
     public Tiposolicitud getTiposolicitudid() {
         return tiposolicitudid;
     }
@@ -134,14 +156,14 @@ public class Solicitud implements Serializable {
         this.estadosolicitudid = estadosolicitudid;
     }
 
-    public List<SolicitudItem> getListaSolicitudItems() {
-        return listaSolicitudItems;
+    public boolean isAprobado() {
+        return aprobado;
     }
 
-    public void setListaSolicitudItems(List<SolicitudItem> listaSolicitudItems) {
-        this.listaSolicitudItems = listaSolicitudItems;
+    public void setAprobado(boolean aprobado) {
+        this.aprobado = aprobado;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -164,7 +186,8 @@ public class Solicitud implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.edu.undec.sisgap.model.Solicitud[ id=" + id + " ]";
+        //return "ar.edu.undec.sisgap.model.Solicitud[ id=" + id + " ]";
+        return "Solicitud: " + this.getId() + " - " + this.getPresupuestotarea().getDescripcion();
     }
     
 }

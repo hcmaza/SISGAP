@@ -297,49 +297,50 @@
                                     </p:treeNode>
                                 </p:tree>
                             </p:column>
+                            
                             <p:column style="width: 40%;">
-                                <p:dataTable id="pDisponibles" var="item" value="#{presupuestoTareaController.presupuestostareas}">
+                                <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}">
                                     <f:facet name="header">
                                         Items Disponibles
                                     </f:facet>
-                                    <p:column headerText="Descipcion">
-                                        <h:outputText value="#{item.descripcion}" />
+                                    <p:column headerText="Descripcion">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.cantidad}" />
+                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
                                     <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.costounitario}" />
+                                        <h:outputText value="#{item.presupuestotarea.costounitario}" />
                                     </p:column>
                                     <p:column headerText="Total">
-                                        <h:outputText value="#{item.total}" />
+                                        <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
                                         <p:commandButton update=":formprincipal:itemSolicitud" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar">
-                                            <f:setPropertyActionListener value="#{item}" target="#{presupuestoTareaController.selected}" />
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                         </p:commandButton>
                                     </p:column>
                                 </p:dataTable>
                             </p:column>
                             <p:column style="width: 40%;">
-                                <p:dataTable id="pSolicitados" var="item" value="#{presupuestoTareaController.presupuestostareasitems}">
+                                <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
                                     <f:facet name="header">
                                         Items Solicitados
                                     </f:facet>
-                                    <p:column headerText="Descipcion">
-                                        <h:outputText value="#{item.descripcion}" />
+                                    <p:column headerText="Descripcion">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.cantidad}" />
+                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
                                     <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.costounitario}" />
+                                        <h:outputText value="#{item.presupuestotarea.costounitario}" />
                                     </p:column>
                                     <p:column headerText="Total">
-                                        <h:outputText value="#{item.total}" />
+                                        <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton action="#{presupuestoTareaController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" >
+                                        <p:commandButton action="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" >
                                             <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"   />
                                         </p:commandButton>
                                     </p:column>
@@ -362,26 +363,26 @@
 
                 <p:dialog header="Item Solicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                     <p:outputPanel id="itemSolicitud" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty presupuestoTareaController.selected}" columnClasses="label,value">
+                        <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
                             <f:facet name="header">
-                                <h:outputText value="#{presupuestoTareaController.selected.descripcion}" />
+                                <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
                             </f:facet>
 
                             <p:outputLabel value="Costo Unitario" />
-                            <h:outputText id="costounitario" value="#{presupuestoTareaController.selected.costounitario}" />
+                            <h:outputText id="costounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
 
-                            <p:outputLabel value="Year" />
-                            <h:outputText id="cantidad" value="#{presupuestoTareaController.selected.cantidad}" />
+                            <p:outputLabel value="Cantidad" />
+                            <h:outputText id="cantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
 
-                            <p:outputLabel value="Color:" />
-                            <h:outputText id="total" value="#{presupuestoTareaController.selected.total}" />
+                            <p:outputLabel value="Total" />
+                            <h:outputText id="total" value="#{solicitudController.selected.importe}" />
 
                         </p:panelGrid>
                     </p:outputPanel>
 
                     <p:separator/>
 
-                    <p:commandButton value="Solicitar" action="#{presupuestoTareaController.agregarItemSolcitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" oncomplete="PF('dialogoItemSolicitud').hide();" />
+                    <p:commandButton value="Solicitar" action="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" oncomplete="PF('dialogoItemSolicitud').hide();" />
                 </p:dialog>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >

@@ -39,13 +39,13 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
 //    order by p.email, p.id
 
     /**
-     * Obtiene una lista de solicitud por proyecto (solicitud no tiene relacion con proyecto, solo a traves de SolicitudItem > PresupuestoTarea)
+     * Obtiene una lista de solicitud por proyecto (solicitud no tiene relacion con proyecto, solo a traves de PresupuestoTarea)
      * 
      * @param proyectoid
      * @return 
      */
     public List<Solicitud> obtenerPorProyecto(int proyectoid) {
-        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.id IN (SELECT si.solicitudid.id FROM SolicitudItem si WHERE si.presupuestoTareaid.tarea.etapaid.proyectoid.id = :proyectoid)", Solicitud.class);
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
         consulta.setParameter("proyectoid", proyectoid);
         return consulta.getResultList();
         
