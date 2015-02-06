@@ -51,6 +51,10 @@
             <base-name>/Bundle</base-name>
             <var>bundle</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
     </application>
     
     <!--    <factory>
@@ -86,6 +90,20 @@
             <from-action>#{solicitudController.prepareList}</from-action>
             <from-outcome>ListPorProyecto</from-outcome>
             <to-view-id>/secure/solicitudes/ListPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>	
+    
+    <navigation-rule>
+        <from-view-id>/secure/solicitudes/ListPorProyecto.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{solicitudController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/solicitudes/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{solicitudactaController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/solicitudacta/Create.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>	
 </faces-config>

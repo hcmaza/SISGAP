@@ -76,6 +76,10 @@ public class Solicitud implements Serializable {
     @JoinColumn(name = "estadosolicitudid", referencedColumnName = "id")
     @ManyToOne
     private Estadosolicitud estadosolicitudid;
+    
+    @JoinColumn(name = "solicitudactaid", referencedColumnName = "id")
+    @ManyToOne
+    private Solicitudacta solicitudactaid;
 
     public Solicitud() {
     }
@@ -162,6 +166,14 @@ public class Solicitud implements Serializable {
 
     public void setAprobado(boolean aprobado) {
         this.aprobado = aprobado;
+    }
+
+    public Solicitudacta getSolicitudactaid() {
+        return solicitudactaid;
+    }
+
+    public void setSolicitudactaid(Solicitudacta solicitudactaid) {
+        this.solicitudactaid = solicitudactaid;
     }
     
     @Override

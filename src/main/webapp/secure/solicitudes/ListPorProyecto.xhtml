@@ -91,6 +91,7 @@
 
                         <p:separator/>
                         <p:commandButton action="#{solicitudController.prepareCreate}" value="Nueva Solicitud" ajax="false" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Docente'}" />
+                        <p:commandButton action="#{solicitudactaController.prepareCreate}" value="Aprobar Solicitudes" ajax="false" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Administrador'}" />
                         <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                         <p:separator/>
 

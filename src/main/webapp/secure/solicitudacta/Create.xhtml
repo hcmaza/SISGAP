@@ -4,15 +4,13 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:p="http://primefaces.org/ui">
 
     <ui:composition template="/template.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.CreateSolicitudTitle}"></h:outputText>
+            <h:outputText value="#{bundle.CreateSolicitudactaTitle}"></h:outputText>
         </ui:define>
         <ui:define name="body">
-
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
@@ -245,104 +243,31 @@
                         </p:dataTable>
                     </p:panel>
 
-                    <p:panel header="Solicitud" >
-
-                        <h:panelGrid columns="2">
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_estadosolicitudid}" for="estadosolicitudid" />
-                            <h:selectOneMenu id="estadosolicitudid" value="#{solicitudController.selected.estadosolicitudid}" title="#{bundle.CreateSolicitudTitle_estadosolicitudid}" >
-                                <f:selectItems value="#{estadosolicitudController.itemsAvailableSelectOne}"/>
-                            </h:selectOneMenu>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_tiposolicitudid}" for="tiposolicitudid" />
-                            <h:selectOneMenu id="tiposolicitudid" value="#{solicitudController.selected.tiposolicitudid}" title="#{bundle.CreateSolicitudTitle_tiposolicitudid}" >
-                                <f:selectItems value="#{tiposolicitudController.itemsAvailableSelectOne}"/>
-                            </h:selectOneMenu>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechasolicitud}" for="fechasolicitud" />
-                            <h:inputText id="fechasolicitud" value="#{solicitudController.selected.fechasolicitud}" title="#{bundle.CreateSolicitudTitle_fechasolicitud}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechaaprobacion}" for="fechaaprobacion" />
-                            <h:inputText id="fechaaprobacion" value="#{solicitudController.selected.fechaaprobacion}" title="#{bundle.CreateSolicitudTitle_fechaaprobacion}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechaejecucion}" for="fechaejecucion" />
-                            <h:inputText id="fechaejecucion" value="#{solicitudController.selected.fechaejecucion}" title="#{bundle.CreateSolicitudTitle_fechaejecucion}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_observacion}" for="observacion" />
-                            <h:inputText id="observacion" value="#{solicitudController.selected.observacion}" title="#{bundle.CreateSolicitudTitle_observacion}" />
-
-                        </h:panelGrid>
-                    </p:panel>
-
-                    <p:panel header="Items a Solicitar" >
+                    <p:panel header="Acta de Solicitudes" >
 
                         <p:panelGrid styleClass="" >
-                            <p:column style="width: 20%;">
-                                <p:tree value="#{etapaController.root}" var="item"
-                                        selectionMode="single"
-                                        selection="#{etapaController.nodoSeleccionado}"
-                                        style="padding-top: 0px; width: 100%;" highlight="true">
-
-                                    <p:ajax event="select" update=":formprincipal:growlprincipal" listener="#{etapaController.onTreeNodeSelect}" />
-                                    <p:ajax event="unselect" update=":formprincipal:growlprincipal" listener="#{etapaController.onTreeNodeUnselect}" />
-
-                                    <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-                                        <h:outputText value="#{item.tarea}"/>
-                                    </p:treeNode>
-                                </p:tree>
-                            </p:column>
-                            
-                            <p:column style="width: 40%;">
-                                <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}">
+                            <p:column style="width: 100%;">
+                                <p:dataTable id="tblSolicitudes" 
+                                             var="item" 
+                                             value="#{solicitudactaController.listaSolicitudes}" 
+                                             selection="#{solicitudactaController.listaSolicitudesSeleccionadas}" 
+                                             selectionMode="multiple" 
+                                             rowKey="#{item.id}"
+                                             rowSelectMode="checkbox" >
                                     <f:facet name="header">
-                                        Items Disponibles
+                                        Solicitudes
                                     </f:facet>
                                     <p:column headerText="Descripcion">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                                    <p:column headerText="Fecha">
+                                        <h:outputText value="#{item.fechasolicitud}" />
                                     </p:column>
-                                    <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.presupuestotarea.costounitario}" />
-                                    </p:column>
-                                    <p:column headerText="Total">
-                                        <h:outputText value="#{item.importe}" />
-                                    </p:column>
-                                    <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formprincipal:itemSolicitud" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar">
-                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                        </p:commandButton>
-                                    </p:column>
-                                </p:dataTable>
-                            </p:column>
-                            <p:column style="width: 40%;">
-                                <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
-                                    <f:facet name="header">
-                                        Items Solicitados
-                                    </f:facet>
-                                    <p:column headerText="Descripcion">
-                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                    </p:column>
-                                    <p:column headerText="Cantidad">
-                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.presupuestotarea.costounitario}" />
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
                                     </p:column>
                                     <p:column headerText="Total">
                                         <h:outputText value="#{item.importe}" />
-                                    </p:column>
-                                    <p:column style="width:32px;text-align: center">
-                                        <p:commandButton action="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" >
-                                            <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"   />
-                                        </p:commandButton>
                                     </p:column>
                                 </p:dataTable>
                             </p:column>
@@ -353,42 +278,14 @@
                     <br style="clear: both;"/>
 
                     <p:separator />
-                    <p:commandButton action="#{solicitudController.create}" value="Crear Solcitud" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
-                    <p:commandButton action="#{solicitudController.prepareList}" value="Lista de Solicitudes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
+                    <p:commandButton action="#{solicitudactaController.create}" value="Crear Acta de Solicitud" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
+                    <p:commandButton action="#{solicitudactaController.prepareList}" value="Lista de Solicitudes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
                     <!--<h:link outcome="/index" value="Inicio"/>-->
                     
                 </p:panel>
 
-                <p:dialog header="Item Solicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="itemSolicitud" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
-                            <f:facet name="header">
-                                <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
-                            </f:facet>
-
-                            <p:outputLabel value="Costo Unitario" />
-                            <h:outputText id="costounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
-
-                            <p:outputLabel value="Cantidad" />
-                            <h:outputText id="cantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
-
-                            <p:outputLabel value="Total" />
-                            <h:outputText id="total" value="#{solicitudController.selected.importe}" />
-
-                        </p:panelGrid>
-                    </p:outputPanel>
-
-                    <p:separator/>
-
-                    <p:commandButton value="Solicitar" action="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" oncomplete="PF('dialogoItemSolicitud').hide();" />
-                </p:dialog>
-
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" style="float:left;" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
-                </p:confirmDialog>
             </h:form>
         </ui:define>
     </ui:composition>

@@ -367,13 +367,14 @@ public class SolicitudController implements Serializable {
     public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
 
-        Iterator i = items.iterator();
-
-        while (i.hasNext()) {
-            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud) i.next()).getId());
-        }
+//        Iterator i = items.iterator();
+//
+//        while (i.hasNext()) {
+//            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud) i.next()).getId());
+//        }
     }
-
+    
+    
 //    public void establecerSolicitudItemsDisponibles(Proyecto p){
 //        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
 //        
