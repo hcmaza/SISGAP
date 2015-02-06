@@ -110,14 +110,8 @@ public class SolicitudController implements Serializable {
     public String prepareCreate() {
         current = new Solicitud();
         selectedItemIndex = -1;
-
-        // Borramos la lista de items disponibles
-        itemsDisponibles = new ArrayList<Solicitud>();
-
-        // Borramos la lista items solicitados
-        itemsSolicitados = new ArrayList<Solicitud>();
-
-        // Obtenemos el controlador de PresupuestoTarea
+        
+        // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
@@ -127,14 +121,40 @@ public class SolicitudController implements Serializable {
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(proyectocontroller.getSelected().getId());
 
+        // Borramos la lista de items disponibles
+        itemsDisponibles = new ArrayList<Solicitud>();
+
+        // Borramos la lista items solicitados
+        itemsSolicitados = new ArrayList<Solicitud>();
+        
+        // Llenamos la lista de solicitudes anteriores
+        items = new ListDataModel(getFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId()));
+
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
             Solicitud solicitud = new Solicitud();
             solicitud.setPresupuestotarea(p);
             solicitud.setImporte(p.getTotal());
             
-            itemsDisponibles.add(solicitud);
+            // buscamos si el presupuestotarea ya fue solicitado anteriormente, de ser asi, restamos el importe o lo removemos
+            Iterator i = items.iterator();
+            
+            while(i.hasNext()){
+                Solicitud solicitudAnterior = (Solicitud) i.next();
+                
+                // si encontramos el presupuestotarea en una solicitud anterior
+                if(p.getId() == solicitudAnterior.getPresupuestotarea().getId()){
+                    // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
+                    solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                }
+            }
+            
+            // Agregamos a la lista de solicitudes disponibles si el importe es distinto de cero
+            if(solicitud.getImporte().floatValue() != 0.00){
+                itemsDisponibles.add(solicitud);
+            }
         }
+        
 
         // Vaciamos la lista de presupuestos tareas solicitados
         //presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();

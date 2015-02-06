@@ -48,6 +48,11 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
         Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
         consulta.setParameter("proyectoid", proyectoid);
         return consulta.getResultList();
-        
+    }
+    
+    public Solicitud obtenerPorPresupuestoTarea(int presupuestotareaid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.presupuestotarea.id = :presupuestotareaid", Solicitud.class);
+        consulta.setParameter("presupuestotareaid", presupuestotareaid);
+        return (Solicitud) consulta.getSingleResult();
     }
 }
