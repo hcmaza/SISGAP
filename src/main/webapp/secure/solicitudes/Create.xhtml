@@ -382,7 +382,7 @@
 
                     <p:separator/>
 
-                    <p:commandButton value="Solicitar" action="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados" oncomplete="PF('dialogoItemSolicitud').hide();" />
+                    <p:commandButton value="Solicitar" action="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').hide();" />
                 </p:dialog>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >

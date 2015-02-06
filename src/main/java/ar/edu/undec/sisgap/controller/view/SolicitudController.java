@@ -1,5 +1,6 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.ConfiguracionFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
@@ -37,6 +38,8 @@ public class SolicitudController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -62,6 +65,10 @@ public class SolicitudController implements Serializable {
         return ejbFacade;
     }
 
+    public ConfiguracionFacade getEjbFacadec() {
+        return ejbFacadec;
+    }
+    
     public List<Solicitud> getItemsDisponibles() {
         return itemsDisponibles;
     }
@@ -391,11 +398,34 @@ public class SolicitudController implements Serializable {
 //    }
     public void agregarItemSolicitado() {
 
-        // agregamos en la lista de solicitados
+        float maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
+        
+        System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
+        
+        System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
+        
+        // Validar que no supere la cantidad disponible
+        if((sumarSolicitado() + current.getImporte().floatValue()) > sumarDisponible()){
+            FacesMessage mensaje = new FacesMessage("Error", "El importe del item a solicitar supera lo disponible");
+            System.out.println("El importe del item a solicitar supera lo disponible");
+            FacesContext.getCurrentInstance().addMessage(null, mensaje);
+            return;
+        }
+        
+        // Validar que si es un anticipo, no supere la cantidad permitida
+        if(current.getTiposolicitudid().getTiposolicitud().equals("Anticipo") && (sumarSolicitado() + current.getImporte().floatValue()) > maxanticipo){
+            FacesMessage mensaje = new FacesMessage("Error", "En un anticipo no se puede superar el valor de $" + String.valueOf(maxanticipo));
+            System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
+            FacesContext.getCurrentInstance().addMessage(null, mensaje);
+            return;
+        }
+        
+        // agregamos a la lista de solicitados
         itemsSolicitados.add(current);
 
         // borramos de la lista de disponibles
         itemsDisponibles.remove(current);
+        
     }
 
     public void quitarItemSolicitado(Solicitud solicitud) {
@@ -405,6 +435,26 @@ public class SolicitudController implements Serializable {
 
         // Devuelve el item a la lista de disponibles
         this.itemsDisponibles.add(solicitud);
+    }
+    
+    public float sumarDisponible(){
+        float r = 0;
+        
+        for(Solicitud s : itemsDisponibles){
+            r += s.getImporte().floatValue();
+        }
+        
+        return r;
+    }
+    
+    public float sumarSolicitado(){
+        float r = 0;
+        
+        for(Solicitud s : itemsSolicitados){
+            r += s.getImporte().floatValue();
+        }
+        
+        return r;
     }
 
 }
