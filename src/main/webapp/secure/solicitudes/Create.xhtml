@@ -375,7 +375,8 @@
                             <h:outputText id="cantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
 
                             <p:outputLabel value="Total" />
-                            <h:outputText id="total" value="#{solicitudController.selected.importe}" />
+                            <!--<h:outputText id="total" value="{solicitudController.selected.importe}" />-->
+                            <p:spinner id="step" value="#{solicitudController.selected.importe}" stepFactor="0.25" min="0" max="#{solicitudController.selected.presupuestotarea.total}" />
 
                         </p:panelGrid>
                     </p:outputPanel>
