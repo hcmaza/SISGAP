@@ -398,9 +398,15 @@ public class SolicitudController implements Serializable {
 //    }
     public void agregarItemSolicitado() {
 
-        float maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
+        float maxanticipo = 0; 
         
-        System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
+        try{
+            maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
+            System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
+        } catch(Exception e){
+            System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos");
+            e.printStackTrace();
+        }
         
         System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
         
