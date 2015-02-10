@@ -479,15 +479,18 @@ public class SolicitudController implements Serializable {
     }
 
     public void quitarItemSolicitado(Solicitud solicitud) {
+        
+        System.out.println("quitar: solicitud-disponible: " + solicitud.getDisponible() + " solicitud-importe: " + solicitud.getImporte());
 
         // Se asigna como importe el valor maximo disponible
         //solicitud.setImporte(solicitud.getDisponible());
-        if (solicitud.getDisponible() == solicitud.getImporte()) {
+        if (solicitud.getDisponible().floatValue() == solicitud.getImporte().floatValue()) {
             // Quita de la lista de solicitados
             this.itemsSolicitados.remove(solicitud);
 
             // Devuelve el item a la lista de disponibles
             this.itemsDisponibles.add(solicitud);
+                    
         }else{
             // Quita de la lista de solicitados
             this.itemsSolicitados.remove(solicitud);
