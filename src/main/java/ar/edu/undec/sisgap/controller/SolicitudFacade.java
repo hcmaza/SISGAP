@@ -50,8 +50,8 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
         return consulta.getResultList();
     }
     
-    public List<Solicitud> obtenerPorProyectoNoAprobado(int proyectoid){
-        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.aprobado = 'false' AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
+    public List<Solicitud> obtenerIniciadosPorProyecto(int proyectoid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 1 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
         consulta.setParameter("proyectoid", proyectoid);
         return consulta.getResultList();
     }

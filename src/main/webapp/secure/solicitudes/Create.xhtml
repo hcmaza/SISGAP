@@ -23,7 +23,7 @@
             </h:panelGroup>
 
             <h:form id="formprincipal" enctype="multipart/form-data" >
-                <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" autoUpdate="true" showDetail="true" sticky="true" />
+                <p:growl id="growlprincipal" autoUpdate="true" showDetail="true"  />
 
                 <p:panel id="pprincipal" header="Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
@@ -249,33 +249,19 @@
 
                         <h:panelGrid columns="2">
 
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_estadosolicitudid}" for="estadosolicitudid" />
-                            <h:selectOneMenu id="estadosolicitudid" value="#{solicitudController.selected.estadosolicitudid}" title="#{bundle.CreateSolicitudTitle_estadosolicitudid}" >
-                                <f:selectItems value="#{estadosolicitudController.itemsAvailableSelectOne}"/>
-                            </h:selectOneMenu>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_tiposolicitudid}" for="tiposolicitudid" />
-                            <h:selectOneMenu id="tiposolicitudid" value="#{solicitudController.selected.tiposolicitudid}" title="#{bundle.CreateSolicitudTitle_tiposolicitudid}" >
+                            <p:outputLabel value="#{bundle.CreateSolicitudLabel_tiposolicitudid}" for="tiposolicitudid" />
+                            <p:selectOneMenu id="tiposolicitudid" value="#{solicitudController.selected.tiposolicitudid}" required="true" requiredMessage="Se debe elegir un tipo de solicitud" >
                                 <f:selectItems value="#{tiposolicitudController.itemsAvailableSelectOne}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
 
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechasolicitud}" for="fechasolicitud" />
-                            <h:inputText id="fechasolicitud" value="#{solicitudController.selected.fechasolicitud}" title="#{bundle.CreateSolicitudTitle_fechasolicitud}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
+                            <p:outputLabel value="#{bundle.CreateSolicitudLabel_fechasolicitud}" for="fechasolicitud" />
+                            <p:outputLabel id="fechasolicitud" value="#{solicitudController.selected.fechasolicitud}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </p:outputLabel>
 
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechaaprobacion}" for="fechaaprobacion" />
-                            <h:inputText id="fechaaprobacion" value="#{solicitudController.selected.fechaaprobacion}" title="#{bundle.CreateSolicitudTitle_fechaaprobacion}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_fechaejecucion}" for="fechaejecucion" />
-                            <h:inputText id="fechaejecucion" value="#{solicitudController.selected.fechaejecucion}" title="#{bundle.CreateSolicitudTitle_fechaejecucion}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
-
-                            <h:outputLabel value="#{bundle.CreateSolicitudLabel_observacion}" for="observacion" />
-                            <h:inputText id="observacion" value="#{solicitudController.selected.observacion}" title="#{bundle.CreateSolicitudTitle_observacion}" />
+                            <p:outputLabel value="#{bundle.CreateSolicitudLabel_observacion}" for="observacion" />
+                            <p:inputTextarea id="observacion" value="#{solicitudController.selected.observacion}" rows="5" cols="30" counter="display" maxlength="100" counterTemplate="{0} caracteres restantes." autoResize="false" />
+                            <h:outputText id="display" />
 
                         </h:panelGrid>
                     </p:panel>
@@ -297,7 +283,7 @@
                                     </p:treeNode>
                                 </p:tree>
                             </p:column>
-                            
+
                             <p:column style="width: 40%;">
                                 <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}">
                                     <f:facet name="header">
@@ -309,14 +295,14 @@
                                     <p:column headerText="Cantidad">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.presupuestotarea.costounitario}" />
+                                    <p:column headerText="Presupuestado">
+                                        <h:outputText value="#{item.presupuestotarea.total}" />
                                     </p:column>
-                                    <p:column headerText="Total">
+                                    <p:column headerText="Disponible">
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formprincipal:itemSolicitud" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar">
+                                        <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar" immediate="true">
                                             <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                         </p:commandButton>
                                     </p:column>
@@ -333,10 +319,10 @@
                                     <p:column headerText="Cantidad">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Costo Un.">
-                                        <h:outputText value="#{item.presupuestotarea.costounitario}" />
+                                    <p:column headerText="Presupuestado">
+                                        <h:outputText value="#{item.presupuestotarea.total}" />
                                     </p:column>
-                                    <p:column headerText="Total">
+                                    <p:column headerText="Solicitado">
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
@@ -344,6 +330,9 @@
                                             <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"   />
                                         </p:commandButton>
                                     </p:column>
+                                    <f:facet name="footer">
+                                        El total Solicitado es $ #{solicitudController.sumarSolicitado()}
+                                    </f:facet>
                                 </p:dataTable>
                             </p:column>
                         </p:panelGrid>
@@ -358,32 +347,38 @@
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
                     <!--<h:link outcome="/index" value="Inicio"/>-->
-                    
+
                 </p:panel>
 
                 <p:dialog header="Item Solicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                     <p:outputPanel id="itemSolicitud" style="text-align:center;">
+                        <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
                         <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
                             <f:facet name="header">
                                 <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
                             </f:facet>
 
                             <p:outputLabel value="Costo Unitario" />
-                            <h:outputText id="costounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
+                            <h:outputText id="dcostounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
 
                             <p:outputLabel value="Cantidad" />
-                            <h:outputText id="cantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
+                            <h:outputText id="dcantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
 
-                            <p:outputLabel value="Total" />
-                            <!--<h:outputText id="total" value="{solicitudController.selected.importe}" />-->
-                            <p:spinner id="step" value="#{solicitudController.selected.importe}" stepFactor="0.25" min="0" max="#{solicitudController.selected.presupuestotarea.total}" />
+                            <p:outputLabel value="Presupuestado" />
+                            <h:outputText id="dpresupuestado" value="#{solicitudController.selected.presupuestotarea.total}" />
+
+                            <p:outputLabel value="Disponible" />
+                            <h:outputText id="ddisponible" value="#{solicitudController.selected.disponible}" />
+
+                            <p:outputLabel value="Solicitado" />
+                            <p:spinner id="dsolicitado" value="#{solicitudController.selected.importe}" stepFactor="1" min="0" max="#{solicitudController.selected.disponible}" />
 
                         </p:panelGrid>
                     </p:outputPanel>
 
                     <p:separator/>
 
-                    <p:commandButton value="Solicitar" action="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').hide();" />
+                    <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:pDisponibles, :formprincipal:pSolicitados, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').hide();" />
                 </p:dialog>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >

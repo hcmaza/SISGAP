@@ -23,6 +23,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -62,8 +63,9 @@ public class Solicitud implements Serializable {
     private String observacion;
     @Column(name = "importe")
     private BigDecimal importe;
-    @Column(name = "aprobado")
-    private boolean aprobado;
+    
+    @Transient
+    private BigDecimal disponible;
     
     @ManyToOne
     @JoinColumn(name = "presupuestotareaid", referencedColumnName = "id")
@@ -82,6 +84,20 @@ public class Solicitud implements Serializable {
     private Solicitudacta solicitudactaid;
 
     public Solicitud() {
+    }
+    
+    // Constructor para copiar objeto
+    public Solicitud(Solicitud copiar){
+        this.disponible = copiar.getDisponible();
+        this.estadosolicitudid = copiar.getEstadosolicitudid();
+        this.fechaaprobacion = copiar.getFechaaprobacion();
+        this.fechaejecucion = copiar.getFechaejecucion();
+        this.fechasolicitud = copiar.getFechasolicitud();
+        this.importe = copiar.getImporte();
+        this.observacion = copiar.getObservacion();
+        this.presupuestotarea = copiar.getPresupuestotarea();
+        this.solicitudactaid = copiar.getSolicitudactaid();
+        this.tiposolicitudid = copiar.getTiposolicitudid();
     }
 
     public Solicitud(Integer id) {
@@ -135,6 +151,14 @@ public class Solicitud implements Serializable {
     public void setImporte(BigDecimal importe) {
         this.importe = importe;
     }
+
+    public BigDecimal getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(BigDecimal disponible) {
+        this.disponible = disponible;
+    }
     
     public PresupuestoTarea getPresupuestotarea() {
         return presupuestotarea;
@@ -160,14 +184,6 @@ public class Solicitud implements Serializable {
         this.estadosolicitudid = estadosolicitudid;
     }
 
-    public boolean isAprobado() {
-        return aprobado;
-    }
-
-    public void setAprobado(boolean aprobado) {
-        this.aprobado = aprobado;
-    }
-
     public Solicitudacta getSolicitudactaid() {
         return solicitudactaid;
     }
@@ -175,6 +191,7 @@ public class Solicitud implements Serializable {
     public void setSolicitudactaid(Solicitudacta solicitudactaid) {
         this.solicitudactaid = solicitudactaid;
     }
+    
     
     @Override
     public int hashCode() {

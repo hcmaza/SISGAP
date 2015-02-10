@@ -115,7 +115,7 @@ public class SolicitudactaController implements Serializable {
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
         
         // Llenamos la lista de solicitudes que no fueron aprobadas
-        listaSolicitudes = getFacades().obtenerPorProyectoNoAprobado(proyectocontroller.getSelected().getId());
+        listaSolicitudes = getFacades().obtenerIniciadosPorProyecto(proyectocontroller.getSelected().getId());
         
         // Vaciamos la lista de solicitudes seleccionadas
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
@@ -138,7 +138,7 @@ public class SolicitudactaController implements Serializable {
             
             for(Solicitud s : listaSolicitudesSeleccionadas){
                 s.setSolicitudactaid(current);
-                s.setAprobado(true);
+                s.setFechaaprobacion(new Date());
                 getFacades().edit(s);
             }
             

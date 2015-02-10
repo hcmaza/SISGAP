@@ -1,10 +1,12 @@
 package ar.edu.undec.sisgap.controller.view;
 
 import ar.edu.undec.sisgap.controller.ConfiguracionFacade;
+import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
+import ar.edu.undec.sisgap.controller.TiposolicitudFacade;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Proyecto;
 
@@ -40,6 +42,10 @@ public class SolicitudController implements Serializable {
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacade;
     @EJB
     private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
+    @EJB
+    private TiposolicitudFacade ejbFacadeTipo;
+    @EJB
+    private EstadosolicitudFacade ejbFacadeEstado;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -68,7 +74,15 @@ public class SolicitudController implements Serializable {
     public ConfiguracionFacade getEjbFacadec() {
         return ejbFacadec;
     }
-    
+
+    public TiposolicitudFacade getEjbFacadeTipo() {
+        return ejbFacadeTipo;
+    }
+
+    public EstadosolicitudFacade getEjbFacadeEstado() {
+        return ejbFacadeEstado;
+    }
+
     public List<Solicitud> getItemsDisponibles() {
         return itemsDisponibles;
     }
@@ -116,8 +130,9 @@ public class SolicitudController implements Serializable {
 
     public String prepareCreate() {
         current = new Solicitud();
+        current.setFechasolicitud(new Date());
         selectedItemIndex = -1;
-        
+
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
@@ -133,35 +148,37 @@ public class SolicitudController implements Serializable {
 
         // Borramos la lista items solicitados
         itemsSolicitados = new ArrayList<Solicitud>();
-        
+
         // Llenamos la lista de solicitudes anteriores
         items = new ListDataModel(getFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
             Solicitud solicitud = new Solicitud();
+            solicitud.setFechasolicitud(new Date());
             solicitud.setPresupuestotarea(p);
             solicitud.setImporte(p.getTotal());
-            
+            solicitud.setEstadosolicitudid(ejbFacadeEstado.find(1));
+
             // buscamos si el presupuestotarea ya fue solicitado anteriormente, de ser asi, restamos el importe o lo removemos
             Iterator i = items.iterator();
-            
-            while(i.hasNext()){
+
+            while (i.hasNext()) {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
-                
+
                 // si encontramos el presupuestotarea en una solicitud anterior
-                if(p.getId() == solicitudAnterior.getPresupuestotarea().getId()){
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId()) {
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
                     solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                    solicitud.setDisponible(solicitud.getImporte());
                 }
             }
-            
+
             // Agregamos a la lista de solicitudes disponibles si el importe es distinto de cero
-            if(solicitud.getImporte().floatValue() != 0.00){
+            if (solicitud.getImporte().floatValue() != 0.00) {
                 itemsDisponibles.add(solicitud);
             }
         }
-        
 
         // Vaciamos la lista de presupuestos tareas solicitados
         //presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
@@ -204,11 +221,10 @@ public class SolicitudController implements Serializable {
                     s.setFechaaprobacion(new Date());
                     s.setFechaejecucion(new Date());
                     s.setFechasolicitud(new Date());
-                    s.setObservacion("Observacion askdjlkasd");
-                    s.setEstadosolicitudid(current.getEstadosolicitudid());
+                    s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
                     s.setTiposolicitudid(current.getTiposolicitudid());
-                    s.setAprobado(false);
-                    
+                    s.setEstadosolicitudid(null);
+
                     // Guardamos la solicitud
                     getFacade().create(s);
                 }
@@ -380,8 +396,7 @@ public class SolicitudController implements Serializable {
 //            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud) i.next()).getId());
 //        }
     }
-    
-    
+
 //    public void establecerSolicitudItemsDisponibles(Proyecto p){
 //        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
 //        
@@ -398,68 +413,123 @@ public class SolicitudController implements Serializable {
 //    }
     public void agregarItemSolicitado() {
 
-        float maxanticipo = 0; 
-        
-        try{
+        float maxanticipo = 0;
+
+        try {
             maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
             System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos");
             e.printStackTrace();
         }
-        
-        System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
-        
-        // Validar que no supere la cantidad disponible
-        if((sumarSolicitado() + current.getImporte().floatValue()) > sumarDisponible()){
-            FacesMessage mensaje = new FacesMessage("Error", "El importe del item a solicitar supera lo disponible");
-            System.out.println("El importe del item a solicitar supera lo disponible");
-            FacesContext.getCurrentInstance().addMessage(null, mensaje);
-            return;
-        }
-        
-        // Validar que si es un anticipo, no supere la cantidad permitida
-        if(current.getTiposolicitudid().getTiposolicitud().equals("Anticipo") && (sumarSolicitado() + current.getImporte().floatValue()) > maxanticipo){
-            FacesMessage mensaje = new FacesMessage("Error", "En un anticipo no se puede superar el valor de $" + String.valueOf(maxanticipo));
-            System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
-            FacesContext.getCurrentInstance().addMessage(null, mensaje);
-            return;
-        }
-        
-        // agregamos a la lista de solicitados
-        itemsSolicitados.add(current);
 
-        // borramos de la lista de disponibles
-        itemsDisponibles.remove(current);
-        
+        // Validar que se haya elegido un tipo de solicitud
+        if (current.getTiposolicitudid().getTiposolicitud() == null) {
+
+            return;
+        } else {
+            System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
+        }
+
+        // Validar que no supere la cantidad disponible
+        if ((sumarSolicitado() + current.getImporte().floatValue()) > sumarDisponible()) {
+            System.out.println("El importe del item a solicitar supera lo disponible");
+
+            FacesMessage mensaje = new FacesMessage("Error", "El importe del item a solicitar supera lo disponible");
+            FacesContext.getCurrentInstance().addMessage(null, mensaje);
+            return;
+        }
+
+        // Validar que si es un anticipo, no supere la cantidad permitida
+        if (current.getTiposolicitudid().getTiposolicitud().equals("Anticipo") && (sumarSolicitado() + current.getImporte().floatValue()) > maxanticipo) {
+            System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("Inválido", "Al Solicitar un anticipo no se puede superar el máximo permitido. El monto máximo permitido es de $" + maxanticipo));
+
+            // Restauramos el valor de la solicitad al total de presupuesto tarea
+            current.setImporte(current.getDisponible());
+
+            return;
+        }
+
+        // Transferencia de objetos entre listas
+        // Completo
+        if (current.getImporte().floatValue() == current.getDisponible().floatValue()) {
+            // agregamos a la lista de solicitados
+            itemsSolicitados.add(current);
+
+            // borramos de la lista de disponibles
+            itemsDisponibles.remove(current);
+            // Parcial
+        } else {
+            // borramos de la lista de disponibles
+            itemsDisponibles.remove(current);
+
+            // agregamos a la lista de solicitados
+            itemsSolicitados.add(current);
+
+            // agregamos a la lista de disponibles, una solicitud con el monto restante
+            Solicitud sDisponible = new Solicitud(current);
+            sDisponible.setDisponible(current.getDisponible().subtract(current.getImporte()));
+            sDisponible.setImporte(sDisponible.getDisponible());
+            itemsDisponibles.add(sDisponible);
+
+        }
     }
 
     public void quitarItemSolicitado(Solicitud solicitud) {
 
-        // Quita de la lista de solicitados
-        this.itemsSolicitados.remove(solicitud);
+        // Se asigna como importe el valor maximo disponible
+        //solicitud.setImporte(solicitud.getDisponible());
+        if (solicitud.getDisponible() == solicitud.getImporte()) {
+            // Quita de la lista de solicitados
+            this.itemsSolicitados.remove(solicitud);
 
-        // Devuelve el item a la lista de disponibles
-        this.itemsDisponibles.add(solicitud);
+            // Devuelve el item a la lista de disponibles
+            this.itemsDisponibles.add(solicitud);
+        }else{
+            // Quita de la lista de solicitados
+            this.itemsSolicitados.remove(solicitud);
+            
+            // buscamos la solicitud con el monto disponible para sumarla
+            for(Solicitud s : itemsDisponibles){
+                if(s.getPresupuestotarea().getId() == solicitud.getPresupuestotarea().getId()){
+                    // borramos el encontrado
+                    itemsDisponibles.remove(s);
+                    
+                    // creamos una nueva solicitud para sumar nuevamente los montos
+                    Solicitud sDisponible = new Solicitud(solicitud);
+                    sDisponible.setDisponible(solicitud.getImporte().add(s.getDisponible()));
+                    sDisponible.setImporte(sDisponible.getDisponible());
+                    
+                    // agregamos la solicitud con los montos correctos
+                    itemsDisponibles.add(sDisponible);
+                    
+                    //s.setDisponible(s.getDisponible().add(solicitud.getImporte()));
+                    //itemsDisponibles.add(s);
+                }
+            }
+        }
     }
-    
-    public float sumarDisponible(){
+
+    public float sumarDisponible() {
         float r = 0;
-        
-        for(Solicitud s : itemsDisponibles){
+
+        for (Solicitud s : itemsDisponibles) {
             r += s.getImporte().floatValue();
         }
-        
+
         return r;
     }
-    
-    public float sumarSolicitado(){
+
+    public float sumarSolicitado() {
         float r = 0;
-        
-        for(Solicitud s : itemsSolicitados){
+
+        for (Solicitud s : itemsSolicitados) {
             r += s.getImporte().floatValue();
         }
-        
+
         return r;
     }
 

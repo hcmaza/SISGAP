@@ -251,12 +251,11 @@
                                              var="item" 
                                              value="#{solicitudactaController.listaSolicitudes}" 
                                              selection="#{solicitudactaController.listaSolicitudesSeleccionadas}" 
-                                             selectionMode="multiple" 
-                                             rowKey="#{item.id}"
-                                             rowSelectMode="checkbox" >
+                                             rowKey="#{item.id}" >
                                     <f:facet name="header">
                                         Solicitudes
                                     </f:facet>
+                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                                     <p:column headerText="Descripcion">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
