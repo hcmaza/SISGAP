@@ -195,7 +195,7 @@
                         </h:panelGrid>
                     </p:panel>
 
-                    <p:panel header="Desembolsos y Solicitudes Anteriores" collapsed="true" toggleable="true" >
+                    <p:panel header="Desembolsos y Solicitudes Anteriores" collapsed="true" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;" >
                         <p:panelGrid columns="2">
                             <p:dataTable
                                 id="tbl" 
@@ -292,7 +292,7 @@
                                     <h:outputText value=" "/>
                                 </p:column>
                                 <f:facet name="footer">
-                                    Tota de Solicitudes Aprobadas $ #{solicitudController.sumarSolicitudesAprobadas()}
+                                    Total de Solicitudes Aprobadas $ #{solicitudController.sumarSolicitudesAprobadas()}
                                 </f:facet>
                             </p:dataTable>    
                         </p:panelGrid>
@@ -322,15 +322,15 @@
                     <p:panel header="Items a Solicitar" >
 
                         <p:panelGrid styleClass="" >
-                            <p:column style="width: 50%;">
-                                <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.etapa}">
+                            <p:column style="width: 60%;">
+                                <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
                                     <f:facet name="header">
                                         Items Disponibles
                                     </f:facet>
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.etapa}">
+                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
                                     </p:column>
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
@@ -367,7 +367,7 @@
                                         </p:summaryRow> -->
                                 </p:dataTable>
                             </p:column>
-                            <p:column style="width: 50%;">
+                            <p:column style="width: 40%;">
                                 <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
                                     <f:facet name="header">
                                         Items Solicitados
@@ -377,9 +377,6 @@
                                     </p:column>
                                     <p:column headerText="Cantidad">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Presupuestado">
-                                        <h:outputText value="#{item.presupuestotarea.total}" />
                                     </p:column>
                                     <p:column headerText="Solicitado">
                                         <h:outputText value="#{item.importe}" />

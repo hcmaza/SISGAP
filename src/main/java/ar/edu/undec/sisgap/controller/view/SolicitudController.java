@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -170,6 +171,7 @@ public class SolicitudController implements Serializable {
             solicitud.setFechasolicitud(new Date());
             solicitud.setPresupuestotarea(p);
             solicitud.setImporte(p.getTotal());
+            solicitud.setDisponible(solicitud.getImporte());
             solicitud.setEstadosolicitudid(ejbFacadeEstado.find(1));
 
             // buscamos si el presupuestotarea ya fue solicitado anteriormente, de ser asi, restamos el importe o lo removemos
@@ -179,7 +181,8 @@ public class SolicitudController implements Serializable {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
 
                 // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada"
-                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
+                //if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId()) {
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
                     solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
@@ -426,7 +429,39 @@ public class SolicitudController implements Serializable {
     public void agregarItemSolicitado() {
 
         float maxanticipo = 0;
+        Solicitud solicitud = current;
 
+        // Validar que se haya elegido un tipo de solicitud
+        if (current.getTiposolicitudid().getTiposolicitud() == null) {
+            return;
+        } else {
+            System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
+        }
+        
+        // Validar que no supere la cantidad disponible (los desembolsos menos las solicitudes anteriores)
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        
+        float dineroDisponible = desembolsocontroller.sumarDesembolsos() - sumarSolicitudesAprobadas();
+        
+        System.out.println("dinero disponible : " + dineroDisponible);
+        System.out.println("sumarSolicitado() : " + sumarSolicitado());
+        System.out.println("current.getImporte() : " + current.getImporte().floatValue());
+        
+        if(sumarSolicitado() + current.getImporte().floatValue() > dineroDisponible ){
+            System.out.println("El importe del item a solicitar supera el dinero disponible");
+
+            FacesMessage mensaje = new FacesMessage("Error", "El importe del item a solicitar supera el dinero disponible");
+            context.addMessage(null, mensaje);
+
+            // Restauramos el valor de la solicitad al total de presupuesto tarea
+            current.setImporte(current.getDisponible());
+
+            return;
+        }
+        
+        // Obtenemos el monto maximo para anticipos desde la configuracion
         try {
             maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
             System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
@@ -435,32 +470,11 @@ public class SolicitudController implements Serializable {
             e.printStackTrace();
         }
 
-        // Validar que se haya elegido un tipo de solicitud
-        if (current.getTiposolicitudid().getTiposolicitud() == null) {
-
-            return;
-        } else {
-            System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
-        }
-
-        // Validar que no supere la cantidad disponible
-        if ((sumarSolicitado() + current.getImporte().floatValue()) > sumarDisponible()) {
-            System.out.println("El importe del item a solicitar supera lo disponible");
-
-            FacesMessage mensaje = new FacesMessage("Error", "El importe del item a solicitar supera lo disponible");
-            FacesContext.getCurrentInstance().addMessage(null, mensaje);
-
-            // Restauramos el valor de la solicitad al total de presupuesto tarea
-            current.setImporte(current.getDisponible());
-
-            return;
-        }
-
-        // Validar que si es un anticipo, no supere la cantidad permitida
+        // Validar que si es un anticipo, no supere la cantidad permitida para este tipo de solicitud
         if (current.getTiposolicitudid().getTiposolicitud().equals("Anticipo") && (sumarSolicitado() + current.getImporte().floatValue()) > maxanticipo) {
-            System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
 
-            FacesContext context = FacesContext.getCurrentInstance();
+            System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
+            
             context.addMessage(null, new FacesMessage("Inválido", "Al Solicitar un anticipo no se puede superar el máximo permitido. El monto máximo permitido es de $" + maxanticipo));
 
             // Restauramos el valor de la solicitad al total de presupuesto tarea
@@ -471,23 +485,90 @@ public class SolicitudController implements Serializable {
 
         // Transferencia de objetos entre listas
         // Completo
-        if (current.getImporte().floatValue() == current.getDisponible().floatValue()) {
-            // agregamos a la lista de solicitados
-            itemsSolicitados.add(current);
+        if (solicitud.getImporte().floatValue() ==  solicitud.getDisponible().floatValue()) {
 
+            System.out.println("Transferencia TOTAL");
+            
             // borramos de la lista de disponibles
-            itemsDisponibles.remove(current);
-            // Parcial
+            ListIterator iDisp1 = itemsDisponibles.listIterator();
+            
+            while(iDisp1.hasNext()){
+                Solicitud sd = (Solicitud) iDisp1.next();
+                
+                if(sd.getPresupuestotarea().getId().equals(solicitud.getPresupuestotarea().getId())){
+                    iDisp1.remove();
+                }
+            }
+            
+            // agregamos a la lista de solicitados
+            //itemsSolicitados.add(solicitud);
+            
+             // agregamos a la lista de solicitados, checkeamos si hay un item del 
+            // mismo presupuestotarea anterior, si es asi lo sumamos
+            ListIterator iSols1 = itemsSolicitados.listIterator();
+            boolean encontradod = false;
+            
+            while(iSols1.hasNext()){
+                Solicitud sd = (Solicitud) iSols1.next();
+                
+                if(sd.getPresupuestotarea().getId().equals(solicitud.getPresupuestotarea().getId())){
+                    iSols1.remove();
+                    
+                    sd.setImporte(solicitud.getImporte().add(sd.getImporte()));
+                    
+                    iSols1.add(sd);
+                    
+                    encontradod = true;
+                }
+            }
+            
+            if(!encontradod){
+                itemsSolicitados.add(solicitud);
+            }
+            
+        // Parcial
         } else {
+            
+            //System.out.println("CURRENT: " + solicitud.getId() + " - Desc: " + solicitud.getPresupuestotarea().getDescripcion());
+            System.out.println("Transferencia PARCIAL");
+            
             // borramos de la lista de disponibles
-            itemsDisponibles.remove(current);
-
-            // agregamos a la lista de solicitados
-            itemsSolicitados.add(current);
+            ListIterator iDisp2 = itemsDisponibles.listIterator();
+            
+            while(iDisp2.hasNext()){
+                Solicitud sd = (Solicitud) iDisp2.next();
+                
+                if(sd.getPresupuestotarea().getId().equals(solicitud.getPresupuestotarea().getId())){
+                    iDisp2.remove();
+                }
+            }
+            
+            // agregamos a la lista de solicitados, checkeamos si hay un item del 
+            // mismo presupuestotarea anterior, si es asi lo sumamos
+            ListIterator iSols2 = itemsSolicitados.listIterator();
+            boolean encontradop = false;
+            
+            while(iSols2.hasNext()){
+                Solicitud sd = (Solicitud) iSols2.next();
+                
+                if(sd.getPresupuestotarea().getId().equals(solicitud.getPresupuestotarea().getId())){
+                    iSols2.remove();
+                    
+                    sd.setImporte(solicitud.getImporte().add(sd.getImporte()));
+                    
+                    iSols2.add(sd);
+                    
+                    encontradop = true;
+                }
+            }
+            
+            if(!encontradop){
+                itemsSolicitados.add(solicitud);
+            }
 
             // agregamos a la lista de disponibles, una solicitud con el monto restante
-            Solicitud sDisponible = new Solicitud(current);
-            sDisponible.setDisponible(current.getDisponible().subtract(current.getImporte()));
+            Solicitud sDisponible = new Solicitud(solicitud);
+            sDisponible.setDisponible(solicitud.getDisponible().subtract(solicitud.getImporte()));
             sDisponible.setImporte(sDisponible.getDisponible());
             itemsDisponibles.add(sDisponible);
 
@@ -513,11 +594,17 @@ public class SolicitudController implements Serializable {
             this.itemsSolicitados.remove(solicitud);
 
             // buscamos la solicitud disponible para sumar el monto
-            for (Solicitud s : itemsDisponibles) {
+            ListIterator i = itemsDisponibles.listIterator();
+            
+            while(i.hasNext()){
+                
+                Solicitud s = (Solicitud) i.next();
+                
                 if (s.getPresupuestotarea().getId() == solicitud.getPresupuestotarea().getId()) {
 
                     // borramos el encontrado
-                    itemsDisponibles.remove(s);
+                    //itemsDisponibles.remove(s);
+                    i.remove();
 
                     // creamos una nueva solicitud para sumar nuevamente los montos
                     Solicitud sDisponible = new Solicitud(solicitud);
@@ -525,12 +612,37 @@ public class SolicitudController implements Serializable {
                     sDisponible.setImporte(sDisponible.getDisponible());
 
                     // agregamos la solicitud con los montos correctos
-                    itemsDisponibles.add(sDisponible);
+                    //itemsDisponibles.add(sDisponible);
+                    i.add(sDisponible);
+                    
+                    break;
 
                     //s.setDisponible(s.getDisponible().add(solicitud.getImporte()));
                     //itemsDisponibles.add(s);
                 }
             }
+            
+            
+//            for (Solicitud s : itemsDisponibles) {
+//                if (s.getPresupuestotarea().getId() == solicitud.getPresupuestotarea().getId()) {
+//
+//                    // borramos el encontrado
+//                    itemsDisponibles.remove(s);
+//
+//                    // creamos una nueva solicitud para sumar nuevamente los montos
+//                    Solicitud sDisponible = new Solicitud(solicitud);
+//                    sDisponible.setDisponible(solicitud.getImporte().add(s.getDisponible()));
+//                    sDisponible.setImporte(sDisponible.getDisponible());
+//
+//                    // agregamos la solicitud con los montos correctos
+//                    itemsDisponibles.add(sDisponible);
+//                    
+//                    break;
+//
+//                    //s.setDisponible(s.getDisponible().add(solicitud.getImporte()));
+//                    //itemsDisponibles.add(s);
+//                }
+//            }
         }
     }
 
@@ -538,7 +650,8 @@ public class SolicitudController implements Serializable {
         float r = 0;
 
         for (Solicitud s : itemsDisponibles) {
-            r += s.getImporte().floatValue();
+            //r += s.getImporte().floatValue();
+            r += s.getDisponible().floatValue();
         }
 
         return r;

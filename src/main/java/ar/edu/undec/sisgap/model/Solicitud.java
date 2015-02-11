@@ -215,8 +215,8 @@ public class Solicitud implements Serializable {
 
     @Override
     public String toString() {
-        //return "ar.edu.undec.sisgap.model.Solicitud[ id=" + id + " ]";
-        return "Solicitud: " + this.getId() + " - " + this.getPresupuestotarea().getDescripcion();
+        return "ar.edu.undec.sisgap.model.Solicitud[ id=" + id + " ]";
+        //return "Solicitud: " + this.getId() + " - " + this.getPresupuestotarea().getDescripcion();
     }
     
 }
