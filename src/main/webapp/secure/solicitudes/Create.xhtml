@@ -18,10 +18,6 @@
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
 
-            <h:panelGroup id="messagePanel" layout="block">
-                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
-            </h:panelGroup>
-
             <h:form id="formprincipal" enctype="multipart/form-data" >
                 <p:growl id="growlprincipal" autoUpdate="true" showDetail="true"  />
 
@@ -199,50 +195,107 @@
                         </h:panelGrid>
                     </p:panel>
 
-                    <p:panel header="Desembolsos" >
-                        <p:dataTable
-                            id="tbl" 
-                            value="#{desembolsoController.items}" 
-                            var="item" 
-                            widgetVar="tblW"
-                            rowKey="#{item.id}" 
-                            emptyMessage="No se encontraron resultados para el criterio de busqueda"
-                            paginator="true" rows="10" paginatorPosition="bottom"
-                            draggableColumns="true"
-                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                            rowsPerPageTemplate="10,15,30">
+                    <p:panel header="Desembolsos y Solicitudes Anteriores" collapsed="true" toggleable="true" >
+                        <p:panelGrid columns="2">
+                            <p:dataTable
+                                id="tbl" 
+                                value="#{desembolsoController.items}" 
+                                var="item" 
+                                widgetVar="tblW"
+                                rowKey="#{item.id}" 
+                                emptyMessage="No se encontraron resultados para el criterio de busqueda"
+                                paginator="true" rows="10" paginatorPosition="bottom"
+                                draggableColumns="true"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="10,15,30">
+                                <f:facet name="header">
+                                    Desembolsos
+                                </f:facet>
+                                <p:column id="columnaNro" sortBy="id" width="10px" style="width: 15px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Nº" />
+                                    </f:facet>
+                                    <h:outputText value="#{item.numerodesembolso}" />
+                                </p:column>
+                                <p:column id="columnaFecha" sortBy="fechadesembolso" width="10px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha de Desembolso" />
+                                    </f:facet>
+                                    <h:outputText value="#{item.fechadesembolso}"> 
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column id="columnaMonto" filterBy="monto" filterMatchMode="contains" sortBy="monto" style="text-align: right;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Monto"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.monto}"/>
+                                </p:column>
+                                <p:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="&nbsp;"/>
+                                    </f:facet>
+                                    <p:commandButton action="#{desembolsoController.prepareView}" title="Ver Detalle" icon="ui-icon-search" ajax="false" />
+                                    <h:outputText value=" "/>
+                                </p:column>
+                                <f:facet name="footer">
+                                    Total de Desembolsos $ #{desembolsoController.sumarDesembolsos()}
+                                </f:facet>
+                            </p:dataTable>
 
-                            <p:column id="columnaNro" sortBy="id" width="10px" style="width: 15px;">
+                            <p:dataTable
+                                id="tblS" 
+                                value="#{solicitudController.itemsAprobados}" 
+                                var="item" 
+                                widgetVar="tblWS"
+                                rowKey="#{item.id}" 
+                                emptyMessage="No se encontraron resultados para el criterio de busqueda"
+                                paginator="true" rows="10" paginatorPosition="bottom"
+                                draggableColumns="true"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="10,15,30">
+
                                 <f:facet name="header">
-                                    <h:outputText value="Nº" />
+                                    Solicitudes Anteriores
                                 </f:facet>
-                                <h:outputText value="#{item.numerodesembolso}" />
-                            </p:column>
-                            <p:column id="columnaFecha" sortBy="fechadesembolso" width="10px">
-                                <f:facet name="header">
-                                    <h:outputText value="Fecha de Desembolso" />
+                                <p:column id="columnaDesc" sortBy="id" >
+                                    <f:facet name="header">
+                                        <h:outputText value="Descripción" />
+                                    </f:facet>
+                                    <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                </p:column>
+                                <p:column id="columnaTipoSolicitud" sortBy="tiposolicitud">
+                                    <f:facet name="header">
+                                        <h:outputText value="Tipo" />
+                                    </f:facet>
+                                    <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                </p:column>
+                                <p:column id="columnaFechaSolicitud" sortBy="fechasolicitud">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha" />
+                                    </f:facet>
+                                    <h:outputText value="#{item.fechasolicitud}"> 
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column id="columnaImporteSolicitud" filterBy="importe" filterMatchMode="contains" sortBy="importe" style="text-align: right;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Importe"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.importe}"/>
+                                </p:column>
+                                <p:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="&nbsp;"/>
+                                    </f:facet>
+                                    <p:commandButton action="#{solicitudController.prepareView}" title="Ver Detalle" icon="ui-icon-search" ajax="false" />
+                                    <h:outputText value=" "/>
+                                </p:column>
+                                <f:facet name="footer">
+                                    Tota de Solicitudes Aprobadas $ #{solicitudController.sumarSolicitudesAprobadas()}
                                 </f:facet>
-                                <h:outputText value="#{item.fechadesembolso}"> 
-                                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                                </h:outputText>
-                            </p:column>
-                            <p:column id="columnaMonto" filterBy="monto" filterMatchMode="contains" sortBy="monto" style="text-align: right;">
-                                <f:facet name="header">
-                                    <h:outputText value="Monto"/>
-                                </f:facet>
-                                <h:outputText value="#{item.monto}"/>
-                            </p:column>
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText value="&nbsp;"/>
-                                </f:facet>
-                                <p:commandButton action="#{desembolsoController.prepareView}" title="Ver Detalle" icon="ui-icon-search" ajax="false" />
-                                <h:outputText value=" "/>
-                            </p:column>
-                            <f:facet name="footer">
-                                El total de desembolsos es $ #{desembolsoController.sumarDesembolsos()}
-                            </f:facet>
-                        </p:dataTable>
+                            </p:dataTable>    
+                        </p:panelGrid>
                     </p:panel>
 
                     <p:panel header="Solicitud" >

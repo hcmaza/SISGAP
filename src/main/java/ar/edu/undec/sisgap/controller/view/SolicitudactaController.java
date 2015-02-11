@@ -1,10 +1,12 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
 import ar.edu.undec.sisgap.model.Solicitudacta;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudactaFacade;
+import ar.edu.undec.sisgap.model.Estadosolicitud;
 import ar.edu.undec.sisgap.model.Solicitud;
 
 import java.io.Serializable;
@@ -33,6 +35,8 @@ public class SolicitudactaController implements Serializable {
     private ar.edu.undec.sisgap.controller.SolicitudactaFacade ejbFacade;
     @EJB
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacades;
+    @EJB
+    EstadosolicitudFacade ejbFacadeestado;
     private PaginationHelper pagination;
     private int selectedItemIndex;
     
@@ -59,6 +63,10 @@ public class SolicitudactaController implements Serializable {
         return ejbFacades;
     }
 
+    public EstadosolicitudFacade getEjbFacadeestado() {
+        return ejbFacadeestado;
+    }
+    
     public List<Solicitud> getListaSolicitudes() {
         return listaSolicitudes;
     }
@@ -115,7 +123,7 @@ public class SolicitudactaController implements Serializable {
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
         
         // Llenamos la lista de solicitudes que no fueron aprobadas
-        listaSolicitudes = getFacades().obtenerIniciadosPorProyecto(proyectocontroller.getSelected().getId());
+        listaSolicitudes = getFacades().obtenerIniciadasPorProyecto(proyectocontroller.getSelected().getId());
         
         // Vaciamos la lista de solicitudes seleccionadas
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
@@ -133,12 +141,29 @@ public class SolicitudactaController implements Serializable {
 
     public String create() {
         try {
+            
+            // Persistimos el Acta de Solicitud
             current.setFecha(new Date());
             getFacade().createWithPersist(current);
             
+            // Estado de la solicitud
+            Estadosolicitud estado;
+            
+            try{
+                // Estado de la Solicitud = "Aprobada"
+                estado = getEjbFacadeestado().find(2);
+            } catch(Exception e){
+                estado = null;
+                System.out.println("EstadosolicitudFacade: problema de recuperacion");
+                e.printStackTrace();
+            }
+            
+            // Para cada Solicitud seleccionada, actualizar con el nuevo estado, la fecha de aprobacion 
+            // y el nro de acta correspondiente
             for(Solicitud s : listaSolicitudesSeleccionadas){
                 s.setSolicitudactaid(current);
                 s.setFechaaprobacion(new Date());
+                s.setEstadosolicitudid(estado);
                 getFacades().edit(s);
             }
             

@@ -49,8 +49,9 @@ public class SolicitudController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    private List<Solicitud> itemsDisponibles;
-    private List<Solicitud> itemsSolicitados;
+    private List<Solicitud> itemsDisponibles = null;
+    private List<Solicitud> itemsSolicitados = null;
+    private List<Solicitud> itemsAprobados = null;
 
     public SolicitudController() {
     }
@@ -97,6 +98,14 @@ public class SolicitudController implements Serializable {
 
     public void setItemsSolicitados(List<Solicitud> itemsSolicitados) {
         this.itemsSolicitados = itemsSolicitados;
+    }
+
+    public List<Solicitud> getItemsAprobados() {
+        return itemsAprobados;
+    }
+
+    public void setItemsAprobados(List<Solicitud> itemsAprobados) {
+        this.itemsAprobados = itemsAprobados;
     }
 
     public PaginationHelper getPagination() {
@@ -151,6 +160,9 @@ public class SolicitudController implements Serializable {
 
         // Llenamos la lista de solicitudes anteriores
         items = new ListDataModel(getFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId()));
+        
+        // Llenamos la lista de solicitudes aprobadas anteriores
+        itemsAprobados = getFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
 
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
@@ -218,8 +230,8 @@ public class SolicitudController implements Serializable {
 
             try {
                 for (Solicitud s : itemsSolicitados) {
-                    s.setFechaaprobacion(new Date());
-                    s.setFechaejecucion(new Date());
+                    //s.setFechaaprobacion(new Date());
+                    //s.setFechaejecucion(new Date());
                     s.setFechasolicitud(new Date());
                     s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
                     s.setTiposolicitudid(current.getTiposolicitudid());
@@ -437,6 +449,10 @@ public class SolicitudController implements Serializable {
 
             FacesMessage mensaje = new FacesMessage("Error", "El importe del item a solicitar supera lo disponible");
             FacesContext.getCurrentInstance().addMessage(null, mensaje);
+
+            // Restauramos el valor de la solicitad al total de presupuesto tarea
+            current.setImporte(current.getDisponible());
+
             return;
         }
 
@@ -479,36 +495,38 @@ public class SolicitudController implements Serializable {
     }
 
     public void quitarItemSolicitado(Solicitud solicitud) {
-        
+
         System.out.println("quitar: solicitud-disponible: " + solicitud.getDisponible() + " solicitud-importe: " + solicitud.getImporte());
 
-        // Se asigna como importe el valor maximo disponible
-        //solicitud.setImporte(solicitud.getDisponible());
+        // Si se quita un objeto que se solicito completo
         if (solicitud.getDisponible().floatValue() == solicitud.getImporte().floatValue()) {
+
+            // se quita de la lista de solicitados
+            this.itemsSolicitados.remove(solicitud);
+
+            // se devuelve el item a la lista de disponibles
+            this.itemsDisponibles.add(solicitud);
+
+            // Si se quita un objeto que fue solicitado parcialmente
+        } else {
             // Quita de la lista de solicitados
             this.itemsSolicitados.remove(solicitud);
 
-            // Devuelve el item a la lista de disponibles
-            this.itemsDisponibles.add(solicitud);
-                    
-        }else{
-            // Quita de la lista de solicitados
-            this.itemsSolicitados.remove(solicitud);
-            
-            // buscamos la solicitud con el monto disponible para sumarla
-            for(Solicitud s : itemsDisponibles){
-                if(s.getPresupuestotarea().getId() == solicitud.getPresupuestotarea().getId()){
+            // buscamos la solicitud disponible para sumar el monto
+            for (Solicitud s : itemsDisponibles) {
+                if (s.getPresupuestotarea().getId() == solicitud.getPresupuestotarea().getId()) {
+
                     // borramos el encontrado
                     itemsDisponibles.remove(s);
-                    
+
                     // creamos una nueva solicitud para sumar nuevamente los montos
                     Solicitud sDisponible = new Solicitud(solicitud);
                     sDisponible.setDisponible(solicitud.getImporte().add(s.getDisponible()));
                     sDisponible.setImporte(sDisponible.getDisponible());
-                    
+
                     // agregamos la solicitud con los montos correctos
                     itemsDisponibles.add(sDisponible);
-                    
+
                     //s.setDisponible(s.getDisponible().add(solicitud.getImporte()));
                     //itemsDisponibles.add(s);
                 }
@@ -530,6 +548,16 @@ public class SolicitudController implements Serializable {
         float r = 0;
 
         for (Solicitud s : itemsSolicitados) {
+            r += s.getImporte().floatValue();
+        }
+
+        return r;
+    }
+
+    public float sumarSolicitudesAprobadas() {
+        float r = 0;
+
+        for (Solicitud s : itemsAprobados) {
             r += s.getImporte().floatValue();
         }
 

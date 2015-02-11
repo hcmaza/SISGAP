@@ -31,13 +31,6 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
         super(Solicitud.class);
     }
 
-//    select p from Person p where
-//    p.email in(
-//        select q.email
-//        from Person q
-//        group by q.email having count(q.email)>1)
-//    order by p.email, p.id
-
     /**
      * Obtiene una lista de solicitud por proyecto (solicitud no tiene relacion con proyecto, solo a traves de PresupuestoTarea)
      * 
@@ -50,12 +43,36 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
         return consulta.getResultList();
     }
     
-    public List<Solicitud> obtenerIniciadosPorProyecto(int proyectoid){
+    /**
+     * Obtiene una lista de solicitudes con estado iniciado para un proyecto determinado
+     * 
+     * @param proyectoid
+     * @return 
+     */
+    public List<Solicitud> obtenerIniciadasPorProyecto(int proyectoid){
         Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 1 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
         consulta.setParameter("proyectoid", proyectoid);
         return consulta.getResultList();
     }
     
+    /**
+     * Obtiene una lista de solicitudes con estado aprobado para un proyecto determinado
+     * 
+     * @param proyectoid
+     * @return 
+     */
+    public List<Solicitud> obtenerAprobadasPorProyecto(int proyectoid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 2 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
+        consulta.setParameter("proyectoid", proyectoid);
+        return consulta.getResultList();
+    }
+    
+    /**
+     * Obtiene una solicitud de un presupuestotarea determinado
+     * 
+     * @param presupuestotareaid
+     * @return 
+     */
     public Solicitud obtenerPorPresupuestoTarea(int presupuestotareaid){
         Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.presupuestotarea.id = :presupuestotareaid", Solicitud.class);
         consulta.setParameter("presupuestotareaid", presupuestotareaid);

@@ -9,6 +9,7 @@ import ar.edu.undec.sisgap.model.Estadosolicitud;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -26,6 +27,19 @@ public class EstadosolicitudFacade extends AbstractFacade<Estadosolicitud> {
 
     public EstadosolicitudFacade() {
         super(Estadosolicitud.class);
+    }
+    
+    public Estadosolicitud buscarPorNombre(String nombre){
+        try{
+            Query consulta = em.createQuery("SELECT e FROM Estadosolicitud e WHERE e.estadosolicitud = :nombre", Estadosolicitud.class);
+            consulta.setParameter("nombre", nombre);
+            return (Estadosolicitud)consulta.getSingleResult();
+        } catch(Exception e){
+            e.printStackTrace();
+            return new Estadosolicitud();
+        }
+        
+        
     }
     
 }
