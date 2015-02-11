@@ -563,5 +563,13 @@ public class SolicitudController implements Serializable {
 
         return r;
     }
+    
+    public float totalPorEtapa(){
+        return (float) (Math.random() * 100000);
+    }
+    
+    public float totalPorTarea(){
+        return (float) (Math.random() * 100000);
+    }
 
 }

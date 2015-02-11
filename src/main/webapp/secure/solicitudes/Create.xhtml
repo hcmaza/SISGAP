@@ -322,36 +322,27 @@
                     <p:panel header="Items a Solicitar" >
 
                         <p:panelGrid styleClass="" >
-                            <p:column style="width: 20%;">
-                                <p:tree value="#{etapaController.root}" var="item"
-                                        selectionMode="single"
-                                        selection="#{etapaController.nodoSeleccionado}"
-                                        style="padding-top: 0px; width: 100%;" highlight="true">
-
-                                    <p:ajax event="select" update=":formprincipal:growlprincipal" listener="#{etapaController.onTreeNodeSelect}" />
-                                    <p:ajax event="unselect" update=":formprincipal:growlprincipal" listener="#{etapaController.onTreeNodeUnselect}" />
-
-                                    <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-                                        <h:outputText value="#{item.tarea}"/>
-                                    </p:treeNode>
-                                </p:tree>
-                            </p:column>
-
-                            <p:column style="width: 40%;">
-                                <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}">
+                            <p:column style="width: 50%;">
+                                <p:dataTable id="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.etapa}">
                                     <f:facet name="header">
                                         Items Disponibles
                                     </f:facet>
-                                    <p:column headerText="Descripcion">
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad">
+                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.etapa}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Presupuestado">
+                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
                                         <h:outputText value="#{item.presupuestotarea.total}" />
                                     </p:column>
-                                    <p:column headerText="Disponible">
+                                    <p:column headerText="Disponible" sortBy="#{item.importe}">
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
@@ -359,9 +350,24 @@
                                             <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                         </p:commandButton>
                                     </p:column>
+                                    <!-- <p:summaryRow>
+                                            <p:column colspan="4" >
+                                                <h:outputText value="Totales:" />
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                        </p:summaryRow> -->
                                 </p:dataTable>
                             </p:column>
-                            <p:column style="width: 40%;">
+                            <p:column style="width: 50%;">
                                 <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
                                     <f:facet name="header">
                                         Items Solicitados
