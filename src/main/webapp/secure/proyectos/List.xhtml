@@ -97,6 +97,9 @@
                                     <p:menuitem value="Solicitudes" action="#{solicitudController.prepareList}" ajax="false" icon="ui-icon-cart" >
                                         <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                     </p:menuitem>
+                                    <p:menuitem value="Actas de Solicitud" action="#{solicitudactaController.prepareList}" ajax="false" icon="ui-icon-note" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Administrador'}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                    </p:menuitem>
                                 </p:menuButton>
 
                             </p:column>

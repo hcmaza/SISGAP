@@ -54,6 +54,9 @@ public class SolicitudactaController implements Serializable {
         }
         return current;
     }
+    public void setSelected(Solicitudacta solicitudacta){
+        current = solicitudacta;
+    }
 
     private SolicitudactaFacade getFacade() {
         return ejbFacade;
@@ -103,12 +106,12 @@ public class SolicitudactaController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "List";
+        return "ListPorProyecto";
     }
 
     public String prepareView() {
-        current = (Solicitudacta) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Solicitudacta) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
@@ -176,8 +179,8 @@ public class SolicitudactaController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Solicitudacta) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Solicitudacta) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
 
@@ -193,8 +196,8 @@ public class SolicitudactaController implements Serializable {
     }
 
     public String destroy() {
-        current = (Solicitudacta) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Solicitudacta) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
         recreateModel();
@@ -311,6 +314,10 @@ public class SolicitudactaController implements Serializable {
             }
         }
 
+    }
+    
+    public void obtenerPorProyecto(int proyectoid){
+        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
 
 }
