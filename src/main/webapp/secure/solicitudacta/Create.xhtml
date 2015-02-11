@@ -244,7 +244,13 @@
                     </p:panel>
 
                     <p:panel header="Acta de Solicitudes" >
-
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="" />
+                            <p:inputTextarea value="#{solicitudactaController.selected.observacion}" rows="5" cols="30" counter="display" maxlength="250" counterTemplate="{0} caracteres restantes." autoResize="false" />
+                            
+                            <h:outputText value=" " />
+                            <h:outputText id="display" />
+                        </p:panelGrid>
                         <p:panelGrid styleClass="" >
                             <p:column style="width: 100%;">
                                 <p:dataTable id="tblSolicitudes" 
@@ -283,11 +289,11 @@
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
                     <!--<h:link outcome="/index" value="Inicio"/>-->
-                    
+
                 </p:panel>
 
             </h:form>
-            
+
             <h:form>
                 <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Aprobación/Rechazo de Solicitudes" >
                     <h:panelGroup id="messagePanel" layout="block">

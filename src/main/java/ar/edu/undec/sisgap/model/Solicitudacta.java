@@ -49,6 +49,8 @@ public class Solicitudacta implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+    @Column(name = "observacion")
+    private String observacion;
     
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="solicitudactaid")
@@ -90,6 +92,14 @@ public class Solicitudacta implements Serializable {
 
     public void setListaSolicitudes(List<Solicitud> listaSolicitudes) {
         this.listaSolicitudes = listaSolicitudes;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
     
     @Override
