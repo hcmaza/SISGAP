@@ -178,8 +178,8 @@ public class SolicitudController implements Serializable {
             while (i.hasNext()) {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
 
-                // si encontramos el presupuestotarea en una solicitud anterior
-                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId()) {
+                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada"
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
                     solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());

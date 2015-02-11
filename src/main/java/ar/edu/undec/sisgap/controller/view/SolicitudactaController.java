@@ -178,6 +178,42 @@ public class SolicitudactaController implements Serializable {
         }
     }
 
+        public String rechazar() {
+        try {
+            
+            // Persistimos el Acta de Solicitud
+            // current.setFecha(new Date());
+            // getFacade().createWithPersist(current);
+            
+            // Estado de la solicitud
+            Estadosolicitud estado;
+            
+            try{
+                // Estado de la Solicitud = "Rechazada"
+                estado = getEjbFacadeestado().find(3);
+            } catch(Exception e){
+                estado = null;
+                System.out.println("EstadosolicitudFacade: problema de recuperacion");
+                e.printStackTrace();
+            }
+            
+            // Para cada Solicitud seleccionada, actualizar con el nuevo estado, la fecha de aprobacion 
+            // y el nro de acta correspondiente
+            for(Solicitud s : listaSolicitudesSeleccionadas){
+                //s.setSolicitudactaid(current);
+                s.setFechaaprobacion(new Date());
+                s.setEstadosolicitudid(estado);
+                getFacades().edit(s);
+            }
+            
+            JsfUtil.addSuccessMessage("Las solicitudes fueron rechazadas satisfactoriamente");
+            return prepareCreate();
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+            return null;
+        }
+    }
+    
     public String prepareEdit() {
         //current = (Solicitudacta) getItems().getRowData();
         //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();

@@ -278,6 +278,7 @@
 
                     <p:separator />
                     <p:commandButton action="#{solicitudactaController.create}" value="Crear Acta de Solicitud" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
+                    <p:commandButton action="#{solicitudactaController.rechazar}" value="Rechazar Solicitudes" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{solicitudactaController.prepareList}" value="Lista de Solicitudes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
@@ -285,6 +286,18 @@
                     
                 </p:panel>
 
+            </h:form>
+            
+            <h:form>
+                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Aprobación/Rechazo de Solicitudes" >
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
+                    <p:separator />
+                    <div align="center" >
+                        <p:commandButton value="Volver a la Lista" action="#{solicitudactaController.prepareList()}" ajax="false" />
+                    </div>
+                </p:dialog>
             </h:form>
         </ui:define>
     </ui:composition>
