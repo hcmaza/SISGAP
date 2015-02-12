@@ -40,7 +40,9 @@
 
                             <p:column id="columnaFecha" filterBy="#{item.fecha}" filterMatchMode="contains" sortBy="#{item.fecha}">
                                 <f:facet name="header">
-                                    <h:outputText value="Fecha" />
+                                    <h:outputText value="Fecha">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
                                 </f:facet>                        
                                 <h:outputText value="#{item.fecha}"/>
                             </p:column>
