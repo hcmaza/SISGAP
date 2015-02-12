@@ -44,7 +44,7 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
     }
     
     /**
-     * Obtiene una lista de solicitudes con estado iniciado para un proyecto determinado
+     * Obtiene una lista de solicitudes con estado "Iniciada" para un proyecto determinado
      * 
      * @param proyectoid
      * @return 
@@ -56,13 +56,37 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
     }
     
     /**
-     * Obtiene una lista de solicitudes con estado aprobado para un proyecto determinado
+     * Obtiene una lista de solicitudes con estado "Aprobada" para un proyecto determinado
      * 
      * @param proyectoid
      * @return 
      */
     public List<Solicitud> obtenerAprobadasPorProyecto(int proyectoid){
         Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 2 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
+        consulta.setParameter("proyectoid", proyectoid);
+        return consulta.getResultList();
+    }
+    
+    /**
+     * Obtiene una lista de solicitudes con estado "Ejecucion" para un proyecto determinado
+     * 
+     * @param proyectoid
+     * @return 
+     */
+    public List<Solicitud> obtenerEjecucionPorProyecto(int proyectoid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 4 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
+        consulta.setParameter("proyectoid", proyectoid);
+        return consulta.getResultList();
+    }
+    
+    /**
+     * Obtiene una lista de solicitudes con estado "Rendida" para un proyecto determinado
+     * 
+     * @param proyectoid
+     * @return 
+     */
+    public List<Solicitud> obtenerRendidasPorProyecto(int proyectoid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 5 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
         consulta.setParameter("proyectoid", proyectoid);
         return consulta.getResultList();
     }

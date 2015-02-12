@@ -82,6 +82,10 @@ public class Solicitud implements Serializable {
     @JoinColumn(name = "solicitudactaid", referencedColumnName = "id")
     @ManyToOne
     private Solicitudacta solicitudactaid;
+    
+    @JoinColumn(name = "rendicionid", referencedColumnName = "id")
+    @ManyToOne
+    private Rendicion rendicionid;
 
     public Solicitud() {
     }
@@ -191,8 +195,15 @@ public class Solicitud implements Serializable {
     public void setSolicitudactaid(Solicitudacta solicitudactaid) {
         this.solicitudactaid = solicitudactaid;
     }
-    
-    
+
+    public Rendicion getRendicionid() {
+        return rendicionid;
+    }
+
+    public void setRendicionid(Rendicion rendicionid) {
+        this.rendicionid = rendicionid;
+    }
+        
     @Override
     public int hashCode() {
         int hash = 0;

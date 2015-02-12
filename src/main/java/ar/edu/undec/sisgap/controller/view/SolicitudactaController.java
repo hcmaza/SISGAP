@@ -24,6 +24,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.FileUploadEvent;
 
 @ManagedBean(name = "solicitudactaController")
 @SessionScoped
@@ -39,9 +40,9 @@ public class SolicitudactaController implements Serializable {
     EstadosolicitudFacade ejbFacadeestado;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    
+
     private List<Solicitud> listaSolicitudes;
-    
+
     private List<Solicitud> listaSolicitudesSeleccionadas;
 
     public SolicitudactaController() {
@@ -54,7 +55,8 @@ public class SolicitudactaController implements Serializable {
         }
         return current;
     }
-    public void setSelected(Solicitudacta solicitudacta){
+
+    public void setSelected(Solicitudacta solicitudacta) {
         current = solicitudacta;
     }
 
@@ -69,7 +71,7 @@ public class SolicitudactaController implements Serializable {
     public EstadosolicitudFacade getEjbFacadeestado() {
         return ejbFacadeestado;
     }
-    
+
     public List<Solicitud> getListaSolicitudes() {
         return listaSolicitudes;
     }
@@ -85,7 +87,7 @@ public class SolicitudactaController implements Serializable {
     public void setListaSolicitudesSeleccionadas(List<Solicitud> listaSolicitudesSeleccionadas) {
         this.listaSolicitudesSeleccionadas = listaSolicitudesSeleccionadas;
     }
-    
+
     public PaginationHelper getPagination() {
         if (pagination == null) {
             pagination = new PaginationHelper(10) {
@@ -118,58 +120,58 @@ public class SolicitudactaController implements Serializable {
     public String prepareCreate() {
         current = new Solicitudacta();
         selectedItemIndex = -1;
-        
-         // Obtenemos los controladores necesarios
+
+        // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
-        
+
         // Llenamos la lista de solicitudes que no fueron aprobadas
         listaSolicitudes = getFacades().obtenerIniciadasPorProyecto(proyectocontroller.getSelected().getId());
-        
+
         // Vaciamos la lista de solicitudes seleccionadas
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
-        
-         // Seteamos la lista de desembolsos para el proyecto actual
+
+        // Seteamos la lista de desembolsos para el proyecto actual
         desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
-        
-        for(Solicitud s : listaSolicitudes){
+
+        for (Solicitud s : listaSolicitudes) {
             System.out.println("SolicitudActaController - prepareCreate");
             System.out.println(s.toString());
         }
-        
+
         return "Create";
     }
 
     public String create() {
         try {
-            
+
             // Persistimos el Acta de Solicitud
             current.setFecha(new Date());
             getFacade().createWithPersist(current);
-            
+
             // Estado de la solicitud
             Estadosolicitud estado;
-            
-            try{
+
+            try {
                 // Estado de la Solicitud = "Aprobada"
                 estado = getEjbFacadeestado().find(2);
-            } catch(Exception e){
+            } catch (Exception e) {
                 estado = null;
                 System.out.println("EstadosolicitudFacade: problema de recuperacion");
                 e.printStackTrace();
             }
-            
+
             // Para cada Solicitud seleccionada, actualizar con el nuevo estado, la fecha de aprobacion 
             // y el nro de acta correspondiente
-            for(Solicitud s : listaSolicitudesSeleccionadas){
+            for (Solicitud s : listaSolicitudesSeleccionadas) {
                 s.setSolicitudactaid(current);
                 s.setFechaaprobacion(new Date());
                 s.setEstadosolicitudid(estado);
                 getFacades().edit(s);
             }
-            
+
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudactaCreated"));
             return prepareCreate();
         } catch (Exception e) {
@@ -178,34 +180,33 @@ public class SolicitudactaController implements Serializable {
         }
     }
 
-        public String rechazar() {
+    public String rechazar() {
         try {
-            
+
             // Persistimos el Acta de Solicitud
             // current.setFecha(new Date());
             // getFacade().createWithPersist(current);
-            
             // Estado de la solicitud
             Estadosolicitud estado;
-            
-            try{
+
+            try {
                 // Estado de la Solicitud = "Rechazada"
                 estado = getEjbFacadeestado().find(3);
-            } catch(Exception e){
+            } catch (Exception e) {
                 estado = null;
                 System.out.println("EstadosolicitudFacade: problema de recuperacion");
                 e.printStackTrace();
             }
-            
+
             // Para cada Solicitud seleccionada, actualizar con el nuevo estado, la fecha de aprobacion 
             // y el nro de acta correspondiente
-            for(Solicitud s : listaSolicitudesSeleccionadas){
+            for (Solicitud s : listaSolicitudesSeleccionadas) {
                 //s.setSolicitudactaid(current);
                 s.setFechaaprobacion(new Date());
                 s.setEstadosolicitudid(estado);
                 getFacades().edit(s);
             }
-            
+
             JsfUtil.addSuccessMessage("Las solicitudes fueron rechazadas satisfactoriamente");
             return prepareCreate();
         } catch (Exception e) {
@@ -213,7 +214,7 @@ public class SolicitudactaController implements Serializable {
             return null;
         }
     }
-    
+
     public String prepareEdit() {
         //current = (Solicitudacta) getItems().getRowData();
         //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
@@ -351,9 +352,11 @@ public class SolicitudactaController implements Serializable {
         }
 
     }
-    
-    public void obtenerPorProyecto(int proyectoid){
+
+    public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
+
+    
 
 }
