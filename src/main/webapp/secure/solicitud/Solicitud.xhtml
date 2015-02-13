@@ -300,81 +300,85 @@
                         <p:tab title="Presupuesto">
 
                             <p:fieldset legend="Presupuesto" style="margin-bottom:5px">
-                                <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" styleClass="sinBordesVerticales">
+                                <p:outputPanel id="tablapresupuesto">
+                                    <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" styleClass="sinBordesVerticales">
                                     <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="#{presupuestoRubroController.sumarGastos}" /> -->
-                                    <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:tpresupuesto, :formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros, :formprincipal:tabviewTodo:tpresupuesto:fOrganismo, :formprincipal:tabviewTodo:tpresupuesto:fUniversidad, :formprincipal:tabviewTodo:tpresupuesto:fComitente,:formprincipal:growlprincipal"  />  
+                                        <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros, :formprincipal:growlprincipal"  />  
 
-                                    <f:facet name="header">  
-                                        Presupuesto  
-                                    </f:facet>  
-                                    <p:column style="width:20%">
-                                        <f:facet name="header">
-                                            <h:outputText value="Rubro"/>
-                                        </f:facet>
-                                        <h:outputText style="width:96%;" value="#{item.rubro.rubro}"/>
-                                        <f:facet name="footer">  
-                                            Totales de Aportes
+                                        <f:facet name="header">  
+                                            Presupuesto  
                                         </f:facet>  
-                                    </p:column>
-
-                                    <p:column style="width:20%; " headerText="Aporte Organismo">
-                                        <p:cellEditor>  
-                                            <f:facet name="output">
-                                                <h:outputText value="#{item.gastoorganismo}" style="float: right;" />
+                                        <p:column style="width:20%">
+                                            <f:facet name="header">
+                                                <h:outputText value="Rubro"/>
+                                            </f:facet>
+                                            <h:outputText style="width:96%;" value="#{item.rubro.rubro}"/>
+                                            <f:facet name="footer">  
+                                                Totales de Aportes
                                             </f:facet>  
-                                            <f:facet name="input">
-                                                <p:inputText style="width:96%; " id="gastoorganismo" value="#{item.gastoorganismo}"  >
-                                                    <f:validator validatorId="validadorNumeroPositivo" />
-                                                </p:inputText>
+                                        </p:column>
+
+                                        <p:column style="width:20%; " headerText="Aporte Organismo">
+                                            <p:cellEditor>  
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{item.gastoorganismo}" style="float: right;" />
+                                                </f:facet>  
+                                                <f:facet name="input">
+                                                    <p:inputText style="width:96%; " id="gastoorganismo" value="#{item.gastoorganismo}"  >
+                                                        <f:validator validatorId="validadorNumeroPositivo" />
+                                                    </p:inputText>
+                                                </f:facet> 
+                                            </p:cellEditor> 
+                                            <f:facet name="footer">  
+                                                <p:outputLabel id="fOrganismo" value="$#{presupuestoRubroController.sumagastoorganismo}" style="float: right;"/>
                                             </f:facet> 
-                                        </p:cellEditor> 
-                                        <f:facet name="footer">  
-                                            <p:outputLabel id="fOrganismo" value="$#{presupuestoRubroController.sumagastoorganismo}" style="float: right;"/>
-                                        </f:facet> 
-                                    </p:column>
-                                    <p:column style="width:20%;" headerText="Aporte Comitente">
+                                        </p:column>
+                                        <p:column style="width:20%;" headerText="Aporte Comitente">
 
-                                        <p:cellEditor >  
-                                            <f:facet name="output">
-                                                <h:outputText value="#{item.gastocomitente}" style="float: right;" />
-                                            </f:facet>  
-                                            <f:facet name="input">
-                                                <p:inputText style="width:96%; " id="gastocomitente" value="#{item.gastocomitente}" >
-                                                    <f:validator validatorId="validadorNumeroPositivo" />
-                                                    <p:ajax update=":formprincipal:growlprincipal" />
-                                                </p:inputText>
+                                            <p:cellEditor >  
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{item.gastocomitente}" style="float: right;" />
+                                                </f:facet>  
+                                                <f:facet name="input">
+                                                    <p:inputText style="width:96%; " id="gastocomitente" value="#{item.gastocomitente}" >
+                                                        <f:validator validatorId="validadorNumeroPositivo" />
+                                                        <p:ajax update=":formprincipal:growlprincipal" />
+                                                    </p:inputText>
+                                                </f:facet> 
+                                            </p:cellEditor>  
+                                            <f:facet name="footer">  
+                                                <p:outputLabel id="fComitente" value="$#{presupuestoRubroController.sumagastocomitente}" style="float: right;"/>
+                                            </f:facet>                                         
+                                        </p:column>
+
+                                        <p:column style="width:20%;" headerText="Aporte Universidad">
+                                            <p:cellEditor>  
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{item.gastouniversidad}" style="float: right;" />
+                                                </f:facet>  
+                                                <f:facet name="input">
+                                                    <p:inputText style="width:96%; " id="gastouniversidad" value="#{item.gastouniversidad}" >
+                                                        <p:ajax update=":formprincipal:growlprincipal" />
+                                                        <f:validator validatorId="validadorNumeroPositivo" />
+                                                    </p:inputText>
+                                                </f:facet>  
+                                            </p:cellEditor> 
+                                            <f:facet name="footer">  
+                                                <p:outputLabel id="fUniversidad" value="$#{presupuestoRubroController.sumagastouniversidad}" style="float: right;"/>
                                             </f:facet> 
-                                        </p:cellEditor>  
-                                        <f:facet name="footer">  
-                                            <p:outputLabel id="fComitente" value="$#{presupuestoRubroController.sumagastocomitente}" style="float: right;"/>
-                                        </f:facet>                                         
-                                    </p:column>
+                                        </p:column>
 
-                                    <p:column style="width:20%;" headerText="Aporte Universidad">
-                                        <p:cellEditor>  
-                                            <f:facet name="output">
-                                                <h:outputText value="#{item.gastouniversidad}" style="float: right;" />
-                                            </f:facet>  
-                                            <f:facet name="input">
-                                                <p:inputText style="width:96%; " id="gastouniversidad" value="#{item.gastouniversidad}" >
-                                                    <p:ajax update=":formprincipal:growlprincipal" />
-                                                    <f:validator validatorId="validadorNumeroPositivo" />
-                                                </p:inputText>
-                                            </f:facet>  
-                                        </p:cellEditor> 
-                                        <f:facet name="footer">  
-                                            <p:outputLabel id="fUniversidad" value="$#{presupuestoRubroController.sumagastouniversidad}" style="float: right;"/>
-                                        </f:facet> 
-                                    </p:column>
+                                        <p:column style="width:20%;" headerText="Totales Rubros">
+                                            <h:outputText id="totalesRubro" value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" style="float: right;" />
+                                            <f:facet name="footer">  
+                                                <h:outputText id="fTotal" style="float: right;" value="$#{presupuestoRubroController.sumatotal}" />
+                                            </f:facet> 
+                                        </p:column>
 
-                                    <p:column style="width:20%;" headerText="Totales Rubros">
-                                        <h:outputText id="totalesRubro" value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" style="float: right;" />
-                                        <f:facet name="footer">  
-                                            <h:outputText id="fTotal" style="float: right;" value="$#{presupuestoRubroController.sumatotal}" />
-                                        </f:facet> 
-                                    </p:column>
+                                    </p:dataTable> 
 
-                                </p:dataTable> 
+                                </p:outputPanel>
+
 
                             </p:fieldset>
 
@@ -510,7 +514,7 @@
                 </p:panel>
 
             </h:form>
-            
+
             <h:form> 
                 <p:growl globalOnly="true" for="growla" id="growla" showDetail="true" sticky="true" />
                 <p:dialog id="dagenteeditar" widgetVar="dagenteeditar" modal="true"  header="Editar Responsable Técnico" >
