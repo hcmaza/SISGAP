@@ -23,8 +23,6 @@
                     </h:inputText>
                     <h:outputLabel value="#{bundle.EditRendicionLabel_observacion}" for="observacion" />
                     <h:inputText id="observacion" value="#{rendicionController.selected.observacion}" title="#{bundle.EditRendicionTitle_observacion}" />
-                    <h:outputLabel value="#{bundle.EditRendicionLabel_archivo}" for="archivo" />
-                    <h:inputTextarea rows="4" cols="30" id="archivo" value="#{rendicionController.selected.archivo}" title="#{bundle.EditRendicionTitle_archivo}" />
                 </h:panelGrid>
                 <h:commandLink action="#{rendicionController.update}" value="#{bundle.EditRendicionSaveLink}"/>
                 <br />

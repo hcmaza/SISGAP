@@ -102,4 +102,16 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
         consulta.setParameter("presupuestotareaid", presupuestotareaid);
         return (Solicitud) consulta.getSingleResult();
     }
+    
+    /**
+     * Ontiene una solicitud de una rendicion determinada
+     * 
+     * @param rendicionid
+     * @return 
+     */
+    public Solicitud obtenerPorRendicion(int rendicionid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.rendicionid.id = :rendicionid", Solicitud.class);
+        consulta.setParameter("rendicionid", rendicionid);
+        return (Solicitud) consulta.getSingleResult();
+    }
 }

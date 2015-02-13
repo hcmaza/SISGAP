@@ -1,5 +1,6 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.ArchivorendicionFacade;
 import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
 import ar.edu.undec.sisgap.model.Rendicion;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
@@ -7,6 +8,7 @@ import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.RendicionFacade;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
 import ar.edu.undec.sisgap.controller.TiposolicitudFacade;
+import ar.edu.undec.sisgap.model.Archivorendicion;
 import ar.edu.undec.sisgap.model.Estadosolicitud;
 import ar.edu.undec.sisgap.model.Solicitud;
 
@@ -40,6 +42,8 @@ public class RendicionController implements Serializable {
     private ar.edu.undec.sisgap.controller.SolicitudFacade ejbFacades;
     @EJB
     private ar.edu.undec.sisgap.controller.EstadosolicitudFacade ejbFacadees;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbFacadear;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -70,8 +74,12 @@ public class RendicionController implements Serializable {
         return ejbFacades;
     }
 
-    public EstadosolicitudFacade getEjbFacadees() {
+    public EstadosolicitudFacade getFacadees() {
         return ejbFacadees;
+    }
+
+    public ArchivorendicionFacade getFacadear() {
+        return ejbFacadear;
     }
 
     public List<Solicitud> getListaSolicitudes() {
@@ -131,6 +139,10 @@ public class RendicionController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+
+        // Vaciamos la lista de archivos de rendicion
+        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
 
         // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
         listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
@@ -157,7 +169,7 @@ public class RendicionController implements Serializable {
 
                 try {
                     // Estado de la Solicitud = "Rendida"
-                    estado = getEjbFacadees().find(5);
+                    estado = getFacadees().find(5);
                 } catch (Exception e) {
                     estado = null;
                     System.out.println("EstadosolicitudFacade: problema de recuperacion");
@@ -171,7 +183,17 @@ public class RendicionController implements Serializable {
                     s.setEstadosolicitudid(estado);
                     getFacades().edit(s);
                 }
+
+                // Para cada archivo de rendicion subido
+                // Obtenemos el controladores necesario
+                FacesContext context = FacesContext.getCurrentInstance();
+                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
                 
+                for(Archivorendicion ar : arcontroller.getListaArchivos()){
+                    ar.setRendicionid(current);
+                    getFacadear().create(ar);
+                }
+
                 JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
 
             }
@@ -206,7 +228,7 @@ public class RendicionController implements Serializable {
         performDestroy();
         recreatePagination();
         recreateModel();
-        return "List";
+        return "ListPorProyecto";
     }
 
     public String destroyAndView() {
@@ -224,6 +246,37 @@ public class RendicionController implements Serializable {
 
     private void performDestroy() {
         try {
+            // buscar solicitud para actualizarla
+            Solicitud s;
+            
+            try{
+                s = getFacades().obtenerPorRendicion(current.getId());
+                
+                // Sin Rendicion
+                s.setRendicionid(null);
+            } catch(Exception e){
+                s = null;
+                e.printStackTrace();
+            }
+            
+            // buscar estado de solicitud anterior: "Aprobada"
+            Estadosolicitud es;
+            
+            try{
+                
+                es = getFacadees().find(2);
+                
+            }catch(Exception e){
+                es = null;
+                e.printStackTrace();
+            }
+            
+            s.setEstadosolicitudid(es);
+            
+            //Actualizamos la Solicitud
+            getFacades().edit(s);
+            
+            
             getFacade().remove(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionDeleted"));
         } catch (Exception e) {
@@ -323,22 +376,6 @@ public class RendicionController implements Serializable {
 
     public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
-    }
-
-    public void subirArchivo(FileUploadEvent event) {
-        System.out.println("Subiendo Archivo");
-
-        try {
-            current.setNombrearchivo(event.getFile().getFileName());
-            current.setArchivo(event.getFile().getContents());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() + " fue subido satisfactoriamente!"));
-        } catch (Exception e) {
-            System.out.println("Excepcion en RendicionController - subirArchivo");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error", "Ocurrió un error al subir el archivo"));
-            e.printStackTrace();
-
-        }
-
     }
 
 }

@@ -99,6 +99,7 @@
                             </p:panelGrid>
                         </p:tab>
                         <p:tab title="Documentación">
+
                             <p:panelGrid style="width: 100%;" styleClass="sinBordes">
                                 <p:row>
                                     <p:column>
@@ -198,44 +199,35 @@
                     </p:panel>
 
                     <p:panel header="Rendición" >
-                        <p:panelGrid columns="2" >
+                        <p:panelGrid columns="2" styleClass="sinBordes" >
                             <p:outputLabel value="Fecha" />
                             <p:outputLabel value="#{rendicionController.selected.fecha}">
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </p:outputLabel>
-                            
+
                             <p:outputLabel value="Observación" />
                             <p:inputTextarea value="#{rendicionController.selected.observacion}" rows="5" cols="30" counter="display" maxlength="250" counterTemplate="{0} caracteres restantes." autoResize="false" />
-                            
+
                             <p:outputLabel value="Observación" />
                             <h:outputText id="display" />
                             
-                            <p:outputLabel value="Comprobante" />
-                            <h:form id="fupload" enctype="multipart/form-data">
-                                <p:fileUpload label="Imagen del comprobante de rendición" id="comprobante" fileUploadListener="#{rendicionController.subirArchivo}" mode="advanced"   
-                                              sizeLimit="10000000" value="#{rendicionController.selected.nombrearchivo}" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/" update=":formprincipal:growlprincipal, :formprincipal:nombrearchivo"  uploadLabel="Subir"   >
-                                </p:fileUpload>    
-                            </h:form>
-                            
-                            <p:outputLabel value="Nombre del Archivo" />
-                            <p:outputLabel id="nombrearchivo" value="#{rendicionController.selected.nombrearchivo}" />
-                        </p:panelGrid>
-                        <p:panelGrid styleClass="" >
-                            <p:column style="width: 100%;">
-                                <p:dataTable id="tblSolicitudes" 
+                            <p:outputLabel value="Solicitudes" />
+                            <p:dataTable id="tblSolicitudes" 
                                              var="item" 
                                              value="#{rendicionController.listaSolicitudes}" 
                                              selection="#{rendicionController.listaSolicitudesSeleccionadas}" 
                                              rowKey="#{item.id}" >
                                     <f:facet name="header">
-                                        Solicitudes
+                                        Seleccionar las Solicitudes que se Rinden
                                     </f:facet>
                                     <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                                     <p:column headerText="Descripcion">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Fecha">
-                                        <h:outputText value="#{item.fechasolicitud}" />
+                                        <h:outputText value="#{item.fechasolicitud}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
                                     </p:column>
                                     <p:column headerText="Tipo">
                                         <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
@@ -244,7 +236,56 @@
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                 </p:dataTable>
-                            </p:column>
+
+                            <p:outputLabel value="Comprobantes" />
+                            <h:panelGrid cellpadding="2" cellspacing="10" columnClasses="right,left" columns="3">    
+
+                                <h:form id="fupload" enctype="multipart/form-data">
+                                    <p:fileUpload label="Imagenes de Comprobantes de Rendición" id="documentacion" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
+                                                  sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal, :formprincipal:tarchivos, :formprincipal:vercomprobantes"  >
+
+                                    </p:fileUpload>    
+                                </h:form>
+                                <p:dataTable id="tarchivos" var="arc" value="#{archivorendicionController.listaArchivos}" style="top: 5px;" >  
+
+                                    <p:column headerText="Archivos">  
+                                        <h:outputText value="#{arc.nombrearchivo}" />  
+                                    </p:column> 
+                                    <p:column headerText="">  
+                                        <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tarchivos,:formprincipal:vercomprobantes"  >
+                                            <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
+                                        </p:commandLink>
+                                    </p:column> 
+                                </p:dataTable>
+
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Ver Comprobantes" />
+                            <p:panelGrid>
+                                <p:row>
+                                    <p:column>
+                                        <p:commandButton type="button" onclick="PF('switcher').previous();"
+                                                         icon="ui-icon-circle-triangle-w" id="prev"/>
+                                    </p:column>
+                                    <p:column >
+                                        <p:commandButton type="button" onclick="PF('switcher').next();"
+                                                         icon="ui-icon-circle-triangle-e" id="next"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <p:imageSwitch effect="wipe" widgetVar="switcher" id="vercomprobantes"
+                                                       slideshowAuto="false" >
+                                            <ui:repeat value="#{archivorendicionController.listaArchivos}" var="imagen" id="manuelSwitcherImages">
+                                                <p:graphicImage value="#{archivorendicionController.obtenerImagen()}" width="400px" style="width: 300px; height: auto; display: block;" >
+                                                    <f:param name="archivo" value="#{imagen.nombrearchivo}" />
+                                                </p:graphicImage>
+
+                                            </ui:repeat>
+                                        </p:imageSwitch>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
                         </p:panelGrid>
 
                     </p:panel>

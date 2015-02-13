@@ -7,21 +7,26 @@ package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -37,6 +42,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Rendicion.findByFecha", query = "SELECT r FROM Rendicion r WHERE r.fecha = :fecha"),
     @NamedQuery(name = "Rendicion.findByObservacion", query = "SELECT r FROM Rendicion r WHERE r.observacion = :observacion")})
 public class Rendicion implements Serializable {
+    @OneToMany(mappedBy = "rendicionid", cascade = CascadeType.ALL)
+    private List<Archivorendicion> archivorendicionList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="rendicion_id_seq")
@@ -49,11 +56,6 @@ public class Rendicion implements Serializable {
     @Size(max = 250)
     @Column(name = "observacion", length = 250)
     private String observacion;
-    //@Lob
-    @Column(name = "archivo")
-    private byte[] archivo;
-    @Column(name = "nombrearchivo")
-    private String nombrearchivo;
 
     public Rendicion() {
     }
@@ -86,22 +88,6 @@ public class Rendicion implements Serializable {
         this.observacion = observacion;
     }
 
-    public byte[] getArchivo() {
-        return archivo;
-    }
-
-    public void setArchivo(byte[] archivo) {
-        this.archivo = archivo;
-    }
-
-    public String getNombrearchivo() {
-        return nombrearchivo;
-    }
-
-    public void setNombrearchivo(String nombrearchivo) {
-        this.nombrearchivo = nombrearchivo;
-    }
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -125,6 +111,15 @@ public class Rendicion implements Serializable {
     @Override
     public String toString() {
         return "ar.edu.undec.sisgap.model.Rendicion[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Archivorendicion> getArchivorendicionList() {
+        return archivorendicionList;
+    }
+
+    public void setArchivorendicionList(List<Archivorendicion> archivorendicionList) {
+        this.archivorendicionList = archivorendicionList;
     }
     
 }
