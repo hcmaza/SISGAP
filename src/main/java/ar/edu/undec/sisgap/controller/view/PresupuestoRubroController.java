@@ -34,46 +34,42 @@ import javax.faces.model.SelectItem;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.chart.PieChartModel;
 
-
 @ManagedBean(name = "presupuestoRubroController")
 @SessionScoped
 public class PresupuestoRubroController implements Serializable {
 
     private PresupuestoRubro current;
-    
+
     private DataModel items = null;
-    private List<PresupuestoRubro> presupuestosrubros=null;
+    private List<PresupuestoRubro> presupuestosrubros = null;
     @EJB
     private ar.edu.undec.sisgap.controller.PresupuestoRubroFacade ejbFacade;
     @EJB
     private ar.edu.undec.sisgap.controller.RubroFacade rubroFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private BigDecimal sumagastocomitente=BigDecimal.ZERO;
-    private BigDecimal sumagastouniversidad=BigDecimal.ZERO;
-    private BigDecimal sumagastoorganismo=BigDecimal.ZERO;
-    private BigDecimal sumatotal=BigDecimal.ZERO;
+    private BigDecimal sumagastocomitente = BigDecimal.ZERO;
+    private BigDecimal sumagastouniversidad = BigDecimal.ZERO;
+    private BigDecimal sumagastoorganismo = BigDecimal.ZERO;
+    private BigDecimal sumatotal = BigDecimal.ZERO;
     private PieChartModel pieModel;
     private PieChartModel pieModelRubro;
-    private boolean iseditar=true;
-    
-    
+    private boolean iseditar = true;
+
     public PresupuestoRubroController() {
-        
-         
+
     }
-    
+
     @PostConstruct
-public void init() {
-   try{
+    public void init() {
+        try {
           // presupuestosrubros=new ArrayList<PresupuestoRubro>();
-              
-         
-         // System.out.println( presupuestosrubros.size());
-        }catch(Exception e){
-           System.out.println("mmmmmmmmmmmmmm"+e);
-        } 
-}
+
+            // System.out.println( presupuestosrubros.size());
+        } catch (Exception e) {
+            System.out.println("mmmmmmmmmmmmmm" + e);
+        }
+    }
 
     public PresupuestoRubro getSelected() {
         if (current == null) {
@@ -238,26 +234,25 @@ public void init() {
     }
 
     public List<PresupuestoRubro> getPresupuestosrubros() {
-          
-       if (presupuestosrubros==null){
-          
-           presupuestosrubros = new ArrayList<PresupuestoRubro>(); 
-           for (Rubro rubro : rubroFacade.findAll()) {
-                   PresupuestoRubro presupuestorubro=new PresupuestoRubro();
-                   presupuestorubro.setRubro(rubro);
-                   presupuestorubro.setGastocomitente(new BigDecimal(0));
-                   presupuestorubro.setGastouniversidad(new BigDecimal(0));
-                   presupuestorubro.setGastoorganismo(new BigDecimal(0));
-                   presupuestorubro.setTotal(new BigDecimal(0));
 
-                   presupuestosrubros.add(presupuestorubro);
-               } 
-       }else{
-           
-       }
-       return presupuestosrubros;
-         
-    
+        if (presupuestosrubros == null) {
+
+            presupuestosrubros = new ArrayList<PresupuestoRubro>();
+            for (Rubro rubro : rubroFacade.findAll()) {
+                PresupuestoRubro presupuestorubro = new PresupuestoRubro();
+                presupuestorubro.setRubro(rubro);
+                presupuestorubro.setGastocomitente(new BigDecimal(0));
+                presupuestorubro.setGastouniversidad(new BigDecimal(0));
+                presupuestorubro.setGastoorganismo(new BigDecimal(0));
+                presupuestorubro.setTotal(new BigDecimal(0));
+
+                presupuestosrubros.add(presupuestorubro);
+            }
+        } else {
+
+        }
+        return presupuestosrubros;
+
     }
 
     public void setPresupuestosrubros(List<PresupuestoRubro> presupuestosrubros) {
@@ -265,34 +260,32 @@ public void init() {
         this.init();
     }
 
-    
-   public BigDecimal getSumagastoorganismo() {
-       
-        return sumagastoorganismo;
+    public float getSumagastoorganismo() {
+
+        return sumagastoorganismo.floatValue();
     }
 
     public void setSumagastoorganismo(BigDecimal sumagastoorganismo) {
         this.sumagastoorganismo = sumagastoorganismo;
     }
 
-    public BigDecimal getSumagastocomitente() {
-       
-        return sumagastocomitente;
+    public float getSumagastocomitente() {
+
+        return sumagastocomitente.floatValue();
     }
 
     public void setSumagastocomitente(BigDecimal sumagastocomitente) {
         this.sumagastocomitente = sumagastocomitente;
     }
 
-    public BigDecimal getSumagastouniversidad() {
-          return sumagastouniversidad;
+    public float getSumagastouniversidad() {
+        return sumagastouniversidad.floatValue();
     }
 
     public void setSumagastouniversidad(BigDecimal sumagastouniversidad) {
         this.sumagastouniversidad = sumagastouniversidad;
     }
 
-    
     public BigDecimal getSumatotal() {
         return sumatotal;
     }
@@ -300,88 +293,84 @@ public void init() {
     public void setSumatotal(BigDecimal sumatotal) {
         this.sumatotal = sumatotal;
     }
-    
-    
-    
-    public void sumarGastos(CellEditEvent event){
-        
+
+    public void sumarGastos(CellEditEvent event) {
+
 //        Object oldValue = event.getOldValue();  
 //        Object newValue = event.getNewValue();  
 //           DataTable s = (DataTable) event.getSource();
-       // MyEntity d = (MyEntity) s.getRowData();
-       if(presupuestosrubros==null){
-           presupuestosrubros = new ArrayList<PresupuestoRubro>();
-       }
-                    Iterator it=presupuestosrubros.iterator();
-                 BigDecimal totalcomitente=BigDecimal.ZERO;
-                BigDecimal totaluniversidad=BigDecimal.ZERO;
-                BigDecimal totalorganismo=BigDecimal.ZERO;
-                sumagastoorganismo=BigDecimal.ZERO;
-                    sumagastocomitente=BigDecimal.ZERO;
-                    sumagastouniversidad=BigDecimal.ZERO;
-                    sumatotal=BigDecimal.ZERO;
-                    int contador=-1;
-                 while(it.hasNext()){
-                     contador++;
-                     PresupuestoRubro pr=(PresupuestoRubro)it.next();
-                    totalcomitente=totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
-                   totaluniversidad=totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
-                    totalorganismo=totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
+        // MyEntity d = (MyEntity) s.getRowData();
+        if (presupuestosrubros == null) {
+            presupuestosrubros = new ArrayList<PresupuestoRubro>();
+        }
+        Iterator it = presupuestosrubros.iterator();
+        BigDecimal totalcomitente = BigDecimal.ZERO;
+        BigDecimal totaluniversidad = BigDecimal.ZERO;
+        BigDecimal totalorganismo = BigDecimal.ZERO;
+        sumagastoorganismo = BigDecimal.ZERO;
+        sumagastocomitente = BigDecimal.ZERO;
+        sumagastouniversidad = BigDecimal.ZERO;
+        sumatotal = BigDecimal.ZERO;
+        int contador = -1;
+        while (it.hasNext()) {
+            contador++;
+            PresupuestoRubro pr = (PresupuestoRubro) it.next();
+            totalcomitente = totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
+            totaluniversidad = totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
+            totalorganismo = totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
                   // sumagastoentidad=new BigDecimal(totalentidad).setScale(2);
-                  // sumagastouniversidad=new BigDecimal(totaluniversidad).setScale(2);
-                 // System.out.println("000000000000000+"+totalentidad.setScale(2).toString());
-                    pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
-                 
-                    this.presupuestosrubros.get(contador).setTotal(pr.getTotal());
-                 }
-                 sumagastocomitente=totalcomitente;
-                 sumagastouniversidad=totaluniversidad;
-                 sumagastoorganismo=totalorganismo;
-                 sumatotal=sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
-                 
-                  pieModel = new PieChartModel();  
-  
-                pieModel.set("Aporte Organismo", sumagastoorganismo);  
-                pieModel.set("Aporte Comitente", sumagastocomitente);  
-                pieModel.set("Aporte Universidad", sumagastouniversidad);  
-                pieModel.setSeriesColors("21B2CE,9C4DAD,FF964A");
-                // pieModel.setDiameter(150);
-                pieModel.setLegendPosition("e");
-                pieModel.setTitle("Aportes");
-                pieModel.setSliceMargin(5); 
-                pieModel.setShowDataLabels(true);
-                pieModelRubro = new PieChartModel();  
-                pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
-            for(PresupuestoRubro pre : presupuestosrubros){
-                pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
-                
-            }
-               //   pieModelRubro.setDiameter(150);
-                pieModelRubro.setLegendPosition("e");
-                pieModelRubro.setTitle("Rubros");
-                pieModelRubro.setSliceMargin(5); 
-                pieModelRubro.setShowDataLabels(true);
+            // sumagastouniversidad=new BigDecimal(totaluniversidad).setScale(2);
+            // System.out.println("000000000000000+"+totalentidad.setScale(2).toString());
+            pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
+
+            this.presupuestosrubros.get(contador).setTotal(pr.getTotal());
+        }
+        sumagastocomitente = totalcomitente;
+        sumagastouniversidad = totaluniversidad;
+        sumagastoorganismo = totalorganismo;
+        sumatotal = sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+
+        pieModel = new PieChartModel();
+
+        pieModel.set("Aporte Organismo", sumagastoorganismo);
+        pieModel.set("Aporte Comitente", sumagastocomitente);
+        pieModel.set("Aporte Universidad", sumagastouniversidad);
+        pieModel.setSeriesColors("21B2CE,9C4DAD,FF964A");
+        // pieModel.setDiameter(150);
+        pieModel.setLegendPosition("e");
+        pieModel.setTitle("Aportes");
+        pieModel.setSliceMargin(5);
+        pieModel.setShowDataLabels(true);
+        pieModelRubro = new PieChartModel();
+        pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
+        for (PresupuestoRubro pre : presupuestosrubros) {
+            pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
+
+        }
+        //   pieModelRubro.setDiameter(150);
+        pieModelRubro.setLegendPosition("e");
+        pieModelRubro.setTitle("Rubros");
+        pieModelRubro.setSliceMargin(5);
+        pieModelRubro.setShowDataLabels(true);
                 // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
-                  //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
-  //               System.out.println("gggggggggggggggggggggggggggggg");
+        //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
+        //               System.out.println("gggggggggggggggggggggggggggggg");
 //                  UIData table = (UIData) event.getComponent();
 //                    String updateClientId = table.getClientId() + ":" + table.getRowIndex() + ":total";
 //                    FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(updateClientId);
 
-        
     }
-    public void onCellEdit(CellEditEvent event){
+
+    public void onCellEdit(CellEditEvent event) {
         //this.sumarGastos();
     }
-    
-    
-    public void soloCrear(PresupuestoRubro pr){
-       
-        pr.setPresupuestoRubroPK(new PresupuestoRubroPK(pr.getPresupuesto().getId(),pr.getRubro().getId()));
+
+    public void soloCrear(PresupuestoRubro pr) {
+
+        pr.setPresupuestoRubroPK(new PresupuestoRubroPK(pr.getPresupuesto().getId(), pr.getRubro().getId()));
        //  p.getPresupuestoRubroPK().setRubroid(pr.getRubro().getId());
-       // p.getPresupuestoRubroPK().setPresupuestoid(pr.getPresupuesto().getId());
-      
-        
+        // p.getPresupuestoRubroPK().setPresupuestoid(pr.getPresupuesto().getId());
+
         getFacade().create(pr);
     }
 
@@ -434,21 +423,20 @@ public void init() {
     }
 
     // Colores >> seriesColors="21B2CE, 9C4DAD, FF964A, DED7A5, CE4131, 9CDFF7" 
-    
     public PieChartModel getPieModel() {
-        if(pieModel==null){
-            pieModel = new PieChartModel();  
-  
-                pieModel.set("Gasto Organismo", sumagastoorganismo);  
-                pieModel.set("Gasto Comitente", sumagastocomitente);  
-                pieModel.set("Gasto Universidad", sumagastouniversidad); 
-                pieModel.setSeriesColors("21B2CE,9C4DAD,FF964A");
-                pieModel.setLegendPosition("e");
-                pieModel.setTitle("Aportes");
-                pieModel.setSliceMargin(5); 
-                pieModel.setShowDataLabels(true);
-                pieModel.setDiameter(50);
-              
+        if (pieModel == null) {
+            pieModel = new PieChartModel();
+
+            pieModel.set("Gasto Organismo", sumagastoorganismo);
+            pieModel.set("Gasto Comitente", sumagastocomitente);
+            pieModel.set("Gasto Universidad", sumagastouniversidad);
+            pieModel.setSeriesColors("21B2CE,9C4DAD,FF964A");
+            pieModel.setLegendPosition("e");
+            pieModel.setTitle("Aportes");
+            pieModel.setSliceMargin(5);
+            pieModel.setShowDataLabels(true);
+            pieModel.setDiameter(50);
+
         }
         return pieModel;
     }
@@ -456,22 +444,22 @@ public void init() {
     public void setPieModel(PieChartModel pieModel) {
         this.pieModel = pieModel;
     }
-    
+
     public PieChartModel getPieModelRubro() {
-        if(pieModelRubro==null){
-            pieModelRubro = new PieChartModel();  
-            for(PresupuestoRubro pre : presupuestosrubros){
+        if (pieModelRubro == null) {
+            pieModelRubro = new PieChartModel();
+            for (PresupuestoRubro pre : presupuestosrubros) {
                 pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
-                
+
             }
-          //  pieModelRubro.setDiameter(150);
-             pieModelRubro.setLegendPosition("e");
-             pieModelRubro.setTitle("Rubros");
-             pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
-             pieModelRubro.setSliceMargin(5); 
-             pieModelRubro.setShowDataLabels(true);
-             pieModel.setDiameter(50);
-                
+            //  pieModelRubro.setDiameter(150);
+            pieModelRubro.setLegendPosition("e");
+            pieModelRubro.setTitle("Rubros");
+            pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
+            pieModelRubro.setSliceMargin(5);
+            pieModelRubro.setShowDataLabels(true);
+            pieModel.setDiameter(50);
+
         }
         return pieModelRubro;
     }
@@ -479,23 +467,36 @@ public void init() {
     public void setPieModelRubro(PieChartModel pieModelRubro) {
         this.pieModelRubro = pieModel;
     }
-    
-     public void soloEditar(PresupuestoRubro pr){
-       
-            
+
+    public void soloEditar(PresupuestoRubro pr) {
+
         getFacade().edit(pr);
     }
-    
-     public void findporPresupuestoEdit(int id){
-          if(iseditar){
-               this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);
-               iseditar=false;
-          }
-     }
-     
-     public void invalidar(){
-         FacesContext.getCurrentInstance().addMessage("Valor Inválido", new FacesMessage());
-         FacesContext.getCurrentInstance().validationFailed();
-     }
 
+    public void findporPresupuestoEdit(int id) {
+        if (iseditar) {
+            this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);
+            iseditar = false;
+        }
+    }
+
+    public void invalidar() {
+        FacesContext.getCurrentInstance().addMessage("Valor Inválido", new FacesMessage());
+        FacesContext.getCurrentInstance().validationFailed();
+    }
+    
+    public float obtenerTotalGastosOrganismo(){
+        System.out.println("obtenerTotalGastosOrganismo");
+        return sumagastoorganismo.floatValue();
+    }
+    
+    public float obtenerTotalGastosComitente(){
+        System.out.println("obtenerTotalGastosComitente");
+        return sumagastocomitente.floatValue();
+    }
+
+    public float obtenerTotalGastosUniversidad(){
+        System.out.println("obtenerTotalGastosUniversidad");
+        return sumagastouniversidad.floatValue();
+    }
 }
