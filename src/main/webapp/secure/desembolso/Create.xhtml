@@ -23,7 +23,7 @@
             <h:form id="formprincipal" enctype="multipart/form-data" >
                 <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" showDetail="true" sticky="true" />
 
-                <p:panel id="pprincipal" header="Alta Idea-Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
+                <p:panel id="pprincipal" header="Nuevo Desembolso" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
                     <p:fieldset legend="Información General" style="display: inline-block; width: 46%; float: left; margin-bottom: 5px;">
                         <p:panelGrid columns="2" columnClasses="right,left"  style="width: 100%;" styleClass="sinBordes" >
@@ -219,28 +219,19 @@
                         </h:panelGrid>
                     </p:panel>
 
-                    <p:panel header="Desenbolso" >
+                    <p:panel header="Desembolso" >
                         <h:panelGrid columns="2">
-                            <h:outputLabel value="#{bundle.CreateDesembolsoLabel_fechadesembolso}" for="fechadesembolso" />
-                            <h:inputText id="fechadesembolso" value="#{desembolsoController.selected.fechadesembolso}" title="#{bundle.CreateDesembolsoTitle_fechadesembolso}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
 
-                            <h:outputLabel value="#{bundle.CreateDesembolsoLabel_fechacarga}" for="fechacarga" />
-                            <h:inputText id="fechacarga" value="#{desembolsoController.selected.fechacarga}" title="#{bundle.CreateDesembolsoTitle_fechacarga}" >
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:inputText>
+                            <p:outputLabel value="#{bundle.CreateDesembolsoLabel_numerodesembolso}" for="numerodesembolso" />
+                            <p:inputText id="numerodesembolso" value="#{desembolsoController.selected.numerodesembolso}" title="#{bundle.CreateDesembolsoTitle_numerodesembolso}" />
 
-                            <h:outputLabel value="#{bundle.CreateDesembolsoLabel_numerodesembolso}" for="numerodesembolso" />
-                            <h:inputText id="numerodesembolso" value="#{desembolsoController.selected.numerodesembolso}" title="#{bundle.CreateDesembolsoTitle_numerodesembolso}" />
-
-                            <h:outputLabel value="#{bundle.CreateDesembolsoLabel_numerocuentabancaria}" for="numerocuentabancaria" />
-                            <h:selectOneMenu id="numerocuentabancaria" value="#{desembolsoController.selected.numerocuentabancaria}" title="#{bundle.CreateDesembolsoTitle_numerocuentabancaria}" >
+                            <p:outputLabel value="#{bundle.CreateDesembolsoLabel_numerocuentabancaria}" for="numerocuentabancaria" />
+                            <p:selectOneMenu id="numerocuentabancaria" value="#{desembolsoController.selected.numerocuentabancaria}" >
                                 <f:selectItems value="#{cuentabancariaController.itemsAvailableSelectOne}"/>
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
 
-                            <h:outputLabel value="#{bundle.CreateDesembolsoLabel_monto}" for="monto" />
-                            <h:inputText id="monto" value="#{desembolsoController.selected.monto}" title="#{bundle.CreateDesembolsoTitle_monto}" />
+                            <p:outputLabel value="#{bundle.CreateDesembolsoLabel_monto}" for="monto" />
+                            <p:inputText id="monto" value="#{desembolsoController.selected.monto}" title="#{bundle.CreateDesembolsoTitle_monto}" />
 
                         </h:panelGrid>
                     </p:panel>
