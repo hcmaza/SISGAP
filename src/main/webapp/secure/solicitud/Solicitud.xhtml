@@ -300,85 +300,86 @@
                         <p:tab title="Presupuesto">
 
                             <p:fieldset legend="Presupuesto" style="margin-bottom:5px">
-                                <p:outputPanel id="tablapresupuesto">
-                                    <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%" rowIndexVar="indice" styleClass="sinBordesVerticales">
-                                    <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="#{presupuestoRubroController.sumarGastos}" /> -->
-                                        <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros, :formprincipal:growlprincipal"  />  
 
-                                        <f:facet name="header">  
-                                            Presupuesto  
-                                        </f:facet>  
-                                        <p:column style="width:20%">
-                                            <f:facet name="header">
-                                                <h:outputText value="Rubro"/>
-                                            </f:facet>
-                                            <h:outputText style="width:96%;" value="#{item.rubro.rubro}"/>
-                                            <f:facet name="footer">  
-                                                Totales de Aportes
+                                <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%;" rowIndexVar="indice" >
+                                <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="#{presupuestoRubroController.sumarGastos}" /> -->
+                                    <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros,:formprincipal:growlprincipal, :formprincipal:tabviewTodo:tpresupuesto, :formprincipal:tabviewTodo:tpresupuesto:totalesRubro,:formprincipal:tabviewTodo:tpresupuestototales,  @this"  />  
+
+                                    <p:column style="width:20%">
+                                        <f:facet name="header">
+                                            <h:outputText value="Rubro"/>
+                                        </f:facet>
+                                        <h:outputText style="width:96%;" value="#{item.rubro.rubro}"/>
+                                    </p:column>
+
+                                    <p:column style="width:20%; " headerText="Aporte Organismo">
+                                        <p:cellEditor>  
+                                            <f:facet name="output">
+                                                <h:outputText value="#{item.gastoorganismo}" style="float: right;" />
                                             </f:facet>  
-                                        </p:column>
-
-                                        <p:column style="width:20%; " headerText="Aporte Organismo">
-                                            <p:cellEditor>  
-                                                <f:facet name="output">
-                                                    <h:outputText value="#{item.gastoorganismo}" style="float: right;" />
-                                                </f:facet>  
-                                                <f:facet name="input">
-                                                    <p:inputText style="width:96%; " id="gastoorganismo" value="#{item.gastoorganismo}"  >
-                                                        <f:validator validatorId="validadorNumeroPositivo" />
-                                                    </p:inputText>
-                                                </f:facet> 
-                                            </p:cellEditor> 
-                                            <f:facet name="footer">  
-                                                <p:outputLabel id="fOrganismo" value="$#{presupuestoRubroController.sumagastoorganismo}" style="float: right;"/>
+                                            <f:facet name="input">
+                                                <p:inputText style="width:96%; " id="gastoorganismo" value="#{item.gastoorganismo}" />
                                             </f:facet> 
-                                        </p:column>
-                                        <p:column style="width:20%;" headerText="Aporte Comitente">
+                                        </p:cellEditor> 
+                                    </p:column>
+                                    
+                                    <p:column style="width:20%;" headerText="Aporte Comitente">
 
-                                            <p:cellEditor >  
-                                                <f:facet name="output">
-                                                    <h:outputText value="#{item.gastocomitente}" style="float: right;" />
-                                                </f:facet>  
-                                                <f:facet name="input">
-                                                    <p:inputText style="width:96%; " id="gastocomitente" value="#{item.gastocomitente}" >
-                                                        <f:validator validatorId="validadorNumeroPositivo" />
-                                                        <p:ajax update=":formprincipal:growlprincipal" />
-                                                    </p:inputText>
-                                                </f:facet> 
-                                            </p:cellEditor>  
-                                            <f:facet name="footer">  
-                                                <p:outputLabel id="fComitente" value="$#{presupuestoRubroController.sumagastocomitente}" style="float: right;"/>
-                                            </f:facet>                                         
-                                        </p:column>
-
-                                        <p:column style="width:20%;" headerText="Aporte Universidad">
-                                            <p:cellEditor>  
-                                                <f:facet name="output">
-                                                    <h:outputText value="#{item.gastouniversidad}" style="float: right;" />
-                                                </f:facet>  
-                                                <f:facet name="input">
-                                                    <p:inputText style="width:96%; " id="gastouniversidad" value="#{item.gastouniversidad}" >
-                                                        <p:ajax update=":formprincipal:growlprincipal" />
-                                                        <f:validator validatorId="validadorNumeroPositivo" />
-                                                    </p:inputText>
-                                                </f:facet>  
-                                            </p:cellEditor> 
-                                            <f:facet name="footer">  
-                                                <p:outputLabel id="fUniversidad" value="$#{presupuestoRubroController.sumagastouniversidad}" style="float: right;"/>
+                                        <p:cellEditor >  
+                                            <f:facet name="output">
+                                                <h:outputText value="#{item.gastocomitente}" style="float: right;" />
+                                            </f:facet>  
+                                            <f:facet name="input">
+                                                <p:inputText style="width:96%; " id="gastocomitente" value="#{item.gastocomitente}" />
                                             </f:facet> 
-                                        </p:column>
+                                        </p:cellEditor>  
 
-                                        <p:column style="width:20%;" headerText="Totales Rubros">
-                                            <h:outputText id="totalesRubro" value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" style="float: right;" />
-                                            <f:facet name="footer">  
-                                                <h:outputText id="fTotal" style="float: right;" value="$#{presupuestoRubroController.sumatotal}" />
-                                            </f:facet> 
-                                        </p:column>
+                                    </p:column>
 
-                                    </p:dataTable> 
+                                    <p:column style="width:20%;" headerText="Aporte Universidad">
+                                        <p:cellEditor>  
+                                            <f:facet name="output">
+                                                <h:outputText value="#{item.gastouniversidad}" style="float: right;" />
+                                            </f:facet>  
+                                            <f:facet name="input">
+                                                <p:inputText style="width:96%; " id="gastouniversidad" value="#{item.gastouniversidad}" />
+                                            </f:facet>  
+                                        </p:cellEditor> 
+                                    </p:column>
 
-                                </p:outputPanel>
+                                    <p:column style="width:20%;" headerText="Totales Rubros" >
+                                        <p:outputPanel id="totalesRubro">
+                                            <h:outputText value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" style="float: right;" />
+                                        </p:outputPanel>
+                                        
+                                    </p:column>
 
+                                </p:dataTable> 
+
+                                <p:dataTable id="tpresupuestototales" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" style="width:100%;" rows="1"  >
+                                    <p:column style="width:20%">
+                                        <h:outputText style="width:96%;" value="Totales"/>
+                                    </p:column>
+
+                                    <p:column style="width:20%; ">
+                                        <h:outputText value="#{presupuestoRubroController.obtenerTotalGastosOrganismo()}" style="float: right;" />
+                                    </p:column>
+
+                                    <p:column style="width:20%;">
+                                        <h:outputText value="#{presupuestoRubroController.obtenerTotalGastosComitente()}" style="float: right;" />
+                                    </p:column>
+
+                                    <p:column style="width:20%;">
+                                        <h:outputText value="#{presupuestoRubroController.obtenerTotalGastosUniversidad()}" style="float: right;" />
+                                    </p:column>
+
+                                    <p:column id="totalesRubro" style="width:20%;" >
+                                        <h:outputText value="$#{presupuestoRubroController.obtenerTotalGeneral()}" style="float: right;" />
+                                    </p:column>
+                                </p:dataTable> 
+
+
+                                <p:remoteCommand name="updatetotales" update=":formprincipal:tabviewTodo:tpresupuesto:totalesRubro" partialSubmit="true"></p:remoteCommand>
 
                             </p:fieldset>
 

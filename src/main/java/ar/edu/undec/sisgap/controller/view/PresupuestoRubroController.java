@@ -31,6 +31,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.chart.PieChartModel;
 
@@ -261,7 +262,7 @@ public class PresupuestoRubroController implements Serializable {
     }
 
     public float getSumagastoorganismo() {
-
+        System.out.println("getSumagastoorganismo: " +  sumagastoorganismo.toString());
         return sumagastoorganismo.floatValue();
     }
 
@@ -270,7 +271,7 @@ public class PresupuestoRubroController implements Serializable {
     }
 
     public float getSumagastocomitente() {
-
+        System.out.println("getSumagastocomitente: " +  sumagastocomitente.toString());
         return sumagastocomitente.floatValue();
     }
 
@@ -279,6 +280,7 @@ public class PresupuestoRubroController implements Serializable {
     }
 
     public float getSumagastouniversidad() {
+        System.out.println("getSumagastouniversidad: " +  sumagastouniversidad.toString());
         return sumagastouniversidad.floatValue();
     }
 
@@ -341,11 +343,11 @@ public class PresupuestoRubroController implements Serializable {
         pieModel.setTitle("Aportes");
         pieModel.setSliceMargin(5);
         pieModel.setShowDataLabels(true);
+        
         pieModelRubro = new PieChartModel();
         pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
         for (PresupuestoRubro pre : presupuestosrubros) {
             pieModelRubro.set(pre.getRubro().getRubro(), pre.getTotal());
-
         }
         //   pieModelRubro.setDiameter(150);
         pieModelRubro.setLegendPosition("e");
@@ -358,6 +360,11 @@ public class PresupuestoRubroController implements Serializable {
 //                  UIData table = (UIData) event.getComponent();
 //                    String updateClientId = table.getClientId() + ":" + table.getRowIndex() + ":total";
 //                    FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(updateClientId);
+        
+        // actualizamos la tabla
+        RequestContext.getCurrentInstance().update("tpresupuesto");
+        RequestContext.getCurrentInstance().update("totalesRubro");
+        
 
     }
 
@@ -498,5 +505,12 @@ public class PresupuestoRubroController implements Serializable {
     public float obtenerTotalGastosUniversidad(){
         System.out.println("obtenerTotalGastosUniversidad");
         return sumagastouniversidad.floatValue();
+    }
+    
+    public float obtenerTotalGeneral(){
+        System.out.println("obtenerTotalGeneral");
+        
+        
+        return sumatotal.floatValue();
     }
 }
