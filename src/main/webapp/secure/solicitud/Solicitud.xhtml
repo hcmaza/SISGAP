@@ -302,8 +302,8 @@
                             <p:fieldset legend="Presupuesto" style="margin-bottom:5px">
 
                                 <p:dataTable id="tpresupuesto" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" editable="true" editMode="cell" style="width:100%;" rowIndexVar="indice" >
-                                <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="#{presupuestoRubroController.sumarGastos}" /> -->
-                                    <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros,:formprincipal:growlprincipal, :formprincipal:tabviewTodo:tpresupuesto, :formprincipal:tabviewTodo:tpresupuesto:totalesRubro,:formprincipal:tabviewTodo:tpresupuestototales,  @this"  />  
+                                <!-- <p:ajax process="@this" partialSubmit="true" update="@this, :formprincipal:caportes" event="cellEdit"  listener="{presupuestoRubroController.sumarGastos}" /> -->
+                                    <p:ajax event="cellEdit" listener="#{presupuestoRubroController.sumarGastos}" update=":formprincipal:tabviewTodo:caportes,:formprincipal:tabviewTodo:crubros,:formprincipal:growlprincipal, :formprincipal:tabviewTodo:tpresupuestototales" />  
 
                                     <p:column style="width:20%">
                                         <f:facet name="header">
@@ -315,22 +315,30 @@
                                     <p:column style="width:20%; " headerText="Aporte Organismo">
                                         <p:cellEditor>  
                                             <f:facet name="output">
-                                                <h:outputText value="#{item.gastoorganismo}" style="float: right;" />
+                                                <h:outputText value="$ #{item.gastoorganismo}" style="float: right;">
+                                                    <f:convertNumber pattern="#0.00" />
+                                                </h:outputText>
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%; " id="gastoorganismo" value="#{item.gastoorganismo}" />
+                                                <p:inputText style="width:96%; " id="gastoorganismo" value="#{item.gastoorganismo}" >
+                                                    <p:ajax event="change" update="totalRubro" />
+                                                </p:inputText>
                                             </f:facet> 
                                         </p:cellEditor> 
                                     </p:column>
-                                    
+
                                     <p:column style="width:20%;" headerText="Aporte Comitente">
 
                                         <p:cellEditor >  
                                             <f:facet name="output">
-                                                <h:outputText value="#{item.gastocomitente}" style="float: right;" />
+                                                <h:outputText value="$ #{item.gastocomitente}" style="float: right;" >
+                                                    <f:convertNumber pattern="#0.00" />
+                                                </h:outputText>
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%; " id="gastocomitente" value="#{item.gastocomitente}" />
+                                                <p:inputText style="width:96%; " id="gastocomitente" value="#{item.gastocomitente}">
+                                                    <p:ajax event="change" update="totalRubro" />
+                                                </p:inputText>
                                             </f:facet> 
                                         </p:cellEditor>  
 
@@ -339,22 +347,29 @@
                                     <p:column style="width:20%;" headerText="Aporte Universidad">
                                         <p:cellEditor>  
                                             <f:facet name="output">
-                                                <h:outputText value="#{item.gastouniversidad}" style="float: right;" />
+                                                <h:outputText value="$ #{item.gastouniversidad}" style="float: right;" >
+                                                    <f:convertNumber pattern="#0.00" />
+                                                </h:outputText>
                                             </f:facet>  
                                             <f:facet name="input">
-                                                <p:inputText style="width:96%; " id="gastouniversidad" value="#{item.gastouniversidad}" />
+                                                <p:inputText style="width:96%; " id="gastouniversidad" value="#{item.gastouniversidad}" >
+                                                    <p:ajax event="change" update="totalRubro" />
+                                                </p:inputText>
                                             </f:facet>  
                                         </p:cellEditor> 
                                     </p:column>
 
-                                    <p:column style="width:20%;" headerText="Totales Rubros" >
-                                        <p:outputPanel id="totalesRubro">
-                                            <h:outputText value="$#{presupuestoRubroController.presupuestosrubros.get(indice).total}" style="float: right;" />
-                                        </p:outputPanel>
+                                    <p:column headerText="Totales Rubros" style="width:20%;"  >
+                                        <p:outputLabel id="totalRubro" value="$ #{item.total}" style="float: right;" >
+                                            <f:convertNumber pattern="#0.00" />
+                                        </p:outputLabel>
+                                        
                                         
                                     </p:column>
 
                                 </p:dataTable> 
+
+                                <p:remoteCommand name="actualizar" update=":formprincipal:tabviewTodo:tpresupuesto:totalRubro" />
 
                                 <p:dataTable id="tpresupuestototales" value="#{presupuestoRubroController.presupuestosrubros}"  var="item" style="width:100%;" rows="1"  >
                                     <p:column style="width:20%">
@@ -362,24 +377,32 @@
                                     </p:column>
 
                                     <p:column style="width:20%; ">
-                                        <h:outputText value="#{presupuestoRubroController.obtenerTotalGastosOrganismo()}" style="float: right;" />
+                                        <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGastosOrganismo()}" style="float: right;">
+                                            <f:convertNumber pattern="#0.00" />
+                                        </h:outputText>
                                     </p:column>
 
                                     <p:column style="width:20%;">
-                                        <h:outputText value="#{presupuestoRubroController.obtenerTotalGastosComitente()}" style="float: right;" />
+                                        <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGastosComitente()}" style="float: right;">
+                                            <f:convertNumber pattern="#0.00" />
+                                        </h:outputText>
                                     </p:column>
 
                                     <p:column style="width:20%;">
-                                        <h:outputText value="#{presupuestoRubroController.obtenerTotalGastosUniversidad()}" style="float: right;" />
+                                        <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGastosUniversidad()}" style="float: right;">
+                                            <f:convertNumber pattern="#0.00" />
+                                        </h:outputText>
                                     </p:column>
 
                                     <p:column id="totalesRubro" style="width:20%;" >
-                                        <h:outputText value="$#{presupuestoRubroController.obtenerTotalGeneral()}" style="float: right;" />
+                                        <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGeneral()}" style="float: right;">
+                                            <f:convertNumber pattern="#0.00" />
+                                        </h:outputText>
                                     </p:column>
                                 </p:dataTable> 
 
 
-                                <p:remoteCommand name="updatetotales" update=":formprincipal:tabviewTodo:tpresupuesto:totalesRubro" partialSubmit="true"></p:remoteCommand>
+
 
                             </p:fieldset>
 
@@ -402,7 +425,7 @@
                             <div align="right" >
                                 <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
 
-                                <p:commandButton value="Agregar Persona 2" actionListener="#{agenteViewController.dialogo()}" />
+                                <!--<p:commandButton value="Agregar Persona 2" actionListener="{agenteViewController.dialogo()}" />-->
                             </div>
                             <h:panelGrid columns="4">
                                 <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Cuil " ></p:outputLabel>

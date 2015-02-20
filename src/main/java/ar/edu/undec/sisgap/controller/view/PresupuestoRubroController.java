@@ -31,6 +31,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.component.api.UIData;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.chart.PieChartModel;
@@ -53,6 +55,7 @@ public class PresupuestoRubroController implements Serializable {
     private BigDecimal sumagastouniversidad = BigDecimal.ZERO;
     private BigDecimal sumagastoorganismo = BigDecimal.ZERO;
     private BigDecimal sumatotal = BigDecimal.ZERO;
+    private float totalesRubro[];
     private PieChartModel pieModel;
     private PieChartModel pieModelRubro;
     private boolean iseditar = true;
@@ -302,36 +305,42 @@ public class PresupuestoRubroController implements Serializable {
 //        Object newValue = event.getNewValue();  
 //           DataTable s = (DataTable) event.getSource();
         // MyEntity d = (MyEntity) s.getRowData();
+        
         if (presupuestosrubros == null) {
             presupuestosrubros = new ArrayList<PresupuestoRubro>();
         }
+        
         Iterator it = presupuestosrubros.iterator();
+        
         BigDecimal totalcomitente = BigDecimal.ZERO;
         BigDecimal totaluniversidad = BigDecimal.ZERO;
         BigDecimal totalorganismo = BigDecimal.ZERO;
+        
         sumagastoorganismo = BigDecimal.ZERO;
         sumagastocomitente = BigDecimal.ZERO;
         sumagastouniversidad = BigDecimal.ZERO;
         sumatotal = BigDecimal.ZERO;
+        
         int contador = -1;
         while (it.hasNext()) {
             contador++;
             PresupuestoRubro pr = (PresupuestoRubro) it.next();
+        
             totalcomitente = totalcomitente.add(new BigDecimal(pr.getGastocomitente().setScale(2).toString()));
             totaluniversidad = totaluniversidad.add(new BigDecimal(pr.getGastouniversidad().setScale(2).toString()));
             totalorganismo = totalorganismo.add(new BigDecimal(pr.getGastoorganismo().setScale(2).toString()));
-                  // sumagastoentidad=new BigDecimal(totalentidad).setScale(2);
-            // sumagastouniversidad=new BigDecimal(totaluniversidad).setScale(2);
-            // System.out.println("000000000000000+"+totalentidad.setScale(2).toString());
+            
             pr.setTotal(pr.getGastoorganismo().add(pr.getGastocomitente()).add(pr.getGastouniversidad()));
 
             this.presupuestosrubros.get(contador).setTotal(pr.getTotal());
         }
+        
         sumagastocomitente = totalcomitente;
         sumagastouniversidad = totaluniversidad;
         sumagastoorganismo = totalorganismo;
         sumatotal = sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
 
+        // Armar grafico de aportes
         pieModel = new PieChartModel();
 
         pieModel.set("Aporte Organismo", sumagastoorganismo);
@@ -344,6 +353,7 @@ public class PresupuestoRubroController implements Serializable {
         pieModel.setSliceMargin(5);
         pieModel.setShowDataLabels(true);
         
+        // Armar grafico de rubros
         pieModelRubro = new PieChartModel();
         pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
         for (PresupuestoRubro pre : presupuestosrubros) {
@@ -360,10 +370,6 @@ public class PresupuestoRubroController implements Serializable {
 //                  UIData table = (UIData) event.getComponent();
 //                    String updateClientId = table.getClientId() + ":" + table.getRowIndex() + ":total";
 //                    FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(updateClientId);
-        
-        // actualizamos la tabla
-        RequestContext.getCurrentInstance().update("tpresupuesto");
-        RequestContext.getCurrentInstance().update("totalesRubro");
         
 
     }
