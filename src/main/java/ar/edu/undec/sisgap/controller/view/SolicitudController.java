@@ -705,26 +705,5 @@ public class SolicitudController implements Serializable {
         
     }
     
-    public HashMap<String,Float> obtenerSaldosRubro(){
-
-        HashMap<String,Float> saldos = new HashMap<String,Float>();
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        RubroController rubrocontroller = (RubroController) context.getApplication().evaluateExpressionGet(context, "#{rubroController}", RubroController.class);        
-        
-        for(Rubro r : rubrocontroller.getRubroslist()){
-            saldos.put(r.getRubro(), 0.0f);
-        }
-        
-        // Para cada solicitud disponible
-        for(Solicitud sd : itemsDisponibles){
-            saldos.put(sd.getPresupuestotarea().getRubro().getRubro(), saldos.get(sd.getPresupuestotarea().getRubro().getRubro()) + sd.getDisponible().floatValue() );
-            System.out.println("Saldo Rubro: " + sd.getPresupuestotarea().getRubro().getRubro() + " - " + saldos.get(sd.getPresupuestotarea().getRubro().getRubro()));
-        }
-        
-        
-        return saldos;
-    }
-    
     
 }

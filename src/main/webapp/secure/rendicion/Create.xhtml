@@ -13,6 +13,8 @@
         <ui:define name="body">
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            <f:event type="preRenderView" listener="#{indicadoresController.obtenerSaldosPorRubro()}" />
+
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
 
@@ -147,12 +149,10 @@
                                 </p:column>
                                 <p:column colspan="2" style="width: 50%;">
                                     <p:fieldset legend="Saldo Rubros" style="height: 100px !important; ">
-                                        <p:dataTable emptyMessage="No hay registros" value="#{indicadoresController.obtenerSaldosPorRubro()}" var="rubro" >
-                                            <!--<ui:repeat value="{indicadoresController.obtenerSaldosPorRubro()}" var="rubro" >-->
-                                                <p:column headerText="#{rubro.key}">  
-                                                    <h:outputText value="#{rubro.value}" />  
-                                                </p:column> 
-                                            <!--</ui:repeat>-->
+                                        <p:dataTable value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 8px !important;">
+                                            <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
+                                                <p:outputLabel value="#{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 8px !important; font-weight: bold;"  />
+                                            </p:columns>
                                         </p:dataTable>
                                     </p:fieldset>
                                 </p:column>
