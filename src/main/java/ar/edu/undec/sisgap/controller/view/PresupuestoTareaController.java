@@ -811,7 +811,7 @@ public class PresupuestoTareaController implements Serializable {
      * 
      * @param proyectoid 
      */
-    public void establecerListaPresupuestoTareaPorProyecto(int proyectoid) {
+    public void establecerListaPresupuestoTareaBienesPorProyecto(int proyectoid) {
 
         // Obtenemos el controlador de tarea
         FacesContext context = FacesContext.getCurrentInstance();

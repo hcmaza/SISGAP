@@ -10,10 +10,13 @@ import ar.edu.undec.sisgap.controller.TiposolicitudFacade;
 import ar.edu.undec.sisgap.model.Estadosolicitud;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Proyecto;
+import ar.edu.undec.sisgap.model.Rubro;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -33,6 +36,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.chart.MeterGaugeChartModel;
 
 @ManagedBean(name = "solicitudController")
 @SessionScoped
@@ -54,6 +58,9 @@ public class SolicitudController implements Serializable {
     private List<Solicitud> itemsDisponibles = null;
     private List<Solicitud> itemsSolicitados = null;
     private List<Solicitud> itemsAprobados = null;
+    
+    // Charts
+    private MeterGaugeChartModel indicadorEjecutado;
 
     public SolicitudController() {
     }
@@ -144,6 +151,12 @@ public class SolicitudController implements Serializable {
         current.setFechasolicitud(new Date());
         selectedItemIndex = -1;
 
+        armarSolicitudesYDesembolsos();
+
+        return "Create";
+    }
+    
+    public void armarSolicitudesYDesembolsos(){
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
@@ -152,7 +165,7 @@ public class SolicitudController implements Serializable {
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
 
         // Seteamos la lista de presupuesto tareas para el proyecto actual
-        presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(proyectocontroller.getSelected().getId());
+        presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(proyectocontroller.getSelected().getId());
 
         // Borramos la lista de items disponibles
         itemsDisponibles = new ArrayList<Solicitud>();
@@ -165,6 +178,7 @@ public class SolicitudController implements Serializable {
 
         // Llenamos la lista de solicitudes aprobadas anteriores
         itemsAprobados = getFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        
 
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
@@ -187,6 +201,8 @@ public class SolicitudController implements Serializable {
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
                     solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
+                    
+                    
                 }
             }
 
@@ -195,7 +211,7 @@ public class SolicitudController implements Serializable {
                 itemsDisponibles.add(solicitud);
             }
         }
-
+        
         // Vaciamos la lista de presupuestos tareas solicitados
         //presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
         //items = new ListDataModel(new ArrayList<Solicitud>());
@@ -204,8 +220,6 @@ public class SolicitudController implements Serializable {
 
         // Seteamos la lista de desembolsos para el proyecto actual
         desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
-
-        return "Create";
     }
 
     public String create() {
@@ -400,7 +414,7 @@ public class SolicitudController implements Serializable {
 //        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
 //        
 //        // Obtener los presupuestos_tarea del proyecto
-//        presupuestotareacontroller.establecerListaPresupuestoTareaPorProyecto(p.getId());
+//        presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(p.getId());
 //        
 //        // Setear la lista dual del pick list
 //        plSolicitudItems = new DualListModel<SolicitudItem>(presupuestotareacontroller.getPresupuestostareas(),new ArrayList<SolicitudItem>());
@@ -654,12 +668,63 @@ public class SolicitudController implements Serializable {
         return r;
     }
 
-    public float totalPorEtapa() {
-        return (float) (Math.random() * 100000);
-    }
+    // Indicador de Ejecucion
+    
+    public MeterGaugeChartModel getIndicadorEjecutado() {
 
-    public float totalPorTarea() {
-        return (float) (Math.random() * 100000);
+        if (indicadorEjecutado == null){
+            crearIndicadorEjecutado();
+        }
+        
+        return indicadorEjecutado;
     }
+    
+    private MeterGaugeChartModel inicializarModeloIndicadorPorcentaje() {
+        List<Number> intervalos = new ArrayList<Number>(){{
+            add(25);
+            add(50);
+            add(75);
+            add(100);
+        }};
+         
+        return new MeterGaugeChartModel(54, intervalos);
+    }
+ 
+    private void crearIndicadorEjecutado() {
+        indicadorEjecutado = inicializarModeloIndicadorPorcentaje();
 
+        indicadorEjecutado.setSeriesColors("66cc66,93b75f,E7E658,cc6666");
+
+        indicadorEjecutado.setGaugeLabelPosition("bottom");
+        //indicadorEjecutado.setShowTickLabels(false);
+        
+        indicadorEjecutado.setIntervalInnerRadius(85);
+        indicadorEjecutado.setIntervalOuterRadius(80);
+        
+        indicadorEjecutado.setExtender("indicador");
+        
+    }
+    
+    public HashMap<String,Float> obtenerSaldosRubro(){
+
+        HashMap<String,Float> saldos = new HashMap<String,Float>();
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        RubroController rubrocontroller = (RubroController) context.getApplication().evaluateExpressionGet(context, "#{rubroController}", RubroController.class);        
+        
+        for(Rubro r : rubrocontroller.getRubroslist()){
+            saldos.put(r.getRubro(), 0.0f);
+        }
+        
+        // Para cada solicitud disponible
+        for(Solicitud sd : itemsDisponibles){
+            saldos.put(sd.getPresupuestotarea().getRubro().getRubro(), saldos.get(sd.getPresupuestotarea().getRubro().getRubro()) + sd.getDisponible().floatValue() );
+            System.out.println("Saldo Rubro: " + sd.getPresupuestotarea().getRubro().getRubro() + " - " + saldos.get(sd.getPresupuestotarea().getRubro().getRubro()));
+        }
+        
+        
+        return saldos;
+    }
+    
+    
 }

@@ -8,30 +8,43 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <!--  <h:outputStylesheet name="./css/cssLayout.css"/> -->
+        <!--  <h:outputStylesheet name="./css/cssLayout.css"/> -->
         <!--<h:outputStylesheet name="./css/default.css"/>-->
-      <!--  <h:outputStylesheet name="./css/jsfcrud.css"/> -->
+        <!--  <h:outputStylesheet name="./css/jsfcrud.css"/> -->
 
         <title>sisgap - sistema de gestión de proyectos</title>
         <h:outputStylesheet name="css/jsfcrud.css"/>
-        
-<!--        <h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>-->
-        
-         <script src="http://maps.google.com/maps/api/js?sensor=false" 
-          type="text/javascript"></script>
+
+        <!--        <h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>-->
+
+        <script type="text/javascript">
+            function indicador()
+            {
+                //this.cfg.title = "zxc";
+                this.cfg.seriesDefaults.rendererOptions = {
+                    label: '%',
+                    padding: 0,
+                    intervalInnerRadius: 100,
+                    intervalOuterRadius: 95 
+                };
+            }
+        </script>
+
+        <script src="http://maps.google.com/maps/api/js?sensor=false" 
+        type="text/javascript"></script>
     </h:head>
 
     <h:body>
         <f:facet name="last">
             <h:outputStylesheet name="./css/default.css"/>
-	</f:facet>
-        
+        </f:facet>
+
         <div class="wrapper" >
 
             <header class="header rounded-corners" >
                 <ui:insert name="top">
-                        <h2 class="cabecera1">sisgap</h2>
-                        <h3 class="cabecera2">sistema de gestión de proyectos</h3>
+                    <h2 class="cabecera1">sisgap</h2>
+                    <h3 class="cabecera2">sistema de gestión de proyectos</h3>
                 </ui:insert>
             </header><!-- .header-->
 
@@ -56,7 +69,7 @@
         <h:form id="formabout">
             <p:dialog id="dabout" widgetVar="dabout" header="Acerca de ..." closable="true" >
                 <p:graphicImage value="/resources/img/vinculacionTecnologica.png" />
-              <!--  <p:gmap zoom="15" type="hybrid" center="-29.156567,-67.470834" style="width: 400px;height: 200px" /> -->
+                <!--  <p:gmap zoom="15" type="hybrid" center="-29.156567,-67.470834" style="width: 400px;height: 200px" /> -->
                 Version 1.0
                 <br />
                 Copyright 2014, The Wolberg, Leguiza, Paez, Maza - Development Team
