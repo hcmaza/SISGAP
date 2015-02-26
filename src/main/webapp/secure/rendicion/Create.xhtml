@@ -13,7 +13,7 @@
         <ui:define name="body">
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
-            <f:event type="preRenderView" listener="#{indicadoresController.obtenerSaldosPorRubro()}" />
+            <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
 
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
@@ -134,7 +134,7 @@
                     </p:panel>
 
 
-                    <p:panel header="Indicadores" >
+                    <p:panel header="Indicadores" style="margin: 0 auto; overflow: hidden;">
                         <p:panelGrid style="width: 100%;">
                             <p:row >
                                 <p:column style="width: 25%;" >
