@@ -133,19 +133,19 @@
                         </p:accordionPanel>
                     </p:panel>
 
-                    <p:separator style="overflow: clear;" />
+                    <p:separator style="overflow: hidden;" />
 
                     <p:panel header="Indicadores" style="margin: 0 auto; overflow: hidden;">
                         <p:panelGrid style="width: 100%;" styleClass="sinBordes">
                             <p:row >
                                 <p:column style="width: 25%;" >
                                     <p:fieldset legend="Saldo" style="height: 110px !important; " >
-                                        <p:outputLabel value="$ 15.350,56" style="color: green; font-weight: bold; font-size: 20px !important;  " />
+                                        <p:outputLabel value="$ #{indicadoresController.saldoProyecto}" style="color: green; font-weight: bold; font-size: 20px !important;  " />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column style="width: 25%;">
                                     <p:fieldset legend="Ejecución" style="height: 110px !important; ">
-                                        <p:chart type="metergauge" model="#{solicitudController.indicadorEjecutado}" style="height: 100px;"  />
+                                        <p:chart type="metergauge" model="#{indicadoresController.indicadorEjecutado}" style="height: 100px;"  />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column colspan="2" style="width: 50%;">
@@ -185,7 +185,7 @@
 
                     </p:panel>
 
-                    <p:separator style="overflow: clear;" />
+                    <p:separator style="overflow: hidden;" />
 
                     <p:panel header="Rendición" >
                         <p:panelGrid columns="2" styleClass="sinBordes" >

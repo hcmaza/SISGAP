@@ -45,4 +45,17 @@ public class PresupuestoTareaFacade extends AbstractFacade<PresupuestoTarea> {
         }
     }
     
+    public float obtenerTotalPorProyecto(int proyectoid){
+        
+        Float total = 0.0f;
+        
+        try{
+            total = em.createQuery("select SUM(pt.total) from PresupuestoTarea pt where pt.tarea.etapaid.proyectoid.id =" + proyectoid, Float.class).getSingleResult();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return total;
+    }
+    
 }
