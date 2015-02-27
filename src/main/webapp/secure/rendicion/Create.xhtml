@@ -13,6 +13,8 @@
         <ui:define name="body">
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
+
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
 
@@ -131,50 +133,49 @@
                         </p:accordionPanel>
                     </p:panel>
 
+                    <p:separator style="overflow: hidden;" />
 
-                    <p:panel header="Indicadores" >
-                        <p:panelGrid style="width: 100%;">
+                    <p:panel header="Indicadores" style="margin: 0 auto; overflow: hidden;">
+                        <p:panelGrid style="width: 100%;" styleClass="sinBordes">
                             <p:row >
                                 <p:column style="width: 25%;" >
-                                    <p:fieldset legend="Saldo" style="height: 100px !important; " >
-                                        <p:outputLabel value="$ 15.350,56" style="color: green; font-weight: bold; font-size: 20px !important;  " />
+                                    <p:fieldset legend="Saldo" style="height: 110px !important; " >
+                                        <p:outputLabel value="$ #{indicadoresController.saldoProyecto}" style="color: green; font-weight: bold; font-size: 20px !important;  " />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column style="width: 25%;">
-                                    <p:fieldset legend="Ejecución" style="height: 100px !important; ">
-                                        <p:chart type="metergauge" model="#{solicitudController.indicadorEjecutado}" style="height: 100px;"  />
+                                    <p:fieldset legend="Ejecución" style="height: 110px !important; ">
+                                        <p:chart type="metergauge" model="#{indicadoresController.indicadorEjecutado}" style="height: 100px;"  />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column colspan="2" style="width: 50%;">
-                                    <p:fieldset legend="Saldo Rubros" style="height: 100px !important; ">
-                                        <p:dataTable emptyMessage="No hay registros" value="#{indicadoresController.obtenerSaldosPorRubro()}" var="rubro" >
-                                            <!--<ui:repeat value="{indicadoresController.obtenerSaldosPorRubro()}" var="rubro" >-->
-                                                <p:column headerText="#{rubro.key}">  
-                                                    <h:outputText value="#{rubro.value}" />  
-                                                </p:column> 
-                                            <!--</ui:repeat>-->
+                                    <p:fieldset legend="Saldo Rubros" style="height: 110px !important; ">
+                                        <p:dataTable value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 8px !important;">
+                                            <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
+                                                <p:outputLabel value="#{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 8px !important; font-weight: bold;"  />
+                                            </p:columns>
                                         </p:dataTable>
                                     </p:fieldset>
                                 </p:column>
                             </p:row>
                             <p:row>
                                 <p:column style="width: 25%;">
-                                    <p:fieldset legend="Pendiente de Rendición" style="height: 100px !important;">
+                                    <p:fieldset legend="Pendiente de Rendición" style="height: 110px !important;">
                                         <p:outputLabel value="$ 10.230" style="color: #878787; font-weight: bold; font-size: 20px !important; " />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column style="width: 25%;">
-                                    <p:fieldset legend="Total Ejecutado" style="height: 100px !important; ">
+                                    <p:fieldset legend="Total Ejecutado" style="height: 110px !important; ">
                                         <p:outputLabel value="$ 56.435,67" style="color: #00C7F6 ; font-weight: bold; font-size: 20px !important; " />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column style="width: 25%;">
-                                    <p:fieldset legend="Ejecutado por Rubros" style="height: 100px !important; ">
-
+                                    <p:fieldset legend="Ejecutado por Rubros" style="height: 110px !important; ">
+                                        <p:chart type="pie" model="#{indicadoresController.chartEjecutadoPorRubro}" style="height:100px" styleClass="sinBordes" />
                                     </p:fieldset>
                                 </p:column>
                                 <p:column style="width: 25%;">
-                                    <p:fieldset legend="Evolución de Ejecución" style="height: 100px !important; ">
+                                    <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
 
                                     </p:fieldset>
                                 </p:column>
@@ -183,6 +184,8 @@
 
 
                     </p:panel>
+
+                    <p:separator style="overflow: hidden;" />
 
                     <p:panel header="Rendición" >
                         <p:panelGrid columns="2" styleClass="sinBordes" >
