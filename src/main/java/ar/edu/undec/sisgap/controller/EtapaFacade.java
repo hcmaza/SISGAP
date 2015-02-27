@@ -8,6 +8,7 @@ package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.Proyecto;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -41,7 +42,7 @@ public class EtapaFacade extends AbstractFacade<Etapa> {
             return em.createQuery("select e from Etapa e join e.proyectoid p where p.id = :id ", Etapa.class).setParameter("id", proyectoid).getResultList();
         } catch (Exception e) {
             System.out.println("No se pudo realizar la consulta" + e);
-            return null;
+            return new ArrayList<Etapa>();
         }
     }
     

@@ -7,6 +7,7 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Proyecto;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -126,6 +127,21 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
            return null;
        }
          
+    }
+    
+    /**
+     * Obtiene una lista de todos los proyectos
+     * 
+     * @return Todos los Proyectos
+     */
+    public List<Proyecto> buscarTodos(){
+        try{
+            return em.createQuery("SELECT p FROM Proyecto p").getResultList();
+        }catch(Exception e){
+            System.out.println("No se pudo realizar la consulta");
+            e.printStackTrace();
+            return new ArrayList<Proyecto>();
+        }
     }
     
 }

@@ -11,20 +11,17 @@
             <h:outputText value="Lista de Tipos de Evaluación"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            <h:form styleClass="jsfcrud_list_form">
-                
+            <h:form id="form" styleClass="jsfcrud_list_form">
+
                 <p:panel id="pprincipal" header="Lista de Tipo de Evaluación" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
-                    <p:growl id="message" showDetail="true" autoUpdate="true" />
-<!--                    <h:panelGroup id="messagePanel" layout="block">
-                        <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
-                    </h:panelGroup>-->
+
+                    <p:growl id="message" autoUpdate="true" />
 
                     <h:outputText escape="false" value="La lista de tipos de evaluación está vacía" rendered="#{tipoevaluacionController.items.rowCount == 0}"/>
                     <p:separator rendered="#{tipoevaluacionController.items.rowCount == 0}" />
                     <p:commandButton action="#{tipoevaluacionController.prepareCreate}" value="Nuevo Tipo de Evaluación" rendered="#{tipoevaluacionController.items.rowCount == 0}"/>
 
                     <h:panelGroup rendered="#{tipoevaluacionController.items.rowCount > 0}">
-                        
 
                         <p:dataTable
                             id="tbl" 
@@ -35,7 +32,7 @@
                             emptyMessage="No se encontraron resultados para el criterio de busqueda"
                             paginator="true" rows="10" paginatorPosition="bottom"
                             draggableColumns="true"
-                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="10,15,30">
 
                             <p:column id="columnaId" sortBy="tipoevaluacionid" width="10px" style="width: 10px;">
@@ -71,7 +68,7 @@
 
                     </h:panelGroup>
                 </p:panel>
-                
+
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                     <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update="tbl" style="float: left;" />
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />

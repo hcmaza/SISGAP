@@ -93,7 +93,8 @@ public class EvaluacionPreguntaController implements Serializable {
             current.getEvaluacionPreguntaPK().setEvaluacionid(current.getEvaluacion().getId());
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("EvaluacionPreguntaCreated"));
-            return prepareCreate();
+            //return prepareCreate();
+            return null;
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
@@ -112,7 +113,8 @@ public class EvaluacionPreguntaController implements Serializable {
             current.getEvaluacionPreguntaPK().setEvaluacionid(current.getEvaluacion().getId());
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("EvaluacionPreguntaUpdated"));
-            return "View";
+            //return "View";
+            return null;
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;

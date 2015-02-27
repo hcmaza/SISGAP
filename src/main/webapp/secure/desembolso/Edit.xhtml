@@ -31,6 +31,12 @@
                     <h:selectOneMenu id="numerocuentabancaria" value="#{desembolsoController.selected.numerocuentabancaria}" title="#{bundle.EditDesembolsoTitle_numerocuentabancaria}" >
                         <f:selectItems value="#{cuentabancariaController.itemsAvailableSelectOne}"/>
                     </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditDesembolsoLabel_monto}" for="monto" />
+                    <h:inputText id="monto" value="#{desembolsoController.selected.monto}" title="#{bundle.EditDesembolsoTitle_monto}" />
+                    <h:outputLabel value="#{bundle.EditDesembolsoLabel_proyectoid}" for="proyectoid" />
+                    <h:selectOneMenu id="proyectoid" value="#{desembolsoController.selected.proyectoid}" title="#{bundle.EditDesembolsoTitle_proyectoid}" >
+                        <f:selectItems value="#{proyectoController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
                 </h:panelGrid>
                 <h:commandLink action="#{desembolsoController.update}" value="#{bundle.EditDesembolsoSaveLink}"/>
                 <br />

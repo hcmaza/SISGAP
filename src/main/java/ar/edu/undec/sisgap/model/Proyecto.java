@@ -304,7 +304,8 @@ public class Proyecto implements Serializable {
 
     @Override
     public String toString() {
-        return "N° de Proyecto" + id + " ]";
+        //return "N° de Proyecto" + id + " ]";
+        return this.nombre;
     }
     
 }

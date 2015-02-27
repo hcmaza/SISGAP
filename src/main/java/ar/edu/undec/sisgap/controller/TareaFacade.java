@@ -8,6 +8,7 @@ package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.Tarea;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,13 +36,29 @@ public class TareaFacade extends AbstractFacade<Tarea> {
         return em.createQuery("select t from Tarea t where t.etapaid.id= "+t.getId(), Tarea.class).getResultList();
     }
     
-	    public List<Tarea> buscarTareasEtapa(int etapaid){
+    public List<Tarea> buscarTareasEtapa(int etapaId){
         
         try {
-            return em.createQuery("select t from Tarea t join t.etapaid e where e.id = :id ", Tarea.class).setParameter("id", etapaid).getResultList();
-        } catch (Exception e) {
-            System.out.println("No se pudo realizar la consulta" + e);
-            return null;
+            return em.createQuery("select t from Tarea t join t.etapaid e where e.id = :id ", Tarea.class).setParameter("id", etapaId).getResultList();
+        } catch (Exception e) { 
+            System.out.println("No se pudo realizar la consulta buscarTareasEtapa" + e);
+            return new ArrayList<Tarea>();
+        }
+    }
+    
+    public List<Tarea> buscarTareasProyecto(int proyectoId){
+        try{
+            List<Tarea> tareas = em.createQuery("SELECT t FROM Tarea t JOIN t.etapaid e JOIN e.proyectoid p WHERE p.id = :proyectoid", Tarea.class).setParameter("proyectoid", proyectoId).getResultList();
+            
+            System.out.println("TareaFacade - buscarTareasProyecto");
+            for(Tarea t : tareas){
+                System.out.println("TAREA: " + t.getTarea());
+            }
+            return tareas;
+        } catch(Exception e){
+            System.out.println("No se pudo realizar la consulta TareaFacade buscarTareasProyecto");
+            e.printStackTrace();
+            return new ArrayList<Tarea>();
         }
     }
     

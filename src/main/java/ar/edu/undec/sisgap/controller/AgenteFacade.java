@@ -124,4 +124,12 @@ public class AgenteFacade extends AbstractFacade<Agente> {
         }
     }
     
+    public List<Agente> agentesSinUsuario(){
+        try{
+            return em.createQuery("select a from Agente a where a.usuarioid is null", Agente.class).getResultList();
+        } catch (Exception e){
+            return null;
+        }
+    }
+    
 }

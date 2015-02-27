@@ -1,10 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <faces-config version="2.0"
-    xmlns="http://java.sun.com/xml/ns/javaee" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
     <application>
-       
+ 
+        <!-- Configuracion Primefaces -->
+        <action-listener>org.primefaces.application.DialogActionListener</action-listener>
+        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+        <!--        <el-resolver>org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver</el-resolver>-->
+        <!-- __ -->
+        
         <resource-bundle>
             <base-name>/Bundle</base-name>
             <var>bundle</var>
@@ -12,8 +19,16 @@
         <locale-config>
             <default-locale>es_ES</default-locale>
         </locale-config>
-       
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
     </application>
+    
+    <!--    <factory>
+        <exception-handler-factory>org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory</exception-handler-factory>
+    </factory>-->
+    
     <navigation-rule>
         <from-view-id>/secure/solicitud/Solicitud.xhtml</from-view-id>
         <navigation-case>
@@ -21,4 +36,62 @@
             <to-view-id>/secure/solicitud/View.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/secure/proyectos/List.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{desembolsoController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/desembolso/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{desembolsoController.prepareList}</from-action>
+            <from-outcome>ListPorProyecto</from-outcome>
+            <to-view-id>/secure/desembolso/ListPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{solicitudController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/solicitudes/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{solicitudController.prepareList}</from-action>
+            <from-outcome>ListPorProyecto</from-outcome>
+            <to-view-id>/secure/solicitudes/ListPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{solicitudactaController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/solicitudacta/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{solicitudactaController.prepareList}</from-action>
+            <from-outcome>ListPorProyecto</from-outcome>
+            <to-view-id>/secure/solicitudacta/ListPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{rendicionController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/rendicion/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{rendicionController.prepareList}</from-action>
+            <from-outcome>ListPorProyecto</from-outcome>
+            <to-view-id>/secure/rendicion/ListPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>	
+    
+    <navigation-rule>
+        <from-view-id>/secure/solicitudes/ListPorProyecto.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{solicitudController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/solicitudes/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{solicitudactaController.prepareCreate}</from-action>
+            <from-outcome>Create</from-outcome>
+            <to-view-id>/secure/solicitudacta/Create.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>	
 </faces-config>

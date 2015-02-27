@@ -100,8 +100,6 @@ public class PresupuestoRubro implements Serializable {
         this.gastoorganismo = gastoorganismo;
     }
     
-    
-
     public BigDecimal getGastouniversidad() {
         return gastouniversidad;
     }
@@ -111,14 +109,13 @@ public class PresupuestoRubro implements Serializable {
     }
 
     public BigDecimal getTotal() {
+        //System.out.println("PresupuestoRubro.getTotal = " + total.toString());
         return total;
     }
 
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
-    
-    
     
     public Character getEstado() {
         return estado;

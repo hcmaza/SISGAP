@@ -67,6 +67,7 @@ import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.FilterEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -109,23 +110,22 @@ public class ProyectoController implements Serializable {
     PresupuestoRubroFacade prfacade;
     @EJB
     private ar.edu.undec.sisgap.controller.ArchivoproyectoFacade ejbarchivoproyecto;
-    
+
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private byte[] imagen=null ;
+    private byte[] imagen = null;
     private StreamedContent file;
-    private boolean columnorganismo=false;
-    private boolean columncomitente=false;
-    private boolean columnuniversidad=false;
-    private boolean verarchivo=false;
-    private boolean iseditableSolicitud=false;
-    private String habilitarcomitente="0";
+    private boolean columnorganismo = false;
+    private boolean columncomitente = false;
+    private boolean columnuniversidad = false;
+    private boolean verarchivo = false;
+    private boolean iseditableSolicitud = false;
+    private String habilitarcomitente = "0";
     private String observacionfinal;
     private Proyecto proyectoViejo;
     //variable utilizada para recolectar los agentes del proyecto en todas las etapas
     private List<TareaAgente> tareaagentesproyecto = new ArrayList<TareaAgente>();
-    
-    
+
     public ProyectoController() {
     }
 
@@ -135,9 +135,9 @@ public class ProyectoController implements Serializable {
             current.setDuracion(Short.valueOf("1"));
             selectedItemIndex = -1;
         }
-         proyectoViejo = current; 
+        proyectoViejo = current;
         return current;
-       
+
     }
 
     private ProyectoFacade getFacade() {
@@ -189,75 +189,70 @@ public class ProyectoController implements Serializable {
             return null;
         }
     }
-    
+
     public String soloCrear() {
-        try{
+        try {
             //Capturo el managed bean en el contexto
             FacesContext contextc = FacesContext.getCurrentInstance();
-            ConvocatoriaController convocatoria= (ConvocatoriaController) contextc.getApplication().evaluateExpressionGet(contextc, "#{convocatoriaController}", ConvocatoriaController.class);
-                    
-           if(convocatoria.getSelected()!=null){
-                    FacesContext context = FacesContext.getCurrentInstance();
-                    AgenteController agente= (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
-                    ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-                    FacesContext context3 = FacesContext.getCurrentInstance();
-                    PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
-                    FacesContext context2 = FacesContext.getCurrentInstance();
-                    ArchivoproyectoController ap= (ArchivoproyectoController)context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
+            ConvocatoriaController convocatoria = (ConvocatoriaController) contextc.getApplication().evaluateExpressionGet(contextc, "#{convocatoriaController}", ConvocatoriaController.class);
 
-                    current.setAgenteid(agente.getSelected());
-                    
-                    Estadoproyecto ep= new Estadoproyecto();
-                    ep.setId(1);
-                    current.setEstadoproyectoid(ep);
-                    current.setFecha(new Date());
-                   
-                    if(convocatoria.getSelected().getId()==null){
-                        current.setConvocatoriaid(null);
-                    } else {
-                        current.setConvocatoriaid(convocatoria.getSelected());
+            if (convocatoria.getSelected() != null) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
+                ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+                FacesContext context3 = FacesContext.getCurrentInstance();
+                PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+                FacesContext context2 = FacesContext.getCurrentInstance();
+                ArchivoproyectoController ap = (ArchivoproyectoController) context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
+
+                current.setAgenteid(agente.getSelected());
+
+                Estadoproyecto ep = new Estadoproyecto();
+                ep.setId(1);
+                current.setEstadoproyectoid(ep);
+                current.setFecha(new Date());
+
+                if (convocatoria.getSelected().getId() == null) {
+                    current.setConvocatoriaid(null);
+                } else {
+                    current.setConvocatoriaid(convocatoria.getSelected());
                 }
-                    getFacade().createWithPersist(current);
-                    Presupuesto p= new Presupuesto();
-                    p.setFecha(new Date());
-                    p.setProyectoid(current);
-                    p.setEstado('P');
+                getFacade().createWithPersist(current);
+                Presupuesto p = new Presupuesto();
+                p.setFecha(new Date());
+                p.setProyectoid(current);
+                p.setEstado('P');
 
-                     ejbFacadep.createWithPersist(p);
-                    
-                    PresupuestoRubro prerub;
-                    Iterator i= pr.getPresupuestosrubros().iterator();
-                    while(i.hasNext()){
-                        prerub=((PresupuestoRubro)i.next());
-                        prerub.setPresupuesto(p);
-                        pr.soloCrear(prerub);
-                    }
+                ejbFacadep.createWithPersist(p);
+
+                PresupuestoRubro prerub;
+                Iterator i = pr.getPresupuestosrubros().iterator();
+                while (i.hasNext()) {
+                    prerub = ((PresupuestoRubro) i.next());
+                    prerub.setPresupuesto(p);
+                    pr.soloCrear(prerub);
+                }
                     //p.getSelected().setPresupuestoRubroList(pr.getPresupuestosrubros());
 
-                   // 
-                   pr.setPresupuestosrubros(null);
-                   
+                // 
+                pr.setPresupuestosrubros(null);
 
-                   i=ap.getCollectorArchivoProyecto().iterator();
-                   
+                i = ap.getCollectorArchivoProyecto().iterator();
 
-                   while(i.hasNext()){
-                       Archivoproyecto archivoproyecto=new Archivoproyecto();
-                        archivoproyecto=((Archivoproyecto)i.next());
-                        archivoproyecto.setId(null);
-                        archivoproyecto.setProyectoid(current);
-                        ap.soloCrear(archivoproyecto);
-                    }
-                    
-                   // EQUIPO DE TRABAJO ***********************
+                while (i.hasNext()) {
+                    Archivoproyecto archivoproyecto = new Archivoproyecto();
+                    archivoproyecto = ((Archivoproyecto) i.next());
+                    archivoproyecto.setId(null);
+                    archivoproyecto.setProyectoid(current);
+                    ap.soloCrear(archivoproyecto);
+                }
+
+                // EQUIPO DE TRABAJO ***********************
                 FacesContext contextAV = FacesContext.getCurrentInstance();
                 AgenteViewController agenteViewController = (AgenteViewController) contextAV.getApplication().evaluateExpressionGet(contextAV, "#{agenteViewController}", AgenteViewController.class);
 
-                
-
-
                 for (ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()) {
-                    
+
                     ProyectoAgentePK paPK = new ProyectoAgentePK();
                     paPK.setProyectoid(current.getId());
                     paPK.setAgenteid(pa.getAgente().getId());
@@ -265,56 +260,47 @@ public class ProyectoController implements Serializable {
                     pa.setProyectoAgentePK(paPK);
                     pa.setAgente(pa.getAgente());
                     pa.setProyecto(current);
-                    
+
                     ejbproyectoagente.createWithPersist(pa);
-                   
+
                 }
 
                 // FIN - EQUIPO DE TRABAJO ******************
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Alta idea proyecto Creada!", "Su Solicitud a Proyecto fue creado!!!");
 
-                   
-                  
-                  
-
-
-                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Alta idea proyecto Creada!", "Su Solicitud a Proyecto fue creado!!!");  
-                   
-
-                    EnviarMail enviarmail = new EnviarMail();
+                EnviarMail enviarmail = new EnviarMail();
                     //enviarmail.enviarMailIngresoIdeaProyecto(FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName(),current.getAgenteid().getEmail() , habilitarcomitente);
-                   
-         
-      
-                     RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+
+                RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
                    //  FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
                 // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
-                    
+
                 System.out.println("Solicitud Creado");
-                    //current = new Proyecto();
-                 return null;
-           }else{
-               RequestContext.getCurrentInstance().scrollTo("wconvocatoria");
-               FacesMessage message = new FacesMessage();
-               message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                //current = new Proyecto();
+                return null;
+            } else {
+                RequestContext.getCurrentInstance().scrollTo("wconvocatoria");
+                FacesMessage message = new FacesMessage();
+                message.setSeverity(FacesMessage.SEVERITY_ERROR);
                 message.setSummary("ERROR");
                 message.setDetail("Por favor seleccione una fila en la tabla de Convocatoria");
-               FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
+                FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
                 return null;
-           }
-        }catch(Exception e){
-             FacesMessage message = new FacesMessage();
-               message.setSeverity(FacesMessage.SEVERITY_ERROR);
-                message.setSummary("ERROR");
-                message.setDetail("No se pudo crear la Solicitud del Proyecto "+e);
+            }
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage();
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            message.setSummary("ERROR");
+            message.setDetail("No se pudo crear la Solicitud del Proyecto " + e);
             FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
-         System.out.println("Error al grabar la Solicitud  = "+e);
+            System.out.println("Error al grabar la Solicitud  = " + e);
             return null;
         }
     }
 
     public String prepareEdit() {
         current = (Proyecto) getItems().getRowData();
-          
+
 //           FacesContext context = FacesContext.getCurrentInstance();
 //           EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
 //           
@@ -325,7 +311,6 @@ public class ProyectoController implements Serializable {
 //          
 //        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController)contextp.getApplication().evaluateExpressionGet(contextp, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
 //        presupuestorubroitemcontroller.setPresupuestosrubrositems(this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbpresupuesto.findporProyecto(current.getId())));
-        
 //        presupuestorubroitemcontroller.armarPresupuestosNodos2();
 //        presupuestorubroitemcontroller.armarGraficosPresupuesto();
 //        
@@ -424,23 +409,25 @@ public class ProyectoController implements Serializable {
     public SelectItem[] getItemsAvailableSelectOne() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
-    
-    public void handleFileUpload(FileUploadEvent event) { 
-        
-       current.setDocumentacionnombre(event.getFile().getFileName());
+
+    public void handleFileUpload(FileUploadEvent event) {
+
+        current.setDocumentacionnombre(event.getFile().getFileName());
         current.setDocumentacion(event.getFile().getContents());
-         System.out.println("Succesful"+event.getFile().getFileName() + " is uploaded.");  
-       // FacesContext.getCurrentInstance().addMessage(null, msg);  
-    }  
-    public StreamedContent getFileConvocatoria() {          
-        
-        InputStream stream = new ByteArrayInputStream(current.getConvocatoriaid().getFormulario());
-        file = new DefaultStreamedContent(stream, "docx/doc/pdf/rar", current.getConvocatoriaid().getLink());  
-            
-            return file;
-            
+        System.out.println("Succesful" + event.getFile().getFileName() + " is uploaded.");
+        // FacesContext.getCurrentInstance().addMessage(null, msg);  
     }
-     public StreamedContent getFile() {          
+
+    public StreamedContent getFileConvocatoria() {
+
+        InputStream stream = new ByteArrayInputStream(current.getConvocatoriaid().getFormulario());
+        file = new DefaultStreamedContent(stream, "docx/doc/pdf/rar", current.getConvocatoriaid().getLink());
+
+        return file;
+
+    }
+
+    public StreamedContent getFile() {
 //        System.out.println("vvvvvvvvvvv");
 //        InputStream stream = new ByteArrayInputStream(current.getDocumentacion());
 //        MagicMatch mm=null;
@@ -462,12 +449,10 @@ public class ProyectoController implements Serializable {
 //            
 
 //       file = new DefaultStreamedContent(stream, "image/jpg/png/rar", "documentacion."+extension);  
+        return file;
 
-   return file;
-        
-    }  
-  
-    
+    }
+
     @FacesConverter(forClass = Proyecto.class)
     public static class ProyectoControllerConverter implements Converter {
 
@@ -507,19 +492,20 @@ public class ProyectoController implements Serializable {
         }
 
     }
-    public void buscarProyectoAgente(int agenteid){
+
+    public void buscarProyectoAgente(int agenteid) {
         recreateModel();
-        items=new ListDataModel(getFacade().buscarProyectoAgente(agenteid));
+        items = new ListDataModel(getFacade().buscarProyectoAgente(agenteid));
     }
-    
-    public void buscarProyectoEstado(long estado){
+
+    public void buscarProyectoEstado(long estado) {
         recreateModel();
-        items=new ListDataModel(getFacade().buscarProyectoEstado((int)estado));
+        items = new ListDataModel(getFacade().buscarProyectoEstado((int) estado));
     }
-    
-    public void buscarEvaluarIdeaProyectoEstado(){
+
+    public void buscarEvaluarIdeaProyectoEstado() {
         recreateModel();
-        items=new ListDataModel(getFacade().buscarEvaluarIdeaProyectoEstado());
+        items = new ListDataModel(getFacade().buscarEvaluarIdeaProyectoEstado());
     }
 
     public boolean isColumnorganismo() {
@@ -547,52 +533,47 @@ public class ProyectoController implements Serializable {
     }
 
     public void isVerarchivox() {
-        
-       
-        if(current.getConvocatoriaid().getId()>0){
+
+        if (current.getConvocatoriaid().getId() > 0) {
             this.verarchivo = true;
-        }else{
-           this.verarchivo = false; 
+        } else {
+            this.verarchivo = false;
         }
-        
-        
+
     }
 
     public boolean getVerarchivo() {
         return verarchivo;
-       
+
     }
-    
-    
-    
-    public void cambioColPresupuesto(){
-        if(current.getTipofinanciamientoid().getId()<3){
-            columnorganismo=true;
-        }else{
-            columnorganismo=false;
+
+    public void cambioColPresupuesto() {
+        if (current.getTipofinanciamientoid().getId() < 3) {
+            columnorganismo = true;
+        } else {
+            columnorganismo = false;
         }
     }
 
     public boolean isIseditableSolicitud() {
-            if(current.getEstadoproyectoid().getId()==1 ){
-                iseditableSolicitud=true;
-            }else{
-                iseditableSolicitud =false;
-            }
-            
+        if (current.getEstadoproyectoid().getId() == 1) {
+            iseditableSolicitud = true;
+        } else {
+            iseditableSolicitud = false;
+        }
+
         return iseditableSolicitud;
     }
 
     public void setIseditableSolicitud(boolean iseditableSolicitud) {
         this.iseditableSolicitud = iseditableSolicitud;
     }
-    
-    
-    public void actualizarTabla(){
-        
+
+    public void actualizarTabla() {
+
         RequestContext.getCurrentInstance().update("tpresupuesto");
     }
-    
+
 //     public String soloEditar() {
 //        try{
 //            //Capturo el managed bean en el contexto
@@ -612,7 +593,6 @@ public class ProyectoController implements Serializable {
 //         
 //            
 //             FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
-
 //           
 //         return "ViewSolicitud";
 //        }catch(Exception e){
@@ -621,7 +601,6 @@ public class ProyectoController implements Serializable {
 //            return null;
 //        }
 //    }
-
     public String getHabilitarcomitente() {
         return habilitarcomitente;
     }
@@ -629,66 +608,63 @@ public class ProyectoController implements Serializable {
     public void setHabilitarcomitente(String habilitarcomitente) {
         this.habilitarcomitente = habilitarcomitente;
     }
-    
-    public void evaluarIdea(){
-        boolean todobien=false;
-        if(current.getEstadoproyectoid().getId()>1){
-            
+
+    public void evaluarIdea() {
+        boolean todobien = false;
+        if (current.getEstadoproyectoid().getId() > 1) {
+
             FacesContext context = FacesContext.getCurrentInstance();
-            EvaluacionPreguntaController evaluacionpregunta= (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
+            EvaluacionPreguntaController evaluacionpregunta = (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
             EvaluacionController evaluacion = (EvaluacionController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionController}", EvaluacionController.class);
             AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
 
-        try{
-            
-            evaluacion.getSelected().setFecha(new Date());
-            evaluacion.getSelected().setProyectoid(current);
-            evaluacion.getSelected().setUsuarioid(agente.getSelected().getUsuarioid());
-            ejbevaluacion.createWithPersist(evaluacion.getSelected());
-            
-            for(EvaluacionPregunta eval:evaluacionpregunta.getEvaluaciones()){
-                 eval.setEvaluacionPreguntaPK(new EvaluacionPreguntaPK());
-               eval.getEvaluacionPreguntaPK().setEvaluacionid(evaluacion.getSelected().getId());
-              eval.getEvaluacionPreguntaPK().setPreguntaid(eval.getPregunta().getId());
+            try {
 
-              ejbevaluacionproyecto.create(eval);
-             }
-              this.ejbFacade.edit(current);  
-             
-             
-             if(new EnviarMail().enviarMailEvaluacionIdeaProyecto(current.getAgenteid(),evaluacion.getSelected().getObservacion())){
-                
-               todobien=true;
-                
-               //  RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
-                 
-             }else{
-                 FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ","No se pudo evaluar del Proyecto.")); 
-                 
+                evaluacion.getSelected().setFecha(new Date());
+                evaluacion.getSelected().setProyectoid(current);
+                evaluacion.getSelected().setUsuarioid(agente.getSelected().getUsuarioid());
+                ejbevaluacion.createWithPersist(evaluacion.getSelected());
+
+                for (EvaluacionPregunta eval : evaluacionpregunta.getEvaluaciones()) {
+                    eval.setEvaluacionPreguntaPK(new EvaluacionPreguntaPK());
+                    eval.getEvaluacionPreguntaPK().setEvaluacionid(evaluacion.getSelected().getId());
+                    eval.getEvaluacionPreguntaPK().setPreguntaid(eval.getPregunta().getId());
+
+                    ejbevaluacionproyecto.create(eval);
+                }
+                this.ejbFacade.edit(current);
+
+//                if (new EnviarMail().enviarMailEvaluacionIdeaProyecto(current.getAgenteid(), evaluacion.getSelected().getObservacion())) {
+//
+//                    todobien = true;
+//
+//               //  RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+//                } else {
+//                    FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ", "No se pudo evaluar del Proyecto."));
+//
+//                    ejbevaluacion.remove(evaluacion.getSelected());
+//                    Estadoproyecto ep = new Estadoproyecto();
+//                    ep.setId(1);
+//                    current.setEstadoproyectoid(ep);
+//                    this.ejbFacade.edit(current);
+//
+////--                HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
+//// --               try {
+//// --                   response.sendRedirect("List.xhtml");
+////--                } catch (IOException ex) {
+////--                    Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, ex);
+//// --               }
+//                    RequestContext.getCurrentInstance().execute("PF('dfinalerror').show()");
+//
+//                }
+            } catch (Exception e) {
                 ejbevaluacion.remove(evaluacion.getSelected());
                 Estadoproyecto ep = new Estadoproyecto();
                 ep.setId(1);
                 current.setEstadoproyectoid(ep);
                 this.ejbFacade.edit(current);
-                
-//--                HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
-// --               try {
-// --                   response.sendRedirect("List.xhtml");
-//--                } catch (IOException ex) {
-//--                    Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, ex);
-// --               }
-                
-                RequestContext.getCurrentInstance().execute("PF('dfinalerror').show()"); 
-             
-             }
-        }catch(Exception e){
-            ejbevaluacion.remove(evaluacion.getSelected());
-            Estadoproyecto ep = new Estadoproyecto();
-                ep.setId(1);
-                current.setEstadoproyectoid(ep);
-                this.ejbFacade.edit(current);
-           
-             FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ","No se pudo evaluar del Proyecto "));
+
+                FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ", "No se pudo evaluar del Proyecto "));
 //             
 //             HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
 //                try {
@@ -696,70 +672,68 @@ public class ProyectoController implements Serializable {
 //                } catch (IOException ex) {
 //                    Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-             RequestContext.getCurrentInstance().execute("PF('dfinalerror').show()"); 
-        }
-        }else{
-             RequestContext.getCurrentInstance().execute("PF('dfinalerrore').show()"); 
+                RequestContext.getCurrentInstance().execute("PF('dfinalerror').show()");
+            }
+        } else {
+            RequestContext.getCurrentInstance().execute("PF('dfinalerrore').show()");
 //            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error!", "Seleccione el Estado del Proyecto! Muchas Gracias ");
 //            RequestContext.getCurrentInstance().showMessageInDialog(message);
 //            FacesContext.getCurrentInstance().addMessage("growlprincipal", new FacesMessage("Error! ","Seleccione el Estado del Proyecto! Muchas Gracias "));
         }
-         if(todobien){
-            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+        if (todobien) {
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
         }
-                
-       
-        
+
     }
-     
-  public String armarObservaciones(){
-      
-      observacionfinal="";
-      FacesContext context = FacesContext.getCurrentInstance();
+
+    public String armarObservaciones() {
+
+        observacionfinal = "";
+        FacesContext context = FacesContext.getCurrentInstance();
         EvaluacionPreguntaController evaluacionpregunta = (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
         EvaluacionController evaluacion = (EvaluacionController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionController}", EvaluacionController.class);;
-       String obs="";
-       String calificacionpregunta="";
-       try{
-        observacionfinal="Estimado docente-investigador:\n" +
-"Por medio del presente informamos a Ud. que la Idea-Proyecto Nº "+current.getId()+" - "+current.getNombre()+" de la cual Ud. Es responsable, ha sido "+current.getEstadoproyectoid().getEstado().replace("Idea Proyecto","").toUpperCase()+" según el siguiente detalle:\n" +
-"Observaciones:\n";
-        
-      for(EvaluacionPregunta eval:evaluacionpregunta.getEvaluaciones()){
-          switch(eval.getRating()){
-              case 3 :
-                  calificacionpregunta="CORRECTO";
-                   break;
-              case 4 :
-                  calificacionpregunta="MUY BUENO";
-                  break;
-              case 5 :
-                  calificacionpregunta="EXCELENTE";
-                  break;
-              default :
-                  calificacionpregunta="REGULAR";
-                  break;
-          }
-          
-          if(eval.getObservacion().trim().length()>0){
-              observacionfinal+= " - "+eval.getObservacion()+"\n";
-          }
-          obs+=" - " + eval.getPregunta().getPregunta()+" - "+calificacionpregunta+"\n";
-         }
-      String isaceptada="";
-      if(current.getEstadoproyectoid().getId()==2)
-          isaceptada="A partir de la recepción del presente correo, el sistema quedará habilitado para la carga del proyecto definitivo.\n";
-      observacionfinal+="Resultados según criterios evaluados:\n" + obs +
-              "Sin otro particular lo saludo a Ud. cordialmente.\n" +
-                "Unidad de Vinculación Tecnológica"
-              ;
-      evaluacion.getSelected().setObservacion(observacionfinal);
-       }catch(Exception e){
-           System.out.println(e);
-           
-       }
-      return null;
-  }   
+        String obs = "";
+        String calificacionpregunta = "";
+        try {
+            observacionfinal = "Estimado docente-investigador:\n"
+                    + "Por medio del presente informamos a Ud. que la Idea-Proyecto Nº " + current.getId() + " - " + current.getNombre() + " de la cual Ud. Es responsable, ha sido " + current.getEstadoproyectoid().getEstado().replace("Idea Proyecto", "").toUpperCase() + " según el siguiente detalle:\n"
+                    + "Observaciones:\n";
+
+            for (EvaluacionPregunta eval : evaluacionpregunta.getEvaluaciones()) {
+                switch (eval.getRating()) {
+                    case 3:
+                        calificacionpregunta = "CORRECTO";
+                        break;
+                    case 4:
+                        calificacionpregunta = "MUY BUENO";
+                        break;
+                    case 5:
+                        calificacionpregunta = "EXCELENTE";
+                        break;
+                    default:
+                        calificacionpregunta = "REGULAR";
+                        break;
+                }
+
+                if (eval.getObservacion().trim().length() > 0) {
+                    observacionfinal += " - " + eval.getObservacion() + "\n";
+                }
+                obs += " - " + eval.getPregunta().getPregunta() + " - " + calificacionpregunta + "\n";
+            }
+            String isaceptada = "";
+            if (current.getEstadoproyectoid().getId() == 2) {
+                isaceptada = "A partir de la recepción del presente correo, el sistema quedará habilitado para la carga del proyecto definitivo.\n";
+            }
+            observacionfinal += "Resultados según criterios evaluados:\n" + obs
+                    + "Sin otro particular lo saludo a Ud. cordialmente.\n"
+                    + "Unidad de Vinculación Tecnológica";
+            evaluacion.getSelected().setObservacion(observacionfinal);
+        } catch (Exception e) {
+            System.out.println(e);
+
+        }
+        return null;
+    }
 
     public String getObservacionfinal() {
         return observacionfinal;
@@ -768,53 +742,70 @@ public class ProyectoController implements Serializable {
     public void setObservacionfinal(String observacionfinal) {
         this.observacionfinal = observacionfinal;
     }
-    public void onCellEdit(){
-        
-    }
-    
-    public void buscarProyectosAgenteTrue(int agenteid){
-        recreateModel();
-       
-        items=new ListDataModel(getFacade().buscarProyectosAgente(true,agenteid));
-    }
-    
-    public String enviarEvaluarProyecto(){
-        boolean todobien=false;
-        try {
-         FacesContext context = FacesContext.getCurrentInstance();
-        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-        
-        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
-        PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
-        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-        
-        //Creacion de proyectosAgentes
-        ejbproyectoagente.removebyProyecto(this.current.getId());
-        
-       for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-           System.out.println("Agente id "+ pa.getAgente().getId());
-           System.out.println("proyectoid "+ pa.getProyecto().getId());
-            ProyectoAgentePK paPK = new ProyectoAgentePK();
-                    paPK.setProyectoid(current.getId());
-                    paPK.setAgenteid(pa.getAgente().getId());
 
-                    pa.setProyectoAgentePK(paPK);     
-           ejbproyectoagente.create(pa);
-       }
-        Estadoproyecto ep= new Estadoproyecto();
-        ep.setId(6); 
-       current.setEstadoproyectoid(ep);
-        
-        //Creacion de etapas
-        for (Etapa e : etapacontroller.getEtapas()) {
-           e.setId(null);
-           e.setProyectoid(current);
-           
-            for(Tarea t:e.getTareaList()){
-               t.setId(null);
-               t.setFechacreacion(new Date());
-               t.setFechamodificacion(new Date());
-                
+    public void onCellEdit() {
+
+    }
+
+    public void buscarProyectosAgenteTrue(Agente agente) {
+        recreateModel();
+
+        switch (agente.getUsuarioid().getUsuariorol().getRolid()) {
+            // Administrador
+            case 1:
+                items = new ListDataModel(getFacade().buscarTodos());
+                break;
+            // Docente
+            case 2:
+                items = new ListDataModel(getFacade().buscarProyectosAgente(true, agente.getId()));
+                break;
+            // Empleado
+            case 3:
+                items = new ListDataModel(getFacade().buscarTodos());
+                break;
+            default:
+                items = new ListDataModel(getFacade().buscarTodos());
+        }
+
+    }
+
+    public String enviarEvaluarProyecto() {
+        boolean todobien = false;
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+
+            PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+            PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+            ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+
+            //Creacion de proyectosAgentes
+            ejbproyectoagente.removebyProyecto(this.current.getId());
+
+            for (ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()) {
+                System.out.println("Agente id " + pa.getAgente().getId());
+                System.out.println("proyectoid " + pa.getProyecto().getId());
+                ProyectoAgentePK paPK = new ProyectoAgentePK();
+                paPK.setProyectoid(current.getId());
+                paPK.setAgenteid(pa.getAgente().getId());
+
+                pa.setProyectoAgentePK(paPK);
+                ejbproyectoagente.create(pa);
+            }
+            Estadoproyecto ep = new Estadoproyecto();
+            ep.setId(6);
+            current.setEstadoproyectoid(ep);
+
+            //Creacion de etapas
+            for (Etapa e : etapacontroller.getEtapas()) {
+                e.setId(null);
+                e.setProyectoid(current);
+
+                for (Tarea t : e.getTareaList()) {
+                    t.setId(null);
+                    t.setFechacreacion(new Date());
+                    t.setFechamodificacion(new Date());
+
 //                int contador2=0;
 //                for(TareaAgente ta:t.getTareaAgenteList()){
 //                    ta.setTareaid(null);
@@ -822,102 +813,97 @@ public class ProyectoController implements Serializable {
 //                    contador2++;
 //                    
 //               }
-                
-          }
-            List<Tarea> OldTarea = e.getTareaList();
-           e.setTareaList(null);
-           ejbetapa.createWithPersist(e);
-           if(OldTarea!=null){
-                for(Tarea t : OldTarea ){
-                    t.setEtapaid(e);
-                    List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
-                     List<PresupuestoTarea> OldPresupuestoTarea = t.getPresupuestoTareaList();
-                   
-                    t.setTareaAgenteList(null);
-                    t.setPresupuestoTareaList(null);
-                    
-                    this.ejbtarea.createWithPersist(t);
-                    if(OldTareaAgente != null){
-                         for (TareaAgente ta : OldTareaAgente){
-                             ta.setTareaid(t);
-                           ejbtareaagente.create(ta);
-                         }
-                    }
-                    
-                    if(OldPresupuestoTarea != null){
-                         for (PresupuestoTarea pt : OldPresupuestoTarea){
-                             pt.setTarea(t);
-                           ejbpresupuestotarea.create(pt);
-                         }
+                }
+                List<Tarea> OldTarea = e.getTareaList();
+                e.setTareaList(null);
+                ejbetapa.createWithPersist(e);
+                if (OldTarea != null) {
+                    for (Tarea t : OldTarea) {
+                        t.setEtapaid(e);
+                        List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
+                        List<PresupuestoTarea> OldPresupuestoTarea = t.getPresupuestoTareaList();
+
+                        t.setTareaAgenteList(null);
+                        t.setPresupuestoTareaList(null);
+
+                        this.ejbtarea.createWithPersist(t);
+                        if (OldTareaAgente != null) {
+                            for (TareaAgente ta : OldTareaAgente) {
+                                ta.setTareaid(t);
+                                ejbtareaagente.create(ta);
+                            }
+                        }
+
+                        if (OldPresupuestoTarea != null) {
+                            for (PresupuestoTarea pt : OldPresupuestoTarea) {
+                                pt.setTarea(t);
+                                ejbpresupuestotarea.create(pt);
+                            }
+                        }
                     }
                 }
-           }
-           
-        }
-        
-        
-        // crear archivos del proyecto
-        
-         ArchivoproyectoController archivoproyectocontroller= (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
-         for(Archivoproyecto ap: archivoproyectocontroller.getCollectorArchivoProyecto()){
-             ap.setId(null);
-             ap.setProyectoid(current);
-             this.ejbarchivoproyecto.create(ap);
-         }
-        
-        
-         //EnviarMail enviarmail = new EnviarMail();
-        // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
-               todobien=true;       
-        
+            }
+
+        // crear archivos del proyecto
+            ArchivoproyectoController archivoproyectocontroller = (ArchivoproyectoController) context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
+            for (Archivoproyecto ap : archivoproyectocontroller.getCollectorArchivoProyecto()) {
+                ap.setId(null);
+                ap.setProyectoid(current);
+                this.ejbarchivoproyecto.create(ap);
+            }
+
+         //EnviarMail enviarmail = new EnviarMail();
+            // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
+            todobien = true;
+
            // RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
-           // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
+            // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
             // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
         } catch (Exception e) {
-             FacesMessage message = new FacesMessage();
-               message.setSeverity(FacesMessage.SEVERITY_ERROR);
-                message.setSummary("ERROR");
-                message.setDetail("No se pudo crear el Plan y equipo del Proyecto "+e);
+            FacesMessage message = new FacesMessage();
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            message.setSummary("ERROR");
+            message.setDetail("No se pudo crear el Plan y equipo del Proyecto " + e);
             FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
-         System.out.println("Error al grabar Plan y equipo de trabajo  = "+e);
+            System.out.println("Error al grabar Plan y equipo de trabajo  = " + e);
             Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, e);
         }
-         if(todobien){
-            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+        if (todobien) {
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
         }
-                
+
         return null;
     }
-    
-      public String prepareCreatePlanEquipo() {
+
+    public String prepareCreatePlanEquipo() {
         current = (Proyecto) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "CreatePlanEquipo";
     }
-      public String CrearConEtapa() {
+
+    public String CrearConEtapa() {
         current = (Proyecto) getItems().getRowData();
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
         ArchivoproyectoController archivoproyectocontroller = (ArchivoproyectoController) context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
         List<ProyectoAgente> pa = new ArrayList<ProyectoAgente>();
-        
-        for(ProyectoAgente pa1: ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
+
+        for (ProyectoAgente pa1 : ejbproyectoagente.buscarEquipoTrabajo(current.getId())) {
             //pa1.setFuncionproyecto("");
-           if(pa1.getAgente().getHoraslaborales()!=null){
-                pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales()/2));
+            if (pa1.getAgente().getHoraslaborales() != null) {
+                pa1.setHorasdisponibles(Math.round(pa1.getAgente().getHoraslaborales() / 2));
             }
-           
+
             pa.add(pa1);
-            
+
         }
         proyectoagentecontroller.setEquipotrabajo(pa);
         archivoproyectocontroller.setCollectorArchivoProyecto(this.ejbarchivoproyecto.buscarArchivosProyecto(this.current.getId()));
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "CrearConEtapa";
     }
-    
-      
+
     // PANELES DE CONTROL Y GRAFICOS  **************************/
     // Filtrado entre fechas
     private Date filtroFechaInicio;
@@ -1008,7 +994,6 @@ public class ProyectoController implements Serializable {
         PresupuestoController p = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
 
         resultado = p.obtenerTotal(idProyecto);
-
 
         return resultado.floatValue();
     }
@@ -1176,425 +1161,403 @@ public class ProyectoController implements Serializable {
     /**
      * *********************************************************
      */
-    public void reiniciarValoresEvaluacion(){
-       
-         FacesContext context = FacesContext.getCurrentInstance();
-            EvaluacionPreguntaController evaluacionpregunta= (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
-            EvaluacionController evaluacion = (EvaluacionController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionController}", EvaluacionController.class);
-             evaluacion.setCurrent(null);
-                evaluacionpregunta.setEvaluaciones(null);
-                evaluacionpregunta.setCurrent(null);
-                
-                current=null;
-                
-    }
-    
-    public String reiniciarValoresSolicitud(){
-          FacesContext contextc = FacesContext.getCurrentInstance();
-          ConvocatoriaController convocatoria= (ConvocatoriaController) contextc.getApplication().evaluateExpressionGet(contextc, "#{convocatoriaController}", ConvocatoriaController.class);
-           FacesContext context = FacesContext.getCurrentInstance();
-            AgenteController agente= (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
-            FacesContext context3 = FacesContext.getCurrentInstance();
-            PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
-            FacesContext context2 = FacesContext.getCurrentInstance();
-            ArchivoproyectoController ap= (ArchivoproyectoController)context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
-              FacesContext contextAV = FacesContext.getCurrentInstance();
-                AgenteViewController agenteViewController = (AgenteViewController) contextAV.getApplication().evaluateExpressionGet(contextAV, "#{agenteViewController}", AgenteViewController.class);
+    public void reiniciarValoresEvaluacion() {
 
-          pr=null;
-          convocatoria.setSelected(null);
-          convocatoria.setTablafiltrada(null);
-          
-          current=null;
-          ap.setCollectorArchivoProyecto(null);
-          ap.setSelected(null);
-          agenteViewController.setAgentes(null);
-          agenteViewController.setSelected(null);
-          agenteViewController.setAgente1(null);
-          agenteViewController.setCollectoragentes(null);
-          return null;
-    } 
-    
-    public void reiniciarValoresProyecto(){
-          FacesContext contextc = FacesContext.getCurrentInstance();
-          ConvocatoriaController convocatoria= (ConvocatoriaController) contextc.getApplication().evaluateExpressionGet(contextc, "#{convocatoriaController}", ConvocatoriaController.class);
-           FacesContext context = FacesContext.getCurrentInstance();
-            AgenteController agente= (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
-            FacesContext context3 = FacesContext.getCurrentInstance();
-            PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
-            FacesContext context2 = FacesContext.getCurrentInstance();
-            ArchivoproyectoController ap= (ArchivoproyectoController)context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
-              FacesContext contextAV = FacesContext.getCurrentInstance();
-                AgenteViewController agenteViewController = (AgenteViewController) contextAV.getApplication().evaluateExpressionGet(contextAV, "#{agenteViewController}", AgenteViewController.class);
+        FacesContext context = FacesContext.getCurrentInstance();
+        EvaluacionPreguntaController evaluacionpregunta = (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
+        EvaluacionController evaluacion = (EvaluacionController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionController}", EvaluacionController.class);
+        evaluacion.setCurrent(null);
+        evaluacionpregunta.setEvaluaciones(null);
+        evaluacionpregunta.setCurrent(null);
 
-          pr=null;
-          convocatoria.setSelected(null);
-          convocatoria.setTablafiltrada(null);
-          
-          current=null;
-          ap.setCollectorArchivoProyecto(null);
-          ap.setSelected(null);
-          agenteViewController.setAgentes(null);
-          agenteViewController.setSelected(null);
-          agenteViewController.setAgente1(null);
-          agenteViewController.setCollectoragentes(null);
+        current = null;
+
     }
-   
+
+    public String reiniciarValoresSolicitud() {
+        FacesContext contextc = FacesContext.getCurrentInstance();
+        ConvocatoriaController convocatoria = (ConvocatoriaController) contextc.getApplication().evaluateExpressionGet(contextc, "#{convocatoriaController}", ConvocatoriaController.class);
+        FacesContext context = FacesContext.getCurrentInstance();
+        AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
+        FacesContext context3 = FacesContext.getCurrentInstance();
+        PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+        FacesContext context2 = FacesContext.getCurrentInstance();
+        ArchivoproyectoController ap = (ArchivoproyectoController) context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
+        FacesContext contextAV = FacesContext.getCurrentInstance();
+        AgenteViewController agenteViewController = (AgenteViewController) contextAV.getApplication().evaluateExpressionGet(contextAV, "#{agenteViewController}", AgenteViewController.class);
+
+        pr = null;
+        convocatoria.setSelected(null);
+        convocatoria.setTablafiltrada(null);
+
+        current = null;
+        ap.setCollectorArchivoProyecto(null);
+        ap.setSelected(null);
+        agenteViewController.setAgentes(null);
+        agenteViewController.setSelected(null);
+        agenteViewController.setAgente1(null);
+        agenteViewController.setCollectoragentes(null);
+        return null;
+    }
+
+    public void reiniciarValoresProyecto() {
+        FacesContext contextc = FacesContext.getCurrentInstance();
+        ConvocatoriaController convocatoria = (ConvocatoriaController) contextc.getApplication().evaluateExpressionGet(contextc, "#{convocatoriaController}", ConvocatoriaController.class);
+        FacesContext context = FacesContext.getCurrentInstance();
+        AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
+        FacesContext context3 = FacesContext.getCurrentInstance();
+        PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+        FacesContext context2 = FacesContext.getCurrentInstance();
+        ArchivoproyectoController ap = (ArchivoproyectoController) context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
+        FacesContext contextAV = FacesContext.getCurrentInstance();
+        AgenteViewController agenteViewController = (AgenteViewController) contextAV.getApplication().evaluateExpressionGet(contextAV, "#{agenteViewController}", AgenteViewController.class);
+
+        pr = null;
+        convocatoria.setSelected(null);
+        convocatoria.setTablafiltrada(null);
+
+        current = null;
+        ap.setCollectorArchivoProyecto(null);
+        ap.setSelected(null);
+        agenteViewController.setAgentes(null);
+        agenteViewController.setSelected(null);
+        agenteViewController.setAgente1(null);
+        agenteViewController.setCollectoragentes(null);
+    }
+
     public String soloEditar() {
-        boolean todobien=false;
-        try{
-                           FacesContext context = FacesContext.getCurrentInstance();
-                    AgenteController agente= (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
-                    ProyectoAgenteController proyectoagentecontroller= (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-                    FacesContext context3 = FacesContext.getCurrentInstance();
-                    PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
-                    FacesContext context2 = FacesContext.getCurrentInstance();
-                    ArchivoproyectoController ap= (ArchivoproyectoController)context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
-                    
-                    Estadoproyecto ep= new Estadoproyecto();
-                    ep.setId(1);
-                    getFacade().edit(current);
-                    
-                    PresupuestoRubro prerub;
-                    Iterator i= pr.getPresupuestosrubros().iterator();
-                    
-                    while(i.hasNext()){
-                        prfacade.edit((PresupuestoRubro)i.next());
+        boolean todobien = false;
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
+            ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+            FacesContext context3 = FacesContext.getCurrentInstance();
+            PresupuestoRubroController pr = (PresupuestoRubroController) context3.getApplication().evaluateExpressionGet(context3, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+            FacesContext context2 = FacesContext.getCurrentInstance();
+            ArchivoproyectoController ap = (ArchivoproyectoController) context2.getApplication().evaluateExpressionGet(context2, "#{archivoproyectoController}", ArchivoproyectoController.class);
+
+            Estadoproyecto ep = new Estadoproyecto();
+            ep.setId(1);
+            getFacade().edit(current);
+
+            PresupuestoRubro prerub;
+            Iterator i = pr.getPresupuestosrubros().iterator();
+
+            while (i.hasNext()) {
+                prfacade.edit((PresupuestoRubro) i.next());
+            }
+
+            i = ap.getCollectorArchivoProyecto().iterator();
+
+            int encontrado = 0;
+            for (Archivoproyecto ap1 : ejbarchivoproyecto.findporProyecto(current.getId())) {
+                for (Archivoproyecto ap2 : ap.getCollectorArchivoProyecto()) {
+                    if (ap2.getId() == ap1.getId()) {
+                        encontrado += 1;
                     }
-                   
-                   i=ap.getCollectorArchivoProyecto().iterator();
-                   
-                    int encontrado=0;
-                    for(Archivoproyecto ap1:ejbarchivoproyecto.findporProyecto(current.getId())){
-                        for(Archivoproyecto ap2: ap.getCollectorArchivoProyecto()){
-                            if(ap2.getId()==ap1.getId()){
-                                encontrado+=1;
-                            }
-                        }
-                        if(encontrado==0){
-                            ejbarchivoproyecto.remove(ap1);
-                        }
-                        encontrado = 0;
+                }
+                if (encontrado == 0) {
+                    ejbarchivoproyecto.remove(ap1);
+                }
+                encontrado = 0;
+            }
+
+            while (i.hasNext()) {
+                Archivoproyecto archivoproyecto = new Archivoproyecto();
+                archivoproyecto = ((Archivoproyecto) i.next());
+                if (archivoproyecto.getProyectoid() == null) {
+
+                    archivoproyecto.setId(null);
+                    archivoproyecto.setProyectoid(current);
+
+                    ejbarchivoproyecto.edit(archivoproyecto);
+
+                }
+            }
+
+            // EQUIPO DE TRABAJO ***********************
+            FacesContext contextpa = FacesContext.getCurrentInstance();
+
+            encontrado = 0;
+            for (ProyectoAgente pa2 : ejbproyectoagente.buscarEquipoTrabajo(current.getId())) {
+                for (ProyectoAgente pa1 : proyectoagentecontroller.getEquipotrabajo()) {
+                    if (pa1.equals(pa2)) {
+                        encontrado += 1;
                     }
+                }
+                ejbproyectoagente.remove(pa2);
+                encontrado = 0;
+            }
 
-                   while(i.hasNext()){
-                       Archivoproyecto archivoproyecto = new Archivoproyecto();
-                        archivoproyecto=((Archivoproyecto)i.next());
-                        if(archivoproyecto.getProyectoid()==null){
-                            
-                       
-                            archivoproyecto.setId(null);
-                            archivoproyecto.setProyectoid(current);
+            for (ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()) {
+                if ((pa.getProyectoAgentePK() == null)) {
+                    pa.setProyectoAgentePK(new ProyectoAgentePK());
+                    pa.getProyectoAgentePK().setProyectoid(current.getId());
+                    pa.getProyectoAgentePK().setAgenteid(pa.getAgente().getId());
 
-                                ejbarchivoproyecto.edit(archivoproyecto);
-
-                        }
-                    }
-                   
-                   // EQUIPO DE TRABAJO ***********************
-                FacesContext contextpa = FacesContext.getCurrentInstance();
-               
-              encontrado = 0;
-              for(ProyectoAgente pa2 : ejbproyectoagente.buscarEquipoTrabajo(current.getId())){
-                  for(ProyectoAgente pa1 : proyectoagentecontroller.getEquipotrabajo()){
-                      if(pa1.equals(pa2)){
-                          encontrado+=1;
-                      }
-                  }
-                  ejbproyectoagente.remove(pa2);
-                  encontrado = 0;
-              }
-              
-                for(ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()){
-                    if((pa.getProyectoAgentePK()==null)){
-                        pa.setProyectoAgentePK(new ProyectoAgentePK());
-                        pa.getProyectoAgentePK().setProyectoid(current.getId());
-                        pa.getProyectoAgentePK().setAgenteid(pa.getAgente().getId());
-
-                        pa.setAgente(pa.getAgente());
-                        pa.setProyecto(current);
-                         pa.setFuncionproyecto("solicitud");
+                    pa.setAgente(pa.getAgente());
+                    pa.setProyecto(current);
+                    pa.setFuncionproyecto("solicitud");
 
                     ejbproyectoagente.create(pa);
-                    }else{
-                        pa.setFuncionproyecto("solicitud");
-                    
+                } else {
+                    pa.setFuncionproyecto("solicitud");
 
                     ejbproyectoagente.edit(pa);
-                    }
-                   
-    
                 }
+
+            }
 
                 // FIN - EQUIPO DE TRABAJO ******************
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Alta idea proyecto Creada!", "Su Solicitud a Proyecto fue creado!!!");
 
-                   
-                  
-                  
+            EnviarMail enviarmail = new EnviarMail();
 
-
-                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Alta idea proyecto Creada!", "Su Solicitud a Proyecto fue creado!!!");  
-                  
-
-                    EnviarMail enviarmail = new EnviarMail();
-                   
                     //enviarmail.enviarMailIngresoIdeaProyecto(FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName(),current.getAgenteid().getEmail() , habilitarcomitente);
-                    
-
-                    
                    //  FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
-                // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
-                    todobien=true;
-                System.out.println("Solicitud editada");
+            // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
+            todobien = true;
+            System.out.println("Solicitud editada");
                     //current = new Proyecto();
-                 
-           
-        }catch(Exception e){
-             FacesMessage message = new FacesMessage();
-               message.setSeverity(FacesMessage.SEVERITY_ERROR);
-                message.setSummary("ERROR");
-                message.setDetail("No se pudo editar la Solicitud del Proyecto "+e);
+
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage();
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            message.setSummary("ERROR");
+            message.setDetail("No se pudo editar la Solicitud del Proyecto " + e);
             FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
-         System.out.println("Error al editar la Solicitud  = "+e);
+            System.out.println("Error al editar la Solicitud  = " + e);
             return null;
         }
-        if(todobien){
-            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+        if (todobien) {
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
         }
-         return null;
-        
+        return null;
+
     }
-    
+
     public String prepareEditEtapa() {
         current = (Proyecto) getItems().getRowData();
-           System.out.println("fffffffffffff1fffffffffff");
-           FacesContext context = FacesContext.getCurrentInstance();
-           EtapaController etapacontroller = (EtapaController)context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-            System.out.println("ffffffffffff2ffffffffffff");
+        System.out.println("fffffffffffff1fffffffffff");
+        FacesContext context = FacesContext.getCurrentInstance();
+        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        System.out.println("ffffffffffff2ffffffffffff");
         etapacontroller.setEtapas(this.ejbetapa.findByProyecto(current));
         //etapacontroller.agregaralListadoEtapas();
-       etapacontroller.prepareEditarListadoEtapas();
-       etapacontroller.agentesProyecto();
-       System.out.println("ffffffffffffff3ffffffffff");
-       //proyecto Agente
-        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
-       
-        proyectoagentecontroller.setEquipotrabajo(ejbproyectoagente.buscarEquipoTrabajo(current.getId()));
-        ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController)context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
-        archivoproyectoController.findporProyectoEdit(current.getId());
-        
+        etapacontroller.prepareEditarListadoEtapas();
         etapacontroller.agentesProyecto();
-        
-        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController)context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
-           
-        
+        System.out.println("ffffffffffffff3ffffffffff");
+        //proyecto Agente
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+
+        proyectoagentecontroller.setEquipotrabajo(ejbproyectoagente.buscarEquipoTrabajo(current.getId()));
+        ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController) context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
+        archivoproyectoController.findporProyectoEdit(current.getId());
+
+        etapacontroller.agentesProyecto();
+
+        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+
         presupuestotareacontroller.armarPresupuestoNodos();
-            
-      System.out.println("ffffffffffff4fffffffffff");
+
+        System.out.println("fffffffffffff4fffffffffff");
         return "Edit";
     }
-    
-    public long buscarProyectosEvaluar(int estado){
-       return  this.ejbFacade.buscarProyectosEvaluar();
+
+    public long buscarProyectosEvaluar(int estado) {
+        return this.ejbFacade.buscarProyectosEvaluar();
     }
-    
-    public long buscarIdeasProyectosEvaluar(){
+
+    public long buscarIdeasProyectosEvaluar() {
         return this.ejbFacade.buscarIdeasProyectosEvaluar();
     }
-    
-    public void buscarProyectosAgenteFalse(int agenteid){
-        recreateModel();
-       
-        items=new ListDataModel(getFacade().buscarProyectosAgente(false,agenteid));
-    }
-    
-    public String enviarEditarEvaluarProyecto(){
-        boolean todobien=false;
-        try {
-         FacesContext context = FacesContext.getCurrentInstance();
-        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-        
-        PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
-        PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
-      
-       // Insercion de ETAPAS, TAREAS , TAREASAGENTES
-        List<Etapa> oldetapas = etapacontroller.getEtapas();
-              
-      for (Etapa e : etapacontroller.getEtapas()) {
-         
 
-          if(e.getProyectoid()==null){
-               e.setProyectoid(current);
-          }
-          
-            for(Tarea t:e.getTareaList()){
-                
-               if(t.getId()==null){
-                   t.setFechacreacion(new Date());
-               }
-               t.setFechamodificacion(new Date());
-                                
-          }
-            List<Tarea> OldTarea = e.getTareaList();
-           e.setTareaList(null);
-           if(e.getId()==null){
-                ejbetapa.createWithPersist(e);
-           }else{
-               ejbetapa.edit(e);
-           }
-           if(OldTarea!=null){
-                for(Tarea t : OldTarea ){
-                    
-                    if(t.getEtapaid()==null){
-                        t.setId(null);
-                        t.setEtapaid(e);
+    public void buscarProyectosAgenteFalse(int agenteid) {
+        recreateModel();
+
+        items = new ListDataModel(getFacade().buscarProyectosAgente(false, agenteid));
+    }
+
+    public String enviarEditarEvaluarProyecto() {
+        boolean todobien = false;
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+
+            PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
+            PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+
+            // Insercion de ETAPAS, TAREAS , TAREASAGENTES
+            List<Etapa> oldetapas = etapacontroller.getEtapas();
+
+            for (Etapa e : etapacontroller.getEtapas()) {
+
+                if (e.getProyectoid() == null) {
+                    e.setProyectoid(current);
+                }
+
+                for (Tarea t : e.getTareaList()) {
+
+                    if (t.getId() == null) {
+                        t.setFechacreacion(new Date());
                     }
-                    List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
-                    t.setTareaAgenteList(null);
-                   // System.out.println("tarea -> "+t.getId());
-                    if((t.getId()==null) ){
-                        this.ejbtarea.createWithPersist(t);
-                    }else{
-                        this.ejbtarea.edit(t);
-                    }
-                    if(OldTareaAgente != null){
-                         for (TareaAgente ta : OldTareaAgente){
-                             ta.setTareaid(t);
-                             
-                             ejbtareaagente.create(ta);
-                         }
+                    t.setFechamodificacion(new Date());
+
+                }
+                List<Tarea> OldTarea = e.getTareaList();
+                e.setTareaList(null);
+                if (e.getId() == null) {
+                    ejbetapa.createWithPersist(e);
+                } else {
+                    ejbetapa.edit(e);
+                }
+                if (OldTarea != null) {
+                    for (Tarea t : OldTarea) {
+
+                        if (t.getEtapaid() == null) {
+                            t.setId(null);
+                            t.setEtapaid(e);
+                        }
+                        List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
+                        t.setTareaAgenteList(null);
+                        // System.out.println("tarea -> "+t.getId());
+                        if ((t.getId() == null)) {
+                            this.ejbtarea.createWithPersist(t);
+                        } else {
+                            this.ejbtarea.edit(t);
+                        }
+                        if (OldTareaAgente != null) {
+                            for (TareaAgente ta : OldTareaAgente) {
+                                ta.setTareaid(t);
+
+                                ejbtareaagente.create(ta);
+                            }
+                        }
                     }
                 }
-           }
-        }
-        
-        
-        //Eliminacion etapas
-       boolean encontroetapa = false;
-       boolean encontrotarea = false;
-       boolean encontrotareaagente = false;
-       Tarea tareaborrar = new Tarea();
-       
-       //eliminar 
-      for(Etapa e: ejbetapa.findByProyecto(current)){
-          if(etapacontroller.getEtapas().contains(e)){
-             
-          }else{
-              ejbetapa.remove(e);
-          }
-              
-      }
-      //elimino tareas
-     List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
-     for(Etapa e: etapacontroller.getEtapas() ){
-         if(e.getTareaList()!=null){
-             for(Tarea t: e.getTareaList()){
-                listadocompletotareas.add(t);
-             }
-         }    
-        
-     }
-     
-     
-    for(Etapa e: this.ejbetapa.buscarEtapasProyecto(current.getId()) ){
-        
-        for(Tarea t: e.getTareaList()){
-          //  System.out.println("tarea db "+t.getTarea());
-            for(Tarea tl:listadocompletotareas){
-                
-                //System.out.println("tarea local "+tl.getTarea());
-                    if(t.getId()==tl.getId()){
-                        encontrotarea = true;
+            }
+
+            //Eliminacion etapas
+            boolean encontroetapa = false;
+            boolean encontrotarea = false;
+            boolean encontrotareaagente = false;
+            Tarea tareaborrar = new Tarea();
+
+            //eliminar 
+            for (Etapa e : ejbetapa.findByProyecto(current)) {
+                if (etapacontroller.getEtapas().contains(e)) {
+
+                } else {
+                    ejbetapa.remove(e);
+                }
+
+            }
+            //elimino tareas
+            List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
+            for (Etapa e : etapacontroller.getEtapas()) {
+                if (e.getTareaList() != null) {
+                    for (Tarea t : e.getTareaList()) {
+                        listadocompletotareas.add(t);
                     }
+                }
+
             }
-            if(!encontrotarea){
-                ejbtarea.remove(t);
-                encontrotarea=false;
+
+            for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
+
+                for (Tarea t : e.getTareaList()) {
+                    //  System.out.println("tarea db "+t.getTarea());
+                    for (Tarea tl : listadocompletotareas) {
+
+                        //System.out.println("tarea local "+tl.getTarea());
+                        if (t.getId() == tl.getId()) {
+                            encontrotarea = true;
+                        }
+                    }
+                    if (!encontrotarea) {
+                        ejbtarea.remove(t);
+                        encontrotarea = false;
+                    }
+                }
             }
-        }
-    }
-    
+
     //elimino tareaagente
-    
-     List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
-            
-    for(Etapa e: oldetapas ){
-    
-            System.out.println("Etapa " + e.getTareaList());
-           for(Tarea t: e.getTareaList()){
-               System.out.println("TAREA "+t.getTareaAgenteList());
-              
-                   
-                   for(TareaAgente ta : t.getTareaAgenteList()){
-                       System.out.println("AGENTE "+ta.getAgenteid().getApellido());
-                       listadocompletotareaagente.add(ta);
-                   }
-               
-           }
-     
-    }    
-   
-    
-    for(Etapa e: this.ejbetapa.buscarEtapasProyecto(current.getId()) ){
-        for(Tarea t: e.getTareaList()){
-            for(TareaAgente ta : t.getTareaAgenteList()){
-                for(TareaAgente t1:listadocompletotareaagente){
-                    System.out.println("for tarea "+ta.getId());
-                    if(ta.getId()==t1.getId()){
-                        System.out.println("if = "+ t1.getId());
-                            encontrotareaagente = true;
+            List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
+
+            for (Etapa e : oldetapas) {
+
+                System.out.println("Etapa " + e.getTareaList());
+                for (Tarea t : e.getTareaList()) {
+                    System.out.println("TAREA " + t.getTareaAgenteList());
+
+                    for (TareaAgente ta : t.getTareaAgenteList()) {
+                        System.out.println("AGENTE " + ta.getAgenteid().getApellido());
+                        listadocompletotareaagente.add(ta);
+                    }
+
+                }
+
+            }
+
+            for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
+                for (Tarea t : e.getTareaList()) {
+                    for (TareaAgente ta : t.getTareaAgenteList()) {
+                        for (TareaAgente t1 : listadocompletotareaagente) {
+                            System.out.println("for tarea " + ta.getId());
+                            if (ta.getId() == t1.getId()) {
+                                System.out.println("if = " + t1.getId());
+                                encontrotareaagente = true;
+                            }
+                        }
+                        if (!encontrotarea) {
+                            ejbtareaagente.remove(ta);
+                            encontrotareaagente = false;
+                        }
                     }
                 }
-                if(!encontrotarea){
-                    ejbtareaagente.remove(ta);
-                    encontrotareaagente=false;
-                }
             }
-        }
-    }
-    
-    
+
       //Eliminacion de presupuestosrubrositem
     /*  for(PresupuestoRubroitem pri: ejbpresupuestorubroitem.findByPresupuesto(presupuestocontroller.getSelected())){
-          if(presupuestorubroitemcontroller.getPresupuestosrubrositems().contains(pri)){
+             if(presupuestorubroitemcontroller.getPresupuestosrubrositems().contains(pri)){
               
-          }else{
-                  ejbpresupuestorubroitem.remove(pri);
-          }
+             }else{
+             ejbpresupuestorubroitem.remove(pri);
+             }
           
-      }
+             }
       
-      //Insercion de presupuestosrubrositem
-        for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
+             //Insercion de presupuestosrubrositem
+             for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
              pri.setPresupuesto(presupuestocontroller.getSelected());
              ejbpresupuestorubroitem.create(pri);
            
-        } */
-         EnviarMail enviarmail = new EnviarMail();
-        // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
+             } */
+            EnviarMail enviarmail = new EnviarMail();
+            // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
-               todobien=true;       
-        
+            todobien = true;
+
            // RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
-           // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
+            // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
             // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
         } catch (Exception e) {
-             FacesMessage message = new FacesMessage();
-               message.setSeverity(FacesMessage.SEVERITY_ERROR);
-                message.setSummary("ERROR");
-                message.setDetail("No se pudo Editar el Plan y equipo del Proyecto "+e);
+            FacesMessage message = new FacesMessage();
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            message.setSummary("ERROR");
+            message.setDetail("No se pudo Editar el Plan y equipo del Proyecto " + e);
             FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
-         System.out.println("Error al Editar Plan y equipo de trabajo  = "+e);
+            System.out.println("Error al Editar Plan y equipo de trabajo  = " + e);
             Logger.getLogger(ProyectoController.class.getName()).log(Level.SEVERE, null, e);
         }
-         if(todobien){
-            RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+        if (todobien) {
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
         }
-                
+
         return null;
     }
-    
-        // **************************  REPORTES  **********************************
+
+    // **************************  REPORTES  **********************************
     public void pdfIdeaProyecto() throws JRException, IOException {
 
         // Obtengo la ruta absoluta del archivo compilado del reporte
@@ -1608,17 +1571,16 @@ public class ProyectoController implements Serializable {
         JRDataSource detallePresupuesto = new JRBeanCollectionDataSource(presupuesto.getPresupuestoRubroList());
 
         // Fuente de datos para el equipo de trabajo
-        
-        List<Agente> listaAgentes = new ArrayList<Agente>() ;
+        List<Agente> listaAgentes = new ArrayList<Agente>();
         List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
-        
-        for(ProyectoAgente pa : listaProyectoAgente){
-            
+
+        for (ProyectoAgente pa : listaProyectoAgente) {
+
             listaAgentes.add(pa.getAgente());
         }
-        
+
         JRDataSource equipoTrabajo = new JRBeanCollectionDataSource(listaAgentes);
-        
+
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("idProyecto", this.getSelected().getId());
@@ -1668,17 +1630,16 @@ public class ProyectoController implements Serializable {
         JRDataSource detallePresupuesto = new JRBeanCollectionDataSource(presupuesto.getPresupuestoRubroList());
 
         // Fuente de datos para el equipo de trabajo
-        
-        List<Agente> listaAgentes = new ArrayList<Agente>() ;
+        List<Agente> listaAgentes = new ArrayList<Agente>();
         List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
-        
-        for(ProyectoAgente pa : listaProyectoAgente){
-            
+
+        for (ProyectoAgente pa : listaProyectoAgente) {
+
             listaAgentes.add(pa.getAgente());
         }
-        
+
         JRDataSource equipoTrabajo = new JRBeanCollectionDataSource(listaAgentes);
-        
+
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("idProyecto", this.getSelected().getId());
@@ -1711,9 +1672,8 @@ public class ProyectoController implements Serializable {
                     archivo, true);
         }
     }
-    
+
     // REPORTE EVALUACION IDEA PROYECTO
-    
     public void pdfEvaluacionIdeaProyecto() throws JRException, IOException {
 
         // Obtengo la ruta absoluta del archivo compilado del reporte
@@ -1725,7 +1685,6 @@ public class ProyectoController implements Serializable {
         // FUENTE DE DATOS PARA EL SUBREPORTE (DETALLE DEL PRESUPUESTO)
         // Presupuesto presupuesto = this.ejbFacadep.findporProyecto(this.getSelected().getId());
         // JRDataSource detallePresupuesto = new JRBeanCollectionDataSource(presupuesto.getPresupuestoRubroList());
-        
         // FUENTE DE DATOS PARA EL EQUIPO DE TRABAJO
 //        List<Agente> listaAgentes = new ArrayList<Agente>() ;
 //        List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
@@ -1736,20 +1695,19 @@ public class ProyectoController implements Serializable {
 //        }
 //        
 //        JRDataSource equipoTrabajo = new JRBeanCollectionDataSource(listaAgentes);
-        
         // FUENTE DE DATOS PARA LA EVALUACION
         Evaluacion e = this.ejbevaluacion.obtenerEvaluacionPorProyecto(current.getId());
-        
+
         JRBeanArrayDataSource evaluacion = new JRBeanArrayDataSource(new Evaluacion[]{e});
-        
-        for(EvaluacionPregunta ep : e.getEvaluacionPreguntaList()){
+
+        for (EvaluacionPregunta ep : e.getEvaluacionPreguntaList()) {
             System.out.println("Pregunta: -----------------------" + ep.getPregunta().getPregunta());
         }
-        
+
         JRDataSource preguntas = new JRBeanCollectionDataSource(e.getEvaluacionPreguntaList());
-        
+
         String observacion = e.getObservacion();
-        
+
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("idProyecto", this.getSelected().getId());
@@ -1769,8 +1727,8 @@ public class ProyectoController implements Serializable {
         JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         FacesContext.getCurrentInstance().responseComplete();
     }
-    
- // REPORTE GANTT
+
+    // REPORTE GANTT
     public void pdfEtapas() throws JRException, IOException {
 
         // Ruta absoluta del archivo compilado del reporte
@@ -1803,12 +1761,12 @@ public class ProyectoController implements Serializable {
         // PRESUPUESTO
        /* List<PresupuestoRubroitem> listaPresupuestoItems = this.ejbpresupuestorubroitem.findByPresupuesto(this.ejbFacadep.findporProyecto(current.getId()));
 
-        for (PresupuestoRubroitem pri : listaPresupuestoItems) {
-            System.out.println("PRI" + pri.getDescripcion() + " - " + pri.getCantidad().toString() + " - " + pri.getTotal().toString());
-        }
+         for (PresupuestoRubroitem pri : listaPresupuestoItems) {
+         System.out.println("PRI" + pri.getDescripcion() + " - " + pri.getCantidad().toString() + " - " + pri.getTotal().toString());
+         }
 
-        JRBeanCollectionDataSource presupuesto = new JRBeanCollectionDataSource(listaPresupuestoItems);
-        */
+         JRBeanCollectionDataSource presupuesto = new JRBeanCollectionDataSource(listaPresupuestoItems);
+         */
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("idProyecto", this.getSelected().getId());
@@ -1826,30 +1784,28 @@ public class ProyectoController implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
 
     }
- 
-    
+
     public void pdfTareas() throws JRException, IOException {
 
-       // Ruta absoluta del archivo compilado del reporte
+        // Ruta absoluta del archivo compilado del reporte
         String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/ganttTareas.jasper");
 
         // Fuente de datos del reporte
-       
         //Obtenemos las tareas de un proyecto
         List<Etapa> listaEtapas = this.ejbetapa.buscarEtapasProyecto(current.getId());
         List<Tarea> listaTareas = new ArrayList<Tarea>();
-        
-        for(Etapa e : listaEtapas){
-            for(Tarea t : this.ejbtarea.buscarTareasEtapa(e.getId())){
+
+        for (Etapa e : listaEtapas) {
+            for (Tarea t : this.ejbtarea.buscarTareasEtapa(e.getId())) {
                 listaTareas.add(t);
             }
         }
-        
+
         // Debug
-        for(Tarea t : listaTareas){
-            System.out.println("ID: " + t.getId() + " - Nombre: " + t.getTarea() + " - Estado: " + t.getEstado() + " - Etapa: " + t.getEtapaid().getEtapa() );
+        for (Tarea t : listaTareas) {
+            System.out.println("ID: " + t.getId() + " - Nombre: " + t.getTarea() + " - Estado: " + t.getEstado() + " - Etapa: " + t.getEtapaid().getEtapa());
         }
-        
+
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(listaTareas);
 
         // Llenamos el reporte con la fuente de datos
@@ -1861,39 +1817,37 @@ public class ProyectoController implements Serializable {
         ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         FacesContext.getCurrentInstance().responseComplete();
-        
+
     }
-    
-    public List<Agente> obtenerEquipoTrabajo(){
-        
-        List<Agente> listaAgentes = new ArrayList<Agente>() ;
+
+    public List<Agente> obtenerEquipoTrabajo() {
+
+        List<Agente> listaAgentes = new ArrayList<Agente>();
         List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
-        
-        for(ProyectoAgente pa : listaProyectoAgente){
+
+        for (ProyectoAgente pa : listaProyectoAgente) {
             //System.out.println(pa.getAgente().getApellido() + ", " + pa.getAgente().getNombres());
             listaAgentes.add(pa.getAgente());
         }
         return listaAgentes;
     }
-    
-    public List<Archivoproyecto> obtenerArchivosProyecto(){
-        
+
+    public List<Archivoproyecto> obtenerArchivosProyecto() {
+
 //        List<Archivoproyecto> listaArchivos = this.ejbFacadeap.buscarArchivosProyecto(current.getId());
 //        
 //        for(Archivoproyecto ap : listaArchivos){
 //            System.out.println(ap.getNombre());
 //        }
-        
         return this.ejbFacadeap.buscarArchivosProyecto(current.getId());
     }
 
     public String prepareCreateEvaluacion() {
         current = (Proyecto) getItems().getRowData();
-       // selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        // selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Create";
     }
 
-    
     public List<TareaAgente> getTareaagentesproyecto() {
         return tareaagentesproyecto;
     }
@@ -1901,18 +1855,25 @@ public class ProyectoController implements Serializable {
     public void setTareaagentesproyecto(List<TareaAgente> tareaagentesproyecto) {
         this.tareaagentesproyecto = tareaagentesproyecto;
     }
-    
+
     public void prepareSolicitud() {
-        
+
         current = null;
-       this.recreateModel();
-        
+        this.recreateModel();
+
     }
-    
-     public void buscarProyectosaEvaluar(){
+
+    public void buscarProyectosaEvaluar() {
         recreateModel();
-       
-        items=new ListDataModel(getFacade().buscarProyectosaEvaluar());
+
+        items = new ListDataModel(getFacade().buscarProyectosaEvaluar());
     }
-    
+
+//     public void onRowSelect(SelectEvent event) {
+//        current = (Proyecto) event.getObject();
+//    }
+    public void setSelected(Proyecto proyecto) {
+        current = proyecto;
+    }
+
 }
