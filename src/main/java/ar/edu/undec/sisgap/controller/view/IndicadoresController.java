@@ -333,7 +333,7 @@ public class IndicadoresController implements Serializable {
         ejecutado = (totalPresupuestoProyecto * ejecutadoProyecto) / 100;
          
         //return new MeterGaugeChartModel(Integer.parseInt(String.valueOf(ejecutado)), intervalos);
-        return new MeterGaugeChartModel((Number)ejecutado,intervalos);
+        return new MeterGaugeChartModel((int) ejecutado,intervalos);
     }
  
     private void crearIndicadorEjecutado() {
