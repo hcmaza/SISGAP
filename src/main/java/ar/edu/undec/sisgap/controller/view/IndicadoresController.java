@@ -25,6 +25,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.ListDataModel;
+import org.primefaces.model.chart.PieChartModel;
 
 /**
  *
@@ -51,6 +52,7 @@ public class IndicadoresController implements Serializable {
 
     // Ejecutado por rubro
     private List<ItemRubro> listaEjecutadoRubro;
+    private PieChartModel chartEjecutadoPorRubro;
 
     public SolicitudFacade getSolicitudFacade() {
         return solicitudFacade;
@@ -100,6 +102,11 @@ public class IndicadoresController implements Serializable {
         return listaEjecutadoRubro;
     }
 
+    public PieChartModel getChartEjecutadoPorRubro() {
+        return chartEjecutadoPorRubro;
+    }
+    
+
     /**
      * Creates a new instance of IndicadoresController
      */
@@ -116,6 +123,8 @@ public class IndicadoresController implements Serializable {
         calcularSaldosPorRubro();
 
         calcularEjecutadoPorRubro();
+        
+        generarChartEjecutadoPorRubro();
 
     }
 
@@ -229,6 +238,24 @@ public class IndicadoresController implements Serializable {
         listaEjecutadoRubro = ejecutado;
 
     }
+    
+    public void generarChartEjecutadoPorRubro(){
+        chartEjecutadoPorRubro = new PieChartModel();
+        
+        for(ItemRubro ir : listaEjecutadoRubro){
+            chartEjecutadoPorRubro.set(ir.nombrerubro, ir.monto);
+        }
+        
+        chartEjecutadoPorRubro.setMouseoverHighlight(true);
+        chartEjecutadoPorRubro.setDiameter(65);
+        chartEjecutadoPorRubro.setShowDataLabels(true);
+
+         
+        //chartEjecutadoPorRubro.setTitle("Simple Pie");
+        //chartEjecutadoPorRubro.setLegendPosition("w");
+        chartEjecutadoPorRubro.setExtender("torta");
+        
+    }
 
     public static class SaldoRubro {
 
@@ -253,7 +280,7 @@ public class IndicadoresController implements Serializable {
 
     }
 
-    class ItemRubro {
+    public static class ItemRubro {
 
         private int id;
         private String nombrerubro;
