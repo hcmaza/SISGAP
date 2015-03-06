@@ -88,22 +88,40 @@
                                 </f:facet>
 
                                 <p:menuButton value="Opciones">
-                                    <p:menuitem value="Crear" action="#{proyectoController.CrearConEtapa}" ajax="false" icon="ui-icon-circle-check"/>
-                                    <p:menuitem value="Editar" action="#{proyectoController.prepareEditEtapa}" ajax="false" icon="ui-icon-pencil"/>
-                                    <p:separator />
-                                    <p:menuitem value="Desembolsos" action="#{desembolsoController.prepareList}" ajax="false" icon="ui-icon-plus">
-                                        <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
-                                    </p:menuitem>
-                                    <p:menuitem value="Solicitudes" action="#{solicitudController.prepareCreate}" ajax="false" icon="ui-icon-cart" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
-                                    </p:menuitem>
-                                    <p:menuitem value="Actas de Solicitud" action="#{solicitudactaController.prepareList}" ajax="false" icon="ui-icon-note" rendered="#{agenteController.selected.usuarioid.usuariorol.rol == 'Administrador'}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
-                                    </p:menuitem>
-                                    <p:menuitem value="Rendiciones" action="#{rendicionController.prepareList}" ajax="false" icon="ui-icon-suitcase" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
-                                    </p:menuitem>
+                                     <c:if test="#{request.isUserInRole('Administrador')}" > 
+                                        
+                                            <p:separator />
+                                            <p:menuitem rendered="#{item.estadoproyectoid.id eq 2 }" value="Crear" action="#{proyectoController.CrearConEtapa}" ajax="false" icon="ui-icon-circle-check"/>
+                                            <p:menuitem value="Editar" rendered="#{item.estadoproyectoid.id eq 2 || item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 7}" action="#{proyectoController.prepareEditEtapa}" ajax="false" icon="ui-icon-pencil"/>
+                                            <p:separator />
+                                            <p:menuitem rendered="#{item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" value="Desembolsos" action="#{desembolsoController.prepareList}" ajax="false" icon="ui-icon-plus">
+                                                <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                            </p:menuitem>
+                                            <p:menuitem rendered="#{item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" value="Actas de Solicitud" action="#{solicitudactaController.prepareList}" ajax="false" icon="ui-icon-note" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                            </p:menuitem>
+
+                                            
+                                            <p:menuitem value="Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{rendicionController.prepareList}" ajax="false" icon="ui-icon-suitcase" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                            </p:menuitem>
+                                     </c:if>
+                                     <c:if test="#{request.isUserInRole('Docente')}" > 
+                                         
+                                            <p:menuitem rendered="#{item.estadoproyectoid.id eq 2 }" value="Crear" action="#{proyectoController.CrearConEtapa}" ajax="false" icon="ui-icon-circle-check"/>
+                                            <p:menuitem value="Editar" rendered="#{item.estadoproyectoid.id eq 2 || item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 7}" action="#{proyectoController.prepareEditEtapa}" ajax="false" icon="ui-icon-pencil"/>
+                                            <p:separator />
+
+                                            <p:menuitem value="Solicitudes" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareCreate}" ajax="false" icon="ui-icon-cart" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                            </p:menuitem>
+
+                                            <p:menuitem value="Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{rendicionController.prepareList}" ajax="false" icon="ui-icon-suitcase" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                            </p:menuitem>
+                                        </c:if>
                                 </p:menuButton>
+                                    
 
                             </p:column>
                         </p:dataTable>

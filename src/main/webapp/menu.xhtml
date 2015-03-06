@@ -57,10 +57,12 @@
                 <p:submenu label="Mi Cuenta" icon="ui-icon-help">  
                     <p:menuitem value="Mi Cuenta" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/micuenta/Edit.xhtml' icon="ui-icon-close" />  
                 </p:submenu> 
-
-
+                            
+                    
 
                 <f:facet name="options">  
+                    
+                
                     <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
                     <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
                 </f:facet>  

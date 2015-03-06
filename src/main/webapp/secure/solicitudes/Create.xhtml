@@ -22,55 +22,7 @@
                 <p:growl id="growlprincipal" autoUpdate="true" showDetail="true"  />
 
                 <p:panel id="pprincipal" header="Proyecto N° #{proyectoController.selected.id}  - #{proyectoController.selected.nombre}" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
-                     <p:panel header="Indicadores" style="margin: 0 auto; overflow: hidden;">
-                        <p:panelGrid style="width: 100%;" styleClass="sinBordes">
-                            <p:row >
-                                <p:column style="width: 25%;" >
-                                    <p:fieldset legend="Saldo" style="height: 110px !important; " >
-                                        <p:outputLabel value="$ #{indicadoresController.saldoProyecto}" style="color: green; font-weight: bold; font-size: 20px !important;  " />
-                                    </p:fieldset>
-                                </p:column>
-                                <p:column style="width: 25%;">
-                                    <p:fieldset legend="Ejecución" style="height: 110px !important; ">
-                                        <p:chart type="metergauge" model="#{indicadoresController.indicadorEjecutado}" style="height: 100px;"  />
-                                    </p:fieldset>
-                                </p:column>
-                                <p:column colspan="2" style="width: 50%;">
-                                    <p:fieldset legend="Saldo Rubros" style="height: 110px !important; ">
-                                        <p:dataTable value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 8px !important;">
-                                            <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
-                                                <p:outputLabel value="#{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 8px !important; font-weight: bold;"  />
-                                            </p:columns>
-                                        </p:dataTable>
-                                    </p:fieldset>
-                                </p:column>
-                            </p:row>
-                            <p:row>
-                                <p:column style="width: 25%;">
-                                    <p:fieldset legend="Pendiente de Rendición" style="height: 110px !important;">
-                                        <p:outputLabel value="$ 10.230" style="color: #878787; font-weight: bold; font-size: 20px !important; " />
-                                    </p:fieldset>
-                                </p:column>
-                                <p:column style="width: 25%;">
-                                    <p:fieldset legend="Total Ejecutado" style="height: 110px !important; ">
-                                        <p:outputLabel value="$ 56.435,67" style="color: #00C7F6 ; font-weight: bold; font-size: 20px !important; " />
-                                    </p:fieldset>
-                                </p:column>
-                                <p:column style="width: 25%;">
-                                    <p:fieldset legend="Ejecutado por Rubros" style="height: 110px !important; ">
-                                        <p:chart type="pie" model="#{indicadoresController.chartEjecutadoPorRubro}" style="height:100px" styleClass="sinBordes" />
-                                    </p:fieldset>
-                                </p:column>
-                                <p:column style="width: 25%;">
-                                    <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
-
-                                    </p:fieldset>
-                                </p:column>
-                            </p:row>
-                        </p:panelGrid>
-
-
-                    </p:panel>
+                    
 
                     <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
                         <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item">
@@ -150,7 +102,7 @@
                                                      <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:pDisponibles :formprincipal:tabsolicitudes:pDisponiblesadquisicion :formprincipal:tabsolicitudes:pDisponiblesCertificacion " immediate="true" />
                                                     <p:tab id="tabanticipos" title="Anticipo" >
                            
-                                                        <p:dataTable id="pDisponibles" widgetVar="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
+                                                        <p:dataTable id="pDisponibles" widgetVar="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
                                                                 <f:facet name="header">
                                                                     Items Disponibles
                                                                 </f:facet>
@@ -169,11 +121,11 @@
                                                                 <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
                                                                     <h:outputText value="#{item.presupuestotarea.total}" />
                                                                 </p:column>
-                                                                <p:column headerText="Disponible" sortBy="#{item.importe}">
-                                                                    <h:outputText value="#{item.importe}" />
+                                                            <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                                                <h:outputText value="#{item.disponible}" />
                                                                 </p:column>
                                                                 <p:column style="width:32px;text-align: center">
-                                                                    <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar" immediate="true">
+                                                                    <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
                                                                         <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                                                     </p:commandButton> 
 
@@ -215,11 +167,11 @@
                                                                 <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
                                                                     <h:outputText value="#{item.presupuestotarea.total}" />
                                                                 </p:column>
-                                                                <p:column headerText="Disponible" sortBy="#{item.importe}">
-                                                                    <h:outputText value="#{item.importe}" />
+                                                                <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                                                    <h:outputText value="#{item.disponible}" />
                                                                 </p:column>
                                                                 <p:column style="width:32px;text-align: center">
-                                                                    <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar" immediate="true">
+                                                                    <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
                                                                         <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                                                     </p:commandButton> 
 
@@ -262,11 +214,11 @@
                                                                 <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
                                                                     <h:outputText value="#{item.presupuestotarea.total}" />
                                                                 </p:column>
-                                                                <p:column headerText="Disponible" sortBy="#{item.importe}">
-                                                                    <h:outputText value="#{item.importe}" />
+                                                                <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                                                    <h:outputText value="#{item.disponible}" />
                                                                 </p:column>
                                                                 <p:column style="width:32px;text-align: center">
-                                                                    <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show()" icon="ui-icon-circle-plus" title="Solicitar" immediate="true">
+                                                                    <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
                                                                         <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                                                     </p:commandButton> 
 
@@ -303,6 +255,9 @@
                                                                 <p:column headerText="Rubro">
                                                                     <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
                                                                 </p:column>
+                                                                <p:column headerText="Tipo Solicitud">
+                                                                    <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                                                </p:column>
                                                                 <p:column headerText="Cantidad">
                                                                     <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                                                 </p:column>
@@ -310,8 +265,8 @@
                                                                     <h:outputText value="#{item.importe}" />
                                                                 </p:column>
                                                                 <p:column style="width:32px;text-align: center">
-                                                                    <p:commandButton action="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:pSolicitados" >
-                                                                        <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"   />
+                                                                    <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:pSolicitados" >
+                                                                        <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
                                                                     </p:commandButton>
                                                                 </p:column>
                                                                 <f:facet name="footer">
@@ -359,7 +314,7 @@
                             <h:outputText id="ddisponible" value="#{solicitudController.selected.disponible}" />
 
                             <p:outputLabel value="Solicitado" />
-                            <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}" >
+                            <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}"  >
                                 <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
                                 	<f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
                             </p:inputText>    
@@ -371,12 +326,13 @@
                     </p:outputPanel>
 
                     <p:separator/>
-
-                    <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}"  update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                    <div align="center" >
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                    </div>
                 </p:dialog>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:pSolicitados" style="float:left;" /> 
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados" style="float:left;" /> 
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
                 </p:confirmDialog>
             </h:form>
