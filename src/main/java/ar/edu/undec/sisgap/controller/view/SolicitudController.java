@@ -159,7 +159,7 @@ public class SolicitudController implements Serializable {
 
         armarSolicitudesYDesembolsos();
 
-        return "Create";
+        return "CreateSolicitud";
     }
     
     public void armarSolicitudesYDesembolsos(){
@@ -264,7 +264,7 @@ public class SolicitudController implements Serializable {
 
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudCreated"));
 
-            return prepareList();
+            return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;

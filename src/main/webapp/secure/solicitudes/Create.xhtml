@@ -15,6 +15,8 @@
 
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+              <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
+
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
 
@@ -22,7 +24,56 @@
                 <p:growl id="growlprincipal" autoUpdate="true" showDetail="true"  />
 
                 <p:panel id="pprincipal" header="Proyecto N° #{proyectoController.selected.id}  - #{proyectoController.selected.nombre}" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
-                    
+                    <p:panel header="Indicadores de Ejecución" style="margin: 0 auto; overflow: hidden;">
+                        <p:panelGrid style="width: 100%;" styleClass="sinBordes">
+                            <p:row >
+                                <p:column style="width: 25%;" >
+                                    <p:fieldset legend="Saldo" style="height: 110px !important; " >
+                                        <p:outputLabel value="$ #{solicitudController.sumarDisponible()}" style="color: green; font-weight: bold; font-size: 20px !important;  " />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Ejecución" style="height: 110px !important; ">
+                                        <p:chart type="metergauge" model="#{solicitudController.indicadorEjecutado}" style="height: 100px;"  />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column colspan="2" style="width: 50%;">
+                                    <p:fieldset legend="Saldo Rubros" style="height: 110px !important; ">
+                                        <p:dataTable value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 8px !important;">
+                                            <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
+                                                <p:outputLabel value="#{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 8px !important; font-weight: bold;"  />
+                                            </p:columns>
+                                        </p:dataTable>
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Pendiente de Rendición" style="height: 110px !important;">
+                                        <p:outputLabel value="$#{indicadoresController.pendienteRendicionProyecto}" style="color: #878787; font-weight: bold; font-size: 20px !important; " />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Total Ejecutado" style="height: 110px !important; ">
+                                        <p:outputLabel value="$#{indicadoresController.ejecutadoProyecto}" style="color: #00C7F6 ; font-weight: bold; font-size: 20px !important; " />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Ejecutado por Rubros" style="height: 110px !important; ">
+                                        <p:chart type="pie" model="#{indicadoresController.chartEjecutadoPorRubro}" style="height:100px" styleClass="sinBordes" />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
+
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+
+
+                    </p:panel>
+
 
                     <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
                         <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item">
@@ -281,7 +332,7 @@
                     <br style="clear: both;"/>
                      <p:separator />
                                         <div align="center">
-                                            <p:commandButton action="#{solicitudController.create}" value="Crear Solcitud" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" />
+                                            <p:commandButton action="#{solicitudController.create}" value="Crear Solcitud" style="display: inline-block;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />
                                         </div>
                     <p:separator />
                      <br style="clear: both;"/>

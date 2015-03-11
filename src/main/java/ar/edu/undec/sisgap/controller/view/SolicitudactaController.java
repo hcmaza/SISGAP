@@ -141,7 +141,7 @@ public class SolicitudactaController implements Serializable {
             System.out.println(s.toString());
         }
 
-        return "Create";
+        return "CreateSolicitudActa";
     }
 
     public String create() {

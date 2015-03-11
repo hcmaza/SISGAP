@@ -59,12 +59,18 @@
                 </p:submenu> 
                             
                     
-
-                <f:facet name="options">  
-                    
                 
-                    <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
-                    <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
+                <f:facet name="options"> 
+                      <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
+                    
+                    <div id="noti_Container">
+                        <p:commandButton value="Notificaciones" />
+                        <div class="noti_bubble">7</div>
+                    
+                    </div>
+                      
+                        <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
+                   
                 </f:facet>  
 
             </c:if>

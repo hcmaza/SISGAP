@@ -31,7 +31,7 @@ public class NotificacionController {
        if(context.getExternalContext().isUserInRole("Administrador") & proyectocontroller.buscarIdeasProyectosEvaluar()>0 ){
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ideas proyectos a evaluar " , "Hay "+proyectocontroller.buscarIdeasProyectosEvaluar()+ " proyectos a evaluar !" ));  
        }
-    context.addMessage(null, new FacesMessage("Second Message", "Additional Info Here..."));  
+    context.addMessage(null, new FacesMessage(" Bienvenido ",""+ context.getExternalContext().getUserPrincipal()));  
     
      
      }  
