@@ -257,24 +257,30 @@ public class ArchivorendicionController implements Serializable {
         }
 
     }
+    
+    public void nuevoArchivoRendicion(){
+        current = new Archivorendicion();
+    }
+    
+    public void agregarArchivoLista(){
+        getListaArchivos().add(current);
+    }
 
     public void subirArchivoRendicion(FileUploadEvent event) {
         System.out.println("Subiendo Archivo de Rendición");
 
         try {
-            current = new Archivorendicion();
+            //current = new Archivorendicion();
             current.setNombrearchivo(event.getFile().getFileName());
             current.setArchivo(event.getFile().getContents());
-            getListaArchivos().add(current);
+            //getListaArchivos().add(current);
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() + " fue subido satisfactoriamente!"));
         } catch (Exception e) {
             System.out.println("Excepcion en RendicionController - subirArchivo");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error", "Ocurrió un error al subir el archivo"));
             e.printStackTrace();
-
         }
-
     }
 
     public void removerArchivoLista() {
@@ -297,17 +303,10 @@ public class ArchivorendicionController implements Serializable {
 
             for (Archivorendicion ar : getListaArchivos()) {
                 if (ar.getNombrearchivo().equals(nombreArchivo)) {
-                    //BufferedImage bufferedImg = new BufferedImage(100, 25, BufferedImage.TYPE_INT_RGB);
-                    //ByteArrayOutputStream os = new ByteArrayOutputStream();
-                    //ImageIO.write(bufferedImg, "png", os);
-                    //imagen = new DefaultStreamedContent(new ByteArrayInputStream(os.toByteArray()), "image/png");
                     return new DefaultStreamedContent(new ByteArrayInputStream(ar.getArchivo()));
                 }
             }
-
-            
         }
-
         return null;
     }
 
