@@ -259,7 +259,10 @@ public class ArchivorendicionController implements Serializable {
     }
     
     public void nuevoArchivoRendicion(){
-        current = new Archivorendicion();
+       System.out.println("Archivo rendicion aklsd"); 
+       current = null;
+       current = new Archivorendicion();
+       System.out.println("Archivo rendicion qweqwe"); 
     }
     
     public void agregarArchivoLista(){

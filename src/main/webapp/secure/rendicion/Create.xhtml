@@ -204,12 +204,14 @@
                             <p:dataTable id="tblSolicitudes" 
                                          var="item" 
                                          value="#{rendicionController.listaSolicitudes}" 
-                                         selection="#{rendicionController.listaSolicitudesSeleccionadas}" 
-                                         rowKey="#{item.id}" >
+                                         rowKey="#{item.id}" 
+                                         selection="#{rendicionController.solicitudSeleccionada}">
+                                         <!--selection="{rendicionController.listaSolicitudesSeleccionadas}" >-->
                                 <f:facet name="header">
                                     Seleccionar las Solicitudes que se Rinden
                                 </f:facet>
-                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
+                                <p:column selectionMode="single" style="width:16px;text-align:center"/>
                                 <p:column headerText="Descripcion">
                                     <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                 </p:column>
@@ -229,9 +231,11 @@
                             <p:outputLabel value="Comprobantes" />
                             <h:panelGrid cellpadding="2" cellspacing="10" columnClasses="right,left" columns="3">    
 
-                                <p:commandButton update=":formprincipal:tarchivos, :formprincipal:growlprincipal" actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoFactura').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" >
+                                <p:commandButton update=":formprincipal:growlprincipal" actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoFactura').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
                                     <!--<f:setPropertyActionListener value="{item}" target="{solicitudController.selected}" />-->
                                 </p:commandButton>
+                                
+                                <p:remoteCommand id="nuevoArchivo" action="#{archivorendicionController.nuevoArchivoRendicion()}" />
 
                                 <p:dataTable id="tarchivos" var="arc" value="#{archivorendicionController.listaArchivos}" style="top: 5px;" >  
                                     <f:facet name="header">
@@ -329,7 +333,7 @@
                             <p:outputLabel value="Archivo de Factura" />
                             <h:form id="fupload" enctype="multipart/form-data">
                                 <p:fileUpload label="Imagen de Factura" id="documentacion" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
-                                              sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal, :formprincipal:tarchivos, :formprincipal:vercomprobantes"  >
+                                              sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
                                 </p:fileUpload>    
                             </h:form>
 
@@ -342,7 +346,7 @@
                     <p:separator/>
                     <div align="center" >
                         <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
-                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tarchivos" oncomplete="PF('dialogoItemSolicitud').hide();" />
+                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tarchivos, :formprincipal:vercomprobantes" oncomplete="PF('dialogoFactura').hide();" />
                     </div>
                 </p:dialog>
 
