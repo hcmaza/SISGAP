@@ -9,6 +9,8 @@ import ar.edu.undec.sisgap.model.Tiposolicitud;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 
 /**
  *
@@ -28,4 +30,15 @@ public class TiposolicitudFacade extends AbstractFacade<Tiposolicitud> {
         super(Tiposolicitud.class);
     }
     
+    public Tiposolicitud findWithTiposolicitud(String tiposolicitud){
+        try{
+           Query consulta = em.createQuery("select ts from Tiposolicitud ts where ts.tiposolicitud like :tiposolicitud", Tiposolicitud.class).setParameter("tiposolicitud", tiposolicitud);
+           return (Tiposolicitud) consulta.getSingleResult();
+        }catch(Exception e){
+            System.out.println("problema en la consulta en Tipo de Solicitud "+ e);
+            return null;
+        }
+    }
+   
+
 }

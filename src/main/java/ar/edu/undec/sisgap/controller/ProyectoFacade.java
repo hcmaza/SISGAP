@@ -59,9 +59,13 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
     
     public List<Proyecto> buscarEvaluarIdeaProyectoEstado(){
         
-        List<Proyecto> proyecto;
+        List<Proyecto> proyectosaevaluar;
        try{
-           return em.createQuery("select p from Proyecto p join p.agenteid a where p.estadoproyectoid.id = 1 or p.estadoproyectoid.id= 7", Proyecto.class).getResultList();
+           proyectosaevaluar = em.createQuery("select p from Proyecto p join p.agenteid a where p.estadoproyectoid.id = 1 or p.estadoproyectoid.id= 7", Proyecto.class).getResultList();
+           for(Proyecto p : proyectosaevaluar){
+               System.out.println("-----------------"+p.getEstadoproyectoid().getEstado());
+           }
+           return proyectosaevaluar;
        }catch(Exception e){
            System.out.println("No se pudo realizar la consulta"+e);
            return null;
@@ -111,7 +115,9 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
         
         List<Proyecto> proyecto;
        try{
-           return (long)em.createQuery("select count(p) from Proyecto p where p.estadoproyectoid.id = 1 and p.estadoproyectoid.id = 7 ", Long.class).getSingleResult();
+           System.out.println("cantidad evaluar ------");
+           return (long)em.createQuery("select count(p) from Proyecto p where p.estadoproyectoid.id = 1 or p.estadoproyectoid.id = 7 ", Long.class).getSingleResult();
+           
        }catch(Exception e){
            System.out.println("No se pudo realizar la consulta"+e);
            return 0;

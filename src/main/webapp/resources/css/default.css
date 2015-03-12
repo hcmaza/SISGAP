@@ -257,3 +257,33 @@ table {
 .ui-icon-cancelar{
     background-image: url("#{resource['img/cancel.jpg']}") !important;
 }
+
+.bubble {
+    background: none repeat scroll 0% 0% #E02424;
+    position: absolute;
+    right: 5px;
+    top: -5px;
+    padding: 2px 6px;
+    color: #FFF;
+    font: bold 0.9em Tahoma,Arial,Helvetica;
+    border-radius: 3px;
+}
+
+#noti_Container {
+    position:relative;
+    width:110px;
+    height:16px;
+}
+.noti_bubble {
+    position:absolute;
+    top: -6px;
+    right:-6px;
+    padding:1px 2px 1px 2px;
+    background-color:red;
+    color:white;
+    font-weight:bold;
+    font-size:0.55em;
+    
+    border-radius:30px;
+    box-shadow:3px 3px 3px gray;
+}

@@ -150,7 +150,7 @@ public class RendicionController implements Serializable {
         // Vaciamos la lista de solicitudes seleccionadas
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
 
-        return "Create";
+        return "CreateRendicion";
     }
 
     public String create() {

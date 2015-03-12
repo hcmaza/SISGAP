@@ -84,7 +84,7 @@ public class DesembolsoController implements Serializable {
     public String prepareCreate() {
         current = new Desembolso();
         selectedItemIndex = -1;
-        return "Create";
+        return "CreateDesembolso";
     }
 
     public String create() {

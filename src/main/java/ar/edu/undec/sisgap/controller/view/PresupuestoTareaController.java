@@ -810,8 +810,9 @@ public class PresupuestoTareaController implements Serializable {
      * se llena la lista [presupuestostareas] para un proyecto determinado
      * 
      * @param proyectoid 
+     * @param tiposolicitud 
      */
-    public void establecerListaPresupuestoTareaBienesPorProyecto(int proyectoid) {
+    public void establecerListaPresupuestoTareaBienesPorProyecto(int proyectoid, String tiposolicitud) {
 
         // Obtenemos el controlador de tarea
         FacesContext context = FacesContext.getCurrentInstance();
@@ -824,12 +825,22 @@ public class PresupuestoTareaController implements Serializable {
         tareacontroller.establecerTareasPorProyecto(proyectoid);
 
         // Para cada tarea en el controlador, obtenermos su lista de [PresupuestoTarea]
+       
         for (Tarea t : tareacontroller.getTareasdeproyecto()) {
             for (PresupuestoTarea p : t.getPresupuestoTareaList()) {
+                resultado.add(p);
                 // Se filtra que no sea de los rubros recursos humanos y servicios de terceros [POR AHORA]
-                if (!esRubroPorId(p, 4) && !esRubroPorId(p, 5)) {
-                    resultado.add(p);
+            /*   if((tiposolicitud.equals("Anticipo")) | (tiposolicitud.equals("Adquisición"))){
+                    if (!esRubroPorId(p, 4) && !esRubroPorId(p, 5)) {
+                        resultado.add(p);
+                    }
                 }
+               if(tiposolicitud.equals("Certificación")){
+                   if (esRubroPorId(p, 4) && esRubroPorId(p, 5)) {
+                        resultado.add(p);
+                    }
+                }
+            */
             }
         }
 
