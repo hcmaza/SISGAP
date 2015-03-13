@@ -255,7 +255,6 @@ public class ArchivorendicionController implements Serializable {
                 throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Archivorendicion.class.getName());
             }
         }
-
     }
     
     public void nuevoArchivoRendicion(){

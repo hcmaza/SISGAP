@@ -292,6 +292,39 @@
                                         </p:dataTable>
 
                                     </p:tab>
+                                    
+                                    <p:tab id="tampliacion" title="Ampliación de Presupuesto" >
+
+                                        <p:dataTable id="pPresupuestosTarea" widgetVar="pPresupuestosTarea" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
+                                            <f:facet name="header">
+                                                Items Disponibles
+                                            </f:facet>
+                                            <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                            </p:column>
+                                            <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                                <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                            </p:column>
+                                            <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
+                                                <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                            </p:column>
+                                            <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                                            </p:column>
+                                            <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
+                                                <h:outputText value="#{item.presupuestotarea.total}" />
+                                            </p:column>
+                                            <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                                <h:outputText value="#{item.disponible}" />
+                                            </p:column>
+                                            <p:column style="width:32px;text-align: center">
+                                                <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                                </p:commandButton> 
+
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:tab>
                                 </p:tabView>
                             </p:column>
 
@@ -382,6 +415,44 @@
                     </div>
                 </p:dialog>
 
+                <p:dialog header="Item Solicitud" widgetVar="dialogoAmpliacion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="itemSolicitud" style="text-align:center;">
+                        <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
+                        <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
+                            <f:facet name="header">
+                                <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
+                            </f:facet>
+
+                            <p:outputLabel value="Costo Unitario" />
+                            <h:outputText id="dcostounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
+
+                            <p:outputLabel value="Cantidad" />
+                            <h:outputText id="dcantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
+
+                            <p:outputLabel value="Presupuestado" />
+                            <h:outputText id="dpresupuestado" value="#{solicitudController.selected.presupuestotarea.total}" />
+
+                            <p:outputLabel value="Disponible" />
+                            <h:outputText id="ddisponible" value="#{solicitudController.selected.disponible}" />
+
+                            <p:outputLabel value="Solicitado" />
+                            <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}"  >
+                                <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
+                                <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
+                            </p:inputText>    
+
+                            <p:outputLabel value="Observación" />
+                            <p:inputTextarea id="dobservacion" value="#{solicitudController.selected.observacion}" />
+
+                        </p:panelGrid>
+                    </p:outputPanel>
+
+                    <p:separator/>
+                    <div align="center" >
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                    </div>
+                </p:dialog>
+                
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                     <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados" style="float:left;" /> 
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
