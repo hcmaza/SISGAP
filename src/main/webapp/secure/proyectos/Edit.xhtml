@@ -27,6 +27,7 @@
         </p:dialog>  -->
 
               
+            
             <h:form id="form" >
                 
                 <p:panel header="Proyecto N° #{proyectoController.selected.id} - #{proyectoController.selected.nombre}" toggleable="true" collapsed="true" toggleTitle="Descripcion del Proyecto" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;" >
@@ -486,7 +487,9 @@
                                <p:columnGroup type="footer">
                                     <p:row>
                                         <p:column colspan="4" style="text-align:right" footerText="Totales:" />
-                                                      
+                                        
+                                        <p:column footerText="#{presupuestoTareaController.sumagastocomitente}" />
+                                        
                                         <p:column footerText="#{presupuestoTareaController.sumagastouniversidad}" />
                                     
                                    <p:column footerText="#{presupuestoTareaController.sumagastoorganismo}" />
@@ -606,8 +609,6 @@
                                     </p:subTable>
                   </p:dataTable>
               </p:panel>
-              
-           
                 
                         <br />
 
