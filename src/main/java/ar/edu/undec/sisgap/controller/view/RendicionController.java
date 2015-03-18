@@ -50,6 +50,7 @@ public class RendicionController implements Serializable {
     private List<Solicitud> listaSolicitudes;
 
     private List<Solicitud> listaSolicitudesSeleccionadas;
+    private Solicitud solicitudSeleccionada;
 
     public RendicionController() {
     }
@@ -96,6 +97,14 @@ public class RendicionController implements Serializable {
 
     public void setListaSolicitudesSeleccionadas(List<Solicitud> listaSolicitudesSeleccionadas) {
         this.listaSolicitudesSeleccionadas = listaSolicitudesSeleccionadas;
+    }
+
+    public Solicitud getSolicitudSeleccionada() {
+        return solicitudSeleccionada;
+    }
+
+    public void setSolicitudSeleccionada(Solicitud solicitudSeleccionada) {
+        this.solicitudSeleccionada = solicitudSeleccionada;
     }
 
     public PaginationHelper getPagination() {

@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+
 /**
  *
  * @author mpaez
@@ -38,5 +39,6 @@ public class TiposolicitudFacade extends AbstractFacade<Tiposolicitud> {
             return null;
         }
     }
-    
+   
+
 }

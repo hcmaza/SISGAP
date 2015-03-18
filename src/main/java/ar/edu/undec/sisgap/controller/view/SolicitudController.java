@@ -853,6 +853,15 @@ public class SolicitudController implements Serializable {
                     }
                 }
             }
+            
+            if(tabseleccionado.equals("Ampliación de Presupuesto")){
+                for(Solicitud s : this.itemsDisponibles ){
+                    
+                   // if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
+                        this.itemsDisponibles.add(s);
+                   // }
+                }
+            }
         
         
         

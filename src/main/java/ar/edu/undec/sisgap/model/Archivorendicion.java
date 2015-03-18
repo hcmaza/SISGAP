@@ -6,6 +6,7 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,6 +52,18 @@ public class Archivorendicion implements Serializable {
     @JoinColumn(name = "rendicionid", referencedColumnName = "id")
     @ManyToOne
     private Rendicion rendicionid;
+    
+    @Size(max = 25)
+    @Column(name = "nrofactura")
+    private String nrofactura;
+    
+    @Size(max = 200)
+    @Column(name = "obsfactura")
+    private String obsfactura;
+    
+    @Column(name = "montofactura")
+    private BigDecimal montofactura;
+    
 
     public Archivorendicion() {
     }
@@ -91,6 +104,30 @@ public class Archivorendicion implements Serializable {
         this.rendicionid = rendicionid;
     }
 
+    public String getNrofactura() {
+        return nrofactura;
+    }
+
+    public void setNrofactura(String nrofactura) {
+        this.nrofactura = nrofactura;
+    }
+
+    public String getObsfactura() {
+        return obsfactura;
+    }
+
+    public void setObsfactura(String obsfactura) {
+        this.obsfactura = obsfactura;
+    }
+
+    public BigDecimal getMontofactura() {
+        return montofactura;
+    }
+
+    public void setMontofactura(BigDecimal montofactura) {
+        this.montofactura = montofactura;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
