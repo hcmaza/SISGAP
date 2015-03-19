@@ -91,10 +91,6 @@
                     <p:menuitem value="Lista de Proyectos" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/List.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
                 </p:submenu>
                 
-                <p:submenu label="Solicitudes" icon="ui-icon-pencil">  
-                    <p:menuitem value="Listado de Solicitudes" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/solicitudes/List.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
-                </p:submenu>                
-                
                 <p:submenu label="Ayuda" icon="ui-icon-help">  
                     <p:menuitem value="Acerca de ..." onclick="PF('dabout').show()" />  
                     <p:submenu label="Manual" icon="ui-icon-search">  
@@ -111,6 +107,13 @@
 
                 <f:facet name="options">  
                     <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
+                    
+                     <div id="noti_Container">
+                        <p:commandButton value="Notificaciones" actionListener="#{notificacionController.notificar()}" update=":formmenu:growlnotificaciones" />
+                        <div class="noti_bubble">#{notificacionController.contadornotifadministrador}</div>
+                    
+                    </div>
+                    
                     <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
 
                 </f:facet>  

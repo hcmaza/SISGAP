@@ -21,10 +21,7 @@
                     <h:outputText escape="false" value="La lista de solicitudes está vacía" rendered="#{proyectoController.items.rowCount == 0}"/>
 
                     <h:panelGroup rendered="#{proyectoController.items.rowCount > 0}">
-                        <h:outputText value="#{proyectoController.pagination.pageFirstItem + 1}..#{proyectoController.pagination.pageLastItem + 1}/#{proyectoController.pagination.itemsCount}"/>&nbsp;
-                        <h:commandLink action="#{proyectoController.previous}" value="#{bundle.Previous} #{proyectoController.pagination.pageSize}" rendered="#{proyectoController.pagination.hasPreviousPage}"/>&nbsp;
-                        <h:commandLink action="#{proyectoController.next}" value="#{bundle.Next} #{proyectoController.pagination.pageSize}" rendered="#{proyectoController.pagination.hasNextPage}"/>&nbsp;
-
+                      
                         <p:dataTable scrollable="true" liveScroll="true" scrollWidth="95%" 
                                      id="tbl" 
                                      value="#{proyectoController.items}" 
