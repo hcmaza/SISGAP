@@ -13,12 +13,10 @@
         </ui:define>
 
     <ui:define name="body">
-        <f:event type="preRenderView" listener="#{notificacionController.notificar()}" ></f:event>
-           <p:growl id="growlnotificaciones" showDetail="true" sticky="true" />  
-    
-        <h:form>
-            
-             <c:if test="#{request.isUserInRole('Administrador')}" > 
+           
+        <h:form id="formindex">
+          
+        <!--     <c:if test="#{request.isUserInRole('Administrador')}" > 
                  <p:notificationBar autoDisplay="true" rendered="#{proyectoController.buscarIdeasProyectosEvaluar()>0}" position="top" effect="slide" styleClass="top" widgetVar="bar">
                      <div align="center" >
                         <br />
@@ -28,7 +26,7 @@
                         <p:commandButton value="OK" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n"/>
                      </div>
                     </p:notificationBar>
-             </c:if>
+             </c:if> -->
             <p:panel id="pprincipal" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
 
