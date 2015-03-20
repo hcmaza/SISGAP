@@ -16,9 +16,6 @@
                 </h:panelGroup>
                 <h:outputText escape="false" value="#{bundle.ListSolicitudEmpty}" rendered="#{solicitudController.items.rowCount == 0}"/>
                 <h:panelGroup rendered="#{solicitudController.items.rowCount > 0}">
-                    <h:outputText value="#{solicitudController.pagination.pageFirstItem + 1}..#{solicitudController.pagination.pageLastItem + 1}/#{solicitudController.pagination.itemsCount}"/>&nbsp;
-                    <h:commandLink action="#{solicitudController.previous}" value="#{bundle.Previous} #{solicitudController.pagination.pageSize}" rendered="#{solicitudController.pagination.hasPreviousPage}"/>&nbsp;
-                    <h:commandLink action="#{solicitudController.next}" value="#{bundle.Next} #{solicitudController.pagination.pageSize}" rendered="#{solicitudController.pagination.hasNextPage}"/>&nbsp;
                     <h:dataTable value="#{solicitudController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
                         <h:column>
                             <f:facet name="header">

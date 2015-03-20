@@ -415,43 +415,6 @@
                     </div>
                 </p:dialog>
 
-                <p:dialog header="Item Solicitud" widgetVar="dialogoAmpliacion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="itemSolicitud" style="text-align:center;">
-                        <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                        <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
-                            <f:facet name="header">
-                                <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
-                            </f:facet>
-
-                            <p:outputLabel value="Costo Unitario" />
-                            <h:outputText id="dcostounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
-
-                            <p:outputLabel value="Cantidad" />
-                            <h:outputText id="dcantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
-
-                            <p:outputLabel value="Presupuestado" />
-                            <h:outputText id="dpresupuestado" value="#{solicitudController.selected.presupuestotarea.total}" />
-
-                            <p:outputLabel value="Disponible" />
-                            <h:outputText id="ddisponible" value="#{solicitudController.selected.disponible}" />
-
-                            <p:outputLabel value="Solicitado" />
-                            <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}"  >
-                                <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
-                                <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
-                            </p:inputText>    
-
-                            <p:outputLabel value="Observación" />
-                            <p:inputTextarea id="dobservacion" value="#{solicitudController.selected.observacion}" />
-
-                        </p:panelGrid>
-                    </p:outputPanel>
-
-                    <p:separator/>
-                    <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
-                    </div>
-                </p:dialog>
                 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                     <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados" style="float:left;" /> 

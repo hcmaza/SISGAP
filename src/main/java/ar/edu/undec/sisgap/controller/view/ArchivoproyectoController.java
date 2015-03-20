@@ -43,7 +43,7 @@ public class ArchivoproyectoController implements Serializable {
     private ar.edu.undec.sisgap.controller.ArchivoproyectoFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private List<Archivoproyecto> collectorArchivoProyecto= new ArrayList<Archivoproyecto>();
+    private List<Archivoproyecto> collectorArchivoProyecto = new ArrayList<Archivoproyecto>();
     private int contador=0;
     private boolean iseditar=true;
     private StreamedContent file;
@@ -313,6 +313,8 @@ public class ArchivoproyectoController implements Serializable {
         if((this.collectorArchivoProyecto.isEmpty()) & (iseditar)){
             this.collectorArchivoProyecto = this.ejbFacade.findporProyecto(id);
             iseditar = false;
+        }else{
+            this.collectorArchivoProyecto = new ArrayList<Archivoproyecto>();
         }
         
     }
