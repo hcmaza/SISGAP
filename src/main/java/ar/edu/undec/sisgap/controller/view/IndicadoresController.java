@@ -67,7 +67,7 @@ public class IndicadoresController implements Serializable {
     private float ejecutadoProyecto = 0.0f;
     
     // Monto rendido por proyecto
-    private float rendidoProyecto;
+    private float rendidoProyecto = 0.0f;
     
     // Monto pendiente de rendicion por proyecto
     private float pendienteRendicionProyecto;
@@ -357,9 +357,14 @@ public class IndicadoresController implements Serializable {
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         
         totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(proyectocontroller.getSelected().getId());
-        
-        
-        
+    }
+    
+    public void calcularPendienteRendicion(){
+        this.pendienteRendicionProyecto = 12588.12f;
+    }
+    
+    public void calcularTotalEjecutado(){
+        this.ejecutadoProyecto = 56451.58f;
     }
 
     public static class SaldoRubro {
