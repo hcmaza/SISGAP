@@ -15,6 +15,7 @@
 
             <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            <f:event type="preRenderView" listener="#{presupuestoTareaController.armarPresupuestoGeneral}" />
             <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
 
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
@@ -65,7 +66,6 @@
                                 </p:column>
                                 <p:column style="width: 25%;">
                                     <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
-
                                     </p:fieldset>
                                 </p:column>
                             </p:row>
@@ -73,86 +73,49 @@
                     </p:panel>
 
 
-                    <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
-                        <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item">
-                            <f:attribute name="”collectionType”" value="”java.util.ArrayList”/">
-                            </f:attribute>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Rubro"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.rubro.rubro}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Gastocomitente"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.gastocomitente}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Gastoorganismo"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.gastoorganismo}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Gastouniversidad"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.gastouniversidad}"/>
-                            </p:column>
-                        </p:dataTable>
-
-                        <h:panelGrid columns="2">
-                            <p:panelGrid style="font-weight:bold;" id="paportes" columns="2">
-                                <f:facet name="header">  
-                                    Total de Aportes  
-                                </f:facet>
-                                <p:outputLabel value="Aportes Organismo"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastoorganismo}"/>
-                                <p:outputLabel value="Aportes Comitente"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastocomitente}"/>
-                                <p:outputLabel value="Aportes Universidad"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastouniversidad}"/>
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoController.sumatotal}  
-                                </f:facet>
-                            </p:panelGrid>
-
-                            <p:chart type="pie" id="caportes" model="#{presupuestoController.pieModelAportes}"   
-                                     style="width:100%;height:300px"  /> 
-
-                            <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="data" >
-                                <f:facet name="header">  
-                                    Total de Rubros  
-                                </f:facet>
-                                <p:column >
-                                    <p:outputLabel style="font-weight:bold;" value="#{data.rubro.rubro}"/>
-                                </p:column>
-                                <p:column>
-                                    <p:outputLabel style="font-weight:bold;" value="$#{data.total}"/>
-                                </p:column>    
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoController.sumatotal}  
-                                </f:facet>
-                            </p:dataTable>
-                            <p:chart type="pie" id="crubros" model="#{presupuestoController.pieModelRubro}"   
-                                     style="width:100%;height:300px"  /> 
-
-                        </h:panelGrid>
-                    </p:panel>
-
-
                     <p:panel header="Solicitudes" >
 
                         <p:tabView id="tabsolicitudes">
                             <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:pDisponibles :formprincipal:tabsolicitudes:pDisponiblesadquisicion :formprincipal:tabsolicitudes:pDisponiblesCertificacion " immediate="true" />
+
+                            <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
+
+                                <p:treeTable id="tablepresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;"  >
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.descripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.rubro.rubro}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad">
+                                        <h:outputText value="#{item.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Costo Unitario">
+                                        <h:outputText value="#{item.costounitario}" />
+                                    </p:column>
+                                    <p:column headerText="Total">
+                                        <h:outputText value="#{item.total}" />
+                                    </p:column>
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" />
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:treeTable>
+                            </p:tab>
+
                             <p:tab id="tabanticipos" title="Anticipo" >
 
                                 <p:dataTable id="pDisponibles" widgetVar="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
+                                             paginatorPosition="bottom"
+                                             rows="5"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="5,10,25" >
+                                             rowsPerPageTemplate="5,10,25"
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla" >
                                     <f:facet name="header">
                                         Items Disponibles del Presupuesto
                                     </f:facet>
@@ -171,9 +134,9 @@
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-<!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
-                                        <h:outputText value="{item.presupuestotarea.total}" />
-                                    </p:column>-->
+                                    <!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
+                                                                            <h:outputText value="{item.presupuestotarea.total}" />
+                                                                        </p:column>-->
                                     <p:column headerText="Disponible" sortBy="#{item.disponible}">
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
@@ -201,25 +164,33 @@
                                 </p:dataTable>
                             </p:tab>
                             <p:tab id="tabadquisiciones" title="Adquisición" >
-                                <p:dataTable id="pDisponiblesadquisicion" widgetVar="pDisponiblesadquisicion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                <p:dataTable id="pDisponiblesadquisicion" widgetVar="pDisponiblesadquisicion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}"
+                                             paginator="true"
+                                             paginatorPosition="bottom"
+                                             rows="5"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,25" >
                                     <f:facet name="header">
-                                        Items Disponibles
+                                        Items Disponibles del Presupuesto
                                     </f:facet>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
-                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                    </p:column>
                                     <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
                                     </p:column>
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    </p:column>
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
-                                        <h:outputText value="#{item.presupuestotarea.total}" />
-                                    </p:column>
+                                    <!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
+                                                                            <h:outputText value="{item.presupuestotarea.total}" />
+                                                                        </p:column>-->
                                     <p:column headerText="Disponible" sortBy="#{item.disponible}">
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
@@ -247,27 +218,35 @@
                                 </p:dataTable>
 
                             </p:tab>
-                            
+
                             <p:tab id="tabcertificacion" title="Certificación" >
-                                <p:dataTable id="pDisponiblesCertificacion" widgetVar="pDisponiblesCertificacion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}"  >
+                                <p:dataTable id="pDisponiblesCertificacion" widgetVar="pDisponiblesCertificacion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
+                                             paginator="true"
+                                             paginatorPosition="bottom"
+                                             rows="5"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,25" >
                                     <f:facet name="header">
-                                        Items Disponibles
+                                        Items Disponibles del Presupuesto
                                     </f:facet>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
-                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                    </p:column>
                                     <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
                                     </p:column>
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    </p:column>
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
-                                        <h:outputText value="#{item.presupuestotarea.total}" />
-                                    </p:column>
+                                    <!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
+                                                                            <h:outputText value="{item.presupuestotarea.total}" />
+                                                                        </p:column>-->
                                     <p:column headerText="Disponible" sortBy="#{item.disponible}">
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
@@ -298,11 +277,16 @@
 
                             <p:tab id="tampliacion" title="Ampliación de Presupuesto" >
 
-                                <p:dataTable id="pPresupuestosTarea" widgetVar="pPresupuestosTarea" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
+                                <p:dataTable id="pPresupuestosTarea" widgetVar="pPresupuestosTarea" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
+                                             paginator="true"
+                                             paginatorPosition="bottom"
+                                             rows="5"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,25" >
                                     <f:facet name="header">
-                                        Items Disponibles
+                                        Items del Presupuesto
                                     </f:facet>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}" >
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">

@@ -394,27 +394,24 @@ public class PresupuestoTareaController implements Serializable {
 
         }
 
-        this.root.setExpanded(true);
-
         root = new DefaultTreeNode(new PresupuestoTarea(), null);
-        root.setExpanded(true);
+        root.setExpanded(false);
         ie = 0;
         for (Etapa etapa : etapacontroller.getEtapas()) {
 
                     // PresupuestoTarea e = new PresupuestoTarea();
             // e.setDescripcion("Etapa - " + etapa.getEtapa());
             TreeNode et = new DefaultTreeNode(sumatoriaporetapa.get(ie), root);
-            et.setExpanded(true);
+            et.setExpanded(false);
 
             for (Tarea tarea : etapa.getTareaList()) {
                 PresupuestoTarea t = new PresupuestoTarea();
                 t.setDescripcion("Tarea - " + tarea.getTarea());
                 TreeNode tar = new DefaultTreeNode(t, et);
-                tar.setExpanded(true);
+                tar.setExpanded(false);
                 for (PresupuestoTarea p : tarea.getPresupuestoTareaList()) {
 
                     TreeNode tp = new DefaultTreeNode(p, tar);
-
                 }
             }
             ie++;

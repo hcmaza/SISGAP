@@ -4,20 +4,20 @@
 }*/
 
 html {
-	height: 100%;
+    height: 100%;
 }
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
-	display: block;
+    display: block;
 }
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    
+
     font-size: 12px !important;
 
     background-image: url("#{resource['img:/tramaMediaClara.jpg']}");
     background-repeat: repeat;
-    
+
     height: 100%;
 }
 
@@ -60,15 +60,15 @@ table {
 // Color anterior: #21B2CE
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
-/*    background: none !important;
-    background-image: none !important;
-    background-color: #82CADC !important;*/
+    /*    background: none !important;
+        background-image: none !important;
+        background-color: #82CADC !important;*/
 }
 
 .ui-state-default{
-/*    background: none !important;
-    background-image: none !important;
-    background-color: #D0DBDF !important;*/
+    /*    background: none !important;
+        background-image: none !important;
+        background-color: #D0DBDF !important;*/
 }
 
 
@@ -112,8 +112,46 @@ table {
     background: none !important;
 }
 
+.filaResaltada1{
+    background: none repeat scroll 0 0 #FFFFFF;
+}
+
+.filaResaltada2{
+    background: none repeat scroll 0 0 #F1F7F9;
+}
+
+/*.ui-datatable tbody td {
+  border-color: #4B4B4B;
+  border-width: 2px;
+  border-left: none;
+  border-right: none;
+}*/
+
+.tabla tbody td {
+  //border-color: #4B4B4B;
+  border-color: #878787;
+  border-width: 2px;
+  border-left: none;
+  border-right: none;
+}
+
+.tabla thead td {
+  //border-color: #4B4B4B;
+  border-color: #878787;
+  border-width: 2px;
+  border-left: none;
+  border-right: none;
+}
+
+/*.tabla table > thead > tr > th,
+.tabla table > tbody,
+.tabla table > tbody > tr,
+.tabla table > tbody > tr > td {
+    border: none !important;
+}*/
+
 .ui-widget {
-    font-size: 12px !important;
+    font-size: 11px !important;
 }
 
 .rounded-corners {
@@ -143,7 +181,7 @@ table {
     color: skyblue;
     line-height: 10px;
     margin: 30px 10px;
-    
+
 }
 
 .pie1 {
@@ -158,7 +196,7 @@ table {
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 700;
-/*    src: local('Montserrat-Bold'), url(https://themes.googleusercontent.com/static/fonts/montserrat/v4/IQHow_FEYlDC4Gzy_m8fcgFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');*/
+    /*    src: local('Montserrat-Bold'), url(https://themes.googleusercontent.com/static/fonts/montserrat/v4/IQHow_FEYlDC4Gzy_m8fcgFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');*/
     src: local('Montserrat-Bold'), url("#{resource['fonts:/Montserrat-Bold.ttf']}");
 }
 @font-face {
@@ -171,80 +209,80 @@ table {
 
 
 .wrapper {
-	width: 100%;
-	min-width: 1000px;
-	min-height: 100%;
-	height: auto !important;
-	height: 100%;
+    width: 100%;
+    min-width: 1000px;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
 }
 
 
 /* Header
 -----------------------------------------------------------------------------*/
 .header {
-	/*height: 18%;*/
-        width: 950px;
-        height: 191px;
-        margin: 0 auto;
-        background-color: #003366; 
-/*        background-color: transparent;*/
-        background-image: url("#{resource['img:/vinculacionTecnologica.png']}");        
-        background-size: 100%;
-        background-repeat: no-repeat ;
-        
-        /*position: relative;*/
+    /*height: 18%;*/
+    width: 950px;
+    height: 191px;
+    margin: 0 auto;
+    background-color: #003366; 
+    /*        background-color: transparent;*/
+    background-image: url("#{resource['img:/vinculacionTecnologica.png']}");        
+    background-size: 100%;
+    background-repeat: no-repeat ;
+
+    /*position: relative;*/
 }
 
 /* Middle
 -----------------------------------------------------------------------------*/
 .middle {
-	width: 100%;
-	padding: 0 0 100px;
-	position: relative;
+    width: 100%;
+    padding: 0 0 100px;
+    position: relative;
 }
 .middle:after {
-	display: table;
-	clear: both;
-	content: '';
+    display: table;
+    clear: both;
+    content: '';
 }
 .container {
-	width: 100%;
-	float: left;
-	//overflow: hidden;
+    width: 100%;
+    float: left;
+    //overflow: hidden;
 }
 
 .menu1{
     width: 950px; 
     margin: 6px auto 6px auto;
-    
+
 }
 .content {
-	
+
 }
 
 /* Left Sidebar
 -----------------------------------------------------------------------------*/
 /*.left-sidebar {
         float: left;
-	width: 15%;
-	margin-left: -100%;
-	position: relative;
-	background: #B5E3FF;
+        width: 15%;
+        margin-left: -100%;
+        position: relative;
+        background: #B5E3FF;
 }
 */
 
 /* Footer
 -----------------------------------------------------------------------------*/
 .footer {
-        width: 950px;
-        /*min-width: 100%;*/        
-        background-color: #444444;    
-	margin: auto ;
-	height: 5%;
-        vertical-align: middle;
-        text-align: center;
-	position: relative;
-        /*background-color: #6685A3; */
+    width: 950px;
+    /*min-width: 100%;*/        
+    background-color: #444444;    
+    margin: auto ;
+    height: 5%;
+    vertical-align: middle;
+    text-align: center;
+    position: relative;
+    /*background-color: #6685A3; */
 
 }
 
@@ -271,7 +309,7 @@ table {
 
 #noti_Container {
     position:relative;
-padding: 10px 1px 20px 1px;
+    padding: 10px 1px 20px 1px;
     width:110px;
     height:16px;
 }
@@ -284,7 +322,7 @@ padding: 10px 1px 20px 1px;
     color:white;
     font-weight:bold;
     font-size:0.80em;
-    
+
     border-radius:40px;
     box-shadow:3px 3px 3px gray;
 }
