@@ -70,8 +70,6 @@
                                 </p:column>
                             </p:row>
                         </p:panelGrid>
-
-
                     </p:panel>
 
 
@@ -147,219 +145,219 @@
 
                     <p:panel header="Solicitudes" >
 
-                        <p:panelGrid styleClass="" >
-                            <p:column style="width: 60%;">
-                                <p:tabView id="tabsolicitudes">
-                                    <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:pDisponibles :formprincipal:tabsolicitudes:pDisponiblesadquisicion :formprincipal:tabsolicitudes:pDisponiblesCertificacion " immediate="true" />
-                                    <p:tab id="tabanticipos" title="Anticipo" >
+                        <p:tabView id="tabsolicitudes">
+                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:pDisponibles :formprincipal:tabsolicitudes:pDisponiblesadquisicion :formprincipal:tabsolicitudes:pDisponiblesCertificacion " immediate="true" />
+                            <p:tab id="tabanticipos" title="Anticipo" >
 
-                                        <p:dataTable id="pDisponibles" widgetVar="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
-                                            <f:facet name="header">
-                                                Items Disponibles
-                                            </f:facet>
-                                            <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
-                                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                            </p:column>
-                                            <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                                            </p:column>
-                                            <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                                            </p:column>
-                                            <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
-                                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                            </p:column>
-                                            <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
-                                                <h:outputText value="#{item.presupuestotarea.total}" />
-                                            </p:column>
-                                            <p:column headerText="Disponible" sortBy="#{item.disponible}">
-                                                <h:outputText value="#{item.disponible}" />
-                                            </p:column>
-                                            <p:column style="width:32px;text-align: center">
-                                                <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
-                                                    <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                                </p:commandButton> 
-
-                                            </p:column>
-                                            <!-- <p:summaryRow>
-                                                    <p:column colspan="4" >
-                                                        <h:outputText value="Totales:" />
-                                                    </p:column>
-                                                    <p:column >
-                                                        <h:outputText value="{solicitudController.totalPorEtapa()}">
-                                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                    <p:column >
-                                                        <h:outputText value="{solicitudController.totalPorEtapa()}">
-                                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                </p:summaryRow> -->
-                                        </p:dataTable>
-                                    </p:tab>
-                                    <p:tab id="tabadquisiciones" title="Adquisición" >
-                                        <p:dataTable id="pDisponiblesadquisicion" widgetVar="pDisponiblesadquisicion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                            <f:facet name="header">
-                                                Items Disponibles
-                                            </f:facet>
-                                            <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
-                                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                            </p:column>
-                                            <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                                            </p:column>
-                                            <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                                            </p:column>
-                                            <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
-                                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                            </p:column>
-                                            <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
-                                                <h:outputText value="#{item.presupuestotarea.total}" />
-                                            </p:column>
-                                            <p:column headerText="Disponible" sortBy="#{item.disponible}">
-                                                <h:outputText value="#{item.disponible}" />
-                                            </p:column>
-                                            <p:column style="width:32px;text-align: center">
-                                                <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
-                                                    <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                                </p:commandButton> 
-
-                                            </p:column>
-                                            <!-- <p:summaryRow>
-                                                    <p:column colspan="4" >
-                                                        <h:outputText value="Totales:" />
-                                                    </p:column>
-                                                    <p:column >
-                                                        <h:outputText value="{solicitudController.totalPorEtapa()}">
-                                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                    <p:column >
-                                                        <h:outputText value="{solicitudController.totalPorEtapa()}">
-                                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                </p:summaryRow> -->
-                                        </p:dataTable>
-
-                                    </p:tab>
-                                    <p:tab id="tabcertificacion" title="Certificación" >
-                                        <p:dataTable id="pDisponiblesCertificacion" widgetVar="pDisponiblesCertificacion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}"  >
-                                            <f:facet name="header">
-                                                Items Disponibles
-                                            </f:facet>
-                                            <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
-                                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                            </p:column>
-                                            <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                                            </p:column>
-                                            <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                                            </p:column>
-                                            <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
-                                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                            </p:column>
-                                            <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
-                                                <h:outputText value="#{item.presupuestotarea.total}" />
-                                            </p:column>
-                                            <p:column headerText="Disponible" sortBy="#{item.disponible}">
-                                                <h:outputText value="#{item.disponible}" />
-                                            </p:column>
-                                            <p:column style="width:32px;text-align: center">
-                                                <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
-                                                    <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                                </p:commandButton> 
-
-                                            </p:column>
-                                            <!-- <p:summaryRow>
-                                                    <p:column colspan="4" >
-                                                        <h:outputText value="Totales:" />
-                                                    </p:column>
-                                                    <p:column >
-                                                        <h:outputText value="{solicitudController.totalPorEtapa()}">
-                                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                    <p:column >
-                                                        <h:outputText value="{solicitudController.totalPorEtapa()}">
-                                                            <f:convertNumber type="currency" currencySymbol="$" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                </p:summaryRow> -->
-                                        </p:dataTable>
-
-                                    </p:tab>
-                                    
-                                    <p:tab id="tampliacion" title="Ampliación de Presupuesto" >
-
-                                        <p:dataTable id="pPresupuestosTarea" widgetVar="pPresupuestosTarea" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
-                                            <f:facet name="header">
-                                                Items Disponibles
-                                            </f:facet>
-                                            <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
-                                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                            </p:column>
-                                            <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                                            </p:column>
-                                            <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
-                                                <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                                            </p:column>
-                                            <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
-                                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                            </p:column>
-                                            <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
-                                                <h:outputText value="#{item.presupuestotarea.total}" />
-                                            </p:column>
-                                            <p:column headerText="Disponible" sortBy="#{item.disponible}">
-                                                <h:outputText value="#{item.disponible}" />
-                                            </p:column>
-                                            <p:column style="width:32px;text-align: center">
-                                                <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
-                                                    <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                                </p:commandButton> 
-
-                                            </p:column>
-                                        </p:dataTable>
-                                    </p:tab>
-                                </p:tabView>
-                            </p:column>
-
-                            <p:column style="width: 40%;">
-                                <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
+                                <p:dataTable id="pDisponibles" widgetVar="pDisponibles" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,25" >
                                     <f:facet name="header">
-                                        Items Solicitados
+                                        Items Disponibles del Presupuesto
                                     </f:facet>
-                                    <p:column headerText="Descripcion">
-                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
                                     </p:column>
-                                    <p:column headerText="Rubro">
+                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
                                         <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
                                     </p:column>
-                                    <p:column headerText="Tipo Solicitud">
-                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad">
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Solicitado">
-                                        <h:outputText value="#{item.importe}" />
+<!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
+                                        <h:outputText value="{item.presupuestotarea.total}" />
+                                    </p:column>-->
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                        <h:outputText value="#{item.disponible}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:pSolicitados" >
-                                            <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
-                                        </p:commandButton>
+                                        <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                        </p:commandButton> 
+
                                     </p:column>
-                                    <f:facet name="footer">
-                                        El total Solicitado es $ #{solicitudController.sumarSolicitado()}
+                                    <!-- <p:summaryRow>
+                                            <p:column colspan="4" >
+                                                <h:outputText value="Totales:" />
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                        </p:summaryRow> -->
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab id="tabadquisiciones" title="Adquisición" >
+                                <p:dataTable id="pDisponiblesadquisicion" widgetVar="pDisponiblesadquisicion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                    <f:facet name="header">
+                                        Items Disponibles
                                     </f:facet>
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
+                                        <h:outputText value="#{item.presupuestotarea.total}" />
+                                    </p:column>
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                        <h:outputText value="#{item.disponible}" />
+                                    </p:column>
+                                    <p:column style="width:32px;text-align: center">
+                                        <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                        </p:commandButton> 
+
+                                    </p:column>
+                                    <!-- <p:summaryRow>
+                                            <p:column colspan="4" >
+                                                <h:outputText value="Totales:" />
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                        </p:summaryRow> -->
                                 </p:dataTable>
 
+                            </p:tab>
+                            
+                            <p:tab id="tabcertificacion" title="Certificación" >
+                                <p:dataTable id="pDisponiblesCertificacion" widgetVar="pDisponiblesCertificacion" var="item" value="#{solicitudController.itemsDisponibles}" sortBy="#{item.presupuestotarea.tarea.etapaid.id}"  >
+                                    <f:facet name="header">
+                                        Items Disponibles
+                                    </f:facet>
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
+                                        <h:outputText value="#{item.presupuestotarea.total}" />
+                                    </p:column>
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                        <h:outputText value="#{item.disponible}" />
+                                    </p:column>
+                                    <p:column style="width:32px;text-align: center">
+                                        <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                        </p:commandButton> 
+
+                                    </p:column>
+                                    <!-- <p:summaryRow>
+                                            <p:column colspan="4" >
+                                                <h:outputText value="Totales:" />
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column >
+                                                <h:outputText value="{solicitudController.totalPorEtapa()}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                        </p:summaryRow> -->
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab id="tampliacion" title="Ampliación de Presupuesto" >
+
+                                <p:dataTable id="pPresupuestosTarea" widgetVar="pPresupuestosTarea" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" >
+                                    <f:facet name="header">
+                                        Items Disponibles
+                                    </f:facet>
+                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
+                                        <h:outputText value="#{item.presupuestotarea.total}" />
+                                    </p:column>
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                        <h:outputText value="#{item.disponible}" />
+                                    </p:column>
+                                    <p:column style="width:32px;text-align: center">
+                                        <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                        </p:commandButton> 
+
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+                        </p:tabView>
+
+                        <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
+                            <f:facet name="header">
+                                Items Solicitados
+                            </f:facet>
+                            <p:column headerText="Descripcion">
+                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
                             </p:column>
-                        </p:panelGrid>
+                            <p:column headerText="Rubro">
+                                <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                            </p:column>
+                            <p:column headerText="Tipo Solicitud">
+                                <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                            </p:column>
+                            <p:column headerText="Solicitado">
+                                <h:outputText value="#{item.importe}" />
+                            </p:column>
+                            <p:column style="width:32px;text-align: center">
+                                <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:pSolicitados" >
+                                    <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                El total Solicitado es $ #{solicitudController.sumarSolicitado()}
+                            </f:facet>
+                        </p:dataTable>
 
                     </p:panel>
                     <br style="clear: both;"/>
@@ -415,7 +413,7 @@
                     </div>
                 </p:dialog>
 
-                
+
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                     <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados" style="float:left;" /> 
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
