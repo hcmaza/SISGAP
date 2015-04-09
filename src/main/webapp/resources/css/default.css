@@ -154,36 +154,6 @@ table {
     font-size: 12px !important;
 }
 
-.rounded-corners {
-
-    -moz-border-radius: 11px;
-    -webkit-border-radius: 11px;
-    -khtml-border-radius: 11px;        
-    border-radius: 11px;
-    /*behavior: url(border-radius.htc); NO*/
-    /*behavior: url("#{resource['css:/border-radius.htc']}"); //FUNCIONA*/
-}
-
-.cabecera1 {
-    text-align: right;
-    font-size: 48px !important;
-    font-family: 'Varela Round';
-    color: white;
-    margin: 0px 10px;
-    padding-top: 85px;
-    line-height: 10px;
-}
-
-.cabecera2 {
-    text-align: right;
-    font-size: 16px !important;
-    font-family: 'Montserrat';
-    color: skyblue;
-    line-height: 10px;
-    margin: 30px 10px;
-
-}
-
 .pie1 {
     text-align: center;
     vertical-align: middle;
@@ -216,6 +186,36 @@ table {
     height: 100%;
 }
 
+.rounded-corners {
+
+    -moz-border-radius: 11px;
+    -webkit-border-radius: 11px;
+    -khtml-border-radius: 11px;        
+    border-radius: 11px;
+    /*behavior: url(border-radius.htc); NO*/
+    /*behavior: url("#{resource['css:/border-radius.htc']}"); //FUNCIONA*/
+}
+
+.cabecera1 {
+    text-align: left;
+    font-size: 48px !important;
+    font-family: 'Varela Round';
+    //color: white;
+    color: #6684A3;
+    margin: 0px 10px;
+    padding-top: 85px;
+    line-height: 10px;
+}
+
+.cabecera2 {
+    text-align: left;
+    font-size: 16px !important;
+    font-family: 'Montserrat';
+    color: skyblue;
+    line-height: 10px;
+    margin: 30px 10px;
+
+}
 
 /* Header
 -----------------------------------------------------------------------------*/
@@ -224,9 +224,11 @@ table {
     width: 950px;
     height: 191px;
     margin: 0 auto;
-    background-color: #003366; 
+    //background-color: #003366; 
+    background-color: #DBE8F0; 
     /*        background-color: transparent;*/
-    background-image: url("#{resource['img:/vinculacionTecnologica.png']}");        
+    //background-image: url("#{resource['img:/vinculacionTecnologica.png']}");        
+    background-image: url("#{resource['img:/Wayra4.png']}");        
     background-size: 100%;
     background-repeat: no-repeat ;
 
