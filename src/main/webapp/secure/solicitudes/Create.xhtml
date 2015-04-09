@@ -87,19 +87,19 @@
                                     <p:column headerText="Rubro">
                                         <h:outputText value="#{item.rubro.rubro}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad">
+                                    <p:column headerText="Cantidad"  style="text-align: right;" >
                                         <h:outputText value="#{item.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Costo Unitario">
+                                    <p:column headerText="Costo Unitario"  style="text-align: right;" >
                                         <h:outputText value="#{item.costounitario}" />
                                     </p:column>
-                                    <p:column headerText="Total">
+                                    <p:column headerText="Total"  style="text-align: right;" >
                                         <h:outputText value="#{item.total}" />
                                     </p:column>
                                     <p:columnGroup type="footer">
                                         <p:row>
                                             <p:column colspan="4" style="text-align:right" footerText="Totales:" />
-                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" />
+                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" style="text-align: right;" />
                                         </p:row>
                                     </p:columnGroup>
                                 </p:treeTable>
@@ -131,13 +131,13 @@
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
                                     <!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
                                                                             <h:outputText value="{item.presupuestotarea.total}" />
                                                                         </p:column>-->
-                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}"  style="text-align: right;" >
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
@@ -169,7 +169,10 @@
                                              paginatorPosition="bottom"
                                              rows="5"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="5,10,25" >
+                                             rowsPerPageTemplate="5,10,25"                                              
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla">
                                     <f:facet name="header">
                                         Items Disponibles del Presupuesto
                                     </f:facet>
@@ -185,13 +188,13 @@
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
                                     <!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
                                                                             <h:outputText value="{item.presupuestotarea.total}" />
                                                                         </p:column>-->
-                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}"  style="text-align: right;" >
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
@@ -225,7 +228,10 @@
                                              paginatorPosition="bottom"
                                              rows="5"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="5,10,25" >
+                                             rowsPerPageTemplate="5,10,25" 
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla">
                                     <f:facet name="header">
                                         Items Disponibles del Presupuesto
                                     </f:facet>
@@ -241,13 +247,13 @@
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
                                     <!--                                    <p:column headerText="Presupuestado" sortBy="{item.presupuestotarea.total}">
                                                                             <h:outputText value="{item.presupuestotarea.total}" />
                                                                         </p:column>-->
-                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}"  style="text-align: right;" >
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
@@ -282,7 +288,10 @@
                                              paginatorPosition="bottom"
                                              rows="5"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="5,10,25" >
+                                             rowsPerPageTemplate="5,10,25" 
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla">
                                     <f:facet name="header">
                                         Items del Presupuesto
                                     </f:facet>
@@ -295,13 +304,13 @@
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}">
+                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
                                         <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                     </p:column>
-                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}">
+                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}"  style="text-align: right;" >
                                         <h:outputText value="#{item.presupuestotarea.total}" />
                                     </p:column>
-                                    <p:column headerText="Disponible" sortBy="#{item.disponible}">
+                                    <p:column headerText="Disponible" sortBy="#{item.disponible}"  style="text-align: right;" >
                                         <h:outputText value="#{item.disponible}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
@@ -316,7 +325,7 @@
 
                         <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
                             <f:facet name="header">
-                                Items Solicitados
+                                Items Incorporados a la Solicitud
                             </f:facet>
                             <p:column headerText="Descripcion">
                                 <h:outputText value="#{item.presupuestotarea.descripcion}" />
@@ -327,10 +336,10 @@
                             <p:column headerText="Tipo Solicitud">
                                 <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
                             </p:column>
-                            <p:column headerText="Cantidad">
+                            <p:column headerText="Cantidad"  style="text-align: right;" >
                                 <h:outputText value="#{item.presupuestotarea.cantidad}" />
                             </p:column>
-                            <p:column headerText="Solicitado">
+                            <p:column headerText="Solicitado"  style="text-align: right;" >
                                 <h:outputText value="#{item.importe}" />
                             </p:column>
                             <p:column style="width:32px;text-align: center">
