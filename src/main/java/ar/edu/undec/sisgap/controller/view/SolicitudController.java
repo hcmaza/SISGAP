@@ -32,6 +32,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TransferEvent;
@@ -862,11 +863,7 @@ public class SolicitudController implements Serializable {
                    // }
                 }
             }
-        
-        
-        
-        
-      
+
         
     }
 
@@ -886,6 +883,21 @@ public class SolicitudController implements Serializable {
         this.itemsDisponiblesNuevo = itemsDisponiblesNuevo;
     }
 
-    
+    public void subirArchivoSolicitud(FileUploadEvent event) {
+        System.out.println("Subiendo Archivo de Solicitud - Presupuesto");
+
+        try {
+            //current = new Archivorendicion();
+            current.setArchivonombre(event.getFile().getFileName());
+            current.setArchivo(event.getFile().getContents());
+            //getListaArchivos().add(current);
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getArchivonombre() + " fue subido satisfactoriamente!"));
+        } catch (Exception e) {
+            System.out.println("Excepcion en RendicionController - subirArchivo");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error", "Ocurrió un error al subir el archivo"));
+            e.printStackTrace();
+        }
+    }
     
 }

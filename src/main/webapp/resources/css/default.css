@@ -217,18 +217,25 @@ table {
 
 }
 
+.imagenCabecera {
+    
+}
+
 /* Header
 -----------------------------------------------------------------------------*/
 .header {
     /*height: 18%;*/
+    
     width: 950px;
     height: 191px;
+    
     margin: 0 auto;
     //background-color: #003366; 
-    background-color: #DBE8F0; 
+    //background-color: #DBE8F0; 
+    background-color: #FFFFFF; 
     /*        background-color: transparent;*/
     //background-image: url("#{resource['img:/vinculacionTecnologica.png']}");        
-    background-image: url("#{resource['img:/Wayra4.png']}");        
+    background-image: url("#{resource['img:/logowayra.png']}");        
     background-size: 100%;
     background-repeat: no-repeat ;
 
