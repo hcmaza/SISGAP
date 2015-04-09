@@ -17,6 +17,7 @@
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
             <f:event type="preRenderView" listener="#{presupuestoTareaController.armarPresupuestoGeneral}" />
             <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
+            <f:event type="preRenderView" listener="#{rendicionController.prepararRendicion()}" />
 
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
@@ -321,46 +322,68 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
-                            
+
                             <p:tab id="trendicion" title="Rendición de Gastos" >
 
-                                <p:dataTable id="pPendienteRendicion" widgetVar="pPendienteRendicion" var="item" value="#{rendicionController.listaSolicitudes}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
-                                             paginator="true"
-                                             paginatorPosition="bottom"
-                                             rows="5"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="5,10,25" 
-                                             rowIndexVar="indice"
-                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
-                                             styleClass="tabla">
+                                <p:dataTable id="tblSolicitudes" 
+                                             var="item" 
+                                             value="#{rendicionController.listaSolicitudes}" 
+                                             rowKey="#{item.id}" 
+                                             selection="#{rendicionController.solicitudSeleccionada}">
+                                    <!--selection="{rendicionController.listaSolicitudesSeleccionadas}" >-->
                                     <f:facet name="header">
-                                        Items del Presupuesto
+                                        Solicitudes abiertas pendientes de Rendición
                                     </f:facet>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}" >
+                                    <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
+                                    <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                                    <p:column headerText="Descripcion">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
-                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    <p:column headerText="Fecha">
+                                        <h:outputText value="#{item.fechasolicitud}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
-                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
                                     </p:column>
-                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
-                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Presupuestado" sortBy="#{item.presupuestotarea.total}"  style="text-align: right;" >
-                                        <h:outputText value="#{item.presupuestotarea.total}" />
-                                    </p:column>
-                                    <p:column headerText="Disponible" sortBy="#{item.disponible}"  style="text-align: right;" >
-                                        <h:outputText value="#{item.disponible}" />
-                                    </p:column>
-                                    <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formprincipal:itemSolicitud, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
-                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                        </p:commandButton> 
-
+                                    <p:column headerText="Total">
+                                        <h:outputText value="#{item.importe}" />
                                     </p:column>
                                 </p:dataTable>
+
+                                <p:outputLabel value="Comprobantes" />
+
+                                <h:panelGrid cellpadding="2" cellspacing="10" columnClasses="right,left" columns="3">    
+
+                                    <p:commandButton update=":formprincipal:growlprincipal" actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoFactura').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
+                                        <!--<f:setPropertyActionListener value="{item}" target="{solicitudController.selected}" />-->
+                                    </p:commandButton>
+
+                                    <p:remoteCommand id="nuevoArchivo" action="#{archivorendicionController.nuevoArchivoRendicion()}" />
+
+                                    <p:dataTable id="tarchivos" var="arc" value="#{archivorendicionController.listaArchivos}" style="top: 5px;" >  
+                                        <f:facet name="header">
+                                            Items incorporados a la Rendición de Gastos.
+                                        </f:facet>
+                                        <p:column headerText="N° de Factura">  
+                                            <h:outputText value="#{arc.nrofactura}" />  
+                                        </p:column> 
+                                        <p:column headerText="Archivo">  
+                                            <h:outputText value="#{arc.nombrearchivo}" />  
+                                        </p:column> 
+                                        <p:column headerText="Monto">  
+                                            <h:outputText value="#{arc.montofactura}" />  
+                                        </p:column> 
+                                        <p:column headerText="">  
+                                            <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tarchivos,:formprincipal:vercomprobantes"  >
+                                                <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
+                                            </p:commandLink>
+                                        </p:column> 
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+
                             </p:tab>
                         </p:tabView>
 
@@ -383,9 +406,9 @@
                             <p:column headerText="Presupuesto">
                                 <h:outputText value="#{item.archivonombre}" />
                             </p:column>
-<!--                            <p:column headerText="Tipo Solicitud">
-                                <h:outputText value="{item.tiposolicitudid.tiposolicitud}" />
-                            </p:column>-->
+                            <!--                            <p:column headerText="Tipo Solicitud">
+                                                            <h:outputText value="{item.tiposolicitudid.tiposolicitud}" />
+                                                        </p:column>-->
                             <p:column headerText="Cantidad"  style="text-align: right;" >
                                 <h:outputText value="#{item.presupuestotarea.cantidad}" />
                             </p:column>
@@ -462,8 +485,8 @@
                         <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
                     </div>
                 </p:dialog>
-                
-                
+
+
 
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
@@ -471,6 +494,8 @@
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
                 </p:confirmDialog>
             </h:form>
+            
+            
         </ui:define>
     </ui:composition>
 

@@ -136,6 +136,31 @@ public class RendicionController implements Serializable {
         return "View";
     }
 
+    public void prepararRendicion() {
+        current = new Rendicion();
+        selectedItemIndex = -1;
+
+        System.out.println("Inicio Rendicion - prepareCreate");
+
+        current.setFecha(new Date());
+
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+
+        // Vaciamos la lista de archivos de rendicion
+        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+
+        // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
+        listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+
+        // Vaciamos la lista de solicitudes seleccionadas
+        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+
+    }
+
     public String prepareCreate() {
         current = new Rendicion();
         selectedItemIndex = -1;
@@ -197,8 +222,8 @@ public class RendicionController implements Serializable {
                 // Obtenemos el controladores necesario
                 FacesContext context = FacesContext.getCurrentInstance();
                 ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
-                
-                for(Archivorendicion ar : arcontroller.getListaArchivos()){
+
+                for (Archivorendicion ar : arcontroller.getListaArchivos()) {
                     ar.setRendicionid(current);
                     getFacadear().create(ar);
                 }
@@ -257,35 +282,34 @@ public class RendicionController implements Serializable {
         try {
             // buscar solicitud para actualizarla
             Solicitud s;
-            
-            try{
+
+            try {
                 s = getFacades().obtenerPorRendicion(current.getId());
-                
+
                 // Sin Rendicion
                 s.setRendicionid(null);
-            } catch(Exception e){
+            } catch (Exception e) {
                 s = null;
                 e.printStackTrace();
             }
-            
+
             // buscar estado de solicitud anterior: "Aprobada"
             Estadosolicitud es;
-            
-            try{
-                
+
+            try {
+
                 es = getFacadees().find(2);
-                
-            }catch(Exception e){
+
+            } catch (Exception e) {
                 es = null;
                 e.printStackTrace();
             }
-            
+
             s.setEstadosolicitudid(es);
-            
+
             //Actualizamos la Solicitud
             getFacades().edit(s);
-            
-            
+
             getFacade().remove(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionDeleted"));
         } catch (Exception e) {
