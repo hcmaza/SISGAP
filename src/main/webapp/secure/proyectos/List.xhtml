@@ -34,6 +34,9 @@
                             draggableColumns="true"
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="10,15,30" 
+                            rowIndexVar="indice"
+                            rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                            styleClass="tabla"
                             >
                             <p:column>
                                 <f:facet name="header">
