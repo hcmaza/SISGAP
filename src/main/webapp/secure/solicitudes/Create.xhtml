@@ -73,7 +73,7 @@
                         </p:panelGrid>
                     </p:panel>
 
-                    <p:panel header="Solicitudes" >
+                    <p:panel header="Gestión del Proyecto" >
 
                         <p:tabView id="tabsolicitudes" dynamic="true" >
 
@@ -86,7 +86,7 @@
                                         <h:outputText value="#{item.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Rubro">
-                                        <h:outputText value="#{item.rubro.rubro}" />
+                                        <h:outputText value="#{item.rubro.abreviado}" />
                                     </p:column>
                                     <p:column headerText="Cantidad"  style="text-align: right;" >
                                         <h:outputText value="#{item.cantidad}" />
@@ -126,8 +126,8 @@
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
-                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
@@ -167,8 +167,8 @@
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
-                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
@@ -207,8 +207,8 @@
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
-                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
@@ -248,8 +248,8 @@
                                     <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
                                         <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.rubro}">
-                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
                                     <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
@@ -430,11 +430,11 @@
             <p:dialog header="Item Solicitud" id="dialogoItemSolicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="formitem" enctype="multipart/form-data"  >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                    <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
+                    <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" styleClass="panelgrid" columnClasses="right,right" >
                         <f:facet name="header">
                             <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
                         </f:facet>
-
+                        
                         <p:outputLabel value="Costo Unitario" />
                         <h:outputText id="dcostounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
 
@@ -458,7 +458,7 @@
                                       sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
                         </p:fileUpload>    
 
-                        <p:outputLabel value="Observación" />
+                        <p:outputLabel value="Especificación" />
                         <p:inputTextarea id="dobservacionItem" value="#{solicitudController.selected.observacion}" />
 
                     </p:panelGrid>

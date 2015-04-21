@@ -5,6 +5,7 @@
 
 .ui-widget {
     font-size: 12px !important;
+    font-family: Verdana,Arial,sans-serif !important;
 }
 
 html {
@@ -15,7 +16,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, 
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Verdana, Helvetica, sans-serif;
 
     font-size: 12px !important;
 
@@ -77,18 +78,24 @@ table {
         background-color: #D0DBDF !important;*/
 }
 
-
 /*.ui-widget-header{
   background: none !important;
   background-color: #878787 !important;
 }*/
 
-
-
 .ui-datatable-header {
     background: #00C7F6 !important;
     background-color: #00C7F6 !important;
+    color: white;
     border: none;
+}
+
+.ui-datatable table, .ui-datatable-resizable table {
+    table-layout: auto !important;
+}
+
+.ui-datatable-scrollable table {
+    table-layout: fixed !important;
 }
 
 .sinFondo tr, .sinBordes td{
@@ -96,27 +103,43 @@ table {
 }
 
 .filaResaltada1{
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: none repeat scroll 0 0 #FFFFFF !important;
 }
 
 .filaResaltada2{
-    background: none repeat scroll 0 0 #F1F7F9;
+    background: none repeat scroll 0 0 #F1F7F9 !important;
 }
 
 .tabla tbody td {
   //border-color: #4B4B4B;
-  border-color: #878787;
-  border-width: 2px;
-  border-left: none;
-  border-right: none;
+  border-color: #878787 !important;
+  border-width: 2px !important;
+  border-left: none !important;
+  border-right: none !important;
 }
 
 .tabla thead td {
   //border-color: #4B4B4B;
-  border-color: #878787;
-  border-width: 2px;
-  border-left: none;
-  border-right: none;
+  border-color: #878787 !important;
+  border-width: 2px !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.panelgrid tbody td {
+  //border-color: #4B4B4B;
+  border-color: #878787 !important;
+  border-width: 1px !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.panelgrid thead td {
+  //border-color: #4B4B4B;
+  border-color: #878787 !important;
+  border-width: 1px !important;
+  border-left: none !important;
+  border-right: none !important;
 }
 
 .pie1 {
