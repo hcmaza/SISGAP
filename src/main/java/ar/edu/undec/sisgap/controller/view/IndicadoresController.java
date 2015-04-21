@@ -194,7 +194,7 @@ public class IndicadoresController implements Serializable {
 
         // Llenamos el hashmap de saldos y la lista de ejecucion
         for (Rubro r : getRubroFacade().findAll()) {
-            saldos.put(r.getRubro(), 0.0f);
+            saldos.put(r.getAbreviado(), 0.0f);
         }
 
         // Obtenemos los importes de solicitud disponibles
@@ -224,7 +224,7 @@ public class IndicadoresController implements Serializable {
                 listaSolicitudesDisponibles.add(solicitud);
 
                 // Acumulamos en la lista de saldos
-                saldos.put(solicitud.getPresupuestotarea().getRubro().getRubro(), saldos.get(solicitud.getPresupuestotarea().getRubro().getRubro()) + solicitud.getDisponible().floatValue());
+                saldos.put(solicitud.getPresupuestotarea().getRubro().getAbreviado(), saldos.get(solicitud.getPresupuestotarea().getRubro().getAbreviado()) + solicitud.getDisponible().floatValue());
                 
                 saldoProyecto += solicitud.getDisponible().floatValue();
                 
