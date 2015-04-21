@@ -440,6 +440,7 @@ public class SolicitudController implements Serializable {
 //        // Setear la lista dual del pick list
 //        plSolicitudItems = new DualListModel<SolicitudItem>(presupuestotareacontroller.getPresupuestostareas(),new ArrayList<SolicitudItem>());
 //    }
+    
     public void agregarItemSolicitado() {
 
         float maxanticipo = 0;
@@ -839,13 +840,14 @@ public class SolicitudController implements Serializable {
         //filtro por rubros
             if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición")){
                 for(Solicitud s : this.itemsDisponiblesNuevo ){
-                    
-                    if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) ){
+                    // Si NO es de Recursos Humanos, Consultoria y Traslados
+                    if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
                         this.itemsDisponibles.add(s);
                     }
                 }
             }
             
+            // Si es de Recursos Humanos, Consultoria
             if(tabseleccionado.equals("Certificación")){
                 for(Solicitud s : this.itemsDisponiblesNuevo ){
                     

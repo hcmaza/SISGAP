@@ -3,6 +3,10 @@
   font-size: 13px !important;
 }*/
 
+.ui-widget {
+    font-size: 12px !important;
+}
+
 html {
     height: 100%;
 }
@@ -49,64 +53,22 @@ table {
     border: none !important;
 }
 
-/*.ui-widget-content{
-    background: #21B2CE !important;
-    background-color: #21B2CE !important;
-}*/
-
-// Todas las cabeceras
+.centradoTotal {
+    position: absolute;
+    height: 100px;
+    top: 0;
+    bottom: 0;
+    margin:auto;
+}
 
 // Color: #82CADC Seleccion de Dario
 // Color anterior: #21B2CE
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
-    /*    background: none !important;
-        background-image: none !important;
-        background-color: #82CADC !important;*/
-}
-
-.ui-state-default{
-    /*    background: none !important;
-        background-image: none !important;
-        background-color: #D0DBDF !important;*/
-}
-
-
-/*.ui-widget-header{
-  background: none !important;
-  background-color: #878787 !important;
-}*/
 
 .ui-datatable-header {
     background: #82CADC !important;
     background-color: #82CADC !important;
     border: none;
 }
-
-/*.ui-datatable-tablewrapper table th:first-child {
-    border-left: inherit;
-    border-right: none;
-}
-
-.ui-datatable-tablewrapper table thead:first-child {
-    border-left: inherit;
-    border-right: none;
-}
-
-.ui-datatable.sinBordesVerticales .ui-datatable-data thead,
-.ui-datatable.sinBordesVerticales .ui-datatable-data th,
-.ui-datatable.sinBordesVerticales .ui-datatable-data tr,
-.ui-datatable.sinBordesVerticales .ui-datatable-data-empty tr,
-.ui-datatable.sinBordesVerticales .ui-datatable-data td,
-.ui-datatable.sinBordesVerticales .ui-datatable-data-empty td{
-    border-left: none !important;
-    border-right: none !important;
-}*/
-
-/*.sinBordesVerticales tr, .sinBordesVerticales td{
-    border-left: none !important;
-    botder-right: none !important;
-}*/
 
 .sinFondo tr, .sinBordes td{
     background: none !important;
@@ -119,13 +81,6 @@ table {
 .filaResaltada2{
     background: none repeat scroll 0 0 #F1F7F9;
 }
-
-/*.ui-datatable tbody td {
-  border-color: #4B4B4B;
-  border-width: 2px;
-  border-left: none;
-  border-right: none;
-}*/
 
 .tabla tbody td {
   //border-color: #4B4B4B;
@@ -141,17 +96,6 @@ table {
   border-width: 2px;
   border-left: none;
   border-right: none;
-}
-
-/*.tabla table > thead > tr > th,
-.tabla table > tbody,
-.tabla table > tbody > tr,
-.tabla table > tbody > tr > td {
-    border: none !important;
-}*/
-
-.ui-widget {
-    font-size: 12px !important;
 }
 
 .pie1 {
