@@ -61,12 +61,33 @@ table {
     margin:auto;
 }
 
-// Color: #82CADC Seleccion de Dario
+// Color: #00C7F6 Seleccion de Dario
+// Color 2: #82CADC Seleccion de Dario 
 // Color anterior: #21B2CE
 
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+    /*    background: none !important;
+        background-image: none !important;
+        background-color: #82CADC !important;*/
+}
+
+.ui-state-default{
+    /*    background: none !important;
+        background-image: none !important;
+        background-color: #D0DBDF !important;*/
+}
+
+
+/*.ui-widget-header{
+  background: none !important;
+  background-color: #878787 !important;
+}*/
+
+
+
 .ui-datatable-header {
-    background: #82CADC !important;
-    background-color: #82CADC !important;
+    background: #00C7F6 !important;
+    background-color: #00C7F6 !important;
     border: none;
 }
 
