@@ -5,14 +5,19 @@
  */
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.DesembolsoFacade;
 import ar.edu.undec.sisgap.controller.PresupuestoTareaFacade;
 import ar.edu.undec.sisgap.controller.RubroFacade;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
+import ar.edu.undec.sisgap.model.Desembolso;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Rubro;
 import ar.edu.undec.sisgap.model.Solicitud;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +30,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.ListDataModel;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.DateAxis;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
@@ -39,6 +48,8 @@ public class IndicadoresController implements Serializable {
     @EJB
     private SolicitudFacade solicitudFacade;
     @EJB
+    private DesembolsoFacade desembolsoFacade;
+    @EJB
     private PresupuestoTareaFacade presupuestoTareaFacade;
     @EJB
     private RubroFacade rubroFacade;
@@ -49,31 +60,40 @@ public class IndicadoresController implements Serializable {
 
     private List<String> columnasListaSaldosRubro;
     private List<Float> valoresListaSaldosRubro;
-    
+
     // Total presupuestado proyecto
     private float totalPresupuestoProyecto = 0.0f;
-    
+
     // grafico de ejecutado del proyecto
     private MeterGaugeChartModel indicadorEjecutado;
 
     // Ejecutado por rubro
     private List<ItemRubro> listaEjecutadoRubro;
     private PieChartModel chartEjecutadoPorRubro;
-    
+
+    // Ejecutado por Fecha
+    private LineChartModel chartEjecutadoPorFecha;
+    //private List<ItemRubro> listaEjecutadoFecha;
+    //private PieChartModel chartEjecutadoPorRubro;
+
     // Saldo del proyecto
     private float saldoProyecto = 0.0f;
-    
+
     // Monto ejecutado del proyecto
     private float ejecutadoProyecto = 0.0f;
-    
+
     // Monto rendido por proyecto
     private float rendidoProyecto = 0.0f;
-    
+
     // Monto pendiente de rendicion por proyecto
     private float pendienteRendicionProyecto;
 
     public SolicitudFacade getSolicitudFacade() {
         return solicitudFacade;
+    }
+
+    public DesembolsoFacade getDesembolsoFacade() {
+        return desembolsoFacade;
     }
 
     public PresupuestoTareaFacade getPresupuestoTareaFacade() {
@@ -124,6 +144,10 @@ public class IndicadoresController implements Serializable {
         return chartEjecutadoPorRubro;
     }
 
+    public LineChartModel getChartEjecutadoPorFecha() {
+        return chartEjecutadoPorFecha;
+    }
+
     public float getSaldoProyecto() {
         return saldoProyecto;
     }
@@ -143,7 +167,6 @@ public class IndicadoresController implements Serializable {
     public float getPendienteRendicionProyecto() {
         return pendienteRendicionProyecto;
     }
-    
 
     /**
      * Creates a new instance of IndicadoresController
@@ -153,29 +176,31 @@ public class IndicadoresController implements Serializable {
     }
 
     /**
-     * Método que ejecuta los calculos de obtencion de saldos y ejecucion por rubro
-     * 
+     * Método que ejecuta los calculos de obtencion de saldos y ejecucion por
+     * rubro
+     *
      */
     public void obtenerCalculosPorRubro() {
 
         calcularTotalesPorProyecto();
-        
+
         calcularSaldosPorRubro();
 
         calcularEjecutadoPorRubro();
-        
-        crearIndicadorEjecutado();
-        
-        generarChartEjecutadoPorRubro();
 
+        crearIndicadorEjecutado();
+
+        generarChartEjecutadoPorRubro();
+        
+        generarChartEjecutadoPorFecha();
 
     }
 
     public void calcularSaldosPorRubro() {
-        
+
         // Saldo del proyecto
         saldoProyecto = 0.0f;
-        
+
         // Saldos por Rubro
         HashMap<String, Float> saldos = new HashMap<String, Float>();
 
@@ -225,9 +250,9 @@ public class IndicadoresController implements Serializable {
 
                 // Acumulamos en la lista de saldos
                 saldos.put(solicitud.getPresupuestotarea().getRubro().getAbreviado(), saldos.get(solicitud.getPresupuestotarea().getRubro().getAbreviado()) + solicitud.getDisponible().floatValue());
-                
+
                 saldoProyecto += solicitud.getDisponible().floatValue();
-                
+
             }
         }
 
@@ -241,7 +266,7 @@ public class IndicadoresController implements Serializable {
     public void calcularEjecutadoPorRubro() {
 
         List<Solicitud> listaSolicitudes;
-        
+
         // Total Ejecutado del proyecto
         ejecutadoProyecto = 0.0f;
 
@@ -262,11 +287,10 @@ public class IndicadoresController implements Serializable {
         }
 
         for (Solicitud solicitud : listaSolicitudes) {
-            
+
             //Acumulamos en el total ejecutado del proyecto
             ejecutadoProyecto += solicitud.getImporte().floatValue();
-            
-            
+
             Iterator j = ejecutado.iterator();
 
             // Buscamos en la lista de ejecutado por rubro para acumular
@@ -279,8 +303,7 @@ public class IndicadoresController implements Serializable {
                     System.out.println("ItemRubro monto = " + irt.getMonto());
                 }
             }
-            
-            
+
         }
 
         for (ItemRubro ir : ejecutado) {
@@ -291,51 +314,141 @@ public class IndicadoresController implements Serializable {
         listaEjecutadoRubro = ejecutado;
 
     }
-    
-    public void generarChartEjecutadoPorRubro(){
+
+    public void generarChartEjecutadoPorRubro() {
         chartEjecutadoPorRubro = new PieChartModel();
-        
-        for(ItemRubro ir : listaEjecutadoRubro){
+
+        for (ItemRubro ir : listaEjecutadoRubro) {
             chartEjecutadoPorRubro.set(ir.nombrerubro, ir.monto);
         }
-        
+
         chartEjecutadoPorRubro.setMouseoverHighlight(true);
         chartEjecutadoPorRubro.setDiameter(65);
         chartEjecutadoPorRubro.setShowDataLabels(true);
 
-         
         //chartEjecutadoPorRubro.setTitle("Simple Pie");
         //chartEjecutadoPorRubro.setLegendPosition("w");
         chartEjecutadoPorRubro.setExtender("torta");
-        
-    }
-    
-    // Indicador de Ejecucion
-    
-    public MeterGaugeChartModel getIndicadorEjecutado() {
 
-        if (indicadorEjecutado == null){
-            crearIndicadorEjecutado();
+    }
+
+    public void generarChartEjecutadoPorFecha() {
+
+        List<Solicitud> listaSolicitudes;
+        List<Desembolso> listaDesembolsos;
+
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+
+        // Llenamos la lista de solicitudes (Aprobadas)
+        listaSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+
+        // Llenamos la lista de desembolsos
+        listaDesembolsos = this.getDesembolsoFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId());
+
+        // Ordenar las colecciones por fecha
+        // SOLICITUDES
+        Collections.sort(listaSolicitudes, new Comparator<Solicitud>() {
+            public int compare(Solicitud o1, Solicitud o2) {
+                if (o1.getFechasolicitud() == null || o2.getFechasolicitud() == null) {
+                    return 0;
+                }
+                return o1.getFechasolicitud().compareTo(o2.getFechasolicitud());
+            }
+        });
+        
+        // DESEMBOLSOS
+        Collections.sort(listaDesembolsos, new Comparator<Desembolso>() {
+            public int compare(Desembolso o1, Desembolso o2) {
+                if (o1.getFechadesembolso() == null || o2.getFechadesembolso() == null) {
+                    return 0;
+                }
+                return o1.getFechadesembolso().compareTo(o2.getFechadesembolso());
+            }
+        });
+        
+        for(Solicitud s : listaSolicitudes){
+            System.out.println("SOLICITUD: " + s.getFechasolicitud().toString() + " - " + s.getImporte().toPlainString());
         }
         
+        for(Desembolso d : listaDesembolsos){
+            System.out.println("DESEMBOLSO: " + d.getFechacarga().toString() + " - " + d.getMonto().toPlainString());
+        }
+
+        // Formato de fecha
+        //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy"); 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+        
+        // Serie de Solicitudes
+        chartEjecutadoPorFecha = new LineChartModel();
+        
+        LineChartSeries solcitudes = new LineChartSeries();
+        solcitudes.setLabel("Solicitudes");
+ 
+        //solcitudes.set("2014-01-01", 51);
+        
+        for(Solicitud s : listaSolicitudes){
+            solcitudes.set(sdf.format(s.getFechaaprobacion()),s.getImporte().floatValue());
+        }
+ 
+        // Serie de Desembolsos
+        LineChartSeries desembolsos = new LineChartSeries();
+        desembolsos.setLabel("Desembolsos");
+ 
+        for(Desembolso d : listaDesembolsos){
+            desembolsos.set(sdf.format(d.getFechacarga()),d.getMonto().floatValue());
+        }
+
+        chartEjecutadoPorFecha.addSeries(desembolsos);
+        chartEjecutadoPorFecha.addSeries(solcitudes);
+         
+        chartEjecutadoPorFecha.setTitle(""); // Zoom for Details
+        chartEjecutadoPorFecha.setZoom(false);
+        chartEjecutadoPorFecha.getAxis(AxisType.Y); //.setLabel("Values");
+        DateAxis axis = new DateAxis(""); // Fechas
+        axis.setTickAngle(-50);
+        //axis.setMax("2016-02-01");
+        axis.setTickFormat(""); // %b %#d, %y
+        
+        chartEjecutadoPorFecha.setLegendRows(0);
+        chartEjecutadoPorFecha.setLegendCols(0);
+        chartEjecutadoPorFecha.setShadow(false);
+        chartEjecutadoPorFecha.setShowPointLabels(false);
+         
+        chartEjecutadoPorFecha.getAxes().put(AxisType.X, axis);
+        
+        chartEjecutadoPorFecha.setExtender("ejecutadofecha");
+
+    }
+
+    // Indicador de Ejecucion
+    public MeterGaugeChartModel getIndicadorEjecutado() {
+
+        if (indicadorEjecutado == null) {
+            crearIndicadorEjecutado();
+        }
+
         return indicadorEjecutado;
     }
-    
+
     private MeterGaugeChartModel inicializarModeloIndicadorPorcentaje() {
-        List<Number> intervalos = new ArrayList<Number>(){{
-            add(25);
-            add(50);
-            add(75);
-            add(100);
-        }};
-        
+        List<Number> intervalos = new ArrayList<Number>() {
+            {
+                add(25);
+                add(50);
+                add(75);
+                add(100);
+            }
+        };
+
         float ejecutado = 0.0f;
         ejecutado = (totalPresupuestoProyecto * ejecutadoProyecto) / 100;
-         
+
         //return new MeterGaugeChartModel(Integer.parseInt(String.valueOf(ejecutado)), intervalos);
-        return new MeterGaugeChartModel((int) ejecutado,intervalos);
+        return new MeterGaugeChartModel((int) ejecutado, intervalos);
     }
- 
+
     private void crearIndicadorEjecutado() {
         indicadorEjecutado = inicializarModeloIndicadorPorcentaje();
 
@@ -343,27 +456,27 @@ public class IndicadoresController implements Serializable {
 
         indicadorEjecutado.setGaugeLabelPosition("bottom");
         //indicadorEjecutado.setShowTickLabels(false);
-        
+
         indicadorEjecutado.setIntervalInnerRadius(85);
         indicadorEjecutado.setIntervalOuterRadius(80);
-        
+
         indicadorEjecutado.setExtender("indicador");
-        
+
     }
-    
-    public void calcularTotalesPorProyecto(){
+
+    public void calcularTotalesPorProyecto() {
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-        
+
         totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(proyectocontroller.getSelected().getId());
     }
-    
-    public void calcularPendienteRendicion(){
+
+    public void calcularPendienteRendicion() {
         this.pendienteRendicionProyecto = 12588.12f;
     }
-    
-    public void calcularTotalEjecutado(){
+
+    public void calcularTotalEjecutado() {
         this.ejecutadoProyecto = 56451.58f;
     }
 
