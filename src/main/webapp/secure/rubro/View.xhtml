@@ -35,6 +35,14 @@
                                     <h:outputText id="rubro" value="#{rubroController.selected.rubro}" title="Rubro" />
                                 </p:column>
                             </p:row>
+                            <p:row>
+                                <p:column style="width: 40%;">
+                                    <h:outputLabel value="Nombre Abreviado" for="abreviado"  style="font-weight: bold;" />
+                                </p:column>
+                                <p:column style="width: 60%;">
+                                    <h:outputText id="abreviado" value="#{rubroController.selected.abreviado}" title="Nombre Abreviado" />
+                                </p:column>
+                            </p:row>
                         </p:panelGrid>
                     </p:fieldset>
 
