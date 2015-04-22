@@ -17,10 +17,7 @@
             <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
             <f:event type="preRenderView" listener="#{presupuestoTareaController.armarPresupuestoGeneral}" />
             <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
-            <f:event type="preRenderView" listener="#{rendicionController.prepararRendicion()}" />
-
-            <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
-            <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
+            <!--<f:event type="preRenderView" listener="{rendicionController.prepararRendicion()}" />-->
 
             <h:form id="formprincipal" enctype="multipart/form-data" >
                 <p:growl id="growlprincipal" autoUpdate="true" showDetail="true"  />
@@ -230,8 +227,6 @@
 
                             <p:tab id="treintegro" title="Reintegro" >
                                 
-                                <h:outputText id="asdasd" value="#{archivorendicionController.selected.nrofactura}" />
-
                                 <p:dataTable id="tabladisponiblesreintegro" widgetVar="tabladisponiblesreintegro" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
                                              paginatorPosition="bottom"
@@ -276,10 +271,10 @@
                                              var="item" 
                                              value="#{rendicionController.listaSolicitudes}" 
                                              rowKey="#{item.id}" 
-                                             selection="#{rendicionController.solicitudSeleccionada}"
                                              rowIndexVar="indice"
                                              rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
                                              styleClass="tabla" style="margin-bottom: 10px;">
+                                    <!--selection="{rendicionController.solicitudSeleccionada}" >-->
                                     <!--selection="{rendicionController.listaSolicitudesSeleccionadas}" >-->
                                     <f:facet name="header">
                                         Solicitudes abiertas pendientes de Rendición
@@ -301,7 +296,7 @@
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formprincipal:growlprincipal,:formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion " actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
+                                        <p:commandButton update=":formprincipal:growlprincipal, :formarchivorendicion " actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
                                             <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                         </p:commandButton>
                                     </p:column>
@@ -325,7 +320,7 @@
                                         <h:outputText value="#{arc.montofactura}" />  
                                     </p:column> 
                                     <p:column headerText="">  
-                                        <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tablafacturasrendicion, :formarchivorendicion"  >
+                                        <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion"  >
                                             <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
                                         </p:commandLink>
                                     </p:column> 
@@ -533,7 +528,7 @@
                     <p:separator/>
                     <div align="center" >
                         <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
-                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion, :formprincipal:tabsolicitudes:asdasd" oncomplete="PF('dialogoItemRendicion').hide();" />
+                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion" oncomplete="PF('dialogoItemRendicion').hide();" />
                     </div>
                 </h:form>
 

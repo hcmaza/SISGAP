@@ -158,21 +158,25 @@ public class SolicitudController implements Serializable {
         current.setFechasolicitud(new Date());
         selectedItemIndex = -1;
 
-        armarSolicitudesYDesembolsos();
+        armarSolicitudesDesembolsosYRendicion();
 
         return "CreateSolicitud";
     }
     
-    public void armarSolicitudesYDesembolsos(){
+    public void armarSolicitudesDesembolsosYRendicion(){
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
 
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(proyectocontroller.getSelected().getId(), tabseleccionado);
+        
+        // seteamos los controladores de rendicion y archivos de rendicion
+        rendicioncontroller.prepararRendicion();
 
         // Borramos la lista de items disponibles
         itemsDisponibles = new ArrayList<Solicitud>();

@@ -135,54 +135,45 @@ public class RendicionController implements Serializable {
         //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
+    
+    public void iniciarRendicion(){
+        
+        // Evitar que salte nuevamente el prerender
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            prepararRendicion();
+            System.out.println("RendicionController - iniciarRendicion SIN POSTBACK");
+        }
+    }
 
     public void prepararRendicion() {
-        current = new Rendicion();
-        selectedItemIndex = -1;
+        
+            System.out.println("RendicionController - prepararRendicion()");
 
-        System.out.println("Inicio Rendicion - prepareCreate");
+            current = new Rendicion();
+            selectedItemIndex = -1;
 
-        current.setFecha(new Date());
+            current.setFecha(new Date());
 
-        // Obtenemos los controladores necesarios
-        FacesContext context = FacesContext.getCurrentInstance();
-        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
-        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+            // Obtenemos los controladores necesarios
+            FacesContext context = FacesContext.getCurrentInstance();
+            //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+            ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+            ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
 
-        // Vaciamos la lista de archivos de rendicion
-        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+            // Vaciamos la lista de archivos de rendicion
+            archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
 
-        // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
-        listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+            // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
+            listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
 
-        // Vaciamos la lista de solicitudes seleccionadas
-        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+            // Vaciamos la lista de solicitudes seleccionadas
+            listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
 
     }
 
     public String prepareCreate() {
-        current = new Rendicion();
-        selectedItemIndex = -1;
-
-        System.out.println("Inicio Rendicion - prepareCreate");
-
-        current.setFecha(new Date());
-
-        // Obtenemos los controladores necesarios
-        FacesContext context = FacesContext.getCurrentInstance();
-        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
-        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
-
-        // Vaciamos la lista de archivos de rendicion
-        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
-
-        // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
-        listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
-
-        // Vaciamos la lista de solicitudes seleccionadas
-        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+        
+        prepararRendicion();
 
         return "CreateRendicion";
     }
