@@ -71,7 +71,7 @@ public class Proyecto implements Serializable {
     @Column(name = "duracion")
     private Short duracion;
     @Column(name = "cantidadreintegros")
-    private int cantidadreintegros;
+    private Integer cantidadreintegros;
     
     
     @Id
@@ -163,7 +163,13 @@ public class Proyecto implements Serializable {
         this.documentacionnombre = documentacionnombre;
     }
 
-    
+    public Integer getCantidadreintegros() {
+        return cantidadreintegros;
+    }
+
+    public void setCantidadreintegros(Integer cantidadreintegros) {
+        this.cantidadreintegros = cantidadreintegros;
+    }
     
     public String getObservaciones() {
         return observaciones;
@@ -187,14 +193,6 @@ public class Proyecto implements Serializable {
 
     public void setDuracion(Short duracion) {
         this.duracion = duracion;
-    }
-
-    public int getCantidadreintegros() {
-        return cantidadreintegros;
-    }
-
-    public void setCantidadreintegros(int cantidadreintegros) {
-        this.cantidadreintegros = cantidadreintegros;
     }
 
     public Integer getId() {
