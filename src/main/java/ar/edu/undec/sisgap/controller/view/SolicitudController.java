@@ -444,6 +444,7 @@ public class SolicitudController implements Serializable {
     public void agregarItemSolicitado() {
 
         float maxanticipo = 0;
+        int maxcantidadreintegros;
         System.out.println("tipo de solicitud---------"+ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
         current.setTiposolicitudid(ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
         Solicitud solicitud = current;
@@ -459,6 +460,7 @@ public class SolicitudController implements Serializable {
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
         float dineroDisponible = desembolsocontroller.sumarDesembolsos() - sumarSolicitudesAprobadas();
 
@@ -466,6 +468,7 @@ public class SolicitudController implements Serializable {
         System.out.println("sumarSolicitado() : " + sumarSolicitado());
         System.out.println("current.getImporte() : " + current.getImporte().floatValue());
                
+        // Validacion de no superar el dinero disponible
         if (sumarSolicitado() + current.getImporte().floatValue() > dineroDisponible) {
             System.out.println("El importe del item a solicitar supera el dinero disponible");
 
@@ -478,12 +481,13 @@ public class SolicitudController implements Serializable {
             return;
         }
 
-        // Obtenemos el monto maximo para anticipos desde la configuracion
+        // Obtenemos el monto maximo para anticipos desde la configuracion 
         try {
             maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
            // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
         } catch (Exception e) {
-            System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos");
+            maxanticipo = 0;
+            System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos [maxanticipo = 0]");
             e.printStackTrace();
         }
 
@@ -493,6 +497,29 @@ public class SolicitudController implements Serializable {
             System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
 
             context.addMessage(null, new FacesMessage("Inválido", "Al Solicitar un anticipo no se puede superar el máximo permitido. El monto máximo permitido es de $" + maxanticipo));
+
+            // Restauramos el valor de la solicitad al total de presupuesto tarea
+            current.setImporte(current.getDisponible());
+
+            return;
+        }
+        
+        // Obtenemos la cantidad maxima de reintegros por proyecto desde la configuracion 
+        try {
+            maxcantidadreintegros = Integer.parseInt(ejbFacadec.findAtributo("maxcantidadreintegros").getValor());
+            System.out.println("maxcantidadreitegros=" + String.valueOf(maxcantidadreintegros));
+        } catch (Exception e) {
+            maxcantidadreintegros = 0;
+            System.out.println("Error en obtencion de parametro 'maxcantidadreitegros' desde la base de datos [maxcantidadreitegros = 0]");
+            e.printStackTrace();
+        }
+
+        // Validar que si es un reintegro, no supere la cantidad permitida para el proyecto
+        if (this.tabseleccionado.equals("Reintegro") && (proyectocontroller.getSelected().getCantidadreintegros() + 1) > maxcantidadreintegros) {
+
+            System.out.println("Se ha superado la cantidad maxima de reintegros permitidos para este proyecto");
+
+            context.addMessage(null, new FacesMessage("Inválido", "Se ha superado la cantidad máxima de reintegros (" + + maxcantidadreintegros + ") permitidos para este proyecto."));
 
             // Restauramos el valor de la solicitad al total de presupuesto tarea
             current.setImporte(current.getDisponible());
@@ -518,8 +545,6 @@ public class SolicitudController implements Serializable {
                     iDisp1.remove();
                     //h
                     sencontrado = solicitud;
-                    
-                    
                 }
             }
             
@@ -537,9 +562,8 @@ public class SolicitudController implements Serializable {
                        
                     }
                 }
-            
-               
             }
+            
             // agregamos a la lista de solicitados
             //itemsSolicitados.add(solicitud);
             // agregamos a la lista de solicitados, checkeamos si hay un item del 
@@ -570,8 +594,6 @@ public class SolicitudController implements Serializable {
 
             //System.out.println("CURRENT: " + solicitud.getId() + " - Desc: " + solicitud.getPresupuestotarea().getDescripcion());
             System.out.println("Transferencia PARCIAL");
-
-           
 
             // agregamos a la lista de solicitados, checkeamos si hay un item del 
             // mismo presupuestotarea anterior, si es asi lo sumamos
