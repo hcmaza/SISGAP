@@ -74,7 +74,7 @@
 
                         <p:tabView id="tabsolicitudes" dynamic="true" >
 
-                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion" immediate="true" />
+                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro, :formprincipal:tablaSolicitudes" immediate="true" />
 
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
@@ -126,7 +126,7 @@
                                     <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
                                         <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                    <p:column headerText="Descripción" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
@@ -167,7 +167,7 @@
                                     <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
                                         <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                    <p:column headerText="Descripción" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
@@ -207,7 +207,7 @@
                                     <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
                                         <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                    <p:column headerText="Descripción" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
@@ -248,7 +248,7 @@
                                     <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
                                         <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                     </p:column>
-                                    <p:column headerText="Descripcion" sortBy="#{item.presupuestotarea.descripcion}">
+                                    <p:column headerText="Descripción" sortBy="#{item.presupuestotarea.descripcion}">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
@@ -281,7 +281,7 @@
                                     </f:facet>
                                     <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
                                     <!--<p:column selectionMode="single" style="width:16px;text-align:center"/>-->
-                                    <p:column headerText="Descripcion">
+                                    <p:column headerText="Descripción">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
                                     <p:column headerText="Fecha">
@@ -342,7 +342,7 @@
                             <p:column headerText="Rubro">
                                 <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
                             </p:column>
-                            <p:column headerText="Descripcion">
+                            <p:column headerText="Descripción">
                                 <h:outputText value="#{item.presupuestotarea.descripcion}" />
                             </p:column>
                             <p:column headerText="Presupuesto">

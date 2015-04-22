@@ -858,11 +858,14 @@ public class SolicitudController implements Serializable {
     
     //Cuando clickea un tab de solicitudes elije un tipo de solicitud por default es 0
     public void onTabChange(TabChangeEvent event) {
+        
         tabseleccionado = event.getTab().getTitle();
+        
         System.out.println("------------------"+tabseleccionado);
+        
         this.itemsDisponibles = new ArrayList<Solicitud>();
         //filtro por rubros
-            if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición")){
+            if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición") | tabseleccionado.equals("Reintegro")){
                 for(Solicitud s : this.itemsDisponiblesNuevo ){
                     // Si NO es de Recursos Humanos, Consultoria y Traslados
                     if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
@@ -881,14 +884,14 @@ public class SolicitudController implements Serializable {
                 }
             }
             
-            if(tabseleccionado.equals("Ampliación de Presupuesto")){
-                for(Solicitud s : this.itemsDisponibles ){
-                    
-                   // if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
-                        this.itemsDisponibles.add(s);
-                   // }
-                }
-            }
+//            if(tabseleccionado.equals("Reintegro")){
+//                for(Solicitud s : this.itemsDisponibles ){
+//                    
+//                   // if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
+//                        this.itemsDisponibles.add(s);
+//                   // }
+//                }
+//            }
 
         
     }
