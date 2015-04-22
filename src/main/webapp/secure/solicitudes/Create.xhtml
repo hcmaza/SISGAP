@@ -47,7 +47,7 @@
                                 </p:column>
                                 <p:column style="width: 25%;">
                                     <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
-                                        <p:chart type="line" model="#{indicadoresController.chartEjecutadoPorFecha}" style="height:100px;"/>
+                                        <p:chart type="line" model="#{indicadoresController.chartEjecutadoPorFecha}" style="height:90px;" styleClass="sinBordes"/>
                                     </p:fieldset>
                                 </p:column>
                             </p:row>
@@ -229,6 +229,8 @@
                             </p:tab>
 
                             <p:tab id="treintegro" title="Reintegro" >
+                                
+                                <h:outputText id="asdasd" value="#{archivorendicionController.selected.nrofactura}" />
 
                                 <p:dataTable id="tabladisponiblesreintegro" widgetVar="tabladisponiblesreintegro" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
@@ -274,7 +276,10 @@
                                              var="item" 
                                              value="#{rendicionController.listaSolicitudes}" 
                                              rowKey="#{item.id}" 
-                                             selection="#{rendicionController.solicitudSeleccionada}">
+                                             selection="#{rendicionController.solicitudSeleccionada}"
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla" style="margin-bottom: 10px;">
                                     <!--selection="{rendicionController.listaSolicitudesSeleccionadas}" >-->
                                     <f:facet name="header">
                                         Solicitudes abiertas pendientes de Rendición
@@ -296,16 +301,40 @@
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formprincipal:growlprincipal" actionListener="{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoFactura').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
-                                            <f:setPropertyActionListener value="{item}" target="{solicitudController.selected}" />
+                                        <p:commandButton update=":formprincipal:growlprincipal,:formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion " actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                         </p:commandButton>
                                     </p:column>
+                                </p:dataTable>
+
+                                <!--**********************************************-->
+                                <!--********* TABLA ARCHIVOS RENDICION ***********-->
+                                <!--**********************************************-->
+
+                                <p:dataTable id="tablafacturasrendicion" var="arc" value="#{archivorendicionController.listaArchivos}" style="top: 5px;" >  
+                                    <f:facet name="header">
+                                        Facturas incorporadas a la Rendición
+                                    </f:facet>
+                                    <p:column headerText="N° de Factura">  
+                                        <h:outputText value="#{arc.nrofactura}" />  
+                                    </p:column> 
+                                    <p:column headerText="Archivo">  
+                                        <h:outputText value="#{arc.nombrearchivo}" />  
+                                    </p:column> 
+                                    <p:column headerText="Monto">  
+                                        <h:outputText value="#{arc.montofactura}" />  
+                                    </p:column> 
+                                    <p:column headerText="">  
+                                        <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tablafacturasrendicion, :formarchivorendicion"  >
+                                            <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
+                                        </p:commandLink>
+                                    </p:column> 
                                 </p:dataTable>
                             </p:tab>
 
                         </p:tabView>
 
-                        <p:dataTable id="pSolicitados" var="item" value="#{solicitudController.itemsSolicitados}">
+                        <p:dataTable id="tablaSolicitudes" var="item" value="#{solicitudController.itemsSolicitados}">
                             <f:facet name="header">
                                 Items Solicitados
                             </f:facet>
@@ -334,7 +363,7 @@
                                 <h:outputText value="#{item.importe}" />
                             </p:column>
                             <p:column style="width:32px;text-align: center">
-                                <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:pSolicitados" >
+                                <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tablaSolicitudes" >
                                     <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
                                 </p:commandButton>
                             </p:column>
@@ -342,27 +371,6 @@
                                 El total Solicitado es $ #{solicitudController.sumarSolicitado()}
                             </f:facet>
                         </p:dataTable>
-
-                        <p:dataTable id="tablaarchivos" var="arc" value="{archivorendicionController.listaArchivos}" style="top: 5px;" >  
-                            <f:facet name="header">
-                                Items incorporados a la Rendición de Gastos.
-                            </f:facet>
-                            <p:column headerText="N° de Factura">  
-                                <h:outputText value="{arc.nrofactura}" />  
-                            </p:column> 
-                            <p:column headerText="Archivo">  
-                                <h:outputText value="{arc.nombrearchivo}" />  
-                            </p:column> 
-                            <p:column headerText="Monto">  
-                                <h:outputText value="{arc.montofactura}" />  
-                            </p:column> 
-                            <p:column headerText="">  
-                                <p:commandLink immediate="true" value="Eliminar" action="{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:vercomprobantes, :formprincipal:tablaarchivos,"  >
-                                    <f:setPropertyActionListener value="{arc}" target="{archivorendicionController.selected}" />  
-                                </p:commandLink>
-                            </p:column> 
-                        </p:dataTable>
-
                     </p:panel>
                     <br style="clear: both;"/>
                     <p:separator />
@@ -380,11 +388,15 @@
                 </p:panel>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:pSolicitados" style="float:left;" /> 
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes" style="float:left;" /> 
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
                 </p:confirmDialog>
 
             </h:form>
+
+            <!--**********************************************-->
+            <!--************* DIALAGO SOLICITUD **************-->
+            <!--**********************************************-->
 
             <p:dialog header="Item Solicitud" id="dialogoItemSolicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="formitem" enctype="multipart/form-data"  >
@@ -424,20 +436,22 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
                     </div>
                 </h:form>
 
 
             </p:dialog>
 
-            <!-- REINTEGRO -->
+            <!--**********************************************-->
+            <!--************* DIALAGO REINTEGRO **************-->
+            <!--**********************************************-->
 
             <p:dialog header="Reintegro" id="dialogoItemReintegro" widgetVar="dialogoItemReintegro" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
 
                 <h:form id="formreintegro" enctype="multipart/form-data"  >
                     <p:messages id="messages" showDetail="true" autoUpdate="true" />
-                    <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" columnClasses="label,value">
+                    <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" styleClass="panelgrid" columnClasses="right,right" >
                         <f:facet name="header">
                             <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
                         </f:facet>
@@ -472,18 +486,21 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
                     </div>
                 </h:form>
 
 
             </p:dialog>
 
-            <!-- RENDICION -->
+            <!--**********************************************-->
+            <!--************* DIALAGO RENDICION **************-->
+            <!--**********************************************-->
+
             <p:dialog header="Factura" id="dialogoItemRendicion" widgetVar="dialogoItemRendicion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                <h:form id="formfactura" enctype="multipart/form-data" >
+                <h:form id="formarchivorendicion" enctype="multipart/form-data" >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                    <p:panelGrid  columns="2" columnClasses="label,value">
+                    <p:panelGrid columns="2" columnClasses="label,value">
                         <f:facet name="header">
                             <h:outputText value="Datos de la Factura" />
                         </f:facet>
@@ -515,8 +532,8 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
-                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablaarchivos" oncomplete="PF('dialogoItemRendicion').hide();" />
+                        <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
+                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion, :formprincipal:tabsolicitudes:asdasd" oncomplete="PF('dialogoItemRendicion').hide();" />
                     </div>
                 </h:form>
 

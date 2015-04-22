@@ -41,21 +41,31 @@
             
             function ejecutadofecha()
             {
+                this.cfg.grid = {
+                    backgroundColor: 'transparent', 
+                    drawBorder: false, 
+                    shadow: false
+                };
                 //this.cfg.title = "zxc";
                 this.cfg.AxisTickRenderer = {
-                    show: false,
-                    showLabel: false
+                    //show: false,
+                    showLabel: false,
+                    showMark: false
                 };
                 this.cfg.AxisLabelRenderer = {
                     show: false,
+                    showLabel: false,
                     label: ''
                 };
                 this.cfg.axesDefaults = {
-                    show: false
+                    show: false,
+                    showTickMarks: false
                 };
                 
+                // asdjasdl
                 this.cfg.axesDefaults.tickOptions = {
-                    show: false
+                    //show: false
+                    showLabel: false
                 };
             }
             

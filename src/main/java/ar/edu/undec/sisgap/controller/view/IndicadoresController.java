@@ -334,22 +334,22 @@ public class IndicadoresController implements Serializable {
 
     public void generarChartEjecutadoPorFecha() {
 
-        List<Solicitud> listaSolicitudes;
-        List<Desembolso> listaDesembolsos;
+        List<Solicitud> colSolicitudes;
+        List<Desembolso> colDesembolsos;
 
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
         // Llenamos la lista de solicitudes (Aprobadas)
-        listaSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        colSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
 
         // Llenamos la lista de desembolsos
-        listaDesembolsos = this.getDesembolsoFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId());
+        colDesembolsos = this.getDesembolsoFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId());
 
         // Ordenar las colecciones por fecha
         // SOLICITUDES
-        Collections.sort(listaSolicitudes, new Comparator<Solicitud>() {
+        Collections.sort(colSolicitudes, new Comparator<Solicitud>() {
             public int compare(Solicitud o1, Solicitud o2) {
                 if (o1.getFechasolicitud() == null || o2.getFechasolicitud() == null) {
                     return 0;
@@ -359,20 +359,20 @@ public class IndicadoresController implements Serializable {
         });
         
         // DESEMBOLSOS
-        Collections.sort(listaDesembolsos, new Comparator<Desembolso>() {
+        Collections.sort(colDesembolsos, new Comparator<Desembolso>() {
             public int compare(Desembolso o1, Desembolso o2) {
-                if (o1.getFechadesembolso() == null || o2.getFechadesembolso() == null) {
+                if (o1.getFechacarga() == null || o2.getFechacarga()== null) {
                     return 0;
                 }
-                return o1.getFechadesembolso().compareTo(o2.getFechadesembolso());
+                return o1.getFechacarga().compareTo(o2.getFechacarga());
             }
         });
         
-        for(Solicitud s : listaSolicitudes){
+        for(Solicitud s : colSolicitudes){
             System.out.println("SOLICITUD: " + s.getFechasolicitud().toString() + " - " + s.getImporte().toPlainString());
         }
         
-        for(Desembolso d : listaDesembolsos){
+        for(Desembolso d : colDesembolsos){
             System.out.println("DESEMBOLSO: " + d.getFechacarga().toString() + " - " + d.getMonto().toPlainString());
         }
 
@@ -384,20 +384,26 @@ public class IndicadoresController implements Serializable {
         chartEjecutadoPorFecha = new LineChartModel();
         
         LineChartSeries solcitudes = new LineChartSeries();
-        solcitudes.setLabel("Solicitudes");
+        //solcitudes.setLabel("Solicitudes");
  
         //solcitudes.set("2014-01-01", 51);
         
-        for(Solicitud s : listaSolicitudes){
-            solcitudes.set(sdf.format(s.getFechaaprobacion()),s.getImporte().floatValue());
+        float as = 0f;
+        
+        for(Solicitud s : colSolicitudes){
+            as = as + s.getImporte().floatValue();
+            solcitudes.set(sdf.format(s.getFechaaprobacion()),as);
         }
  
         // Serie de Desembolsos
         LineChartSeries desembolsos = new LineChartSeries();
-        desembolsos.setLabel("Desembolsos");
+        //desembolsos.setLabel("Desembolsos");
  
-        for(Desembolso d : listaDesembolsos){
-            desembolsos.set(sdf.format(d.getFechacarga()),d.getMonto().floatValue());
+        float ad = 0f;
+        
+        for(Desembolso d : colDesembolsos){
+            ad = ad + d.getMonto().floatValue();
+            desembolsos.set(sdf.format(d.getFechacarga()),ad);
         }
 
         chartEjecutadoPorFecha.addSeries(desembolsos);
@@ -407,9 +413,9 @@ public class IndicadoresController implements Serializable {
         chartEjecutadoPorFecha.setZoom(false);
         chartEjecutadoPorFecha.getAxis(AxisType.Y); //.setLabel("Values");
         DateAxis axis = new DateAxis(""); // Fechas
-        axis.setTickAngle(-50);
+        //axis.setTickAngle(-50);
         //axis.setMax("2016-02-01");
-        axis.setTickFormat(""); // %b %#d, %y
+        axis.setTickFormat("%b %#d, %y"); // %b %#d, %y
         
         chartEjecutadoPorFecha.setLegendRows(0);
         chartEjecutadoPorFecha.setLegendCols(0);

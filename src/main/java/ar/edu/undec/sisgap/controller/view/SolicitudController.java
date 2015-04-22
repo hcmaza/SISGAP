@@ -238,8 +238,6 @@ public class SolicitudController implements Serializable {
                    this.itemsDisponibles.add(s);
              }
         }
-            
-       
     }
 
     public String create() {

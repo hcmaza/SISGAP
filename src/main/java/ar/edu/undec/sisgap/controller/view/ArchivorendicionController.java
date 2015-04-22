@@ -258,14 +258,17 @@ public class ArchivorendicionController implements Serializable {
     }
     
     public void nuevoArchivoRendicion(){
-       System.out.println("Archivo rendicion aklsd"); 
+       System.out.println("Nuevo Archivo Rendicion Inicio"); 
        current = null;
        current = new Archivorendicion();
-       System.out.println("Archivo rendicion qweqwe"); 
+       System.out.println("Nuevo Archivo rendicion Fin"); 
     }
     
     public void agregarArchivoLista(){
+        System.out.println("Agregar Archivo rendicion Inicio"); 
         getListaArchivos().add(current);
+        System.out.println("Lista Archivos Rendicion: " + getListaArchivos().size()); 
+        System.out.println("Agregar Archivo rendicion Fin"); 
     }
 
     public void subirArchivoRendicion(FileUploadEvent event) {
