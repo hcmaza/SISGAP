@@ -100,6 +100,10 @@ public class RendicionController implements Serializable {
     }
 
     public Solicitud getSolicitudSeleccionada() {
+
+        if (solicitudSeleccionada == null) {
+            solicitudSeleccionada = new Solicitud();
+        }
         return solicitudSeleccionada;
     }
 
@@ -135,9 +139,9 @@ public class RendicionController implements Serializable {
         //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
-    
-    public void iniciarRendicion(){
-        
+
+    public void iniciarRendicion() {
+
         // Evitar que salte nuevamente el prerender
         if (!FacesContext.getCurrentInstance().isPostback()) {
             prepararRendicion();
@@ -146,33 +150,36 @@ public class RendicionController implements Serializable {
     }
 
     public void prepararRendicion() {
-        
-            System.out.println("RendicionController - prepararRendicion()");
 
-            current = new Rendicion();
-            selectedItemIndex = -1;
+        System.out.println("RendicionController - prepararRendicion()");
 
-            current.setFecha(new Date());
+        current = new Rendicion();
+        selectedItemIndex = -1;
 
-            // Obtenemos los controladores necesarios
-            FacesContext context = FacesContext.getCurrentInstance();
-            //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
-            ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-            ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+        current.setFecha(new Date());
 
-            // Vaciamos la lista de archivos de rendicion
-            archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
 
-            // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
-            listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        // Vaciamos la lista de archivos de rendicion
+        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
 
-            // Vaciamos la lista de solicitudes seleccionadas
-            listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+        // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
+        listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+
+        // Vaciamos la lista de solicitudes seleccionadas [Seleccion de Multiples Solicitudes]
+        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+
+        // Vaciamos la solicitud seleccionada [Seleccion de Solicitud Unica]
+        solicitudSeleccionada = new Solicitud();
 
     }
 
     public String prepareCreate() {
-        
+
         prepararRendicion();
 
         return "CreateRendicion";
@@ -180,8 +187,9 @@ public class RendicionController implements Serializable {
 
     public String create() {
         try {
-
-            if (!listaSolicitudesSeleccionadas.isEmpty()) {
+            
+            // si la solicitud, tiene ID y la referencia a un presupuesto_tarea...
+            if (solicitudSeleccionada.getId() != null && solicitudSeleccionada.getId() != 0 && solicitudSeleccionada.getPresupuestotarea() != null){
                 //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() +  " fue subido satisfactoriamente!"));
 
                 current.setFecha(new Date());
@@ -202,32 +210,73 @@ public class RendicionController implements Serializable {
                 }
 
                 // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
-                for (Solicitud s : listaSolicitudesSeleccionadas) {
-                    s.setRendicionid(current);
-                    //s.setFechaejecucion(new Date());
-                    s.setEstadosolicitudid(estado);
-                    getFacades().edit(s);
-                }
+                solicitudSeleccionada.setRendicionid(current);
+                solicitudSeleccionada.setEstadosolicitudid(estado);
+                getFacades().edit(solicitudSeleccionada);
 
                 // Para cada archivo de rendicion subido
-                // Obtenemos el controladores necesario
+
+                // Obtenemos el controlador necesario
                 FacesContext context = FacesContext.getCurrentInstance();
                 ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
 
                 for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+                    // le damos la referencia a la rendicion actual y persistimos el archivo
                     ar.setRendicionid(current);
                     getFacadear().create(ar);
                 }
 
                 JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
-
             }
 
             return prepareList();
+            
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
         }
+        
+                    //            // Usado para la rendicion de multiples solicitudes
+//            if (!listaSolicitudesSeleccionadas.isEmpty()) {
+//                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() +  " fue subido satisfactoriamente!"));
+//
+//                current.setFecha(new Date());
+//
+//                // se guarda la rendicion
+//                getFacade().createWithPersist(current);
+//
+//                // Estado de la solicitud
+//                Estadosolicitud estado;
+//
+//                try {
+//                    // Estado de la Solicitud = "Rendida"
+//                    estado = getFacadees().find(5);
+//                } catch (Exception e) {
+//                    estado = null;
+//                    System.out.println("EstadosolicitudFacade: problema de recuperacion");
+//                    e.printStackTrace();
+//                }
+//
+//                // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
+//                for (Solicitud s : listaSolicitudesSeleccionadas) {
+//                    s.setRendicionid(current);
+//                    //s.setFechaejecucion(new Date());
+//                    s.setEstadosolicitudid(estado);
+//                    getFacades().edit(s);
+//                }
+//
+//                // Para cada archivo de rendicion subido
+//                // Obtenemos el controladores necesario
+//                FacesContext context = FacesContext.getCurrentInstance();
+//                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+//
+//                for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+//                    ar.setRendicionid(current);
+//                    getFacadear().create(ar);
+//                }
+//
+//                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
+//            }
     }
 
     public String prepareEdit() {

@@ -220,7 +220,6 @@
                                         <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
                                             <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                         </p:commandButton> 
-
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
@@ -265,7 +264,7 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab id="trendicion" title="Rendición de Gastos" >
+                            <p:tab id="trendicion" title="Rendición de Gastos" disabled="#{rendicionController.listaSolicitudes.size() eq 0}" >
 
                                 <p:dataTable id="tabladisponiblesrendicion" 
                                              var="item" 
@@ -297,7 +296,7 @@
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
                                         <p:commandButton update=":formprincipal:growlprincipal, :formarchivorendicion " actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" >
-                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                            <f:setPropertyActionListener value="#{item}" target="#{rendicionController.solicitudSeleccionada}" />
                                         </p:commandButton>
                                     </p:column>
                                 </p:dataTable>
@@ -306,7 +305,10 @@
                                 <!--********* TABLA ARCHIVOS RENDICION ***********-->
                                 <!--**********************************************-->
 
-                                <p:dataTable id="tablafacturasrendicion" var="arc" value="#{archivorendicionController.listaArchivos}" style="top: 5px;" >  
+                                <p:dataTable id="tablafacturasrendicion" var="arc" value="#{archivorendicionController.listaArchivos}" 
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla" style="top: 5px; margin-bottom: 5px;">  
                                     <f:facet name="header">
                                         Facturas incorporadas a la Rendición
                                     </f:facet>
@@ -325,11 +327,11 @@
                                         </p:commandLink>
                                     </p:column> 
                                 </p:dataTable>
-                                
+
                                 <div align="center">
-                                    <p:commandButton action="#{rendicionController.create}" value="Crear Rendición" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />
+                                    <p:commandButton action="#{rendicionController.create}" value="Crear Rendición" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinalrendicion').show();" immediate="true" />
                                 </div>
-                                
+
                             </p:tab>
 
                         </p:tabView>
@@ -377,10 +379,10 @@
 
                     <p:outputPanel id="botonsolicitud"  >
                         <div align="center">
-                            <p:commandButton action="#{solicitudController.create}" value="Crear Solicitud" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" rendered="#{solicitudController.tabseleccionado ne 'Presupuesto Detallado' and solicitudController.tabseleccionado ne 'Rendición de Gastos'}" />
+                            <p:commandButton action="#{solicitudController.create}" value="Crear Solicitud" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinalsolicitud').show();" immediate="true" rendered="#{solicitudController.tabseleccionado ne 'Presupuesto Detallado' and solicitudController.tabseleccionado ne 'Rendición de Gastos'}" />
                         </div>
                     </p:outputPanel>
-                    
+
                     <p:separator />
                     <br style="clear: both;"/>
 
@@ -393,10 +395,30 @@
 
                 </p:panel>
 
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:op" style="float:left;" /> 
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
-                </p:confirmDialog>
+                <p:dialog id="dfinalsolicitud" widgetVar="dfinalsolicitud" modal="true" header="Alta de Solicitud" >
+                    <h:panelGroup id="panelmensajesolicitud" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
+                    <p:separator />
+                    <div align="center" >
+                        <p:commandButton value="Volver a la Lista" action="#{solicitudController.prepareList()}" ajax="false"  />
+                    </div>
+                </p:dialog>
+
+                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición" >
+                    <h:panelGroup id="panelmensajerendicion" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
+                    <p:separator />
+                    <div align="center" >
+                        <p:commandButton value="Volver a la Lista" action="#{rendicionController.prepareList()}" ajax="false"  />
+                    </div>
+                </p:dialog>
+
+                <!--                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+                                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:op" style="float:left;" /> 
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
+                                </p:confirmDialog>-->
 
             </h:form>
 
@@ -506,7 +528,7 @@
             <p:dialog header="Factura" id="dialogoItemRendicion" widgetVar="dialogoItemRendicion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="formarchivorendicion" enctype="multipart/form-data" >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                    <p:panelGrid columns="2" columnClasses="label,value">
+                    <p:panelGrid columns="2" rendered="#{not empty rendicionController.solicitudSeleccionada}" styleClass="panelgrid" columnClasses="right,right" >
                         <f:facet name="header">
                             <h:outputText value="Datos de la Factura" />
                         </f:facet>

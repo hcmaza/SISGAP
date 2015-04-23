@@ -176,6 +176,9 @@ public class SolicitudController implements Serializable {
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(proyectocontroller.getSelected().getId(), tabseleccionado);
         
+        // Seteamos la lista de desembolsos para el proyecto actual
+        desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
+        
         // seteamos los controladores de rendicion y archivos de rendicion
         rendicioncontroller.prepararRendicion();
 
@@ -208,13 +211,11 @@ public class SolicitudController implements Serializable {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
 
                 // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada"
-                //if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
-                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId()) {
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
+                    
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
                     solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
-                    System.out.println("llllll");
-                    
                 }
             }
 
@@ -224,14 +225,8 @@ public class SolicitudController implements Serializable {
             }
         }
         
-        // Vaciamos la lista de presupuestos tareas solicitados
-        //presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
-        //items = new ListDataModel(new ArrayList<Solicitud>());
         // Seteamos el tree de etapas y tareas para el proyecto actual
         etapacontroller.armarTreeEtapasYTareasPorProyecto();
-
-        // Seteamos la lista de desembolsos para el proyecto actual
-        desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
         
         //h:coloco la copia de itemsolicitados tal cual es al principio
         this.itemsDisponiblesNuevo = this.itemsDisponibles;
@@ -239,6 +234,8 @@ public class SolicitudController implements Serializable {
         //h:filtro por defecto para anticipo
          this.itemsDisponibles = new ArrayList<Solicitud>();
          for(Solicitud s : this.itemsDisponiblesNuevo ){
+             
+             // Se quita, se realiza en el evento tabChange
              if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) ){
                    this.itemsDisponibles.add(s);
              }
@@ -421,35 +418,12 @@ public class SolicitudController implements Serializable {
      */
     public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
-
-//        Iterator i = items.iterator();
-//
-//        while (i.hasNext()) {
-//            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud) i.next()).getId());
-//        }
     }
-
-//    public void establecerSolicitudItemsDisponibles(Proyecto p){
-//        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
-//        
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        
-//        //ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-//        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
-//        
-//        // Obtener los presupuestos_tarea del proyecto
-//        presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(p.getId());
-//        
-//        // Setear la lista dual del pick list
-//        plSolicitudItems = new DualListModel<SolicitudItem>(presupuestotareacontroller.getPresupuestostareas(),new ArrayList<SolicitudItem>());
-//    }
     
     public void agregarItemSolicitado() {
 
         float maxanticipo = 0;
         int maxcantidadreintegros;
-        
-        //System.out.println("tipo de solicitud---------"+ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
         
         current.setTiposolicitudid(ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
         Solicitud solicitud = current;
@@ -461,12 +435,13 @@ public class SolicitudController implements Serializable {
             System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
         }
                 */
-        // Validar que no supere la cantidad disponible (los desembolsos menos las solicitudes anteriores)
+        
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
+        // obtenemos el dinero disponible (los desembolsos menos las solicitudes anteriores)
         float dineroDisponible = desembolsocontroller.sumarDesembolsos() - sumarSolicitudesAprobadas();
 
         System.out.println("dinero disponible : " + dineroDisponible);
