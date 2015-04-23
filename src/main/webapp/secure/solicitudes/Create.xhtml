@@ -111,7 +111,7 @@
                                 </p:treeTable>
                             </p:tab>
 
-                            <p:tab id="tabanticipos" title="Anticipo" >
+                            <p:tab id="tabanticipos" title="Anticipo" disabled="#{rendicionController.listaSolicitudes.size() > 0}" >
 
                                 <p:dataTable id="tabladisponiblesanticipo" widgetVar="tabladisponiblesanticipo" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
