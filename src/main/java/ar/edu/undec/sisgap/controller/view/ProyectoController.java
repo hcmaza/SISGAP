@@ -1,6 +1,7 @@
 package ar.edu.undec.sisgap.controller.view;
 
 import ar.edu.undec.sisgap.controller.EnviarMail;
+import ar.edu.undec.sisgap.controller.EstadoproyectoFacade;
 import ar.edu.undec.sisgap.controller.PresupuestoRubroFacade;
 import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
@@ -110,6 +111,8 @@ public class ProyectoController implements Serializable {
     PresupuestoRubroFacade prfacade;
     @EJB
     private ar.edu.undec.sisgap.controller.ArchivoproyectoFacade ejbarchivoproyecto;
+    @EJB
+    private ar.edu.undec.sisgap.controller.EstadoproyectoFacade ejbestadoproyecto;
 
     private PaginationHelper pagination;
     private int selectedItemIndex;
@@ -144,6 +147,10 @@ public class ProyectoController implements Serializable {
         return ejbFacade;
     }
 
+    private EstadoproyectoFacade getFacadeEstadoProyecto() {
+        return ejbestadoproyecto;
+    }
+    
     public PaginationHelper getPagination() {
         if (pagination == null) {
             pagination = new PaginationHelper(10000000) {
@@ -318,6 +325,11 @@ public class ProyectoController implements Serializable {
         return "Edit";
     }
 
+    public String prepareFormalizar() {
+        current = (Proyecto) getItems().getRowData(); 
+        return "Formalizar";
+    }
+    
     public String update() {
         try {
             getFacade().edit(current);
@@ -1819,6 +1831,46 @@ public class ProyectoController implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
 
     }
+    
+    public void pdfFormalizarProyecto() throws JRException, IOException {
+
+        // Obtengo la ruta absoluta del archivo compilado del reporte
+        String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/formalizar.jasper");
+
+        // Fuente de datos del reporte
+        JRBeanArrayDataSource beanArrayDataSource = new JRBeanArrayDataSource(new Proyecto[]{this.getSelected()});
+
+        // Fuente de datos del subreporte (detalle del presupuesto)
+        /*Presupuesto presupuesto = this.ejbFacadep.findporProyecto(this.getSelected().getId());
+        JRDataSource detallePresupuesto = new JRBeanCollectionDataSource(presupuesto.getPresupuestoRubroList());
+
+        // Fuente de datos para el equipo de trabajo
+        List<Agente> listaAgentes = new ArrayList<Agente>();
+        List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
+
+        for (ProyectoAgente pa : listaProyectoAgente) {
+
+            listaAgentes.add(pa.getAgente());
+        }
+
+        JRDataSource equipoTrabajo = new JRBeanCollectionDataSource(listaAgentes);*/
+
+        //Agregando los parametros
+        Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+        parametros.put("idProyecto", this.getSelected().getId());
+       // parametros.put("presupuesto", detallePresupuesto);
+       // parametros.put("equipoTrabajo", equipoTrabajo);
+
+        // Llenamos el reporte
+        JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, beanArrayDataSource);
+
+        // Generamos el archivo a descargar
+        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        httpServletResponse.addHeader("Content-disposition", "attachment; filename=formalizarProyecto.pdf");
+        ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
 
     public List<Agente> obtenerEquipoTrabajo() {
 
@@ -1874,6 +1926,24 @@ public class ProyectoController implements Serializable {
 //    }
     public void setSelected(Proyecto proyecto) {
         current = proyecto;
+    }
+    
+    public String setFormalizar(){
+        try{
+            Estadoproyecto ep = getFacadeEstadoProyecto().buscarPorId(8);            
+            current.setEstadoproyectoid(ep);   
+            getFacade().edit(current);          
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
+            return null;
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage();
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            message.setSummary("ERROR");
+            message.setDetail("No se pudo crear la Formalización del Proyecto " + e);
+            FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
+            System.out.println("Error al grabar la Formalización  = " + e);
+            return null;
+        }
     }
 
 }

@@ -48,6 +48,18 @@ public class Proyecto implements Serializable {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "fecharesolucion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecharesolucion;
+    @Column(name = "fechaexpediente")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaexpediente;
+    @Size(max = 40)
+    @Column(name = "resolucion")
+    private String resolucion;
+    @Size(max = 40)
+    @Column(name = "expediente")
+    private String expediente;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
@@ -130,6 +142,38 @@ public class Proyecto implements Serializable {
         this.fecha = fecha;
     }
 
+    public Date getFecharesolucion() {
+        return fecharesolucion;
+    }
+
+    public void setFecharesolucion(Date fecharesolucion) {
+        this.fecharesolucion = fecharesolucion;
+    }
+
+    public Date getFechaexpediente() {
+        return fechaexpediente;
+    }
+
+    public void setFechaexpediente(Date fechaexpediente) {
+        this.fechaexpediente = fechaexpediente;
+    }
+
+    public String getResolucion() {
+        return resolucion;
+    }
+
+    public void setResolucion(String resolucion) {
+        this.resolucion = resolucion;
+    }
+
+    public String getExpediente() {
+        return expediente;
+    }
+
+    public void setExpediente(String expediente) {
+        this.expediente = expediente;
+    }
+        
     public String getNombre() {
         return nombre;
     }

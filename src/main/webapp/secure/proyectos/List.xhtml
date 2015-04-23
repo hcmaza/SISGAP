@@ -90,6 +90,10 @@
                                 <p:menuButton value="Opciones">
                                      <c:if test="#{request.isUserInRole('Administrador')}" > 
                                         
+                                         <p:menuitem rendered="#{item.estadoproyectoid.id eq 2}" value="Formalizar" action="#{proyectoController.prepareFormalizar()}" ajax="false" icon="ui-icon-plus">
+                                                <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                            </p:menuitem>
+                                         <p:separator />
                                             <p:menuitem rendered="#{item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" value="Desembolsos" action="#{desembolsoController.prepareCreate()}" ajax="false" icon="ui-icon-plus">
                                                 <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                             </p:menuitem>

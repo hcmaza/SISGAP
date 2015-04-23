@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PruebaIReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="780753e8-2b7f-4c9e-bae6-18ef94f4a212">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="459"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="resumen" class="java.lang.String"/>
+	<field name="cudap" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<image hAlign="Right" vAlign="Middle">
+				<reportElement x="451" y="0" width="104" height="76" uuid="746448b1-c04b-418c-bd18-1c1f47d49afa"/>
+				<imageExpression><![CDATA["C:\\Users\\Alejandro\\Desktop\\Wayra.png"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="0" y="25" width="394" height="29" uuid="61a5d30c-8c09-4e14-b965-8d2cb3c705e0"/>
+				<imageExpression><![CDATA["C:\\Users\\Alejandro\\Desktop\\Sistema.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="675">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="229" width="555" height="54" uuid="82abb3bb-4982-480e-8a8d-c9dbfcc29ab8"/>
+				<textElement textAlignment="Center">
+					<font size="36" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="355" width="555" height="48" uuid="03cddb72-40b5-424c-a2c5-6a221ad8537b"/>
+				<textElement textAlignment="Center">
+					<font size="36" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cudap}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="181" width="555" height="41" uuid="66981939-4b92-4152-ab86-28195c940c56"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="28"/>
+				</textElement>
+				<text><![CDATA[Proyecto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="308" width="555" height="41" uuid="0ccc7782-9a10-4690-ae17-2c4b29c6950c"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="28"/>
+				</textElement>
+				<text><![CDATA[Resolución]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>
