@@ -28,8 +28,12 @@
                         <p:panelGrid style="width: 100%;" styleClass="sinBordes">
                             <p:row >
                                 <p:column style="width: 25%;" >
-                                    <p:fieldset legend="Saldo" style="height: 110px !important; " >
-                                        <p:outputLabel value="$ #{solicitudController.sumarDisponible()}" style="color: green; font-weight: bold; font-size: 20px !important;  " />
+                                    <p:fieldset legend="Total Ejecutado" style="height: 110px !important; " styleClass="fieldSetCentrado110" >
+                                        <div class="centrarEnFieldSet" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="$#{indicadoresController.ejecutadoProyecto}" style="color: #00C7F6 ; font-weight: bold; font-size: 21px !important; " />
+                                            </p:panelGrid>
+                                        </div>
                                     </p:fieldset>
                                 </p:column>
                                 <p:column style="width: 25%;">
@@ -50,18 +54,22 @@
                             </p:row>
                             <p:row>
                                 <p:column style="width: 25%;">
-                                    <p:fieldset legend="Total Ejecutado" style="height: 70px !important; ">
-                                        <p:outputLabel value="$#{indicadoresController.ejecutadoProyecto}" style="color: #00C7F6 ; font-weight: bold; font-size: 20px !important; " />
+                                    <p:fieldset legend="Saldo" style="height: 70px !important; " styleClass="fieldSetCentrado70" >
+                                        <div class="centrarEnFieldSet" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="$ #{solicitudController.sumarDisponible()}" style="color: green; font-weight: bold; font-size: 21px !important;  " />
+                                            </p:panelGrid>
+                                        </div>
                                     </p:fieldset>
                                 </p:column>
                                 <p:column colspan="3" style="width: 75%;">
                                     <!--<p:fieldset legend="Saldo Rubros" style="height: 70px !important; ">-->
-                                    <p:dataTable  value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 10px !important;">
+                                    <p:dataTable  value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 12px !important; margin-top: 15px; text-align: center;">
                                         <f:facet name="header">
                                             Saldo de Rubros
                                         </f:facet>
                                         <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
-                                            <p:outputLabel value="#{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 8px !important; font-weight: bold;"  />
+                                            <p:outputLabel value="$ #{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 11px !important; font-weight: bold;"  />
                                         </p:columns>
                                     </p:dataTable>
                                     <!--</p:fieldset>-->

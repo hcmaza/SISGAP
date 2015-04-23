@@ -62,6 +62,23 @@ table {
     margin:auto;
 }
 
+.fieldSetCentrado110 .ui-fieldset-content{
+    height: 100% !important;
+}
+
+.fieldSetCentrado70 .ui-fieldset-content{
+    height: 70% !important;
+}
+
+.centrarEnFieldSet{
+    
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    height: 70%;
+    width: 100%;
+}
+
 // Color: #00C7F6 Seleccion de Dario
 // Color 2: #82CADC Seleccion de Dario 
 // Color anterior: #21B2CE
