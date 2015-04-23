@@ -356,22 +356,30 @@
                                     <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                 </p:column>
                                 <p:column headerText="Rubro">
-                                    <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
                                 </p:column>
                                 <p:column headerText="Descripción">
                                     <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                 </p:column>
-                                <p:column headerText="Presupuesto">
+                                <p:column headerText="Especificación">
+                                    <h:outputText value="#{item.observacion}" />
+                                </p:column>
+                                <p:column headerText="Fecha">
+                                    <h:outputText value="#{item.fechasolicitud}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Archivo">
                                     <h:outputText value="#{item.archivonombre}" />
                                 </p:column>
-                                <!--                            <p:column headerText="Tipo Solicitud">
-                                                                <h:outputText value="{item.tiposolicitudid.tiposolicitud}" />
-                                                            </p:column>-->
+                                <p:column headerText="Tipo Solicitud">
+                                    <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                </p:column>
                                 <p:column headerText="Cantidad"  style="text-align: right;" >
                                     <h:outputText value="#{item.presupuestotarea.cantidad}" />
                                 </p:column>
                                 <p:column headerText="Solicitado"  style="text-align: right;" >
-                                    <h:outputText value="#{item.importe}" />
+                                    <h:outputText value="$#{item.importe}" />
                                 </p:column>
                                 <p:column style="width:32px;text-align: center">
                                     <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tablasolicitudes" >
