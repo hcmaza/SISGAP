@@ -72,9 +72,9 @@
 
                     <p:panel header="Gestión del Proyecto" >
 
-                        <p:tabView id="tabsolicitudes" dynamic="true" >
+                        <p:tabView id="tabsolicitudes" dynamic="true" style="margin-bottom: 10px;" >
 
-                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro, :formprincipal:tablaSolicitudes" immediate="true" />
+                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:op, :formprincipal:botonsolicitud, :formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro" immediate="true" />
 
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
@@ -226,7 +226,7 @@
                             </p:tab>
 
                             <p:tab id="treintegro" title="Reintegro" >
-                                
+
                                 <p:dataTable id="tabladisponiblesreintegro" widgetVar="tabladisponiblesreintegro" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
                                              paginatorPosition="bottom"
@@ -325,65 +325,76 @@
                                         </p:commandLink>
                                     </p:column> 
                                 </p:dataTable>
+                                
+                                <div align="center">
+                                    <p:commandButton action="#{rendicionController.create}" value="Crear Rendición" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />
+                                </div>
+                                
                             </p:tab>
 
                         </p:tabView>
 
-                        <p:dataTable id="tablaSolicitudes" var="item" value="#{solicitudController.itemsSolicitados}">
-                            <f:facet name="header">
-                                Items Solicitados
-                            </f:facet>
-                            <p:column headerText="Etapa">
-                                <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                            </p:column>
-                            <p:column headerText="Tarea">
-                                <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                            </p:column>
-                            <p:column headerText="Rubro">
-                                <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
-                            </p:column>
-                            <p:column headerText="Descripción">
-                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                            </p:column>
-                            <p:column headerText="Presupuesto">
-                                <h:outputText value="#{item.archivonombre}" />
-                            </p:column>
-                            <!--                            <p:column headerText="Tipo Solicitud">
-                                                            <h:outputText value="{item.tiposolicitudid.tiposolicitud}" />
-                                                        </p:column>-->
-                            <p:column headerText="Cantidad"  style="text-align: right;" >
-                                <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                            </p:column>
-                            <p:column headerText="Solicitado"  style="text-align: right;" >
-                                <h:outputText value="#{item.importe}" />
-                            </p:column>
-                            <p:column style="width:32px;text-align: center">
-                                <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tablaSolicitudes" >
-                                    <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
-                                </p:commandButton>
-                            </p:column>
-                            <f:facet name="footer">
-                                El total Solicitado es $ #{solicitudController.sumarSolicitado()}
-                            </f:facet>
-                        </p:dataTable>
+                        <p:outputPanel id="op" >
+                            <p:dataTable id="tablasolicitudes" var="item" value="#{solicitudController.itemsSolicitados}" rendered="#{solicitudController.tabseleccionado ne 'Presupuesto Detallado' and solicitudController.tabseleccionado ne 'Rendición de Gastos'}">
+                                <f:facet name="header">
+                                    Items Solicitados
+                                </f:facet>
+                                <p:column headerText="Etapa">
+                                    <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                </p:column>
+                                <p:column headerText="Tarea">
+                                    <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                </p:column>
+                                <p:column headerText="Rubro">
+                                    <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                </p:column>
+                                <p:column headerText="Descripción">
+                                    <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                </p:column>
+                                <p:column headerText="Presupuesto">
+                                    <h:outputText value="#{item.archivonombre}" />
+                                </p:column>
+                                <!--                            <p:column headerText="Tipo Solicitud">
+                                                                <h:outputText value="{item.tiposolicitudid.tiposolicitud}" />
+                                                            </p:column>-->
+                                <p:column headerText="Cantidad"  style="text-align: right;" >
+                                    <h:outputText value="#{item.presupuestotarea.cantidad}" />
+                                </p:column>
+                                <p:column headerText="Solicitado"  style="text-align: right;" >
+                                    <h:outputText value="#{item.importe}" />
+                                </p:column>
+                                <p:column style="width:32px;text-align: center">
+                                    <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tablasolicitudes" >
+                                        <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
+                                    </p:commandButton>
+                                </p:column>
+                                <f:facet name="footer">
+                                    El total Solicitado es $ #{solicitudController.sumarSolicitado()}
+                                </f:facet>
+                            </p:dataTable>
+                        </p:outputPanel>
                     </p:panel>
-                    <br style="clear: both;"/>
+
+                    <p:outputPanel id="botonsolicitud"  >
+                        <div align="center">
+                            <p:commandButton action="#{solicitudController.create}" value="Crear Solicitud" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" rendered="#{solicitudController.tabseleccionado ne 'Presupuesto Detallado' and solicitudController.tabseleccionado ne 'Rendición de Gastos'}" />
+                        </div>
+                    </p:outputPanel>
+                    
                     <p:separator />
-                    <div align="center">
-                        <p:commandButton action="#{solicitudController.create}" value="Crear Solcitud" style="display: inline-block;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />
-                    </div>
-                    <p:separator />
                     <br style="clear: both;"/>
+
+                    <p:commandButton action="#{solicitudController.prepareList}" value="Lista de Solicitudes" immediate="true" style="display: inline-block; float: right;  margin-bottom: 10px;" icon="ui-icon-document" ajax="false" />
+                    <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block; float:right;   margin-bottom: 10px;" icon="ui-icon-home"  ajax="false" />
+
                     <br style="clear: both;"/>
-                    <p:commandButton action="#{solicitudController.prepareList}" value="Lista de Solicitudes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
-                    <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
-                    <p:separator/>
+                    <!--<p:separator/>-->
                     <!--<h:link outcome="/index" value="Inicio"/>-->
 
                 </p:panel>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes" style="float:left;" /> 
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:op" style="float:left;" /> 
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
                 </p:confirmDialog>
 
@@ -431,7 +442,7 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
                     </div>
                 </h:form>
 
@@ -481,7 +492,7 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
                     </div>
                 </h:form>
 
@@ -527,7 +538,7 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablaSolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
+                        <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
                         <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion" oncomplete="PF('dialogoItemRendicion').hide();" />
                     </div>
                 </h:form>

@@ -66,8 +66,9 @@ public class SolicitudController implements Serializable {
     private MeterGaugeChartModel indicadorEjecutado;
     
     //tabs solicitudes
-    private String tabseleccionado = "Anticipo";
-    
+    //private String tabseleccionado = "Anticipo";
+    private String tabseleccionado = "Presupuesto Detallado";
+
 
     public SolicitudController() {
     }
@@ -447,7 +448,9 @@ public class SolicitudController implements Serializable {
 
         float maxanticipo = 0;
         int maxcantidadreintegros;
-        System.out.println("tipo de solicitud---------"+ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
+        
+        //System.out.println("tipo de solicitud---------"+ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
+        
         current.setTiposolicitudid(ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
         Solicitud solicitud = current;
 
@@ -861,29 +864,30 @@ public class SolicitudController implements Serializable {
         
         tabseleccionado = event.getTab().getTitle();
         
-        System.out.println("------------------"+tabseleccionado);
+        System.out.println("TAB SELECCIONADO >> "+tabseleccionado);
         
         this.itemsDisponibles = new ArrayList<Solicitud>();
+        
         //filtro por rubros
-            if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición") | tabseleccionado.equals("Reintegro")){
-                for(Solicitud s : this.itemsDisponiblesNuevo ){
-                    // Si NO es de Recursos Humanos, Consultoria y Traslados
-                    if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
-                        this.itemsDisponibles.add(s);
-                    }
+        if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición") | tabseleccionado.equals("Reintegro")){
+            for(Solicitud s : this.itemsDisponiblesNuevo ){
+                // Si NO es de Recursos Humanos, Consultoria y Traslados
+                if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
+                    this.itemsDisponibles.add(s);
                 }
             }
-            
-            // Si es de Recursos Humanos, Consultoria
-            if(tabseleccionado.equals("Certificación")){
-                for(Solicitud s : this.itemsDisponiblesNuevo ){
-                    
-                    if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
-                        this.itemsDisponibles.add(s);
-                    }
+        }
+
+        // Si es de Recursos Humanos, Consultoria
+        if(tabseleccionado.equals("Certificación")){
+            for(Solicitud s : this.itemsDisponiblesNuevo ){
+
+                if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
+                    this.itemsDisponibles.add(s);
                 }
             }
-            
+        }
+          
 //            if(tabseleccionado.equals("Reintegro")){
 //                for(Solicitud s : this.itemsDisponibles ){
 //                    
@@ -892,7 +896,6 @@ public class SolicitudController implements Serializable {
 //                   // }
 //                }
 //            }
-
         
     }
 
