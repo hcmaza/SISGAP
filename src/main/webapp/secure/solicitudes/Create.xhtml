@@ -57,7 +57,7 @@
                                     <p:fieldset legend="Saldo" style="height: 70px !important; " styleClass="fieldSetCentrado70" >
                                         <div class="centrarEnFieldSet" >
                                             <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
-                                                <p:outputLabel value="$ #{solicitudController.sumarDisponible()}" style="color: green; font-weight: bold; font-size: 21px !important;  " />
+                                                <p:outputLabel value="$ #{solicitudController.sumarDisponible()}" style="color: #94D352; font-weight: bold; font-size: 21px !important;  " />
                                             </p:panelGrid>
                                         </div>
                                     </p:fieldset>
@@ -66,7 +66,7 @@
                                     <!--<p:fieldset legend="Saldo Rubros" style="height: 70px !important; ">-->
                                     <p:dataTable  value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 12px !important; margin-top: 15px; text-align: center;">
                                         <f:facet name="header">
-                                            Saldo de Rubros
+                                            Saldo por Rubros
                                         </f:facet>
                                         <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
                                             <p:outputLabel value="$ #{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 11px !important; font-weight: bold;"  />

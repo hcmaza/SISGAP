@@ -329,6 +329,7 @@ public class IndicadoresController implements Serializable {
         //chartEjecutadoPorRubro.setTitle("Simple Pie");
         //chartEjecutadoPorRubro.setLegendPosition("w");
         chartEjecutadoPorRubro.setExtender("torta");
+        chartEjecutadoPorRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
 
     }
 
@@ -427,6 +428,7 @@ public class IndicadoresController implements Serializable {
         chartEjecutadoPorFecha.getAxes().put(AxisType.X, axis);
         
         chartEjecutadoPorFecha.setExtender("ejecutadofecha");
+        chartEjecutadoPorFecha.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
 
     }
 
@@ -469,6 +471,8 @@ public class IndicadoresController implements Serializable {
         indicadorEjecutado.setIntervalOuterRadius(80);
 
         indicadorEjecutado.setExtender("indicador");
+        
+        indicadorEjecutado.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
 
     }
 
