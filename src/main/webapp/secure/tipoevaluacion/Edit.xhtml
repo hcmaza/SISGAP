@@ -33,7 +33,8 @@
                     </p:fieldset>
 
                     <p:separator/>
-                    <p:commandButton action="#{tipoevaluacionController.update()}" value="Guardar Tipo de Evaluación" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" />
+
+                    <p:commandButton action="#{tipoevaluacionController.update()}" value="Guardar Tipo de Evaluación" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{tipoevaluacionController.prepareList}" value="Lista de Tipos de Evaluación" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
@@ -43,8 +44,10 @@
             </h:form>
             
             <h:form>
-                 <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" closable="false"  header="Edición de Tipo de Evaluación" >
-                    El Tipo de Evaluación fue actualizada satisfactoriamente!
+                <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" header="Editar Tipo de Evaluación" >
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
                     <p:separator />
                     <div align="center" >
                         <p:commandButton value="Volver a la Lista" action="#{tipoevaluacionController.prepareList()}" ajax="false" />

@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -120,6 +121,14 @@ public class AgenteFacade extends AbstractFacade<Agente> {
             return a;
         }catch(Exception e){
             System.out.println("Agente cacth "+a.getApellido());
+            return null;
+        }
+    }
+    
+    public List<Agente> agentesSinUsuario(){
+        try{
+            return em.createQuery("select a from Agente a where a.usuarioid is null", Agente.class).getResultList();
+        } catch (Exception e){
             return null;
         }
     }

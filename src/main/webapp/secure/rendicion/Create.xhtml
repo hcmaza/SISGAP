@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateRendicionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
+            <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
+
+            <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
+            <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+
+            <h:form id="formprincipal" enctype="multipart/form-data" >
+                <p:growl id="growlprincipal" autoUpdate="true" showDetail="true" sticky="true" />
+
+                <p:panel id="pprincipal"  style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;"  >
+
+                    <p:panel header="Proyecto Nº #{proyectoController.selected.id} - #{proyectoController.selected.nombre}" toggleable="true" collapsed="true">
+                        <p:fieldset legend="Información General" style="display: inline-block; width: 46%; float: left; margin-bottom: 5px;">
+                            <p:panelGrid columns="2" columnClasses="right,left"  style="width: 100%;" styleClass="sinBordes" >
+                                <p:outputLabel value="Nro" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.id}" />
+
+                                <p:outputLabel value="Título" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.nombre}" />
+
+                                <p:outputLabel value="Tipo" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.tipoproyectoid.tipo}" />
+
+                                <p:outputLabel value="Estado" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.estadoproyectoid.estado}" />
+
+                                <p:outputLabel value="Localización" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.localizacion}" />
+
+                                <p:outputLabel value="Duración" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.duracion} Meses" />
+
+                                <p:outputLabel value="Alta" style="font-weight: bold;" />
+                                <p:outputLabel value="#{proyectoController.selected.fecha}" title="#{bundle.ViewProyectoTitle_fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                                </p:outputLabel>
+
+
+                            </p:panelGrid>
+                        </p:fieldset>
+
+                        <p:accordionPanel style="display: inline-block; width: 50%; float: right; margin-bottom: 5px; margin-top: 15px;" activeIndex="null">
+                            <p:tab title="Comitente">
+                                <p:panelGrid columnClasses="right,left" style="width: 100%;" columns="2" styleClass="sinBordes" >
+                                    <p:outputLabel value="Razón Social" style="font-weight: bold;"/>
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.razonsocial}" />
+
+                                    <p:outputLabel value="CUIT" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.cuit}" />
+
+                                    <p:outputLabel value="Tipo de Comitente" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.tipocomitenteid.tipocomitente}" />
+
+                                    <p:outputLabel value="Sector" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.sectorid.sector}" />
+
+                                    <p:outputLabel value="Contacto" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.contacto}" />
+
+                                    <p:outputLabel value="Cargo del Contacto" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.cargocontacto}" />
+
+                                    <p:outputLabel value="Teléfono" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.telefono}" />
+
+                                    <p:outputLabel value="Email" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.comitenteid.email}" />
+                                </p:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Convocatoria">
+                                <p:panelGrid style="width: 100%;" columnClasses="right,left" columns="2" styleClass="sinBordes">
+                                    <p:outputLabel value="Convocatoria" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.convocatoriaid.convocatoria}"/>
+
+                                    <p:outputLabel value="Organismo" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.convocatoriaid.organismo}"/>
+
+                                    <p:outputLabel value="Monto de Financiamiento" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.convocatoriaid.montofinanciamiento.floatValue()}"/>
+
+                                    <p:outputLabel value="Estado" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.convocatoriaid.estado}"/>
+                                </p:panelGrid>
+                            </p:tab>
+                            <p:tab title="Documentación">
+
+                                <p:panelGrid style="width: 100%;" styleClass="sinBordes">
+                                    <p:row>
+                                        <p:column>
+                                            <p:dataTable id="tArchivosProyecto" var="archivo" value="#{archivoproyectoController.collectorArchivoProyecto}" emptyMessage="Este proyecto no tiene archivos subidos" >  
+
+                                                <p:column headerText="Archivos">  
+                                                    <p:commandLink id="downloadLink" value="#{archivo.nombre}" ajax="false" process="@this"  >
+                                                        <p:fileDownload id="f1" value="#{archivo.file}"  />
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
+                            </p:tab>
+                            <p:tab title="Financiamiento">
+                                <p:panelGrid columns="2" columnClasses="right,left" styleClass="sinBordes">
+                                    <p:outputLabel value="Beneficiario" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.beneficiarioid.beneficiario}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
+
+                                    <p:outputLabel value="Tipo de Financiamiento" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.tipofinanciamientoid.tipofinanciamiento}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
+
+                                    <p:outputLabel value="Fuente de Financiamiento" style="font-weight: bold;" />
+                                    <p:outputLabel value="#{proyectoController.selected.fuentefinanciamientoid.fuentefinanciamiento}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
+                                </p:panelGrid>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:panel>
+
+                    <p:separator style="overflow: hidden;" />
+
+                    <p:panel header="Indicadores" style="margin: 0 auto; overflow: hidden;">
+                        <p:panelGrid style="width: 100%;" styleClass="sinBordes">
+                            <p:row >
+                                <p:column style="width: 25%;" >
+                                    <p:fieldset legend="Saldo" style="height: 110px !important; " >
+                                        <p:outputLabel value="$ #{indicadoresController.saldoProyecto}" style="color: green; font-weight: bold; font-size: 20px !important;  " />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Ejecución" style="height: 110px !important; ">
+                                        <p:chart type="metergauge" model="#{indicadoresController.indicadorEjecutado}" style="height: 100px;"  />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column colspan="2" style="width: 50%;">
+                                    <p:fieldset legend="Saldo Rubros" style="height: 110px !important; ">
+                                        <p:dataTable value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 8px !important;">
+                                            <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
+                                                <p:outputLabel value="#{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 8px !important; font-weight: bold;"  />
+                                            </p:columns>
+                                        </p:dataTable>
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Pendiente de Rendición" style="height: 110px !important;">
+                                        <p:outputLabel value="$ #{indicadoresController.pendienteRendicionProyecto}" style="color: #878787; font-weight: bold; font-size: 20px !important; " />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Total Ejecutado" style="height: 110px !important; ">
+                                        <p:outputLabel value="$ #{indicadoresController.ejecutadoProyecto}" style="color: #00C7F6 ; font-weight: bold; font-size: 20px !important; " />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Ejecutado por Rubros" style="height: 110px !important; ">
+                                        <p:chart type="pie" model="#{indicadoresController.chartEjecutadoPorRubro}" style="height:100px" styleClass="sinBordes" />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
+
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+
+
+                    </p:panel>
+
+                    <p:separator style="overflow: hidden;" />
+
+                    <p:panel header="Rendición" >
+
+                        <p:dataTable id="tblSolicitudes" 
+                                     var="item" 
+                                     value="#{rendicionController.listaSolicitudes}" 
+                                     rowKey="#{item.id}" 
+                                     selection="#{rendicionController.solicitudSeleccionada}"
+                                     rowIndexVar="indice"
+                                     rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                     styleClass="tabla" >
+                            <!--selection="{rendicionController.listaSolicitudesSeleccionadas}" >-->
+                            <f:facet name="header">
+                                Seleccionar abiertas pendientes de Rendición.
+                            </f:facet>
+                            <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
+                            <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                            <p:column headerText="Descripcion">
+                                <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                            </p:column>
+                            <p:column headerText="Fecha">
+                                <h:outputText value="#{item.fechasolicitud}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Tipo">
+                                <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                            </p:column>
+                            <p:column headerText="Total">
+                                <h:outputText value="#{item.importe}" />
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:separator />
+
+                        <p:commandButton update=":formprincipal:growlprincipal" actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoFactura').show();" icon="ui-icon-circle-plus" value="Subir Factura" title="Subir Factura" immediate="true" style="margin: 10px;" >
+                            <!--<f:setPropertyActionListener value="{item}" target="{solicitudController.selected}" />-->
+                        </p:commandButton>
+
+                        <p:remoteCommand id="nuevoArchivo" action="#{archivorendicionController.nuevoArchivoRendicion()}" />
+
+                        <p:dataTable id="tarchivos" var="arc" value="#{archivorendicionController.listaArchivos}" style="top: 5px;" 
+                                     rowIndexVar="indice"
+                                     rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                     styleClass="tabla" >  
+                            <f:facet name="header">
+                                Items incorporados a la Rendición de Gastos.
+                            </f:facet>
+                            <p:column headerText="N° de Factura">  
+                                <h:outputText value="#{arc.nrofactura}" />  
+                            </p:column> 
+                            <p:column headerText="Fecha de Factura">  
+                                <h:outputText value="#{arc.fechafactura}" />  
+                            </p:column> 
+                            <p:column headerText="Proveedor">  
+                                <h:outputText value="#{arc.proveedor}" />  
+                            </p:column> 
+                            <p:column headerText="Archivo">  
+                                <h:outputText value="#{arc.nombrearchivo}" />  
+                            </p:column> 
+                            <p:column headerText="Monto">  
+                                <h:outputText value="#{arc.montofactura}" />  
+                            </p:column> 
+                            <p:column headerText="">  
+                                <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tarchivos,:formprincipal:vercomprobantes"  >
+                                    <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
+                                </p:commandLink>
+                            </p:column> 
+                        </p:dataTable>
+
+                        <p:separator />
+
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column>
+                                    <p:commandButton type="button" onclick="PF('switcher').previous();"
+                                                     icon="ui-icon-circle-triangle-w" id="prev"/>
+                                </p:column>
+                                <p:column >
+                                    <p:commandButton type="button" onclick="PF('switcher').next();"
+                                                     icon="ui-icon-circle-triangle-e" id="next"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:imageSwitch effect="wipe" widgetVar="switcher" id="vercomprobantes"
+                                                   slideshowAuto="false" >
+                                        <ui:repeat value="#{archivorendicionController.listaArchivos}" var="imagen" id="manuelSwitcherImages">
+                                            <p:graphicImage value="#{archivorendicionController.obtenerImagen()}" width="400px" style="width: 300px; height: auto; display: block;" >
+                                                <f:param name="archivo" value="#{imagen.nombrearchivo}" />
+                                            </p:graphicImage>
+
+                                        </ui:repeat>
+                                    </p:imageSwitch>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <br style="clear: both;"/>
+
+                    <p:separator />
+                    <p:commandButton action="#{rendicionController.create}" value="Crear Rendición" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
+                    <p:commandButton action="#{rendicionController.prepareList}" value="Lista de Rendiciones" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
+                    <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
+                    <p:separator/>
+                    <!--<h:link outcome="/index" value="Inicio"/>-->
+
+                </p:panel>
+
+            </h:form>
+
+            <h:form>
+                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Alta de Rendición" >
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <p:messages autoUpdate="true" />
+                    </h:panelGroup>
+                    <p:separator />
+                    <div align="center" >
+                        <p:commandButton value="Volver a la Lista" action="#{rendicionController.prepareList()}" ajax="false"  />
+                    </div>
+                </p:dialog>
+
+                <p:dialog header="Factura" widgetVar="dialogoFactura" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="factura" style="text-align:center;">
+                        <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
+                        <p:panelGrid  columns="2" columnClasses="label,value">
+                            <f:facet name="header">
+                                <h:outputText value="Datos de la Factura" />
+                            </f:facet>
+
+                            <p:outputLabel value="Número de Factura" />
+                            <p:inputText id="dnrofactura" value="#{archivorendicionController.selected.nrofactura}" />
+
+                            <p:outputLabel value="Fecha de Factura" />
+                            <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" />
+
+                            <p:outputLabel value="Proveedor" />
+                            <p:inputText id="dproveedor" value="#{archivorendicionController.selected.proveedor}" />
+
+                            <p:outputLabel value="Monto de Factura" />
+                            <p:inputText  id="dmontofactura" value="#{archivorendicionController.selected.montofactura}"  >
+                                <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
+                                <!--<f:validateDoubleRange minimum="0" maximum="{solicitudController.selected.disponible}"/>--> 
+                            </p:inputText>    
+
+                            <p:outputLabel value="Archivo de Factura" />
+                            <h:form id="fupload" enctype="multipart/form-data">
+                                <p:fileUpload label="Imagen de Factura" id="documentacion" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
+                                              sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
+                                </p:fileUpload>    
+                            </h:form>
+
+                            <p:outputLabel value="Observación" />
+                            <p:inputTextarea id="dobservacion" value="#{archivorendicionController.selected.obsfactura}" />
+
+                        </p:panelGrid>
+                    </p:outputPanel>
+
+                    <p:separator/>
+                    <div align="center" >
+                        <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:pDisponibles, :formprincipal:tabsolicitudes:pDisponiblesadquisicion, :formprincipal:tabsolicitudes:pDisponiblesCertificacion, :formprincipal:pSolicitados, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
+                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tarchivos, :formprincipal:vercomprobantes" oncomplete="PF('dialogoFactura').hide();" />
+                    </div>
+                </p:dialog>
+
+            </h:form>
+        </ui:define>
+
+
+    </ui:composition>
+
+</html>

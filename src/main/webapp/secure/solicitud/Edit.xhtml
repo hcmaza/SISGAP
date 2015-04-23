@@ -117,7 +117,9 @@
 
 
                                                 <p:separator />
-                                                <p:commandButton value="Crear Comitente" onclick="dcomitentecrear.show()" />
+                                                
+                                                <!--<p:commandButton value="Crear Comitente" onclick="dcomitentecrear.show()" />-->
+                                                <p:commandButton value="Crear Comitente" onclick="PF('dcomitentecrear').show();" immediate="true"  />
 
                                             </p:panel>
 
@@ -148,7 +150,9 @@
                                     <p:outputLabel value="#{agenteController.selected.dependenciaid.dependencia}" title="Dependencia" />
                                 </p:panelGrid>       
                                 <p:separator />
-                                <p:commandButton onclick="dagenteeditar.show()" type="button" value="Editar Responsable Técnico" />                                 
+                                
+                                <!--<p:commandButton onclick="dagenteeditar.show()" type="button" value="Editar Responsable Técnico" />-->                                 
+                                <p:commandButton value="Editar Responsable Técnico" onclick="PF('dagenteeditar').show();" immediate="true"  />
                             </p:fieldset>
 
 
@@ -386,21 +390,23 @@
 
                         <p:tab title="Equipo de trabajo">
                            <div align="right" >
-                                    <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" ></p:commandButton>
+                               <p:commandButton value="Agregar Persona" onclick="PF('dregistrar').show();" immediate="true" ></p:commandButton>
                                 </div>
                                 <h:panelGrid columns="4">
                                     <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Cuil " ></p:outputLabel>
                                     <p:selectOneMenu  id="advancedfiltroa" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"    >
-                                        <p:ajax update="@this" />
+                                        <!--<p:ajax update="@this" />-->
+                                        <p:ajax update="agregaraequipo" />
                                         <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}"  />
  
                                            </p:selectOneMenu> 
                                     
                                     <h:panelGrid columns="6" id="agenteselecciona" >
                                         
-                                        <p:commandButton immediate="true" update="agentesa" value="Agregar al equipo de trabajo" action="#{proyectoAgenteController.agregarEquipo}" >
+                                        <p:commandButton id="agregaraequipo" immediate="true" update="agentesa" value="Agregar al equipo de trabajo" action="#{proyectoAgenteController.agregarEquipo}" disabled="${empty agenteViewController.selected.apellido ? 'true' : 'false'}" >
+                                            
+                                        </p:commandButton>
                                                
-                                                </p:commandButton>
                                     </h:panelGrid>
                                 
                                 </h:panelGrid>
@@ -453,9 +459,13 @@
                                         <p:column headerText="Es Consultor Externo?" styleClass="text-align: center" >
                                         
                                         <p:cellEditor>
-                                            <f:facet name="output"> <h:selectBooleanCheckbox  id="ssconsultorexterno" value="#{agentea.consultorexterno}" readonly="true" style="width:70px"  /> </f:facet>
+                                            <f:facet name="output"> 
+                                                <h:selectBooleanCheckbox  id="ssconsultorexterno" value="#{agentea.consultorexterno}" readonly="true" style="width:70px"  /> 
+                                            </f:facet>
                                             <f:facet name="input">
-                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px" />
+                                                <p:selectBooleanCheckbox  id="sconsultorexterno" value="#{agentea.consultorexterno}" style="width:70px">
+                                                    <p:ajax update="ssconsultorexterno" />
+                                                </p:selectBooleanCheckbox>
                                             </f:facet>    
                                         </p:cellEditor>
                                     </p:column>    

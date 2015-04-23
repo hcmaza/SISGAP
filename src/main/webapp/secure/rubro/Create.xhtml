@@ -27,11 +27,21 @@
                                     <p:tooltip id="ttRubro" for="rubro" showEvent="focus" hideEvent="blur" />                                    
                                 </p:column>
                             </p:row>
+                            <p:row>
+                                <p:column style="width: 40%;">
+                                    <h:outputLabel value="Nombre Abreviado" for="abreviado" style="font-weight: bold;"  />
+                                </p:column>
+                                <p:column style="width: 60%;">
+                                    <p:inputText id="abreviado" value="#{rubroController.selected.abreviado}" title="* Este campo es requerido" required="true" requiredMessage="El campo rubro es requerido" />
+                                    <p:message for="abreviado" display="icon" /> 
+                                    <p:tooltip id="ttAbreviado" for="abreviado" showEvent="focus" hideEvent="blur" />                                    
+                                </p:column>
+                            </p:row>
                         </p:panelGrid>
                     </p:fieldset>
 
                     <p:separator/>
-                    <p:commandButton action="#{rubroController.create}" value="Crear Rubro" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="dfinalW.show();" />
+                    <p:commandButton action="#{rubroController.create}" value="Crear Rubro" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
                     <p:commandButton action="#{rubroController.prepareList}" value="Lista de Rubros" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
@@ -40,7 +50,7 @@
 
             </h:form>
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinalW"  modal="true" header="Alta de Rubro" >
+                <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" header="Alta de Rubro" >
                     <h:panelGroup id="messagePanel" layout="block">
                         <p:messages  autoUpdate="true" />
                     </h:panelGroup>

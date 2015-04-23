@@ -70,6 +70,9 @@ public class Proyecto implements Serializable {
     private String localizacion;
     @Column(name = "duracion")
     private Short duracion;
+    @Column(name = "cantidadreintegros")
+    private Integer cantidadreintegros;
+    
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="proyecto_id_seq")
@@ -160,7 +163,13 @@ public class Proyecto implements Serializable {
         this.documentacionnombre = documentacionnombre;
     }
 
-    
+    public Integer getCantidadreintegros() {
+        return cantidadreintegros;
+    }
+
+    public void setCantidadreintegros(Integer cantidadreintegros) {
+        this.cantidadreintegros = cantidadreintegros;
+    }
     
     public String getObservaciones() {
         return observaciones;
@@ -178,8 +187,6 @@ public class Proyecto implements Serializable {
         this.localizacion = localizacion;
     }
     
-    
-    
     public Short getDuracion() {
         return duracion;
     }
@@ -187,8 +194,6 @@ public class Proyecto implements Serializable {
     public void setDuracion(Short duracion) {
         this.duracion = duracion;
     }
-
-   
 
     public Integer getId() {
         return id;
@@ -304,7 +309,8 @@ public class Proyecto implements Serializable {
 
     @Override
     public String toString() {
-        return "N° de Proyecto" + id + " ]";
+        //return "N° de Proyecto" + id + " ]";
+        return this.nombre;
     }
     
 }

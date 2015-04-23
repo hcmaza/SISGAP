@@ -17,32 +17,31 @@
                     <h:panelGroup id="messagePanel" layout="block">
                         <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
                     </h:panelGroup>
-                    
-                    <h:outputText escape="false" value="La lista de solicitudes está vacía" rendered="#{proyectoController.items.rowCount == 0}"/>
-                    
-                    <h:panelGroup rendered="#{proyectoController.items.rowCount > 0}">
-                        <h:outputText value="#{proyectoController.pagination.pageFirstItem + 1}..#{proyectoController.pagination.pageLastItem + 1}/#{proyectoController.pagination.itemsCount}"/>&nbsp;
-                        <h:commandLink action="#{proyectoController.previous}" value="#{bundle.Previous} #{proyectoController.pagination.pageSize}" rendered="#{proyectoController.pagination.hasPreviousPage}"/>&nbsp;
-                        <h:commandLink action="#{proyectoController.next}" value="#{bundle.Next} #{proyectoController.pagination.pageSize}" rendered="#{proyectoController.pagination.hasNextPage}"/>&nbsp;
 
+                    <h:outputText escape="false" value="La lista de solicitudes está vacía" rendered="#{proyectoController.items.rowCount == 0}"/>
+
+                    <h:panelGroup rendered="#{proyectoController.items.rowCount > 0}">
+                      
                         <p:dataTable scrollable="true" liveScroll="true" scrollWidth="95%" 
-                            id="tbl" 
-                            value="#{proyectoController.items}" 
-                            var="item" 
-                            widgetVar="tblW"
-                            rowKey="#{item.id}" 
-                            
-                            emptyMessage="No se encontraron resultados para el criterio de busqueda"
-                            paginator="true" rows="10" paginatorPosition="bottom"
-                            draggableColumns="true"
-                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                            rowsPerPageTemplate="10,15,30">
+                                     id="tbl" 
+                                     value="#{proyectoController.items}" 
+                                     var="item" 
+                                     widgetVar="tblW"
+                                     rowKey="#{item.id}" 
+
+                                     emptyMessage="No se encontraron resultados para el criterio de busqueda"
+                                     paginator="true" rows="10" paginatorPosition="bottom"
+                                     draggableColumns="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="10,15,30">
 
                             <p:column id="columnaFecha" filterBy="#{item.fecha}" filterMatchMode="contains" sortBy="#{item.fecha}">
                                 <f:facet name="header">
                                     <h:outputText value="Fecha" />
                                 </f:facet>                        
-                                <h:outputText value="#{item.fecha}"/>
+                                <h:outputText value="#{item.fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
                             </p:column>
                             <p:column id="columnaId" sortBy="#{item.id}" width="10px" style="width: 10px;">
                                 <f:facet name="header">
@@ -85,7 +84,7 @@
                                 </f:facet>                                                
                                 <h:outputText id="presupuesto" value="#{proyectoController.obtenerPresupuestoTotalProyecto(item.id)}"/>
                             </p:column>
-                            
+
                             <p:column id="columnaEstadoProyecto" filterMatchMode="exact" filterOptions="#{estadoProyectoController.itemsAvailableSelectOne}" sortBy="#{item.estadoproyectoid.estado}">
                                 <f:facet name="header">
                                     <h:outputText value="Estado" />
@@ -96,22 +95,22 @@
                             <p:column style="width:4%" exportable="false">
                                 <p:commandButton icon="ui-icon-search" action="#{proyectoController.prepareView}" ajax="false"/>
                                 <p:commandButton icon="ui-icon-pencil" action="#{proyectoController.prepareEdit}" ajax="false" />
-<!--                                <p:commandButton id="selectButton" update=":formDialogoProyecto:verProy" oncomplete="PF('verProyecto').show()" icon="ui-icon-search" title="Ver">
-                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
-                                </p:commandButton>
-                                <p:commandButton id="selectButton" update=":formDialogoProyecto:verProy" oncomplete="PF('verProyecto').show()" icon="ui-icon-search" title="Editar">
-                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
-                                </p:commandButton>                                -->
+                                <!--                                <p:commandButton id="selectButton" update=":formDialogoProyecto:verProy" oncomplete="PF('verProyecto').show()" icon="ui-icon-search" title="Ver">
+                                                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                                                </p:commandButton>
+                                                                <p:commandButton id="selectButton" update=":formDialogoProyecto:verProy" oncomplete="PF('verProyecto').show()" icon="ui-icon-search" title="Editar">
+                                                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                                                </p:commandButton>                                -->
                             </p:column>    
 
-<!--                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="&nbsp;"/>
-                                </f:facet>
-                                <p:commandLink action="#{proyectoController.prepareView}" value="Ver" ajax="false" />
-                                <h:outputText value=" "/>
-                                <p:commandLink action="#{proyectoController.prepareEdit}" value="Editar" ajax="false" />
-                            </p:column>-->
+                            <!--                            <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="&nbsp;"/>
+                                                            </f:facet>
+                                                            <p:commandLink action="#{proyectoController.prepareView}" value="Ver" ajax="false" />
+                                                            <h:outputText value=" "/>
+                                                            <p:commandLink action="#{proyectoController.prepareEdit}" value="Editar" ajax="false" />
+                                                        </p:column>-->
                         </p:dataTable>
                     </h:panelGroup>
 

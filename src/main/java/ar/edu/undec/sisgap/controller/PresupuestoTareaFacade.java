@@ -7,6 +7,8 @@ package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Tarea;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -33,6 +35,31 @@ public class PresupuestoTareaFacade extends AbstractFacade<PresupuestoTarea> {
      public List<PresupuestoTarea> findByTarea(Tarea t){
         //System.out.println("iiiiiiiiiiiiiiiiiiii"+pr.getId());
         return em.createQuery("select pt from PresupuestoTarea pt where pt.tarea.id="+t.getId(), PresupuestoTarea.class).getResultList();
+    }
+     
+    public List<PresupuestoTarea> obtenerPorProyecto(int proyectoid){
+        try{
+            return em.createQuery("select pt from PresupuestoTarea pt where pt.tarea.etapaid.proyectoid.id =" + proyectoid, PresupuestoTarea.class).getResultList();
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ArrayList<PresupuestoTarea>();
+        }
+    }
+    
+    public float obtenerTotalPorProyecto(int proyectoid){
+        
+        BigDecimal asd;
+        Float total = 0.0f;
+        
+        try{
+            asd = em.createQuery("select SUM(pt.total) from PresupuestoTarea pt where pt.tarea.etapaid.proyectoid.id =" + proyectoid, BigDecimal.class).getSingleResult();
+            total = asd.floatValue();
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return total;
     }
     
 }

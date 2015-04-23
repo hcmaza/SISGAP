@@ -250,6 +250,9 @@ public class PresupuestoController implements Serializable {
 
     }
     public void findProyecto(int id){
+        
+        System.out.println("PresupuestoController: findProyecto" + id);
+        
         current = getFacade().findporProyecto(id);
       
         

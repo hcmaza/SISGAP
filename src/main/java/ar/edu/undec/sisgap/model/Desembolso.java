@@ -6,6 +6,7 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -57,6 +58,11 @@ public class Desembolso implements Serializable {
     @JoinColumn(name = "numerocuentabancaria", referencedColumnName = "numerocuenta")
     @ManyToOne
     private Cuentabancaria numerocuentabancaria;
+    @Column(name = "monto")
+    private BigDecimal monto;
+    @JoinColumn(name = "proyectoid", referencedColumnName = "id")
+    @ManyToOne
+    private Proyecto proyectoid;
 
     public Desembolso() {
     }
@@ -104,6 +110,23 @@ public class Desembolso implements Serializable {
     public void setNumerocuentabancaria(Cuentabancaria numerocuentabancaria) {
         this.numerocuentabancaria = numerocuentabancaria;
     }
+
+    public BigDecimal getMonto() {
+        return monto;
+    }
+
+    public void setMonto(BigDecimal monto) {
+        this.monto = monto;
+    }
+
+    public Proyecto getProyectoid() {
+        return proyectoid;
+    }
+
+    public void setProyectoid(Proyecto proyectoid) {
+        this.proyectoid = proyectoid;
+    }
+
 
     @Override
     public int hashCode() {
