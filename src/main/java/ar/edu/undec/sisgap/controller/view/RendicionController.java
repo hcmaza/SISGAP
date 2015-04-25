@@ -189,103 +189,118 @@ public class RendicionController implements Serializable {
 
     public String create() {
         try {
-            
+
             // si la solicitud, tiene ID y la referencia a un presupuesto_tarea...
-            if (solicitudSeleccionada.getId() != null && solicitudSeleccionada.getId() != 0 && solicitudSeleccionada.getPresupuestotarea() != null){
-                
+            if (solicitudSeleccionada.getId() != null && solicitudSeleccionada.getId() != 0 && solicitudSeleccionada.getPresupuestotarea() != null) {
+
                 // Obtenemos el controlador necesario
                 FacesContext context = FacesContext.getCurrentInstance();
                 ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
                 SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
-                
+
                 float sumaArchivosRendicion = 0f;
-                
+
                 for (Archivorendicion ar : arcontroller.getListaArchivos()) {
                     sumaArchivosRendicion = sumaArchivosRendicion + ar.getMontofactura().floatValue();
                 }
-                
+
                 System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
-                        
+
                 float porcentaje = 20f;
 
                 // Obtenemos el porcentaje maximo el cual no se debe superar por la suma de comprobantes
                 try {
                     porcentaje = Float.parseFloat(ejbFacadec.findAtributo("maxporcentajerendicion").getValor());
-                   // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
+                    // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
                 } catch (Exception e) {
                     porcentaje = 20f;
                     System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos [maxanticipo = 0]");
                     e.printStackTrace();
                 }
-                
-                float porcentajeArchivosRendicion = (solicitudSeleccionada.getImporte().floatValue() * (porcentaje/100.0f));
-                
+
+                float porcentajeArchivosRendicion = (solicitudSeleccionada.getImporte().floatValue() * (porcentaje / 100.0f));
+
                 System.out.println(porcentaje + "% de la suma de Archivos de Rendicion = " + porcentajeArchivosRendicion);
 
                 //validacion de que el el total de archivos de rendicion, 
                 //sea igual o hasta un 20% mayor que el importe de la rendicion
-                if(sumaArchivosRendicion < solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion > (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion) ){
-                    FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje +  "% del total de la solicitud a rendir."));
+                if (sumaArchivosRendicion < solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion > (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion)) {
+                    FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
                     return null;
                 }
-                
-                // verificar si la suma de comprobantes está dentro del rando del importe de la solicitud 
-                // y el porcentaje permitido.
-                if(sumaArchivosRendicion > solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion < (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion) ){
-                    
-                    //validar que hay una solicitud con dinero disponible para la diferencia
-                    if(solicitudcontroller.getSolicitudReintegroPorDiferencia() == null){
-                        FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error en Creación de la Rendicion", "Se debe seleccionar un item del presupuesto del cual restar la suma de comprobantes rendidos."));
-                        return null;
+
+                // Caso Normal: la suma de todos los comprobantes cargados es igual al importe de la solicitud que se rinde
+                if (sumaArchivosRendicion == solicitudSeleccionada.getImporte().floatValue()) {
+                    // rendicion con fecha actual del sistema
+                    current.setFecha(new Date());
+
+                    // se guarda la rendicion
+                    getFacade().createWithPersist(current);
+
+                    // Estado de la solicitud
+                    Estadosolicitud estado;
+
+                    try {
+                        // Estado de la Solicitud = "Rendida"
+                        estado = getFacadees().find(5);
+                    } catch (Exception e) {
+                        estado = null;
+                        System.out.println("EstadosolicitudFacade: problema de recuperacion");
+                        e.printStackTrace();
                     }
-                }
-                
-                // rendicion con fecha actual del sistema
-                current.setFecha(new Date());
 
-                // se guarda la rendicion
-                getFacade().createWithPersist(current);
-
-                // Estado de la solicitud
-                Estadosolicitud estado;
-
-                try {
-                    // Estado de la Solicitud = "Rendida"
-                    estado = getFacadees().find(5);
-                } catch (Exception e) {
-                    estado = null;
-                    System.out.println("EstadosolicitudFacade: problema de recuperacion");
-                    e.printStackTrace();
-                }
-
-                // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
-                solicitudSeleccionada.setRendicionid(current);
-                solicitudSeleccionada.setEstadosolicitudid(estado);
-                getFacades().edit(solicitudSeleccionada);
+                    // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
+                    solicitudSeleccionada.setRendicionid(current);
+                    solicitudSeleccionada.setEstadosolicitudid(estado);
+                    getFacades().edit(solicitudSeleccionada);
 
                 // Para cada archivo de rendicion subido
+                    for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+                        // le damos la referencia a la rendicion actual y persistimos el archivo
+                        ar.setRendicionid(current);
+                        getFacadear().create(ar);
+                    }
 
-                
-
-                for (Archivorendicion ar : arcontroller.getListaArchivos()) {
-                    // le damos la referencia a la rendicion actual y persistimos el archivo
-                    ar.setRendicionid(current);
-                    getFacadear().create(ar);
+                    //JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
+                    JsfUtil.addSuccessMessage("Rendición Creada Correctamente!");
                 }
-
-                //JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
-                JsfUtil.addSuccessMessage("Rendición Creada Correctamente!");
+                
+//                // verificar si la suma de comprobantes está dentro del rango del importe de la solicitud 
+//                // y el porcentaje permitido.
+//                if (sumaArchivosRendicion > solicitudSeleccionada.getImporte().floatValue() && sumaArchivosRendicion <= (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion)) {
+//
+//                    // Caso 1: el item a rendir, tiene presupuesto para cubrir la diferencia
+//                    
+//                    // calcular diferencia
+//                    float diferencia = sumaArchivosRendicion - solicitudSeleccionada.getImporte().floatValue();
+//                    
+//                    // buscar en el presupuesto del mismo item, con dinero disponible
+//                    for(Solicitud s : solicitudcontroller.getItemsDisponiblesNuevo()){
+//                        if(s.getPresupuestotarea().getId() == solicitudSeleccionada.getId()){
+//                            if(s.getDisponible().floatValue() >= diferencia){
+//                                solicitudcontroller.setSolicitudReintegroPorDiferencia(s);
+//                            }
+//                        }
+//                    }
+//                    
+//                    // Caso2: el item a rendir, NO tiene dinero disponible para cubrir la diferencia
+//                    
+//                    // verificar que se ha seleccionado un item del presupuesto a restar la diferencia
+//                    if (solicitudcontroller.getSolicitudReintegroPorDiferencia() != null) {
+//                        FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "Se debe seleccionar un item del presupuesto del cual restar la suma de comprobantes rendidos."));
+//                        return null;
+//                    }
+//                }
             }
-
             //return prepareList();
             return null;
-            
+
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
         }
-        
-                    //            // Usado para la rendicion de multiples solicitudes
+
+        //            // Usado para la rendicion de multiples solicitudes
 //            if (!listaSolicitudesSeleccionadas.isEmpty()) {
 //                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() +  " fue subido satisfactoriamente!"));
 //
