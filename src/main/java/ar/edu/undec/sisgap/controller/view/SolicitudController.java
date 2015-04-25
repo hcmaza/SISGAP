@@ -167,12 +167,25 @@ public class SolicitudController implements Serializable {
     public void armarSolicitudesDesembolsosYRendicion(){
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
         RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
 
+        // Buscar presupuesto por proyecto
+        presupuestocontroller.findProyecto(proyectocontroller.getSelected().getId());
+        
+        // Sumar los gastos del presupuesto
+        presupuestocontroller.sumarGastosView();
+
+        // Seteamos el tree de etapas y tareas para el proyecto actual
+        etapacontroller.armarTreeEtapasYTareasPorProyecto();
+        
+        // Armar presupuesto general
+        presupuestotareacontroller.armarPresupuestoGeneral();
+        
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(proyectocontroller.getSelected().getId(), tabseleccionado);
         
@@ -225,8 +238,7 @@ public class SolicitudController implements Serializable {
             }
         }
         
-        // Seteamos el tree de etapas y tareas para el proyecto actual
-        etapacontroller.armarTreeEtapasYTareasPorProyecto();
+
         
         //h:coloco la copia de itemsolicitados tal cual es al principio
         this.itemsDisponiblesNuevo = this.itemsDisponibles;
