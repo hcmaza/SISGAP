@@ -421,13 +421,13 @@
                     </div>
                 </p:dialog>
 
-                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición" >
-                    <h:panelGroup id="panelmensajerendicion" layout="block">
-                        <p:messages autoUpdate="true" />
+                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición"  >
+                    <h:panelGroup id="panelmensajerendicion" layout="block" >
+                        <p:messages id="mensajeRendicion" autoUpdate="true" showDetail="true" />
                     </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Volver a la Lista" action="#{rendicionController.prepareList()}" ajax="false"  />
+                        <p:commandButton value="Volver a la Lista" action="#{rendicionController.prepareList()}" ajax="false" rendered=""  />
                     </div>
                 </p:dialog>
 

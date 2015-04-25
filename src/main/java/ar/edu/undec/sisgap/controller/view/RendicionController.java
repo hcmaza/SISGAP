@@ -44,6 +44,8 @@ public class RendicionController implements Serializable {
     private ar.edu.undec.sisgap.controller.EstadosolicitudFacade ejbFacadees;
     @EJB
     private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbFacadear;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -190,8 +192,45 @@ public class RendicionController implements Serializable {
             
             // si la solicitud, tiene ID y la referencia a un presupuesto_tarea...
             if (solicitudSeleccionada.getId() != null && solicitudSeleccionada.getId() != 0 && solicitudSeleccionada.getPresupuestotarea() != null){
-                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() +  " fue subido satisfactoriamente!"));
+                
+                // Obtenemos el controlador necesario
+                FacesContext context = FacesContext.getCurrentInstance();
+                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+                
+                float sumaArchivosRendicion = 0f;
+                
+                for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+                    sumaArchivosRendicion = sumaArchivosRendicion + ar.getMontofactura().floatValue();
+                }
+                
+                System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
+                
+                
+                        
+                float porcentaje = 20f;
 
+                // Obtenemos el monto maximo para anticipos desde la configuracion 
+                try {
+                    porcentaje = Float.parseFloat(ejbFacadec.findAtributo("maxporcentajerendicion").getValor());
+                   // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
+                } catch (Exception e) {
+                    porcentaje = 20f;
+                    System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos [maxanticipo = 0]");
+                    e.printStackTrace();
+                }
+                
+                float porcentajeArchivosRendicion = (solicitudSeleccionada.getImporte().floatValue() * (porcentaje/100.0f));
+                
+                System.out.println(porcentaje + "% de la suma de Archivos de Rendicion = " + porcentajeArchivosRendicion);
+
+                //validacion de que el el total de archivos de rendicion, 
+                //sea igual o hasta un 20% mayor que el importe de la rendicion
+                if(sumaArchivosRendicion < solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion > (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion) ){
+                    FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje +  "% del total de la solicitud a rendir."));
+                    return null;
+                }
+                
+                // rendicion con fecha actual del sistema
                 current.setFecha(new Date());
 
                 // se guarda la rendicion
@@ -216,9 +255,7 @@ public class RendicionController implements Serializable {
 
                 // Para cada archivo de rendicion subido
 
-                // Obtenemos el controlador necesario
-                FacesContext context = FacesContext.getCurrentInstance();
-                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+                
 
                 for (Archivorendicion ar : arcontroller.getListaArchivos()) {
                     // le damos la referencia a la rendicion actual y persistimos el archivo
@@ -226,10 +263,12 @@ public class RendicionController implements Serializable {
                     getFacadear().create(ar);
                 }
 
-                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
+                //JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
+                JsfUtil.addSuccessMessage("Rendición Creada Correctamente!");
             }
 
-            return prepareList();
+            //return prepareList();
+            return null;
             
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));

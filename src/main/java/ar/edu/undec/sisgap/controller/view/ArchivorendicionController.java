@@ -290,7 +290,7 @@ public class ArchivorendicionController implements Serializable {
 
     public void removerArchivoLista() {
         getListaArchivos().remove(current);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() + " fue borrado"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " +  current.getNrofactura() + " fue borrado"));
     }
 
     public StreamedContent obtenerImagen() throws IOException {
