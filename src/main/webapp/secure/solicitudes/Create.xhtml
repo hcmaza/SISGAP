@@ -330,11 +330,39 @@
                                         <h:outputText value="#{arc.montofactura}" />  
                                     </p:column> 
                                     <p:column headerText="">  
-                                        <p:commandLink immediate="true" value="Eliminar" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion"  >
+                                        <p:commandButton value="Eliminar" icon="ui-icon-circle-plus" action="#{archivorendicionController.removerArchivoLista}" update=":formprincipal:growlprincipal, :formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion, :formprincipal:tabsolicitudes:difrendicion" immediate="true"  >
                                             <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
-                                        </p:commandLink>
+                                        </p:commandButton>
                                     </p:column> 
+                                    <f:facet name="footer">
+                                        El total Solicitado es $ #{archivorendicionController.sumarComprobantes()}
+                                    </f:facet>
                                 </p:dataTable>
+
+                                <p:outputPanel id="difrendicion"  >
+                                    <p:fieldset legend="Diferencia de la Rendición de Gastos" style="margin-bottom:20px" rendered="#{archivorendicionController.sumarComprobantes() > rendicionController.solicitudSeleccionada.importe.floatValue()}">
+
+                                        <h:outputText value="Explicación: "/>
+                                        <br />
+                                        <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." />
+
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                            <p:outputLabel value="Item del presupuesto al que se acredita la diferencia" for="diferencia" />
+
+                                            <p:selectOneMenu id="diferencia" value="#{solicitudController.solicitudReintegroPorDiferencia}" var="s" required="true" requiredMessage="Se debe seleccionar un item del presupuesto con dinero disponible.">
+                                                <f:selectItem itemLabel="Seleccionar un item del presupuesto" itemValue="" />
+                                                <f:selectItems value="#{solicitudController.itemsDisponiblesNuevo}" var="solicitud" itemLabel="#{solicitud.presupuestotarea.descripcion}" itemValue="#{solicitud}" />
+                                                <p:column>
+                                                    <h:outputText value="#{s.presupuestotarea.descripcion}" />
+                                                </p:column>
+
+                                                <p:column>
+                                                    <h:outputText value="$#{s.disponible.floatValue()}" />
+                                                </p:column>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </p:fieldset>
+                                </p:outputPanel>
 
                                 <div align="center">
                                     <p:commandButton action="#{rendicionController.create}" value="Crear Rendición" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinalrendicion').show();" immediate="true" />
@@ -577,7 +605,7 @@
                     <p:separator/>
                     <div align="center" >
                         <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
-                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion" oncomplete="PF('dialogoItemRendicion').hide();" />
+                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion, :formprincipal:tabsolicitudes:difrendicion" oncomplete="PF('dialogoItemRendicion').hide();" />
                     </div>
                 </h:form>
 

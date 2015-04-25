@@ -196,6 +196,7 @@ public class RendicionController implements Serializable {
                 // Obtenemos el controlador necesario
                 FacesContext context = FacesContext.getCurrentInstance();
                 ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+                SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
                 
                 float sumaArchivosRendicion = 0f;
                 
@@ -204,12 +205,10 @@ public class RendicionController implements Serializable {
                 }
                 
                 System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
-                
-                
                         
                 float porcentaje = 20f;
 
-                // Obtenemos el monto maximo para anticipos desde la configuracion 
+                // Obtenemos el porcentaje maximo el cual no se debe superar por la suma de comprobantes
                 try {
                     porcentaje = Float.parseFloat(ejbFacadec.findAtributo("maxporcentajerendicion").getValor());
                    // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
@@ -228,6 +227,17 @@ public class RendicionController implements Serializable {
                 if(sumaArchivosRendicion < solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion > (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion) ){
                     FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje +  "% del total de la solicitud a rendir."));
                     return null;
+                }
+                
+                // verificar si la suma de comprobantes está dentro del rando del importe de la solicitud 
+                // y el porcentaje permitido.
+                if(sumaArchivosRendicion > solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion < (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion) ){
+                    
+                    //validar que hay una solicitud con dinero disponible para la diferencia
+                    if(solicitudcontroller.getSolicitudReintegroPorDiferencia() == null){
+                        FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error en Creación de la Rendicion", "Se debe seleccionar un item del presupuesto del cual restar la suma de comprobantes rendidos."));
+                        return null;
+                    }
                 }
                 
                 // rendicion con fecha actual del sistema

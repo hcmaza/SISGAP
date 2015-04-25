@@ -39,6 +39,8 @@ public class ArchivorendicionController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -256,19 +258,62 @@ public class ArchivorendicionController implements Serializable {
             }
         }
     }
-    
-    public void nuevoArchivoRendicion(){
-       System.out.println("Nuevo Archivo Rendicion Inicio"); 
-       //current = null;
-       current = new Archivorendicion();
-       System.out.println("Nuevo Archivo rendicion Fin"); 
+
+    public void nuevoArchivoRendicion() {
+        System.out.println("Nuevo Archivo Rendicion Inicio");
+        //current = null;
+        current = new Archivorendicion();
+        System.out.println("Nuevo Archivo rendicion Fin");
     }
-    
-    public void agregarArchivoLista(){
-        System.out.println("Agregar Archivo rendicion Inicio"); 
-        getListaArchivos().add(current);
-        System.out.println("Lista Archivos Rendicion: " + getListaArchivos().size()); 
-        System.out.println("Agregar Archivo rendicion Fin"); 
+
+    public void agregarArchivoLista() {
+
+        // Obtenemos el controlador necesario
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+
+        float sumaArchivosRendicion = 0f;
+
+        for (Archivorendicion ar : getListaArchivos()) {
+            sumaArchivosRendicion = sumaArchivosRendicion + ar.getMontofactura().floatValue();
+        }
+
+        sumaArchivosRendicion = sumaArchivosRendicion + current.getMontofactura().floatValue();
+        System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
+
+        if (sumaArchivosRendicion > rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue()) {
+
+            float porcentaje = 20f;
+
+            // Obtenemos el porcentaje maximo el cual no se debe superar por la suma de comprobantes
+            try {
+                porcentaje = Float.parseFloat(ejbFacadec.findAtributo("maxporcentajerendicion").getValor());
+            } catch (Exception e) {
+                porcentaje = 20f;
+                System.out.println("Error en obtencion de parametro 'maxporcentajerendicion' desde la base de datos [maxporcentajerendicion = 20]");
+                e.printStackTrace();
+            }
+
+            float porcentajeArchivosRendicion = (rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue() * (porcentaje / 100.0f));
+
+            System.out.println(porcentaje + "% de la suma de Archivos de Rendicion = " + porcentajeArchivosRendicion);
+
+            //validacion de que el el total de archivos de rendicion, 
+            //sea igual o hasta un 20% mayor que el importe de la rendicion
+            if (sumaArchivosRendicion > (rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue() + porcentajeArchivosRendicion)) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
+                return;
+            } else {
+                // agregar el archivo rendicion a la lista                
+                getListaArchivos().add(current);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Rendición: comprobante agregado correctamente", "Importe: " + current.getMontofactura().floatValue()));
+            }
+        } else {
+            // agregar el archivo rendicion a la lista
+            getListaArchivos().add(current);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Rendición: comprobante agregado correctamente", "Importe: " + current.getMontofactura().floatValue()));
+        }
+
     }
 
     public void subirArchivoRendicion(FileUploadEvent event) {
@@ -290,7 +335,7 @@ public class ArchivorendicionController implements Serializable {
 
     public void removerArchivoLista() {
         getListaArchivos().remove(current);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " +  current.getNrofactura() + " fue borrado"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " + current.getNrofactura() + " fue borrado"));
     }
 
     public StreamedContent obtenerImagen() throws IOException {
@@ -313,6 +358,16 @@ public class ArchivorendicionController implements Serializable {
             }
         }
         return null;
+    }
+
+    public float sumarComprobantes() {
+        float r = 0;
+
+        for (Archivorendicion a : listaArchivos) {
+            r += a.getMontofactura().floatValue();
+        }
+
+        return r;
     }
 
 }
