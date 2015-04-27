@@ -53,6 +53,9 @@ public class RendicionController implements Serializable {
 
     private List<Solicitud> listaSolicitudesSeleccionadas;
     private Solicitud solicitudSeleccionada;
+    
+      // creada cuando la suma de los comprobantes de rendicion supera el importe de la solicitud que se está rindiendo
+    private Solicitud solicitudReintegroPorDiferencia;
 
     public RendicionController() {
     }
@@ -108,9 +111,18 @@ public class RendicionController implements Serializable {
         }
         return solicitudSeleccionada;
     }
+    
 
     public void setSolicitudSeleccionada(Solicitud solicitudSeleccionada) {
         this.solicitudSeleccionada = solicitudSeleccionada;
+    }
+    
+        public Solicitud getSolicitudReintegroPorDiferencia() {
+        return solicitudReintegroPorDiferencia;
+    }
+
+    public void setSolicitudReintegroPorDiferencia(Solicitud solicitudReintegroPorDiferencia) {
+        this.solicitudReintegroPorDiferencia = solicitudReintegroPorDiferencia;
     }
 
     public PaginationHelper getPagination() {

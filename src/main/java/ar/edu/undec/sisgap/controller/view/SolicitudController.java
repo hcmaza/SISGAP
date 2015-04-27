@@ -69,8 +69,7 @@ public class SolicitudController implements Serializable {
     //private String tabseleccionado = "Anticipo";
     private String tabseleccionado = "Presupuesto Detallado";
     
-    // creada cuando la suma de los comprobantes de rendicion supera el importe de la solicitud que se está rindiendo
-    private Solicitud solicitudReintegroPorDiferencia;
+  
 
     public SolicitudController() {
     }
@@ -87,13 +86,7 @@ public class SolicitudController implements Serializable {
         current = solicitud;
     }
 
-    public Solicitud getSolicitudReintegroPorDiferencia() {
-        return solicitudReintegroPorDiferencia;
-    }
 
-    public void setSolicitudReintegroPorDiferencia(Solicitud solicitudReintegroPorDiferencia) {
-        this.solicitudReintegroPorDiferencia = solicitudReintegroPorDiferencia;
-    }
 
     private SolicitudFacade getFacade() {
         return ejbFacade;

@@ -344,12 +344,15 @@
 
                                         <h:outputText value="Explicación: "/>
                                         <br />
-                                        <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." />
+                                        
+                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud rendida y la suma de comprobantes rendidos." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
+                                     
+                                        <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
 
-                                        <h:panelGrid columns="2" cellpadding="5">
+                                        <h:panelGrid columns="2" cellpadding="5" rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}">
                                             <p:outputLabel value="Item del presupuesto al que se acredita la diferencia" for="diferencia" />
 
-                                            <p:selectOneMenu id="diferencia" value="#{solicitudController.solicitudReintegroPorDiferencia}" var="s" required="true" requiredMessage="Se debe seleccionar un item del presupuesto con dinero disponible.">
+                                            <p:selectOneMenu id="diferencia" value="#{rendicionController.solicitudReintegroPorDiferencia}" var="s" required="true" requiredMessage="Se debe seleccionar un item del presupuesto con dinero disponible.">
                                                 <f:selectItem itemLabel="Seleccionar un item del presupuesto" itemValue="" />
                                                 <f:selectItems value="#{solicitudController.itemsDisponiblesNuevo}" var="solicitud" itemLabel="#{solicitud.presupuestotarea.descripcion}" itemValue="#{solicitud}" />
                                                 <p:column>

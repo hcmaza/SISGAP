@@ -4,6 +4,7 @@ import ar.edu.undec.sisgap.model.Archivorendicion;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ArchivorendicionFacade;
+import ar.edu.undec.sisgap.model.Solicitud;
 import com.lowagie.text.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -11,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -271,6 +273,7 @@ public class ArchivorendicionController implements Serializable {
         // Obtenemos el controlador necesario
         FacesContext context = FacesContext.getCurrentInstance();
         RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
 
         float sumaArchivosRendicion = 0f;
 
@@ -304,10 +307,36 @@ public class ArchivorendicionController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
                 return;
             } else {
-                // agregar el archivo rendicion a la lista                
-                getListaArchivos().add(current);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Rendición: comprobante agregado correctamente", "Importe: " + current.getMontofactura().floatValue()));
+                
+                float diferencia = sumaArchivosRendicion - rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue();
+
+                System.out.println("Diferencia: " + diferencia);
+
+                // la diferencia se encuentra dentro del porcentaje permitido
+                if (diferencia > 0 && diferencia < porcentajeArchivosRendicion) {
+                    // verificar si hay dinero disponible para la diferencia
+                    for (Solicitud s : solicitudcontroller.getItemsDisponiblesNuevo()) {
+                        if (rendicioncontroller.getSolicitudSeleccionada().getPresupuestotarea().getId() == s.getPresupuestotarea().getId() && s.getDisponible().floatValue() >= diferencia) {
+
+                            // agregar el archivo rendicion a la lista                
+                            getListaArchivos().add(current);
+
+                            // a la solicitud encontrada, le cambiamos el importe por la diferencia
+                            s.setImporte(new BigDecimal(diferencia));
+                            // seteamos la solicitud encontrada como la solicitud para el reintegro
+                            rendicioncontroller.setSolicitudReintegroPorDiferencia(s);
+                            
+                            System.out.println("rendicioncontroller.SolicitudReintegroPorDiferencia: " + rendicioncontroller.getSolicitudReintegroPorDiferencia().getImporte() + " - " + rendicioncontroller.getSolicitudReintegroPorDiferencia().getPresupuestotarea().getDescripcion());
+
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Rendicion: existe una diferencia.", "La suma de comprobantes supera la solicitud a rendir dentro de lo permitido y hay dinero disponible para el item. La diferencia es de: " + diferencia + " y se asigna a " + s.getPresupuestotarea().getDescripcion()));
+                            return;
+                        }
+                    }
+
+                // si no hay dinero disponible para la diferencia de rendicion.
+                }
             }
+
         } else {
             // agregar el archivo rendicion a la lista
             getListaArchivos().add(current);
@@ -334,8 +363,10 @@ public class ArchivorendicionController implements Serializable {
     }
 
     public void removerArchivoLista() {
-        getListaArchivos().remove(current);
+        
+        listaArchivos.remove(current);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " + current.getNrofactura() + " fue borrado"));
+        
     }
 
     public StreamedContent obtenerImagen() throws IOException {
