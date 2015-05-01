@@ -448,7 +448,6 @@ public class IndicadoresController implements Serializable {
                 add(25);
                 add(50);
                 add(75);
-                add(100);
             }
         };
 
@@ -469,8 +468,8 @@ public class IndicadoresController implements Serializable {
         indicadorEjecutado.setGaugeLabelPosition("bottom");
         //indicadorEjecutado.setShowTickLabels(false);
 
-        indicadorEjecutado.setIntervalInnerRadius(25);
-        indicadorEjecutado.setIntervalOuterRadius(80);
+        //indicadorEjecutado.setIntervalInnerRadius(25);
+        //indicadorEjecutado.setIntervalOuterRadius(70);
 
         indicadorEjecutado.setExtender("indicador");
         

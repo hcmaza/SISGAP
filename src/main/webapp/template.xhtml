@@ -20,12 +20,17 @@
         <script type="text/javascript">
             function indicador()
             {
-                //this.cfg.title = "zxc";
                 this.cfg.seriesDefaults.rendererOptions = {
                     label: '%',
-                    padding: 1,
-                    intervalInnerRadius: 50,
-                    intervalOuterRadius: 95 
+                    //diameter: 100,
+                    //labelPosition: 'bottom',
+                    //labelHeightAdjust: -5,
+                    padding: 0,
+                    pad: 0,
+                    min: 0,
+                    max: 100,
+                    //intervalOuterRadius: 50,
+                    intervalColors:['#21B2CE', '#9C4DAD', '#FF964A', '#5ACB73', '#CE4131', '#DED7A5']
                 };
             }
             
