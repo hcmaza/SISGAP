@@ -452,11 +452,13 @@ public class IndicadoresController implements Serializable {
             }
         };
 
-        float ejecutado = 0.0f;
-        ejecutado = (totalPresupuestoProyecto * ejecutadoProyecto) / 100;
+        float porcentajeEjecutado = 0.0f;
+        porcentajeEjecutado = (ejecutadoProyecto / totalPresupuestoProyecto) * 100;
+        
+        System.out.println("INDICADORES: porcentajeEjecutado = " + porcentajeEjecutado);
 
         //return new MeterGaugeChartModel(Integer.parseInt(String.valueOf(ejecutado)), intervalos);
-        return new MeterGaugeChartModel((int) ejecutado, intervalos);
+        return new MeterGaugeChartModel((int) porcentajeEjecutado, intervalos);
     }
 
     private void crearIndicadorEjecutado() {
@@ -467,7 +469,7 @@ public class IndicadoresController implements Serializable {
         indicadorEjecutado.setGaugeLabelPosition("bottom");
         //indicadorEjecutado.setShowTickLabels(false);
 
-        indicadorEjecutado.setIntervalInnerRadius(85);
+        indicadorEjecutado.setIntervalInnerRadius(25);
         indicadorEjecutado.setIntervalOuterRadius(80);
 
         indicadorEjecutado.setExtender("indicador");
@@ -482,6 +484,7 @@ public class IndicadoresController implements Serializable {
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
         totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(proyectocontroller.getSelected().getId());
+        System.out.println("INDICADORES: totalPresupuestoProyecto = " + totalPresupuestoProyecto);
     }
 
     public void calcularPendienteRendicion() {

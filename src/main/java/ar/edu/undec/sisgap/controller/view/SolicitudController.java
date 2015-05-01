@@ -791,43 +791,6 @@ public class SolicitudController implements Serializable {
 
         return r;
     }
-
-    // Indicador de Ejecucion
-    
-    public MeterGaugeChartModel getIndicadorEjecutado() {
-
-        if (indicadorEjecutado == null){
-            crearIndicadorEjecutado();
-        }
-        
-        return indicadorEjecutado;
-    }
-    
-    private MeterGaugeChartModel inicializarModeloIndicadorPorcentaje() {
-        List<Number> intervalos = new ArrayList<Number>(){{
-            add(25);
-            add(50);
-            add(75);
-            add(100);
-        }};
-         
-        return new MeterGaugeChartModel(54, intervalos);
-    }
- 
-    private void crearIndicadorEjecutado() {
-        indicadorEjecutado = inicializarModeloIndicadorPorcentaje();
-
-        indicadorEjecutado.setSeriesColors("66cc66,93b75f,E7E658,cc6666");
-
-        indicadorEjecutado.setGaugeLabelPosition("bottom");
-        //indicadorEjecutado.setShowTickLabels(false);
-        
-        indicadorEjecutado.setIntervalInnerRadius(85);
-        indicadorEjecutado.setIntervalOuterRadius(80);
-        
-        indicadorEjecutado.setExtender("indicador");
-        
-    }
     
     public HashMap<String,Float> obtenerSaldosRubro(){
 
