@@ -226,11 +226,12 @@ public class SolicitudController implements Serializable {
             while (i.hasNext()) {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
 
-                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada"
-                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
+                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada" o "Iniciada"
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 1 && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
                     
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
-                    solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                    //solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                    solicitud.setImporte(solicitud.getImporte().subtract(solicitudAnterior.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
                 }
             }
@@ -251,7 +252,7 @@ public class SolicitudController implements Serializable {
          for(Solicitud s : this.itemsDisponiblesNuevo ){
              
              // Se quita, se realiza en el evento tabChange
-             if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) ){
+             if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
                    this.itemsDisponibles.add(s);
              }
         }
@@ -701,7 +702,7 @@ public class SolicitudController implements Serializable {
                 }
             }
             
-               // buscamos la solicitudNuevo disponible para sumar el monto
+            // buscamos la solicitudNuevo disponible para sumar el monto
             ListIterator in = itemsDisponiblesNuevo.listIterator();
 
             while (in.hasNext()) {
