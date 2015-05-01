@@ -2,6 +2,7 @@ package ar.edu.undec.sisgap.controller.view;
 
 import ar.edu.undec.sisgap.controller.ConfiguracionFacade;
 import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
+import ar.edu.undec.sisgap.controller.ProyectoFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
@@ -51,6 +52,8 @@ public class SolicitudController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     @EJB
+    private ar.edu.undec.sisgap.controller.ProyectoFacade ejbFacadep;
+    @EJB
     private TiposolicitudFacade ejbFacadeTipo;
     @EJB
     private EstadosolicitudFacade ejbFacadeEstado;
@@ -86,8 +89,6 @@ public class SolicitudController implements Serializable {
         current = solicitud;
     }
 
-
-
     private SolicitudFacade getFacade() {
         return ejbFacade;
     }
@@ -102,6 +103,10 @@ public class SolicitudController implements Serializable {
 
     public EstadosolicitudFacade getEjbFacadeEstado() {
         return ejbFacadeEstado;
+    }
+
+    public ProyectoFacade getEjbFacadep() {
+        return ejbFacadep;
     }
 
     public List<Solicitud> getItemsDisponibles() {
@@ -266,8 +271,52 @@ public class SolicitudController implements Serializable {
                 for (Solicitud s : itemsSolicitados) {
 
                     s.setFechasolicitud(new Date());
-                    s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
-                    //s.setTiposolicitudid(current.getTiposolicitudid());
+                    
+                    // segun el tipo de solicitud, se le dan distintos estados
+                    switch(s.getTiposolicitudid().getId()){
+                        // Anticipo
+                        case 1:
+                            // Se le da estado "Iniciada" para que el Administrador la aprueba
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
+                            break;
+                        // Adquisición
+                        case 2:
+                            // Se le da estado "Aprobada"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;
+                        // Certificacion
+                        case 3:
+                            // Se le da estado "Aprobada"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;
+                        // Reintegro
+                        case 4:
+                            // Se le da estado "Aprobada"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            
+                            // sumar 1 al contador de reintegros del proyecto
+                            try{
+                                this.ejbFacadep.acumularCantidadReintegrosPorProyecto(s.getPresupuestotarea().getTarea().getEtapaid().getProyectoid().getId());
+                                System.out.println("Acumular 1 cantidad reintegros CORRECTO!");
+                            } catch(Exception e){
+                                System.out.println("Acumular 1 cantidad reintegros ERROR");
+                                e.printStackTrace();
+                            }
+                            break;         
+                        // Reintegro por diferencia
+                        case 5:
+                            // Se le da estado "Aprobada", sin acumular 1 a la cantidad de reintegros del proyecto
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;          
+                        default:
+                            // Se le da estado "Iniciada" para que el Administrador la aprueba
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
+                            break;
+                    }
 
                     // Guardamos la solicitud
                     getFacade().create(s);

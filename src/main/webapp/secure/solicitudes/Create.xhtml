@@ -232,7 +232,7 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab id="treintegro" title="Reintegro" >
+                            <p:tab id="treintegro" title="Reintegro" disabled="#{proyectoController.selected.cantidadreintegros > 0}" titletip="Se permiten hasta 5 reintegros, si se alcanzo esta cantidad, la solapa aparecerá deshabilitada" >
 
                                 <p:dataTable id="tabladisponiblesreintegro" widgetVar="tabladisponiblesreintegro" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
