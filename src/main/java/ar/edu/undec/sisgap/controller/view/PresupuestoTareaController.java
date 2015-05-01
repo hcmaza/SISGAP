@@ -353,53 +353,77 @@ public class PresupuestoTareaController implements Serializable {
 
         FacesContext context = FacesContext.getCurrentInstance();
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-        BigDecimal sumatotal = BigDecimal.ZERO;
-        BigDecimal sumaaportecomitente = BigDecimal.ZERO;
-        BigDecimal sumaaporteuniversidad = BigDecimal.ZERO;
-        BigDecimal sumaaporteorganismo = BigDecimal.ZERO;
+        BigDecimal sumatotaltarea = BigDecimal.ZERO;
+        BigDecimal sumaaportecomitentetarea = BigDecimal.ZERO;
+        BigDecimal sumaaporteuniversidadtarea = BigDecimal.ZERO;
+        BigDecimal sumaaporteorganismotarea = BigDecimal.ZERO;
+
+        BigDecimal sumatotaletapa = BigDecimal.ZERO;
+        BigDecimal sumaaportecomitenteetapa = BigDecimal.ZERO;
+        BigDecimal sumaaporteuniversidadetapa = BigDecimal.ZERO;
+        BigDecimal sumaaporteorganismoetapa = BigDecimal.ZERO;
+
         Etapa etapaold = new Etapa();
         Tarea tareaold = new Tarea();
+
         List<PresupuestoTarea> sumatoriaporetapa = new ArrayList<PresupuestoTarea>();
         List<PresupuestoTarea> sumatoriaportarea = new ArrayList<PresupuestoTarea>();
+
         int ie = 0;
         int it = 0;
+
         for (Etapa etapa : etapacontroller.getEtapas()) {
+
+            sumatotaletapa = BigDecimal.ZERO;
+            sumaaportecomitenteetapa = BigDecimal.ZERO;
+            sumaaporteuniversidadetapa = BigDecimal.ZERO;
+            sumaaporteorganismoetapa = BigDecimal.ZERO;
+
             for (Tarea tarea : etapa.getTareaList()) {
+
+                sumaaportecomitentetarea = BigDecimal.ZERO;
+                sumaaporteuniversidadtarea = BigDecimal.ZERO;
+                sumaaporteorganismotarea = BigDecimal.ZERO;
+                sumatotaltarea = BigDecimal.ZERO;
+
                 for (PresupuestoTarea pt : tarea.getPresupuestoTareaList()) {
 
-//                 if(sumatoriaporetapa.get(ie)==null){
-//                    PresupuestoTarea ptx = new PresupuestoTarea();
-//                    sumatoriaporetapa.set(ie,ptx);
-//                 }
-                    sumaaportecomitente = sumaaportecomitente.add(pt.getAportecomitente());
-                    sumaaporteuniversidad = sumaaporteuniversidad.add(pt.getAporteuniversidad());
-                    sumaaporteorganismo = sumaaporteorganismo.add(pt.getAporteorganismo());
+                    sumaaportecomitentetarea = sumaaportecomitentetarea.add(pt.getAportecomitente());
+                    sumaaporteuniversidadtarea = sumaaporteuniversidadtarea.add(pt.getAporteuniversidad());
+                    sumaaporteorganismotarea = sumaaporteorganismotarea.add(pt.getAporteorganismo());
+                    sumatotaltarea = sumaaportecomitentetarea.add(sumaaporteuniversidadtarea.add(sumaaporteorganismotarea));
 
                     it++;
                 }
-                sumatotal = sumaaportecomitente.add(sumaaporteuniversidad.add(sumaaporteorganismo));
-                PresupuestoTarea ptx = new PresupuestoTarea();
-                ptx.setDescripcion("Etapa - " + etapa.getEtapa());
-                ptx.setAportecomitente(sumaaportecomitente);
-                ptx.setAporteuniversidad(sumaaporteuniversidad);
-                ptx.setAporteorganismo(sumaaporteorganismo);
-                ptx.setTotal(sumatotal);
-                sumatoriaporetapa.add(ie, ptx);
-                ie++;
-                sumaaportecomitente = BigDecimal.ZERO;
-                sumaaporteuniversidad = BigDecimal.ZERO;
-                sumaaporteorganismo = BigDecimal.ZERO;
-                sumatotal = BigDecimal.ZERO;
+                
+                sumaaportecomitenteetapa = sumaaportecomitenteetapa.add(sumaaportecomitentetarea);
+                sumaaporteuniversidadetapa = sumaaporteuniversidadetapa.add(sumaaporteuniversidadtarea);
+                sumaaporteorganismoetapa = sumaaporteorganismoetapa.add(sumaaporteorganismotarea);
+                sumatotaletapa = sumaaportecomitenteetapa.add(sumaaporteuniversidadetapa.add(sumaaporteorganismoetapa));
+
             }
+
+            PresupuestoTarea ptx = new PresupuestoTarea();
+            ptx.setDescripcion("Etapa - " + etapa.getEtapa());
+            ptx.setAportecomitente(sumaaportecomitenteetapa);
+            ptx.setAporteuniversidad(sumaaporteuniversidadetapa);
+            ptx.setAporteorganismo(sumaaporteorganismoetapa);
+            ptx.setTotal(sumatotaletapa);
+
+            sumatoriaporetapa.add(ie, ptx);
+
+            ie++;
 
         }
 
         root = new DefaultTreeNode(new PresupuestoTarea(), null);
         root.setExpanded(false);
+
         ie = 0;
+
         for (Etapa etapa : etapacontroller.getEtapas()) {
 
-                    // PresupuestoTarea e = new PresupuestoTarea();
+            // PresupuestoTarea e = new PresupuestoTarea();
             // e.setDescripcion("Etapa - " + etapa.getEtapa());
             TreeNode et = new DefaultTreeNode(sumatoriaporetapa.get(ie), root);
             et.setExpanded(false);
@@ -805,9 +829,9 @@ public class PresupuestoTareaController implements Serializable {
 
     /**
      * se llena la lista [presupuestostareas] para un proyecto determinado
-     * 
-     * @param proyectoid 
-     * @param tiposolicitud 
+     *
+     * @param proyectoid
+     * @param tiposolicitud
      */
     public void establecerListaPresupuestoTareaBienesPorProyecto(int proyectoid, String tiposolicitud) {
 
@@ -822,22 +846,21 @@ public class PresupuestoTareaController implements Serializable {
         tareacontroller.establecerTareasPorProyecto(proyectoid);
 
         // Para cada tarea en el controlador, obtenermos su lista de [PresupuestoTarea]
-       
         for (Tarea t : tareacontroller.getTareasdeproyecto()) {
             for (PresupuestoTarea p : t.getPresupuestoTareaList()) {
                 resultado.add(p);
                 // Se filtra que no sea de los rubros recursos humanos y servicios de terceros [POR AHORA]
             /*   if((tiposolicitud.equals("Anticipo")) | (tiposolicitud.equals("Adquisición"))){
-                    if (!esRubroPorId(p, 4) && !esRubroPorId(p, 5)) {
-                        resultado.add(p);
-                    }
-                }
-               if(tiposolicitud.equals("Certificación")){
-                   if (esRubroPorId(p, 4) && esRubroPorId(p, 5)) {
-                        resultado.add(p);
-                    }
-                }
-            */
+                 if (!esRubroPorId(p, 4) && !esRubroPorId(p, 5)) {
+                 resultado.add(p);
+                 }
+                 }
+                 if(tiposolicitud.equals("Certificación")){
+                 if (esRubroPorId(p, 4) && esRubroPorId(p, 5)) {
+                 resultado.add(p);
+                 }
+                 }
+                 */
             }
         }
 
@@ -846,15 +869,15 @@ public class PresupuestoTareaController implements Serializable {
 
         // La lista dual de presupuesto tareas para el pick list
         //this.setPlPresupuestoTarea(new DualListModel(presupuestostareas, new ArrayList<PresupuestoTarea>()));
-
 //        // Vaciar lista de presupuestos items a solicitar
 //        this.presupuestostareasitems = new ArrayList<PresupuestoTarea>();
     }
-    
+
     /**
-     * vacia la lista [presupuestostareasitems] que es la que mantiene los presupuestostarea solicitados
+     * vacia la lista [presupuestostareasitems] que es la que mantiene los
+     * presupuestostarea solicitados
      */
-    public void vaciarListaPresupuestoTareaSolicitadosPorProyecto(){
+    public void vaciarListaPresupuestoTareaSolicitadosPorProyecto() {
         presupuestostareasitems = new ArrayList<PresupuestoTarea>();
     }
 
@@ -908,14 +931,13 @@ public class PresupuestoTareaController implements Serializable {
 //        FacesContext context = FacesContext.getCurrentInstance();
 //        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
 //    }
-    
     /**
-     * Agrega el item seleccionado de la lista [presupuestostareas] en la lista [presupuestostareas]
+     * Agrega el item seleccionado de la lista [presupuestostareas] en la lista
+     * [presupuestostareas]
      */
     public void agregarItemSolcitado() {
         System.out.println("solicitarItem");
-        
-        
+
         // Agregar en la lista de solicitados
         this.presupuestostareasitems.add(current);
 
