@@ -353,6 +353,7 @@ public class PresupuestoTareaController implements Serializable {
 
         FacesContext context = FacesContext.getCurrentInstance();
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        
         BigDecimal sumatotaltarea = BigDecimal.ZERO;
         BigDecimal sumaaportecomitentetarea = BigDecimal.ZERO;
         BigDecimal sumaaporteuniversidadtarea = BigDecimal.ZERO;
@@ -362,9 +363,6 @@ public class PresupuestoTareaController implements Serializable {
         BigDecimal sumaaportecomitenteetapa = BigDecimal.ZERO;
         BigDecimal sumaaporteuniversidadetapa = BigDecimal.ZERO;
         BigDecimal sumaaporteorganismoetapa = BigDecimal.ZERO;
-
-        Etapa etapaold = new Etapa();
-        Tarea tareaold = new Tarea();
 
         List<PresupuestoTarea> sumatoriaporetapa = new ArrayList<PresupuestoTarea>();
         List<PresupuestoTarea> sumatoriaportarea = new ArrayList<PresupuestoTarea>();
@@ -392,19 +390,28 @@ public class PresupuestoTareaController implements Serializable {
                     sumaaporteuniversidadtarea = sumaaporteuniversidadtarea.add(pt.getAporteuniversidad());
                     sumaaporteorganismotarea = sumaaporteorganismotarea.add(pt.getAporteorganismo());
                     sumatotaltarea = sumaaportecomitentetarea.add(sumaaporteuniversidadtarea.add(sumaaporteorganismotarea));
-
-                    it++;
+                
                 }
                 
                 sumaaportecomitenteetapa = sumaaportecomitenteetapa.add(sumaaportecomitentetarea);
                 sumaaporteuniversidadetapa = sumaaporteuniversidadetapa.add(sumaaporteuniversidadtarea);
                 sumaaporteorganismoetapa = sumaaporteorganismoetapa.add(sumaaporteorganismotarea);
                 sumatotaletapa = sumaaportecomitenteetapa.add(sumaaporteuniversidadetapa.add(sumaaporteorganismoetapa));
+                
+                PresupuestoTarea ptx2 = new PresupuestoTarea();
+                ptx2.setDescripcion("Tarea: " + tarea.getTarea());
+                ptx2.setAportecomitente(sumaaportecomitentetarea);
+                ptx2.setAporteuniversidad(sumaaporteuniversidadtarea);
+                ptx2.setAporteorganismo(sumaaporteorganismotarea);
+                ptx2.setTotal(sumatotaltarea);
+                
+                sumatoriaportarea.add(it, ptx2);
+                it++;
 
             }
 
             PresupuestoTarea ptx = new PresupuestoTarea();
-            ptx.setDescripcion("Etapa - " + etapa.getEtapa());
+            ptx.setDescripcion("Etapa: " + etapa.getEtapa());
             ptx.setAportecomitente(sumaaportecomitenteetapa);
             ptx.setAporteuniversidad(sumaaporteuniversidadetapa);
             ptx.setAporteorganismo(sumaaporteorganismoetapa);
@@ -420,23 +427,22 @@ public class PresupuestoTareaController implements Serializable {
         root.setExpanded(false);
 
         ie = 0;
+        it = 0;
 
         for (Etapa etapa : etapacontroller.getEtapas()) {
 
-            // PresupuestoTarea e = new PresupuestoTarea();
-            // e.setDescripcion("Etapa - " + etapa.getEtapa());
             TreeNode et = new DefaultTreeNode(sumatoriaporetapa.get(ie), root);
             et.setExpanded(false);
 
             for (Tarea tarea : etapa.getTareaList()) {
-                PresupuestoTarea t = new PresupuestoTarea();
-                t.setDescripcion("Tarea - " + tarea.getTarea());
-                TreeNode tar = new DefaultTreeNode(t, et);
+                
+                TreeNode tar = new DefaultTreeNode(sumatoriaportarea.get(it), et);
                 tar.setExpanded(false);
-                for (PresupuestoTarea p : tarea.getPresupuestoTareaList()) {
 
+                for (PresupuestoTarea p : tarea.getPresupuestoTareaList()) {
                     TreeNode tp = new DefaultTreeNode(p, tar);
                 }
+                it++;
             }
             ie++;
         }
