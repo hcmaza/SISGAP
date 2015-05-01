@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
@@ -363,6 +364,14 @@ public class ArchivorendicionController implements Serializable {
     }
 
     public void removerArchivoLista() {
+        
+        // se quita de la lista de solicitados
+//        Iterator i = this.itemsSolicitados.iterator();
+//        while(i.hasNext()){
+//            if(((Solicitud)i.next()).getPresupuestotarea().equals(solicitud.getPresupuestotarea())){
+//                i.remove();
+//            }
+//        }
         
         listaArchivos.remove(current);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " + current.getNrofactura() + " fue borrado"));
