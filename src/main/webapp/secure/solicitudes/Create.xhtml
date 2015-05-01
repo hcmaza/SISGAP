@@ -345,7 +345,7 @@
                                         <h:outputText value="Explicación: "/>
                                         <br />
                                         
-                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud rendida y la suma de comprobantes rendidos." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
+                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud y la suma de comprobantes rendidos." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
                                      
                                         <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
 

@@ -11,6 +11,7 @@ import ar.edu.undec.sisgap.controller.TiposolicitudFacade;
 import ar.edu.undec.sisgap.model.Archivorendicion;
 import ar.edu.undec.sisgap.model.Estadosolicitud;
 import ar.edu.undec.sisgap.model.Solicitud;
+import ar.edu.undec.sisgap.model.Tiposolicitud;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ public class RendicionController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.EstadosolicitudFacade ejbFacadees;
     @EJB
+    private ar.edu.undec.sisgap.controller.TiposolicitudFacade ejbFacadets;
+
+    @EJB
     private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbFacadear;
     @EJB
     private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
@@ -53,8 +57,8 @@ public class RendicionController implements Serializable {
 
     private List<Solicitud> listaSolicitudesSeleccionadas;
     private Solicitud solicitudSeleccionada;
-    
-      // creada cuando la suma de los comprobantes de rendicion supera el importe de la solicitud que se está rindiendo
+
+    // creada cuando la suma de los comprobantes de rendicion supera el importe de la solicitud que se está rindiendo
     private Solicitud solicitudReintegroPorDiferencia;
 
     public RendicionController() {
@@ -84,6 +88,10 @@ public class RendicionController implements Serializable {
         return ejbFacadees;
     }
 
+    public TiposolicitudFacade getEjbFacadets() {
+        return ejbFacadets;
+    }
+
     public ArchivorendicionFacade getFacadear() {
         return ejbFacadear;
     }
@@ -111,13 +119,12 @@ public class RendicionController implements Serializable {
         }
         return solicitudSeleccionada;
     }
-    
 
     public void setSolicitudSeleccionada(Solicitud solicitudSeleccionada) {
         this.solicitudSeleccionada = solicitudSeleccionada;
     }
-    
-        public Solicitud getSolicitudReintegroPorDiferencia() {
+
+    public Solicitud getSolicitudReintegroPorDiferencia() {
         return solicitudReintegroPorDiferencia;
     }
 
@@ -236,37 +243,69 @@ public class RendicionController implements Serializable {
 
                 //validacion de que el el total de archivos de rendicion, 
                 //sea igual o hasta un 20% mayor que el importe de la rendicion
-                if (sumaArchivosRendicion < solicitudSeleccionada.getImporte().floatValue() || sumaArchivosRendicion > (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion)) {
-                    FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
-                    return null;
-                }
+                if (sumaArchivosRendicion >= solicitudSeleccionada.getImporte().floatValue() && sumaArchivosRendicion <= (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion)) {
 
-                // Caso Normal: la suma de todos los comprobantes cargados es igual al importe de la solicitud que se rinde
-                if (sumaArchivosRendicion == solicitudSeleccionada.getImporte().floatValue()) {
                     // rendicion con fecha actual del sistema
                     current.setFecha(new Date());
 
                     // se guarda la rendicion
                     getFacade().createWithPersist(current);
 
-                    // Estado de la solicitud
-                    Estadosolicitud estado;
+                    // Estado de la solicitud que se rinde
+                    Estadosolicitud estadoRendida;
+                    // Estado de la solicitud que se crea por diferencia
+                    Estadosolicitud estadoAprobada;
 
+                    // obtenemos los estados
                     try {
                         // Estado de la Solicitud = "Rendida"
-                        estado = getFacadees().find(5);
+                        estadoRendida = getFacadees().find(5);
+                        // Estado de la Solicitud = "Aprobada"
+                        estadoAprobada = getFacadees().find(2);
                     } catch (Exception e) {
-                        estado = null;
+                        estadoRendida = null;
+                        estadoAprobada = null;
                         System.out.println("EstadosolicitudFacade: problema de recuperacion");
                         e.printStackTrace();
                     }
 
                     // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
                     solicitudSeleccionada.setRendicionid(current);
-                    solicitudSeleccionada.setEstadosolicitudid(estado);
+                    solicitudSeleccionada.setEstadosolicitudid(estadoRendida);
+                    solicitudSeleccionada.setFechaejecucion(new Date());
                     getFacades().edit(solicitudSeleccionada);
 
-                // Para cada archivo de rendicion subido
+                    // Caso Alternativo: la suma de todos los comprobantes cargados es superior (dentro de lo permitido)
+                    // al importe de la solicitud que se rinde
+                    if (sumaArchivosRendicion > solicitudSeleccionada.getImporte().floatValue()) {
+
+                        // tipo reintegro
+                        Tiposolicitud tipoReintegro;
+
+                        // obtenemos el tipo
+                        try {
+                            // Tipo de Solicitud = "Reintegro"
+                            tipoReintegro = getEjbFacadets().find(4);
+                        } catch (Exception e) {
+                            tipoReintegro = null;
+                            System.out.println("TipoSolicitudFacade: problema de recuperacion");
+                            e.printStackTrace();
+                        }
+
+                        // seteamos la solicitud por diferencia
+                        solicitudReintegroPorDiferencia.setFechasolicitud(new Date());
+                        solicitudReintegroPorDiferencia.setFechaaprobacion(new Date());
+                        solicitudReintegroPorDiferencia.setRendicionid(current);
+                        solicitudReintegroPorDiferencia.setTiposolicitudid(tipoReintegro);
+                        solicitudReintegroPorDiferencia.setEstadosolicitudid(estadoAprobada);
+                        solicitudReintegroPorDiferencia.setObservacion("Diferencia por: $" + solicitudReintegroPorDiferencia.getImporte().floatValue() + " - " + solicitudSeleccionada.getPresupuestotarea().getDescripcion());
+
+                        // Guardamos la solicitud de reintegro por diferencia con Estado = Aprobada
+                        getFacades().createWithPersist(solicitudReintegroPorDiferencia);
+                        
+                    }
+
+                    // Para cada archivo de rendicion subido
                     for (Archivorendicion ar : arcontroller.getListaArchivos()) {
                         // le damos la referencia a la rendicion actual y persistimos el archivo
                         ar.setRendicionid(current);
@@ -275,34 +314,11 @@ public class RendicionController implements Serializable {
 
                     //JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
                     JsfUtil.addSuccessMessage("Rendición Creada Correctamente!");
+
+                } else {
+                    FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
+                    return null;
                 }
-                
-//                // verificar si la suma de comprobantes está dentro del rango del importe de la solicitud 
-//                // y el porcentaje permitido.
-//                if (sumaArchivosRendicion > solicitudSeleccionada.getImporte().floatValue() && sumaArchivosRendicion <= (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion)) {
-//
-//                    // Caso 1: el item a rendir, tiene presupuesto para cubrir la diferencia
-//                    
-//                    // calcular diferencia
-//                    float diferencia = sumaArchivosRendicion - solicitudSeleccionada.getImporte().floatValue();
-//                    
-//                    // buscar en el presupuesto del mismo item, con dinero disponible
-//                    for(Solicitud s : solicitudcontroller.getItemsDisponiblesNuevo()){
-//                        if(s.getPresupuestotarea().getId() == solicitudSeleccionada.getId()){
-//                            if(s.getDisponible().floatValue() >= diferencia){
-//                                solicitudcontroller.setSolicitudReintegroPorDiferencia(s);
-//                            }
-//                        }
-//                    }
-//                    
-//                    // Caso2: el item a rendir, NO tiene dinero disponible para cubrir la diferencia
-//                    
-//                    // verificar que se ha seleccionado un item del presupuesto a restar la diferencia
-//                    if (solicitudcontroller.getSolicitudReintegroPorDiferencia() != null) {
-//                        FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "Se debe seleccionar un item del presupuesto del cual restar la suma de comprobantes rendidos."));
-//                        return null;
-//                    }
-//                }
             }
             //return prepareList();
             return null;
