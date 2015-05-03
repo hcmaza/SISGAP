@@ -75,6 +75,33 @@
                                     <!--</p:fieldset>-->
                                 </p:column>
                             </p:row>
+                            <p:row>
+                                <p:column colspan="2"  style="width: 50%;">
+                                    <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30"  >
+                                        <f:facet name="legend" >
+                                            Total Desembolsado
+                                        </f:facet>
+                                        <div class="centrarEnFieldSet30" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="$ #{desembolsoController.sumarDesembolsos()}" style="color: #777777; font-weight: bold; font-size: 18px !important;  " />
+                                            </p:panelGrid>
+                                        </div>
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column colspan="2"  style="width: 50%;">
+                                    <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30" >
+                                        <f:facet name="legend" >
+                                            Solicitudes a Rendir
+                                        </f:facet>
+                                        <div class="centrarEnFieldSet30" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="#{rendicionController.listaSolicitudes.size()} Solicitud/es por $#{rendicionController.sumarSolicitudesARendir()}" style="color: #00C7F6; font-weight: bold; font-size: 15px !important; " rendered="#{rendicionController.listaSolicitudes.size() > 0}"  />
+                                                <p:outputLabel value="Sin Solicitudes por Rendir" style="color: #00C7F6; font-weight: bold; font-size: 16px !important; " rendered="#{rendicionController.listaSolicitudes.size() eq 0}" />
+                                            </p:panelGrid>
+                                        </div>
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
                         </p:panelGrid>
                     </p:panel>
 
@@ -271,7 +298,7 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
-                            
+
                             <p:tab id="ttraslado" title="Traslados" disabled="true" >
                             </p:tab>
 
@@ -347,9 +374,9 @@
 
                                         <h:outputText value="Explicación: "/>
                                         <br />
-                                        
+
                                         <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud y la suma de comprobantes rendidos." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
-                                     
+
                                         <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
 
                                         <h:panelGrid columns="2" cellpadding="5" rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}">

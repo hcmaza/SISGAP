@@ -302,7 +302,7 @@ public class RendicionController implements Serializable {
 
                         // Guardamos la solicitud de reintegro por diferencia con Estado = Aprobada
                         getFacades().createWithPersist(solicitudReintegroPorDiferencia);
-                        
+
                     }
 
                     // Para cada archivo de rendicion subido
@@ -543,4 +543,16 @@ public class RendicionController implements Serializable {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
 
+    public float sumarSolicitudesARendir() {
+
+        float resultado = 0f;
+
+        if (listaSolicitudes != null && listaSolicitudes.size() > 0) {
+            for (Solicitud s : listaSolicitudes) {
+                resultado = resultado + s.getImporte().floatValue();
+            }
+        }
+
+        return resultado;
+    }
 }

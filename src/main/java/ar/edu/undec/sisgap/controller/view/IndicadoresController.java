@@ -87,6 +87,9 @@ public class IndicadoresController implements Serializable {
 
     // Monto pendiente de rendicion por proyecto
     private float pendienteRendicionProyecto;
+    
+//    // total desembolsado
+//    private float totalDesembolsado;
 
     public SolicitudFacade getSolicitudFacade() {
         return solicitudFacade;
@@ -168,6 +171,10 @@ public class IndicadoresController implements Serializable {
         return pendienteRendicionProyecto;
     }
 
+//    public float getTotalDesembolsado() {
+//        return totalDesembolsado;
+//    }
+
     /**
      * Creates a new instance of IndicadoresController
      */
@@ -193,6 +200,8 @@ public class IndicadoresController implements Serializable {
         generarChartEjecutadoPorRubro();
         
         generarChartEjecutadoPorFecha();
+        
+        //calcularTotalDesembolsado();
 
     }
 
@@ -516,6 +525,28 @@ public class IndicadoresController implements Serializable {
         }
 
     }
+    
+//    public void calcularTotalDesembolsado() {
+//        
+//        // Obtenemos los controladores necesarios
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+//        
+//        totalDesembolsado = 0f;
+//        
+//        // Llenamos la lista de desembolsos
+//        List<Desembolso> colDesembolsos;
+//        
+//        try{
+//            colDesembolsos = this.getDesembolsoFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId());
+//        } catch(Exception e){
+//            colDesembolsos = new ArrayList<Desembolso>();
+//        }
+//        
+//        for(Desembolso d : colDesembolsos){
+//            totalDesembolsado = totalDesembolsado + d.getMonto().floatValue();
+//        }
+//    }
 
     public static class ItemRubro {
 
