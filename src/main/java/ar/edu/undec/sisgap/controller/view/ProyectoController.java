@@ -106,6 +106,8 @@ public class ProyectoController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.PresupuestoTareaFacade ejbpresupuestotarea;
     @EJB
+    private ar.edu.undec.sisgap.controller.PresupuestoRubroFacade ejbpresupuestorubro;
+    @EJB
     private ar.edu.undec.sisgap.controller.ProyectoAgenteFacade ejbproyectoagente;
     @EJB
     PresupuestoRubroFacade prfacade;
@@ -149,6 +151,10 @@ public class ProyectoController implements Serializable {
 
     private EstadoproyectoFacade getFacadeEstadoProyecto() {
         return ejbestadoproyecto;
+    }
+    
+    private PresupuestoRubroFacade getFacadePresupuestoRubro() {
+        return ejbpresupuestorubro;
     }
     
     public PaginationHelper getPagination() {
@@ -1840,25 +1846,12 @@ public class ProyectoController implements Serializable {
         // Fuente de datos del reporte
         JRBeanArrayDataSource beanArrayDataSource = new JRBeanArrayDataSource(new Proyecto[]{this.getSelected()});
 
-        // Fuente de datos del subreporte (detalle del presupuesto)
-        /*Presupuesto presupuesto = this.ejbFacadep.findporProyecto(this.getSelected().getId());
-        JRDataSource detallePresupuesto = new JRBeanCollectionDataSource(presupuesto.getPresupuestoRubroList());
-
-        // Fuente de datos para el equipo de trabajo
-        List<Agente> listaAgentes = new ArrayList<Agente>();
-        List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
-
-        for (ProyectoAgente pa : listaProyectoAgente) {
-
-            listaAgentes.add(pa.getAgente());
-        }
-
-        JRDataSource equipoTrabajo = new JRBeanCollectionDataSource(listaAgentes);*/
-
+        float monto=obtenerPresupuestoTotalCurrent().floatValue();
+        
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("idProyecto", this.getSelected().getId());
-       // parametros.put("presupuesto", detallePresupuesto);
+        parametros.put("monto", monto);
        // parametros.put("equipoTrabajo", equipoTrabajo);
 
         // Llenamos el reporte

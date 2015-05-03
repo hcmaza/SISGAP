@@ -2,11 +2,11 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PruebaIReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="780753e8-2b7f-4c9e-bae6-18ef94f4a212">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="459"/>
-	<field name="nombre" class="java.lang.String"/>
-	<field name="fecha" class="java.sql.Timestamp"/>
-	<field name="resumen" class="java.lang.String"/>
-	<field name="cudap" class="java.lang.String"/>
+	<property name="ireport.y" value="27"/>
+	<parameter name="monto" class="java.lang.Float"/>
+	<field name="fecharesolucion" class="java.util.Date"/>
+	<field name="resolucion" class="java.lang.String"/>
+	<field name="expediente" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -24,33 +24,37 @@
 	</title>
 	<detail>
 		<band height="675">
-			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="229" width="555" height="54" uuid="82abb3bb-4982-480e-8a8d-c9dbfcc29ab8"/>
-				<textElement textAlignment="Center">
-					<font size="36" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			<staticText>
+				<reportElement x="41" y="67" width="124" height="20" uuid="f9b0611e-35a9-4bfa-9b9e-06903b52258e"/>
+				<text><![CDATA[Fecha de Resolución:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="178" y="67" width="43" height="20" uuid="6113cb96-1bd9-454e-a92f-2e3e12f42e66"/>
+				<textFieldExpression><![CDATA[$F{fecharesolucion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="35" width="124" height="20" uuid="d2b8e1b4-6678-43e3-82b4-a0bc948769fa"/>
+				<text><![CDATA[Resolución Rectoral Nro: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="178" y="35" width="147" height="20" uuid="bd360981-d003-42bf-bc4e-5a51241d7bd1"/>
+				<textFieldExpression><![CDATA[$F{resolucion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="100" width="124" height="20" uuid="e964d19c-37b3-461e-87b0-636a93319710"/>
+				<text><![CDATA[Expediente Nro:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="178" y="100" width="147" height="20" uuid="1ceee2ac-5fe6-4a14-b83d-6951e0573d1f"/>
+				<textFieldExpression><![CDATA[$F{expediente}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="355" width="555" height="48" uuid="03cddb72-40b5-424c-a2c5-6a221ad8537b"/>
-				<textElement textAlignment="Center">
-					<font size="36" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cudap}]]></textFieldExpression>
+				<reportElement x="178" y="134" width="100" height="20" uuid="2ce276bf-ed08-4392-83b6-70bed98dec7f"/>
+				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="181" width="555" height="41" uuid="66981939-4b92-4152-ab86-28195c940c56"/>
-				<textElement textAlignment="Center">
-					<font fontName="Calibri" size="28"/>
-				</textElement>
-				<text><![CDATA[Proyecto]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="308" width="555" height="41" uuid="0ccc7782-9a10-4690-ae17-2c4b29c6950c"/>
-				<textElement textAlignment="Center">
-					<font fontName="Calibri" size="28"/>
-				</textElement>
-				<text><![CDATA[Resolución]]></text>
+				<reportElement x="41" y="134" width="124" height="20" uuid="7bbccf8f-75dd-4948-bb02-6c0772509bc7"/>
+				<text><![CDATA[Monto Adjudicado $:]]></text>
 			</staticText>
 		</band>
 	</detail>
