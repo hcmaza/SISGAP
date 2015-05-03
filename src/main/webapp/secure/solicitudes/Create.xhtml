@@ -259,7 +259,7 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab id="treintegro" title="Reintegro" disabled="#{proyectoController.selected.cantidadreintegros > 5}" titletip="Se permiten hasta 5 reintegros, si se alcanzo esta cantidad, la solapa aparecerá deshabilitada" >
+                            <p:tab id="treintegro" title="Reintegro" disabled="#{proyectoController.selected.cantidadreintegros > 5 || rendicionController.listaSolicitudes.size() > 0}" titletip="Deshabilitado si se alcanzaron 5 reintegros o si existen solicitudes por rendir." >
 
                                 <p:dataTable id="tabladisponiblesreintegro" widgetVar="tabladisponiblesreintegro" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
