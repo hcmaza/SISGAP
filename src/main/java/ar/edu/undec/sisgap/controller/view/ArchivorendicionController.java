@@ -30,6 +30,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -410,6 +411,31 @@ public class ArchivorendicionController implements Serializable {
 
         return r;
     }
+    
+    public float sumarMontoAprobadoComprobantes() {
+        float r = 0;
+
+        if (listaArchivos != null & listaArchivos.size() > 0) {
+            for (Archivorendicion a : listaArchivos) {
+                r += a.getMontoaprobado().floatValue();
+            }
+        }
+
+        return r;
+    }
+    
+    public void llenarListaArchivosPorSolicitudSeleccionada() {
+        // Obtenemos el controlador necesario
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        
+        
+        
+        if(rendicioncontroller.getSolicitudSeleccionada() != null){
+            System.out.println("rendicioncontroller.getSolicitudSeleccionada NULLLLLLL");
+            listaArchivos.addAll(getFacade().buscarPorRendicion(rendicioncontroller.getSolicitudSeleccionada().getRendicionid().getId()));
+        }
+    }
 
     public void llenarListaArchivosPorListaSolicitudes(List<Solicitud> listaSolicitudes) {
         // si la lista no es nula o vacia
@@ -419,6 +445,18 @@ public class ArchivorendicionController implements Serializable {
                     listaArchivos.addAll(getFacade().buscarPorRendicion(s.getRendicionid().getId()));
                 }
             }
+        }
+    }
+    
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+        //String nombreColumna = event.getColumn().getHeaderText();
+//        String nombreColumna = event.getColumn().getFacet("header").toString();
+        
+        if(newValue != null && !newValue.equals(oldValue)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "La celda cambió de valor.", "Valor Anterior: " + oldValue + ", Nuevo Valor:" + newValue);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 }

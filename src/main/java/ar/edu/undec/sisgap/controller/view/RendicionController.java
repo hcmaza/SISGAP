@@ -576,14 +576,14 @@ public class RendicionController implements Serializable {
         solicitudcontroller.armarSolicitudesDesembolsosYRendicion();
 
         // Vaciamos la lista de archivos de rendicion
-        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+        //archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
         
         // Llenamos la lista de solicitudes con "Rendicion a Evaluar", es decir que ya pueden ser evaluadas por el administrador.
         listaSolicitudes = getFacades().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId());
         
         // Llenamos la lista de comprobantes de rendicion
         //archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
-        archivorendicioncontroller.llenarListaArchivosPorListaSolicitudes(listaSolicitudes);
+        //archivorendicioncontroller.llenarListaArchivosPorListaSolicitudes(listaSolicitudes);
 
         // Vaciamos la lista de solicitudes seleccionadas [Seleccion de Multiples Solicitudes]
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
@@ -594,6 +594,43 @@ public class RendicionController implements Serializable {
     }
 
     public String createEvaluacion() {
+        
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+        
+        //verificamos que la suma de los montos aprobados de los comprobantes sea igual a la rendicion
+        float totalMontoAprobadoComprobantes = archivorendicioncontroller.sumarMontoAprobadoComprobantes();
+        float totalMontoComprobantes = archivorendicioncontroller.sumarComprobantes();
+        
+        Estadosolicitud estadoRendida = null;
+        
+        try{
+            // EstadoSolicitud "Rendida" id=5
+            estadoRendida = this.ejbFacadees.find(5);
+        } catch(Exception e){
+            System.out.println("ERROR: Recuperacion de EstadoSolicitud = estadoRendida = this.ejbFacadees.find(5);");
+            e.printStackTrace();
+        }
+        
+        // si los montos de los comprobantes son iguales, se pone la Solicitud como "Rendida"
+        if(totalMontoComprobantes == totalMontoAprobadoComprobantes){
+            
+            // damos el estado "Rendida" a la solicitud
+            solicitudSeleccionada.setEstadosolicitudid(estadoRendida);
+            
+            // guardamos el cambio de estado en la solicitud
+            this.getFacades().edit(solicitudSeleccionada);
+            
+            // guardamos los cambios en los comprobantes de rendicion
+            for(Archivorendicion ar : archivorendicioncontroller.getListaArchivos()){
+                this.getFacadear().edit(ar);
+            }
+        }
+        
         
         return "asd";
     }
