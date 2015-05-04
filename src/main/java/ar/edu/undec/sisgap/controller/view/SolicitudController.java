@@ -201,7 +201,7 @@ public class SolicitudController implements Serializable {
         desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
         
         // seteamos los controladores de rendicion y archivos de rendicion
-        rendicioncontroller.prepararRendicion();
+//        rendicioncontroller.prepararRendicion();
 
         // Borramos la lista de items disponibles
         itemsDisponibles = new ArrayList<Solicitud>();
@@ -248,8 +248,6 @@ public class SolicitudController implements Serializable {
                 itemsDisponibles.add(solicitud);
             }
         }
-        
-
         
         //h:coloco la copia de itemsolicitados tal cual es al principio
         this.itemsDisponiblesNuevo = this.itemsDisponibles;

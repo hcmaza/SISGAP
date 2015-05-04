@@ -71,6 +71,14 @@ public class Archivorendicion implements Serializable {
     @Column(name = "fechafactura")
     private Date fechafactura;
     
+    @Column(name = "montoaprobado")
+    private BigDecimal montoaprobado;
+    
+    @Column(name = "estado")
+    private Integer estado;
+    
+    @Column(name = "obsevaluacion")
+    private String obsevaluacion;
 
     public Archivorendicion() {
     }
@@ -149,6 +157,30 @@ public class Archivorendicion implements Serializable {
 
     public void setFechafactura(Date fechafactura) {
         this.fechafactura = fechafactura;
+    }
+
+    public BigDecimal getMontoaprobado() {
+        return montoaprobado;
+    }
+
+    public void setMontoaprobado(BigDecimal montoaprobado) {
+        this.montoaprobado = montoaprobado;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
+    public String getObsevaluacion() {
+        return obsevaluacion;
+    }
+
+    public void setObsevaluacion(String obsevaluacion) {
+        this.obsevaluacion = obsevaluacion;
     }
     
     @Override

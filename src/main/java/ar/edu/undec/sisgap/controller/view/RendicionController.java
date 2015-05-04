@@ -252,18 +252,18 @@ public class RendicionController implements Serializable {
                     getFacade().createWithPersist(current);
 
                     // Estado de la solicitud que se rinde
-                    Estadosolicitud estadoRendida;
+                    Estadosolicitud estadoRendicionAEvaluar;
                     // Estado de la solicitud que se crea por diferencia
                     Estadosolicitud estadoAprobada;
 
                     // obtenemos los estados
                     try {
-                        // Estado de la Solicitud = "Rendida"
-                        estadoRendida = getFacadees().find(5);
+                        // Estado de la Solicitud = "Rendicion a Evaluar"
+                        estadoRendicionAEvaluar = getFacadees().find(6);
                         // Estado de la Solicitud = "Aprobada"
                         estadoAprobada = getFacadees().find(2);
                     } catch (Exception e) {
-                        estadoRendida = null;
+                        estadoRendicionAEvaluar = null;
                         estadoAprobada = null;
                         System.out.println("EstadosolicitudFacade: problema de recuperacion");
                         e.printStackTrace();
@@ -271,7 +271,7 @@ public class RendicionController implements Serializable {
 
                     // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
                     solicitudSeleccionada.setRendicionid(current);
-                    solicitudSeleccionada.setEstadosolicitudid(estadoRendida);
+                    solicitudSeleccionada.setEstadosolicitudid(estadoRendicionAEvaluar);
                     solicitudSeleccionada.setFechaejecucion(new Date());
                     getFacades().edit(solicitudSeleccionada);
 
@@ -304,7 +304,7 @@ public class RendicionController implements Serializable {
                         getFacades().createWithPersist(solicitudReintegroPorDiferencia);
 
                     }
-
+                    
                     // Para cada archivo de rendicion subido
                     for (Archivorendicion ar : arcontroller.getListaArchivos()) {
                         // le damos la referencia a la rendicion actual y persistimos el archivo
@@ -555,4 +555,47 @@ public class RendicionController implements Serializable {
 
         return resultado;
     }
+    
+    public String prepareEvaluacion() {
+
+        prepararEvaluacion();
+
+        return "CreateEvaluacionRendicion";
+    }
+    
+    public void prepararEvaluacion() {
+
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+        
+        // llamamos al metodo que arma el presupuesto, solicitudes y desembolsos del proyecto
+        solicitudcontroller.armarSolicitudesDesembolsosYRendicion();
+
+        // Vaciamos la lista de archivos de rendicion
+        archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+        
+        // Llenamos la lista de solicitudes con "Rendicion a Evaluar", es decir que ya pueden ser evaluadas por el administrador.
+        listaSolicitudes = getFacades().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId());
+        
+        // Llenamos la lista de comprobantes de rendicion
+        //archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+        archivorendicioncontroller.llenarListaArchivosPorListaSolicitudes(listaSolicitudes);
+
+        // Vaciamos la lista de solicitudes seleccionadas [Seleccion de Multiples Solicitudes]
+        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+
+        // Vaciamos la solicitud seleccionada [Seleccion de Solicitud Unica]
+        solicitudSeleccionada = new Solicitud();
+
+    }
+
+    public String createEvaluacion() {
+        
+        return "asd";
+    }
+    
 }

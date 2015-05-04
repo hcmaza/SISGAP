@@ -308,7 +308,7 @@ public class ArchivorendicionController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
                 return;
             } else {
-                
+
                 float diferencia = sumaArchivosRendicion - rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue();
 
                 System.out.println("Diferencia: " + diferencia);
@@ -326,7 +326,7 @@ public class ArchivorendicionController implements Serializable {
                             s.setImporte(new BigDecimal(diferencia));
                             // seteamos la solicitud encontrada como la solicitud para el reintegro
                             rendicioncontroller.setSolicitudReintegroPorDiferencia(s);
-                            
+
                             System.out.println("rendicioncontroller.SolicitudReintegroPorDiferencia: " + rendicioncontroller.getSolicitudReintegroPorDiferencia().getImporte() + " - " + rendicioncontroller.getSolicitudReintegroPorDiferencia().getPresupuestotarea().getDescripcion());
 
                             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Rendicion: existe una diferencia.", "La suma de comprobantes supera la solicitud a rendir dentro de lo permitido y hay dinero disponible para el item. La diferencia es de: " + diferencia + " y se asigna a " + s.getPresupuestotarea().getDescripcion()));
@@ -334,7 +334,7 @@ public class ArchivorendicionController implements Serializable {
                         }
                     }
 
-                // si no hay dinero disponible para la diferencia de rendicion.
+                    // si no hay dinero disponible para la diferencia de rendicion.
                 }
             }
 
@@ -364,7 +364,7 @@ public class ArchivorendicionController implements Serializable {
     }
 
     public void removerArchivoLista() {
-        
+
         // se quita de la lista de solicitados
 //        Iterator i = this.itemsSolicitados.iterator();
 //        while(i.hasNext()){
@@ -372,10 +372,9 @@ public class ArchivorendicionController implements Serializable {
 //                i.remove();
 //            }
 //        }
-        
         listaArchivos.remove(current);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " + current.getNrofactura() + " fue borrado"));
-        
+
     }
 
     public StreamedContent obtenerImagen() throws IOException {
@@ -403,11 +402,23 @@ public class ArchivorendicionController implements Serializable {
     public float sumarComprobantes() {
         float r = 0;
 
-        for (Archivorendicion a : listaArchivos) {
-            r += a.getMontofactura().floatValue();
+        if (listaArchivos != null & listaArchivos.size() > 0) {
+            for (Archivorendicion a : listaArchivos) {
+                r += a.getMontofactura().floatValue();
+            }
         }
 
         return r;
     }
 
+    public void llenarListaArchivosPorListaSolicitudes(List<Solicitud> listaSolicitudes) {
+        // si la lista no es nula o vacia
+        if (listaSolicitudes != null && listaSolicitudes.size() > 0) {
+            for (Solicitud s : listaSolicitudes) {
+                if (s.getRendicionid() != null) {
+                    listaArchivos.addAll(getFacade().buscarPorRendicion(s.getRendicionid().getId()));
+                }
+            }
+        }
+    }
 }
