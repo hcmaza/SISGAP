@@ -212,9 +212,11 @@ public class SolicitudController implements Serializable {
         // Llenamos la lista de solicitudes anteriores
         items = new ListDataModel(getFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId()));
 
-        // Llenamos la lista de solicitudes aprobadas anteriores
+        // Llenamos la lista de solicitudes aprobadas, en ejecucion, evaluacion o rendidas anteriores
         itemsAprobados = getFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
-        
+        itemsAprobados.addAll(getFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        itemsAprobados.addAll(getFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
+        itemsAprobados.addAll(getFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {

@@ -78,7 +78,7 @@ public class IndicadoresController implements Serializable {
 
     // Saldo del proyecto
     private float saldoProyecto = 0.0f;
-
+    
     // Monto ejecutado del proyecto
     private float ejecutadoProyecto = 0.0f;
 
@@ -202,6 +202,8 @@ public class IndicadoresController implements Serializable {
         generarChartEjecutadoPorFecha();
         
         //calcularTotalDesembolsado();
+        
+        calcularSaldoProyecto();
 
     }
 
@@ -222,6 +224,9 @@ public class IndicadoresController implements Serializable {
 
         // Llenamos la lista de solicitudes anteriores
         listaSolicitudes = getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        listaSolicitudes.addAll(getSolicitudFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        listaSolicitudes.addAll(getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
+        listaSolicitudes.addAll(getSolicitudFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Lista de solicitudes disponibles
         List<Solicitud> listaSolicitudesDisponibles = new ArrayList<Solicitud>();
@@ -239,16 +244,17 @@ public class IndicadoresController implements Serializable {
             solicitud.setImporte(p.getTotal());
             solicitud.setDisponible(solicitud.getImporte());
 
-            // buscamos si el presupuestotarea ya fue solicitado anteriormente, de ser asi, restamos el importe o lo removemos
+            // buscamos si el presupuestotarea ya fue solicitado anteriormente y aprobado o ejecutado, de ser asi, restamos el importe o lo removemos
             Iterator i = listaSolicitudes.iterator();
 
             while (i.hasNext()) {
-                Solicitud solicitudAprobada = (Solicitud) i.next();
+                Solicitud solicitudAprobadaOEnEjecucion = (Solicitud) i.next();
 
                 // si encontramos el presupuestotarea en una solicitud anterior y siendo una solicitud aprobada
-                if (p.getId() == solicitudAprobada.getPresupuestotarea().getId()) {
+                if (p.getId() == solicitudAprobadaOEnEjecucion.getPresupuestotarea().getId()) {
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
-                    solicitud.setImporte(p.getTotal().subtract(solicitudAprobada.getImporte()));
+                    //solicitud.setImporte(p.getTotal().subtract(solicitudAprobadaOEnEjecucion.getImporte()));
+                    solicitud.setImporte(solicitud.getImporte().subtract(solicitudAprobadaOEnEjecucion.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
                 }
             }
@@ -260,7 +266,7 @@ public class IndicadoresController implements Serializable {
                 // Acumulamos en la lista de saldos
                 saldos.put(solicitud.getPresupuestotarea().getRubro().getAbreviado(), saldos.get(solicitud.getPresupuestotarea().getRubro().getAbreviado()) + solicitud.getDisponible().floatValue());
 
-                saldoProyecto += solicitud.getDisponible().floatValue();
+                
 
             }
         }
@@ -283,8 +289,10 @@ public class IndicadoresController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
-        // Llenamos la lista de solicitudes (Aprobadas y Rendidas)
+        // Llenamos la lista de solicitudes (Aprobadas, en ejecucion, evaluacion y Rendidas)
         listaSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
         listaSolicitudes.addAll(this.getSolicitudFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Ejecutado por Rubro
@@ -354,6 +362,7 @@ public class IndicadoresController implements Serializable {
         // Llenamos la lista de solicitudes (Aprobadas)
         colSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
         colSolicitudes.addAll(this.getSolicitudFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        colSolicitudes.addAll(this.getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
         colSolicitudes.addAll(this.getSolicitudFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
         
         // Llenamos la lista de desembolsos
@@ -499,8 +508,15 @@ public class IndicadoresController implements Serializable {
         this.pendienteRendicionProyecto = 12588.12f;
     }
 
-    public void calcularTotalEjecutado() {
-        this.ejecutadoProyecto = 56451.58f;
+    private void calcularSaldoProyecto() {
+        
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        
+        float totalDesembolsado = desembolsocontroller.sumarDesembolsos();
+        
+        saldoProyecto = totalDesembolsado - ejecutadoProyecto;
     }
 
     public static class SaldoRubro {
