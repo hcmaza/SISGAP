@@ -126,6 +126,15 @@ public class SolicitudactaController implements Serializable {
         //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+
+        // Seteamos el presupuesto
+        presupuestocontroller.findProyecto(proyectocontroller.getSelected().getId());
+        presupuestocontroller.sumarGastosView();
+        
+        // Seteamos las rendiciones para los indicadores
+        rendicioncontroller.prepararRendicion();
 
         // Llenamos la lista de solicitudes que no fueron aprobadas
         listaSolicitudes = getFacades().obtenerIniciadasPorProyecto(proyectocontroller.getSelected().getId());

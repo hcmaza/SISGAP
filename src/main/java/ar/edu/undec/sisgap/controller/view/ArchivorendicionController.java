@@ -452,10 +452,10 @@ public class ArchivorendicionController implements Serializable {
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
         //String nombreColumna = event.getColumn().getHeaderText();
-//        String nombreColumna = event.getColumn().getFacet("header").toString();
+        //String nombreColumna = event.getColumn().getFacet("header").toString();
         
         if(newValue != null && !newValue.equals(oldValue)) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "La celda cambió de valor.", "Valor Anterior: " + oldValue + ", Nuevo Valor:" + newValue);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cambio.", "Valor Anterior: " + oldValue + ", Nuevo Valor:" + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }

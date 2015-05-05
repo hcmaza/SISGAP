@@ -11,8 +11,9 @@
             <h:outputText value="#{bundle.CreateSolicitudactaTitle}"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
-            <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            <!--<f:event type="preRenderView" listener="{presupuestoController.findProyecto(proyectoController.selected.id)}" />-->
+            <!--<f:event type="preRenderView" listener="{presupuestoController.sumarGastosView}" />-->
+            <f:event type="preRenderView" listener="#{indicadoresController.obtenerCalculosPorRubro()}" />
             <!--<f:event type="preRenderView" listener="{presupuestoTareaController.establecerListaPresupuestoTareaPorProyecto(proyectoController.selected.id)}" />-->
             <!--<f:event type="preRenderView" listener="{etapaController.armarTreeEtapasYTareasPorProyecto}" />-->
 
@@ -23,224 +24,87 @@
             <h:form id="formprincipal" enctype="multipart/form-data" >
                 <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" autoUpdate="true" showDetail="true" sticky="true" />
 
-                <p:panel id="pprincipal" header="Proyecto #{proyectoController.selected.nombre}: Aprobar/Rechazar Solicitudes]" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
+                <p:panel id="pprincipal" header="Proyecto #{proyectoController.selected.nombre}: Aprobar/Rechazar Solicitudes" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
-                    <p:fieldset legend="Información General" style="display: inline-block; width: 46%; float: left; margin-bottom: 5px;">
-                        <p:panelGrid columns="2" columnClasses="right,left"  style="width: 100%;" styleClass="sinBordes" >
-                            <p:outputLabel value="Nro" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.id}" />
-
-                            <p:outputLabel value="Título" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.nombre}" />
-
-                            <p:outputLabel value="Tipo" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.tipoproyectoid.tipo}" />
-
-                            <p:outputLabel value="Estado" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.estadoproyectoid.estado}" />
-
-                            <p:outputLabel value="Localización" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.localizacion}" />
-
-                            <p:outputLabel value="Duración" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.duracion} Meses" />
-
-                            <p:outputLabel value="Alta" style="font-weight: bold;" />
-                            <p:outputLabel value="#{proyectoController.selected.fecha}" title="#{bundle.ViewProyectoTitle_fecha}">
-                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-                            </p:outputLabel>
-
-
-                        </p:panelGrid>
-                    </p:fieldset>
-
-                    <p:accordionPanel style="display: inline-block; width: 50%; float: right; margin-bottom: 5px; margin-top: 15px;" activeIndex="null">
-                        <p:tab title="Comitente">
-                            <p:panelGrid columnClasses="right,left" style="width: 100%;" columns="2" styleClass="sinBordes" >
-                                <p:outputLabel value="Razón Social" style="font-weight: bold;"/>
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.razonsocial}" />
-
-                                <p:outputLabel value="CUIT" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.cuit}" />
-
-                                <p:outputLabel value="Tipo de Comitente" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.tipocomitenteid.tipocomitente}" />
-
-                                <p:outputLabel value="Sector" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.sectorid.sector}" />
-
-                                <p:outputLabel value="Contacto" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.contacto}" />
-
-                                <p:outputLabel value="Cargo del Contacto" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.cargocontacto}" />
-
-                                <p:outputLabel value="Teléfono" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.telefono}" />
-
-                                <p:outputLabel value="Email" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.comitenteid.email}" />
-                            </p:panelGrid>
-                        </p:tab>
-
-                        <p:tab title="Convocatoria">
-                            <p:panelGrid style="width: 100%;" columnClasses="right,left" columns="2" styleClass="sinBordes">
-                                <p:outputLabel value="Convocatoria" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.convocatoriaid.convocatoria}"/>
-
-                                <p:outputLabel value="Organismo" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.convocatoriaid.organismo}"/>
-
-                                <p:outputLabel value="Monto de Financiamiento" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.convocatoriaid.montofinanciamiento.floatValue()}"/>
-
-                                <p:outputLabel value="Estado" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.convocatoriaid.estado}"/>
-                            </p:panelGrid>
-                        </p:tab>
-                        <p:tab title="Documentación">
-                            <p:panelGrid style="width: 100%;" styleClass="sinBordes">
-                                <p:row>
-                                    <p:column>
-                                        <p:dataTable id="tArchivosProyecto" var="archivo" value="#{archivoproyectoController.collectorArchivoProyecto}" emptyMessage="Este proyecto no tiene archivos subidos" >  
-
-                                            <p:column headerText="Archivos">  
-                                                <p:commandLink id="downloadLink" value="#{archivo.nombre}" ajax="false" process="@this"  >
-                                                    <p:fileDownload id="f1" value="#{archivo.file}"  />
-                                                </p:commandLink>
-                                            </p:column>
-                                        </p:dataTable>
-                                    </p:column>
-                                </p:row>
-                            </p:panelGrid>
-                        </p:tab>
-                        <p:tab title="Financiamiento">
-                            <p:panelGrid columns="2" columnClasses="right,left" styleClass="sinBordes">
-                                <p:outputLabel value="Beneficiario" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.beneficiarioid.beneficiario}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
-
-                                <p:outputLabel value="Tipo de Financiamiento" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.tipofinanciamientoid.tipofinanciamiento}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
-
-                                <p:outputLabel value="Fuente de Financiamiento" style="font-weight: bold;" />
-                                <p:outputLabel value="#{proyectoController.selected.fuentefinanciamientoid.fuentefinanciamiento}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
-                            </p:panelGrid>
-                        </p:tab>
-                    </p:accordionPanel>
-
-                    <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
-                        <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item">
-                            <f:attribute name="”collectionType”" value="”java.util.ArrayList”/">
-                            </f:attribute>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Rubro"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.rubro.rubro}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Gastocomitente"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.gastocomitente}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Gastoorganismo"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.gastoorganismo}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <p:outputLabel value="Gastouniversidad"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item.gastouniversidad}"/>
-                            </p:column>
-                        </p:dataTable>
-
-                        <h:panelGrid columns="2">
-                            <p:panelGrid style="font-weight:bold;" id="paportes" columns="2">
-                                <f:facet name="header">  
-                                    Total de Aportes  
-                                </f:facet>
-                                <p:outputLabel value="Aportes Organismo"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastoorganismo}"/>
-                                <p:outputLabel value="Aportes Comitente"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastocomitente}"/>
-                                <p:outputLabel value="Aportes Universidad"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastouniversidad}"/>
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoController.sumatotal}  
-                                </f:facet>
-                            </p:panelGrid>
-
-                            <p:chart type="pie" id="caportes" model="#{presupuestoController.pieModelAportes}"   
-                                     style="width:100%;height:300px"  /> 
-
-                            <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="data" >
-                                <f:facet name="header">  
-                                    Total de Rubros  
-                                </f:facet>
-                                <p:column >
-                                    <p:outputLabel style="font-weight:bold;" value="#{data.rubro.rubro}"/>
+                    <p:panel header="Indicadores" style="margin: 5px auto 10px;">
+                        <p:panelGrid style="width: 100%;" styleClass="sinBordes">
+                            <p:row >
+                                <p:column style="width: 25%;" >
+                                    <p:fieldset legend="Total Ejecutado" style="height: 110px !important; " styleClass="fieldSetCentrado110" >
+                                        <div class="centrarEnFieldSet" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="$#{indicadoresController.ejecutadoProyecto}" style="color: #94D352; font-weight: bold; font-size: 21px !important; " />
+                                            </p:panelGrid>
+                                        </div>
+                                    </p:fieldset>
                                 </p:column>
-                                <p:column>
-                                    <p:outputLabel style="font-weight:bold;" value="$#{data.total}"/>
-                                </p:column>    
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoController.sumatotal}  
-                                </f:facet>
-                            </p:dataTable>
-                            <p:chart type="pie" id="crubros" model="#{presupuestoController.pieModelRubro}"   
-                                     style="width:100%;height:300px"  /> 
-
-                        </h:panelGrid>
-                    </p:panel>
-
-                    <p:panel header="Desembolsos" >
-                        <p:dataTable
-                            id="tbl" 
-                            value="#{desembolsoController.items}" 
-                            var="item" 
-                            widgetVar="tblW"
-                            rowKey="#{item.id}" 
-                            emptyMessage="No se encontraron resultados para el criterio de busqueda"
-                            paginator="true" rows="10" paginatorPosition="bottom"
-                            draggableColumns="true"
-                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                            rowsPerPageTemplate="10,15,30">
-
-                            <p:column id="columnaNro" sortBy="id" width="10px" style="width: 15px;">
-                                <f:facet name="header">
-                                    <h:outputText value="Nº" />
-                                </f:facet>
-                                <h:outputText value="#{item.numerodesembolso}" />
-                            </p:column>
-                            <p:column id="columnaFecha" sortBy="fechadesembolso" width="10px">
-                                <f:facet name="header">
-                                    <h:outputText value="Fecha de Desembolso" />
-                                </f:facet>
-                                <h:outputText value="#{item.fechadesembolso}"> 
-                                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                                </h:outputText>
-                            </p:column>
-                            <p:column id="columnaMonto" filterBy="monto" filterMatchMode="contains" sortBy="monto" style="text-align: right;">
-                                <f:facet name="header">
-                                    <h:outputText value="Monto"/>
-                                </f:facet>
-                                <h:outputText value="#{item.monto}"/>
-                            </p:column>
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText value="&nbsp;"/>
-                                </f:facet>
-                                <p:commandButton action="#{desembolsoController.prepareView}" title="Ver Detalle" icon="ui-icon-search" ajax="false" />
-                                <h:outputText value=" "/>
-                            </p:column>
-                            <f:facet name="footer">
-                                El total de desembolsos es $ #{desembolsoController.sumarDesembolsos()}
-                            </f:facet>
-                        </p:dataTable>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Ejecución" style="height: 110px !important; ">
+                                        <p:chart type="metergauge" model="#{indicadoresController.indicadorEjecutado}" style="height: 100px;"  />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Ejecutado por Rubros" style="height: 110px !important; ">
+                                        <p:chart type="pie" model="#{indicadoresController.chartEjecutadoPorRubro}" style="height:100px" styleClass="sinBordes" />
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Evolución de Ejecución" style="height: 110px !important; ">
+                                        <p:chart type="line" model="#{indicadoresController.chartEjecutadoPorFecha}" style="height:90px;" styleClass="sinBordes"/>
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="width: 25%;">
+                                    <p:fieldset legend="Saldo" style="height: 70px !important; " styleClass="fieldSetCentrado70" >
+                                        <div class="centrarEnFieldSet" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="$ #{indicadoresController.saldoProyecto}" style="color: #FF964A; font-weight: bold; font-size: 21px !important;  " />
+                                            </p:panelGrid>
+                                        </div>
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column colspan="3" style="width: 75%;">
+                                    <!--<p:fieldset legend="Saldo Rubros" style="height: 70px !important; ">-->
+                                    <p:dataTable  value="#{indicadoresController.valoresListaSaldosRubro}" var="saldo" rows="1" style="font-size: 12px !important; margin-top: 15px; text-align: center;">
+                                        <f:facet name="header">
+                                            Saldo por Rubros
+                                        </f:facet>
+                                        <p:columns value="#{indicadoresController.columnasListaSaldosRubro}" columnIndexVar="i" var="columna" headerText="#{columna}">
+                                            <p:outputLabel value="$ #{indicadoresController.valoresListaSaldosRubro.get(i)}" style="font-size: 11px !important; font-weight: bold; color: #555555;"  />
+                                        </p:columns>
+                                    </p:dataTable>
+                                    <!--</p:fieldset>-->
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2"  style="width: 50%;">
+                                    <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30"  >
+                                        <f:facet name="legend" >
+                                            Total Desembolsado
+                                        </f:facet>
+                                        <div class="centrarEnFieldSet30" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="$ #{desembolsoController.sumarDesembolsos()}" style="color: #777777; font-weight: bold; font-size: 18px !important;  " />
+                                            </p:panelGrid>
+                                        </div>
+                                    </p:fieldset>
+                                </p:column>
+                                <p:column colspan="2"  style="width: 50%;">
+                                    <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30" >
+                                        <f:facet name="legend" >
+                                            Solicitudes a Rendir
+                                        </f:facet>
+                                        <div class="centrarEnFieldSet30" >
+                                            <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                <p:outputLabel value="#{rendicionController.listaSolicitudes.size()} Solicitud/es por $#{rendicionController.sumarSolicitudesARendir()}" style="color: #00C7F6; font-weight: bold; font-size: 15px !important; " rendered="#{rendicionController.listaSolicitudes.size() > 0}"  />
+                                                <p:outputLabel value="Sin Solicitudes por Rendir" style="color: #00C7F6; font-weight: bold; font-size: 16px !important; " rendered="#{rendicionController.listaSolicitudes.size() eq 0}" />
+                                            </p:panelGrid>
+                                        </div>
+                                    </p:fieldset>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
                     </p:panel>
 
                     <p:panel header="Acta de Solicitudes" >
