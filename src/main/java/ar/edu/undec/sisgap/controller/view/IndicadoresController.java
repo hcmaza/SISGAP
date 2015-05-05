@@ -88,6 +88,8 @@ public class IndicadoresController implements Serializable {
     // Monto pendiente de rendicion por proyecto
     private float pendienteRendicionProyecto;
     
+    float porcentajeEjecutado = 0.0f;
+    
 //    // total desembolsado
 //    private float totalDesembolsado;
 
@@ -170,6 +172,19 @@ public class IndicadoresController implements Serializable {
     public float getPendienteRendicionProyecto() {
         return pendienteRendicionProyecto;
     }
+
+    public float getPorcentajeEjecutado() {
+        return porcentajeEjecutado;
+    }
+
+    public void setPorcentajeEjecutado(float porcentajeEjecutado) {
+        this.porcentajeEjecutado = porcentajeEjecutado;
+    }
+    
+    public String getPorcentajeEjecutadoString(){
+        return String.format("%.02f", porcentajeEjecutado);
+    }
+    
 
 //    public float getTotalDesembolsado() {
 //        return totalDesembolsado;
@@ -469,7 +484,7 @@ public class IndicadoresController implements Serializable {
             }
         };
 
-        float porcentajeEjecutado = 0.0f;
+        
         porcentajeEjecutado = (ejecutadoProyecto / totalPresupuestoProyecto) * 100;
         
         System.out.println("INDICADORES: porcentajeEjecutado = " + porcentajeEjecutado);
