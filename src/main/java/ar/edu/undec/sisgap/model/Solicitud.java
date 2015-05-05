@@ -92,6 +92,9 @@ public class Solicitud implements Serializable {
     
     @Column(name = "archivonombre")
     private String archivonombre;
+    
+    @Column(name = "obsevaluacion")
+    private String obsevaluacion;
 
     public Solicitud() {
     }
@@ -225,6 +228,15 @@ public class Solicitud implements Serializable {
     public void setArchivonombre(String archivonombre) {
         this.archivonombre = archivonombre;
     }
+
+    public String getObsevaluacion() {
+        return obsevaluacion;
+    }
+
+    public void setObsevaluacion(String obsevaluacion) {
+        this.obsevaluacion = obsevaluacion;
+    }
+
         
     @Override
     public int hashCode() {
