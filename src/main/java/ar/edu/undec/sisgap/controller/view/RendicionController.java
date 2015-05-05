@@ -181,15 +181,31 @@ public class RendicionController implements Serializable {
 
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
-        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
 
         // Vaciamos la lista de archivos de rendicion
         archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
 
-        // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
+        boolean admin = false;
+        admin = context.getExternalContext().isUserInRole("Administrador");
+        
+        System.out.println("USUARIO admin? " + admin);
+        
+        // dependiendo del usuario llenamos la lista de solicitudes a rendir
+        // si es un "DOCENTE" las solicitudes a rendir, seran las que tienen Estado = APROBADA
+        // si es un "ADMINISTRADOR" las solicitudes a rendir, seran las que tienen Estado = APROBADA y EJECUCION
         listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        
+        if(admin){
+            // preparar solicitudes
+            solicitudcontroller.armarSolicitudesDesembolsosYRendicion();
+            
+            listaSolicitudes.addAll(getFacades().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        } 
+        
+        System.out.println("TAMAÑO listaSolicitudes: " + listaSolicitudes.size());
 
         // Vaciamos la lista de solicitudes seleccionadas [Seleccion de Multiples Solicitudes]
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
@@ -205,6 +221,8 @@ public class RendicionController implements Serializable {
 
         return "CreateRendicion";
     }
+    
+    
 
     public String create() {
         try {
