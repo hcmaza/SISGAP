@@ -298,8 +298,8 @@ public class SolicitudController implements Serializable {
                             break;
                         // Reintegro
                         case 4:
-                            // Se le da estado "Aprobada"
-                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            // Se le da estado "Rendicion a Evaluar"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(6));
                             s.setFechaaprobacion(s.getFechasolicitud());
                             
                             // sumar 1 al contador de reintegros del proyecto
