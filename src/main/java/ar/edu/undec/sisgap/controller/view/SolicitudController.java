@@ -286,14 +286,14 @@ public class SolicitudController implements Serializable {
                             break;
                         // Adquisición
                         case 2:
-                            // Se le da estado "Aprobada"
-                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            // Se le da estado "Ejecución"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(4));
                             s.setFechaaprobacion(s.getFechasolicitud());
                             break;
                         // Certificacion
                         case 3:
-                            // Se le da estado "Aprobada"
-                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            // Se le da estado "Ejecucion"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(4));
                             s.setFechaaprobacion(s.getFechasolicitud());
                             break;
                         // Reintegro
