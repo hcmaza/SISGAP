@@ -109,7 +109,7 @@
 
                         <p:tabView id="tabsolicitudes" dynamic="true" style="margin-bottom: 10px;" >
 
-                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:op, :formprincipal:botonsolicitud, :formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro" immediate="true" />
+                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:op, :formitem, :formprincipal:botonsolicitud, :formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro" immediate="true" />
 
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
@@ -259,7 +259,7 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab id="treintegro" title="Reintegro" disabled="#{proyectoController.selected.cantidadreintegros > 5 || rendicionController.listaSolicitudes.size() > 0}" titletip="Deshabilitado si se alcanzaron 5 reintegros o si existen solicitudes por rendir." >
+                            <p:tab id="treintegro" title="Reintegro" disabled="#{proyectoController.selected.cantidadreintegros > 5 || rendicionController.listaSolicitudes.size() > 0}" titletip="Deshabilitado si se alcanzaron #{proyectoController.selected.cantidadreintegros}/5 reintegros o si existen solicitudes por rendir." >
 
                                 <p:dataTable id="tabladisponiblesreintegro" widgetVar="tabladisponiblesreintegro" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
                                              paginator="true"
@@ -430,7 +430,7 @@
                                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Archivo">
+                                <p:column headerText="Archivo" rendered="#{solicitudController.tabseleccionado ne 'Anticipo'}">
                                     <h:outputText value="#{item.archivonombre}" />
                                 </p:column>
                                 <p:column headerText="Tipo Solicitud">
@@ -529,8 +529,8 @@
                             <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
                         </p:inputText>    
 
-                        <p:outputLabel value="Archivo de Presupuesto" />
-                        <p:fileUpload label="Presupuesto" id="fdocumentacion" fileUploadListener="#{solicitudController.subirArchivoSolicitud}" mode="advanced"  
+                        <p:outputLabel value="Archivo de Presupuesto" rendered="#{ solicitudController.tabseleccionado ne 'Anticipo'}" />
+                        <p:fileUpload label="Presupuesto" id="fdocumentacion" fileUploadListener="#{solicitudController.subirArchivoSolicitud}" mode="advanced" rendered="#{solicitudController.tabseleccionado ne 'Anticipo'}" 
                                       sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
                         </p:fileUpload>    
 
