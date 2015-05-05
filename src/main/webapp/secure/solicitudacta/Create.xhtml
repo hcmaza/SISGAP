@@ -107,40 +107,168 @@
                         </p:panelGrid>
                     </p:panel>
 
-                    <p:panel header="Acta de Solicitudes" >
-                        <p:panelGrid columns="2" styleClass="sinBordes">
-                            <p:outputLabel value="Observaciones" for="observacion" />
-                            <p:inputTextarea id="observacion" value="#{solicitudactaController.selected.observacion}" rows="5" cols="30" counter="display" maxlength="250" counterTemplate="{0} caracteres restantes." autoResize="false" />
-                            
-                            <h:outputText value=" " />
-                            <h:outputText id="display" />
-                        </p:panelGrid>
-                        <p:panelGrid styleClass="sinBordes" >
-                            <p:column style="width: 100%;">
-                                <p:dataTable id="tblSolicitudes" 
+                    <p:panel header="Gestionar Solicitudes" >
+
+                        <p:tabView id="tabs" dynamic="true" style="margin-bottom: 10px;" >
+
+                            <!--<p:ajax event="tabChange" listener="{solicitudController.onTabChange}" update=":formprincipal:op, :formprincipal:botonsolicitud, :formprincipal:tabs:tabladisponiblesanticipo :formprincipal:tabs:tabladisponiblesadquisicion :formprincipal:tabs:tabladisponiblescertificacion, :formprincipal:tabs:tabladisponiblesreintegro" immediate="true" />-->
+
+                            <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
+
+                                <p:treeTable id="tablapresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;"  >
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.descripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.rubro.abreviado}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad"  style="text-align: right;" >
+                                        <h:outputText value="#{item.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Costo Unitario"  style="text-align: right;" >
+                                        <h:outputText value="#{item.costounitario}" />
+                                    </p:column>
+                                    <p:column headerText="Total"  style="text-align: right;" >
+                                        <h:outputText value="#{item.total}" />
+                                    </p:column>
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" style="text-align: right;" />
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:treeTable>
+                            </p:tab>
+
+                            <p:tab id="tevalsolicitudes" title="Evaluación de Solicitudes [Aprobar/Rechazar]"  >
+
+                                <p:dataTable id="tabladisponiblesevaluacion" 
                                              var="item" 
                                              value="#{solicitudactaController.listaSolicitudes}" 
-                                             selection="#{solicitudactaController.listaSolicitudesSeleccionadas}" 
-                                             rowKey="#{item.id}" >
+                                             rowKey="#{item.id}" 
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla" style="margin-bottom: 10px;">
+
                                     <f:facet name="header">
-                                        Seleccionar las Solicitudes a Aprobar/Rechazar
+                                        Solicitudes abiertas pendientes de Evaluación
                                     </f:facet>
-                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
-                                    <p:column headerText="Descripcion">
-                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
+                                    <!--<p:column selectionMode="single" style="width:16px;text-align:center"/>-->
+                                    <p:column headerText="Nº">
+                                        <h:outputText value="#{proyectoController.selected.id}-#{item.id}" />  
                                     </p:column>
-                                    <p:column headerText="Fecha">
-                                        <h:outputText value="#{item.fechasolicitud}" />
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Actividad">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
                                     </p:column>
                                     <p:column headerText="Tipo">
                                         <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
                                     </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
+                                    </p:column>                                    
+                                    <p:column headerText="Descripción">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
+                                    <!--                                    <p:column headerText="Transferencia">
+                                                                            <h:outputText value="{item.fechaejecucion}">
+                                                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                                            </h:outputText>
+                                                                        </p:column>-->
                                     <p:column headerText="Total">
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
+                                    <p:column style="text-align: center">
+                                        <p:commandButton update=":formprincipal:growlprincipal, :formprincipal:tabs:tabladisponiblesevaluacion, :formprincipal:tabs:tablaevalsolicitudes" action="#{solicitudactaController.agregarAprobada()}" icon="ui-icon-circle-check" title="Aprobar" immediate="true" style="padding: 2px;" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudactaController.solicitudActual}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton update=":formprincipal:growlprincipal, :formprincipal:tabs:tabladisponiblesevaluacion, :formprincipal:tabs:tablaevalsolicitudes" action="#{solicitudactaController.agregarRechazada()}" icon="ui-icon-circle-close" title="Rechazar" immediate="true" style="padding: 2px;" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudactaController.solicitudActual}" />
+                                        </p:commandButton>
+                                    </p:column>
                                 </p:dataTable>
-                            </p:column>
-                        </p:panelGrid>
+
+                                <!--**********************************************-->
+                                <!--******** TABLA SOLICITUDES EVALUADAS *********-->
+                                <!--**********************************************-->
+
+                                <p:dataTable id="tablaevalsolicitudes" var="item" value="#{solicitudactaController.listaSolicitudesSeleccionadas}" 
+                                             rowIndexVar="indice"
+                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                             styleClass="tabla" style="top: 5px; margin-bottom: 5px;"
+                                             editable="true" editMode="cell" >  
+
+                                    <p:ajax event="cellEdit" listener="#{archivorendicionController.onCellEdit}" update=":formprincipal:growlprincipal" />
+
+                                    <f:facet name="header">
+                                        Solicitudes Evaluadas - Proyecto: [#{proyectoController.selected.id}] #{proyectoController.selected.nombre}
+                                    </f:facet>
+                                    <p:column headerText="N°">  
+                                        <h:outputText value="#{proyectoController.selected.id}-#{item.id}" />  
+                                    </p:column> 
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Actividad">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
+                                    </p:column>
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
+                                    </p:column>                                    
+                                    <p:column headerText="Descripción">
+                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
+                                    </p:column>
+                                    <!--                                    <p:column headerText="Transferencia">
+                                                                            <h:outputText value="{item.fechaejecucion}">
+                                                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                                            </h:outputText>
+                                                                        </p:column>-->
+                                    <p:column headerText="Total">
+                                        <h:outputText value="#{item.importe}" />
+                                    </p:column>
+                                    <p:column>  
+                                        <f:facet name="header">
+                                            <h:outputText value="Observación" title="Hacer click e ingresar la observación de la solicitud." style="font-weight: bold;" />
+                                        </f:facet>
+                                        <p:cellEditor>
+                                            <f:facet name="output">
+                                                <h:outputText value="#{item.obsevaluacion}" styleClass="left" />
+                                            </f:facet>
+                                            <f:facet name="input">
+                                                <p:inputText value="#{item.obsevaluacion}" style="width:100%" label="Observación de la Evaluación"/>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Estado">
+                                        <p:graphicImage value="#{resource['img:/iconoAprobado.png']}" alt="Aprobado" rendered="#{item.estadosolicitudid.id eq 2}" style="height: 25px; width:25px; display: block; margin-left: auto; margin-right: auto;" />
+                                        <p:graphicImage value="#{resource['img:/iconoRechazado.png']}" alt="Rechazado" rendered="#{item.estadosolicitudid.id eq 3}" style="height: 25px; width:25px; display: block; margin-left: auto; margin-right: auto;" />
+                                    </p:column>
+
+                                    <p:column style="width:32px;text-align: center">
+                                        <p:commandButton actionListener="#{solicitudactaController.eliminarDeLista(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabs:tabladisponiblesevaluacion, :formprincipal:tabs:tablaevalsolicitudes" >
+                                            <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <f:facet name="footer">
+                                        Total Solicitudes Aprobadas = $#{solicitudactaController.sumarAprobadas()} // Total de Solicitudes Rechazadas = $#{solicitudactaController.sumarRechazadas()}
+                                    </f:facet>
+                                </p:dataTable>
+
+                                <div align="center">
+                                    <p:commandButton action="#{solicitudactaController.create}" value="Enviar Evaluación de las Solicitudes" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />
+                                </div>
+
+                            </p:tab>
+
+                        </p:tabView>
 
                     </p:panel>
 
@@ -155,6 +283,11 @@
                     <!--<h:link outcome="/index" value="Inicio"/>-->
 
                 </p:panel>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabs:tabladisponiblesevaluacion, :formprincipal:tabs:tablaevalsolicitudes" style="float:left;" /> 
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
+                </p:confirmDialog>
 
             </h:form>
 
