@@ -267,19 +267,17 @@
                     </p:panel>
 
                     <p:separator/>
-                    <p:commandButton action="#{proyectoController.prepareList}" value="Lista de Ideas-Proyecto" immediate="true" icon="ui-icon-document" ajax="false" />
-                    <p:commandButton action="#{proyectoController.pdfEtapas()}" value="Etapas de Proyecto" icon="ui-icon-document" ajax="false" />
+                    
+                    
+                    <p:commandButton action="#{proyectoController.pdfIdeaProyecto()}" value="Imprimir IP" icon="ui-icon-document" ajax="false"  />
+                    <p:commandButton action="#{proyectoController.pdfEtapas()}" value="Etapas de Proyecto" icon="ui-icon-document" ajax="false" rendered="#{proyectoController.selected.estadoproyectoid.id > 5}" />
                     <p:commandButton action="#{proyectoController.pdfEvaluacionIdeaProyecto()}" value="Evaluacion Idea-Proyecto" immediate="true" icon="ui-icon-document" ajax="false" rendered="#{agenteController.selected.usuarioid.usuariorol.rol eq 'Administrador'}" />
+                    
+                    <p:commandButton action="#{proyectoController.prepareList}" value="Lista de Ideas-Proyecto" immediate="true" icon="ui-icon-document" ajax="false" style="display: inline-block;float:right;" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home" ajax="false" />
                     <p:separator/>
 
                 </p:panel>
-
-                <p:panel header="Imprimir" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">  
-                    <p:commandLink action="#{proyectoController.pdfIdeaProyecto()}" ajax="false">  
-                        <p:graphicImage value="/resources/img/print_printer.png" />  
-                    </p:commandLink>                          
-                </p:panel>  
 
             </h:form>
 

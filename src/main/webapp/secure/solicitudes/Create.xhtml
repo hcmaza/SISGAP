@@ -360,7 +360,7 @@
                                         <h:outputText value="#{arc.montofactura}" />  
                                     </p:column> 
                                     <p:column headerText="">  
-                                        <p:commandButton value="Eliminar" icon="ui-icon-circle-plus" action="#{archivorendicionController.removerArchivoLista(arc)}" update=":formprincipal:growlprincipal, :formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion, :formprincipal:tabsolicitudes:difrendicion" immediate="true"  >
+                                        <p:commandButton value="Eliminar" icon="ui-icon-circle-plus" actionListener="#{archivorendicionController.removerArchivoLista(arc)}" update=":formprincipal:growlprincipal, :formprincipal:tabsolicitudes:tablafacturasrendicion, :formarchivorendicion, :formprincipal:tabsolicitudes:difrendicion" immediate="true"  >
                                             <f:setPropertyActionListener value="#{arc}" target="#{archivorendicionController.selected}" />  
                                         </p:commandButton>
                                     </p:column> 

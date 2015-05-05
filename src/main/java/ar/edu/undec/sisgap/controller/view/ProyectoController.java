@@ -175,8 +175,8 @@ public class ProyectoController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Proyecto) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Proyecto) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 

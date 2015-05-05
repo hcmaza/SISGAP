@@ -103,15 +103,16 @@
                                     
                                     <c:if test="#{request.isUserInRole('Docente')}" > 
 
-                                        <p:menuitem rendered="#{item.estadoproyectoid.id eq 2 }" value="Crear" action="#{proyectoController.CrearConEtapa}" ajax="false" icon="ui-icon-circle-check"/>
+                                        <p:menuitem value="Crear" rendered="#{item.estadoproyectoid.id eq 2 }" action="#{proyectoController.CrearConEtapa}" ajax="false" icon="ui-icon-circle-check"/>
                                         <p:menuitem value="Editar" rendered="#{item.estadoproyectoid.id eq 2 || item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 7}" action="#{proyectoController.prepareEditEtapa}" ajax="false" icon="ui-icon-pencil"/>
-                                        <p:separator />
 
-                                        <p:menuitem value="Solicitudes y Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareCreate}" ajax="false" icon="ui-icon-cart" >
+                                        <p:menuitem value="Solicitudes" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareCreate}" ajax="false" icon="ui-icon-cart" >
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
 
-                                        
+                                        <p:menuitem value="Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareCreate}" ajax="false" icon="ui-icon-suitcase" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
                                     </c:if>
                                 </p:menuButton>
 
