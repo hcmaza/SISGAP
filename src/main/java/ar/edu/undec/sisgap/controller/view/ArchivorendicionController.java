@@ -285,6 +285,10 @@ public class ArchivorendicionController implements Serializable {
 
         sumaArchivosRendicion = sumaArchivosRendicion + current.getMontofactura().floatValue();
         System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
+        
+        if(rendicioncontroller.getSolicitudSeleccionada() == null){
+            System.out.println("rendicioncontroller.getSolicitudSeleccionada() NULLLLLLLLLLLLLLLL asd");
+        }
 
         if (sumaArchivosRendicion > rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue()) {
 
@@ -364,7 +368,7 @@ public class ArchivorendicionController implements Serializable {
         }
     }
 
-    public void removerArchivoLista() {
+    public void removerArchivoLista(Archivorendicion archivo) {
 
         // se quita de la lista de solicitados
 //        Iterator i = this.itemsSolicitados.iterator();
@@ -373,7 +377,7 @@ public class ArchivorendicionController implements Serializable {
 //                i.remove();
 //            }
 //        }
-        listaArchivos.remove(current);
+        listaArchivos.remove(archivo);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " + current.getNrofactura() + " fue borrado"));
 
     }

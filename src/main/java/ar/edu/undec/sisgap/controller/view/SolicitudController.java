@@ -168,6 +168,11 @@ public class SolicitudController implements Serializable {
         selectedItemIndex = -1;
 
         armarSolicitudesDesembolsosYRendicion();
+        
+        // preparar la rendicion
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        rendicioncontroller.prepararRendicion();
 
         return "CreateSolicitud";
     }
