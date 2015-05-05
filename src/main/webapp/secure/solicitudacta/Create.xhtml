@@ -272,15 +272,11 @@
 
                     </p:panel>
 
-                    <br style="clear: both;"/>
-
                     <p:separator />
-                    <p:commandButton action="#{solicitudactaController.create}" value="Crear Acta de Solicitud" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
-                    <p:commandButton action="#{solicitudactaController.rechazar}" value="Rechazar Solicitudes" style="display: inline-block;" icon="ui-icon-disk" validateClient="true" update="pprincipal" oncomplete="PF('dfinal').show();" />
+
                     <p:commandButton action="#{solicitudactaController.prepareList}" value="Lista de Actas de Solicitudes" immediate="true" style="display: inline-block; float: right;" icon="ui-icon-document" ajax="false" />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" style="display: inline-block;float:right;" icon="ui-icon-home"  ajax="false" />
                     <p:separator/>
-                    <!--<h:link outcome="/index" value="Inicio"/>-->
 
                 </p:panel>
 
@@ -292,7 +288,7 @@
             </h:form>
 
             <h:form>
-                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Aprobación/Rechazo de Solicitudes" >
+                <p:dialog id="dfinal" widgetVar="dfinal" modal="true" header="Evaluación de Solicitudes Completada" >
                     <h:panelGroup id="messagePanel" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>

@@ -44,7 +44,7 @@ public class SolicitudactaController implements Serializable {
     private List<Solicitud> listaSolicitudes;
 
     private List<Solicitud> listaSolicitudesSeleccionadas;
-    
+
     private Solicitud solicitudActual;
 
     public SolicitudactaController() {
@@ -140,17 +140,17 @@ public class SolicitudactaController implements Serializable {
         PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
-        
+
         // Seteamos el presupuesto
         presupuestocontroller.findProyecto(proyectocontroller.getSelected().getId());
         presupuestocontroller.sumarGastosView();
-        
+
         // Seteamos el tree de etapas y tareas para el proyecto actual
         etapacontroller.armarTreeEtapasYTareasPorProyecto();
-        
+
         // armamos el arbol de nodos de presupuesto tarea
         presupuestotareacontroller.armarPresupuestoGeneral();
-        
+
         // Seteamos las rendiciones para los indicadores
         rendicioncontroller.prepararRendicion();
 
@@ -178,28 +178,31 @@ public class SolicitudactaController implements Serializable {
             current.setFecha(new Date());
             getFacade().createWithPersist(current);
 
-            // Estado de la solicitud
-            Estadosolicitud estado;
-
-            try {
-                // Estado de la Solicitud = "Aprobada"
-                estado = getEjbFacadeestado().find(2);
-            } catch (Exception e) {
-                estado = null;
-                System.out.println("EstadosolicitudFacade: problema de recuperacion");
-                e.printStackTrace();
-            }
-
-            // Para cada Solicitud seleccionada, actualizar con el nuevo estado, la fecha de aprobacion 
-            // y el nro de acta correspondiente
+            // Para cada Solicitud seleccionada
             for (Solicitud s : listaSolicitudesSeleccionadas) {
-                s.setSolicitudactaid(current);
-                s.setFechaaprobacion(new Date());
-                s.setEstadosolicitudid(estado);
-                getFacades().edit(s);
+
+                // dependiendo del estado que se le dio a cada solicitud
+                switch (s.getEstadosolicitudid().getId()) {
+                    // Solicitud Aprobada >> guardar la fecha de aprobacion, el acta de solicitud y PERSISTIR
+                    case 2:
+                        s.setSolicitudactaid(current);
+                        s.setFechaaprobacion(new Date());
+                        getFacades().edit(s);
+                        break;
+                    // Solicitud Rechazada >> guardar la fecha de "rechazo" y PERSISTIR
+                    case 3:
+                        s.setFechaaprobacion(new Date());
+                        getFacades().edit(s);
+                        break;
+                    default:
+                        s.setFechaaprobacion(new Date());
+                        getFacades().edit(s);
+                        break;
+                }
+
             }
 
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SolicitudactaCreated"));
+            JsfUtil.addSuccessMessage("Evaluación de Solicitudes Exitosa!");
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -207,146 +210,111 @@ public class SolicitudactaController implements Serializable {
         }
     }
 
-    public String rechazar() {
-        try {
+    public void agregarAprobada() {
 
-            // Persistimos el Acta de Solicitud
-            // current.setFecha(new Date());
-            // getFacade().createWithPersist(current);
-            // Estado de la solicitud
-            Estadosolicitud estado;
-
-            try {
-                // Estado de la Solicitud = "Rechazada"
-                estado = getEjbFacadeestado().find(3);
-            } catch (Exception e) {
-                estado = null;
-                System.out.println("EstadosolicitudFacade: problema de recuperacion");
-                e.printStackTrace();
-            }
-
-            // Para cada Solicitud seleccionada, actualizar con el nuevo estado, la fecha de aprobacion 
-            // y el nro de acta correspondiente
-            for (Solicitud s : listaSolicitudesSeleccionadas) {
-                //s.setSolicitudactaid(current);
-                s.setFechaaprobacion(new Date());
-                s.setEstadosolicitudid(estado);
-                getFacades().edit(s);
-            }
-
-            JsfUtil.addSuccessMessage("Las solicitudes fueron rechazadas satisfactoriamente");
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-    
-    public void agregarAprobada(){
-        
         // obtenermos el estado de la solicitud "Aprobada" id=2
         Estadosolicitud estadoAprobada;
-        
-        try{
+
+        try {
             estadoAprobada = this.ejbFacadeestado.find(2);
-        } catch(Exception e){
+        } catch (Exception e) {
             estadoAprobada = null;
             e.printStackTrace();
         }
-        
+
         // cambiamos el estado de la solicitud agregada
         this.solicitudActual.setEstadosolicitudid(estadoAprobada);
-        
+
         // damos la fecha de aprobacion
         this.solicitudActual.setFechaaprobacion(new Date());
-        
+
         // agregamos a la lista
         this.listaSolicitudesSeleccionadas.add(solicitudActual);
-        
+
         // quitamos de la lista de disponibles
         this.listaSolicitudes.remove(solicitudActual);
     }
-    
-    public void agregarRechazada(){
-        
+
+    public void agregarRechazada() {
+
         // obtenermos el estado de la solicitud "Rechazada" id=3
         Estadosolicitud estadoRechazada;
-        
-        try{
+
+        try {
             estadoRechazada = this.ejbFacadeestado.find(3);
-        } catch(Exception e){
+        } catch (Exception e) {
             estadoRechazada = null;
             e.printStackTrace();
         }
-        
+
         // cambiamos el estado de la solicitud agregada
         this.solicitudActual.setEstadosolicitudid(estadoRechazada);
-        
+
         // damos la fecha de rechazo
         this.solicitudActual.setFechaaprobacion(new Date());
-        
+
         // agregamos a la lista de seleccionadas
         this.listaSolicitudesSeleccionadas.add(solicitudActual);
-        
+
         // quitamos de la lista de disponibles
         this.listaSolicitudes.remove(solicitudActual);
- 
+
     }
-    
-    public void eliminarDeLista(Solicitud solicitud){
-        
+
+    public void eliminarDeLista(Solicitud solicitud) {
+
         // obtenermos el estado de la solicitud "Iniciada" id=1
         Estadosolicitud estadoIniciada;
-        
-        try{
+
+        try {
             estadoIniciada = this.ejbFacadeestado.find(1);
-        } catch(Exception e){
+        } catch (Exception e) {
             estadoIniciada = null;
             e.printStackTrace();
         }
-        
+
         // cambiamos el estado de la solicitud eliminada
         solicitud.setEstadosolicitudid(estadoIniciada);
-        
+
         // cambiamos la fecha de aprobacion a null y vaciamos la observacion
         solicitud.setFechaaprobacion(null);
         solicitud.setObsevaluacion("");
-        
+
         // la quitamos de la lista
         this.listaSolicitudesSeleccionadas.remove(solicitud);
-        
+
         // la agregamos nuevamente a los disponibles
         this.listaSolicitudes.add(solicitud);
     }
-    
-    public float sumarAprobadas(){
-        
+
+    public float sumarAprobadas() {
+
         float r = 0f;
-        
-        if(listaSolicitudesSeleccionadas != null && listaSolicitudesSeleccionadas.size() > 0){
-            for(Solicitud s : listaSolicitudesSeleccionadas){
+
+        if (listaSolicitudesSeleccionadas != null && listaSolicitudesSeleccionadas.size() > 0) {
+            for (Solicitud s : listaSolicitudesSeleccionadas) {
                 // si esta aprobada, sumamos su valor
-                if(s.getEstadosolicitudid().getId().equals(2)){
+                if (s.getEstadosolicitudid().getId().equals(2)) {
                     r = r + s.getImporte().floatValue();
                 }
             }
         }
-        
+
         return r;
     }
-    
-    public float sumarRechazadas(){
+
+    public float sumarRechazadas() {
         float r = 0f;
-        
-        if(listaSolicitudesSeleccionadas != null && listaSolicitudesSeleccionadas.size() > 0){
-            for(Solicitud s : listaSolicitudesSeleccionadas){
+
+        if (listaSolicitudesSeleccionadas != null && listaSolicitudesSeleccionadas.size() > 0) {
+            for (Solicitud s : listaSolicitudesSeleccionadas) {
                 // si esta rechazada, sumamos su valor
-                if(s.getEstadosolicitudid().getId().equals(3)){
+                if (s.getEstadosolicitudid().getId().equals(3)) {
                     r = r + s.getImporte().floatValue();
                 }
             }
         }
-        
+
         return r;
     }
 
@@ -491,7 +459,5 @@ public class SolicitudactaController implements Serializable {
     public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
-
-    
 
 }
