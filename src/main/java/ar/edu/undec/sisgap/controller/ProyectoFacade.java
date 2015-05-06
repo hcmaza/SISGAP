@@ -150,4 +150,14 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
         }
     }
     
+    public List<Proyecto> buscarProyectoPorConvocatoria(int idConvocatoria){        
+       try{
+           return em.createQuery("select p from Proyecto p where p.convocatoriaid.id = :idConvocatoria", Proyecto.class).setParameter("idConvocatoria", idConvocatoria).getResultList();
+       }
+       catch(Exception e){
+           System.out.println("No se pudo realizar la consulta "+e);
+           return null;
+       }                 
+    }
+    
 }
