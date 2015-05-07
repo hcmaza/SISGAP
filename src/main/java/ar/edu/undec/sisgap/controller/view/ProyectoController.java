@@ -1,14 +1,17 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.ConvocatoriaFacade;
 import ar.edu.undec.sisgap.controller.EnviarMail;
 import ar.edu.undec.sisgap.controller.EstadoproyectoFacade;
 import ar.edu.undec.sisgap.controller.PresupuestoRubroFacade;
+import ar.edu.undec.sisgap.controller.PresupuestoTareaFacade;
 import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ProyectoFacade;
 import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.Archivoproyecto;
+import ar.edu.undec.sisgap.model.Convocatoria;
 import ar.edu.undec.sisgap.model.Estadoproyecto;
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.Evaluacion;
@@ -115,6 +118,8 @@ public class ProyectoController implements Serializable {
     private ar.edu.undec.sisgap.controller.ArchivoproyectoFacade ejbarchivoproyecto;
     @EJB
     private ar.edu.undec.sisgap.controller.EstadoproyectoFacade ejbestadoproyecto;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConvocatoriaFacade ejbconvocatoria;
 
     private PaginationHelper pagination;
     private int selectedItemIndex;
@@ -130,7 +135,8 @@ public class ProyectoController implements Serializable {
     private Proyecto proyectoViejo;
     //variable utilizada para recolectar los agentes del proyecto en todas las etapas
     private List<TareaAgente> tareaagentesproyecto = new ArrayList<TareaAgente>();
-
+    private List<Proyecto> tablafiltrada=null; 
+    
     public ProyectoController() {
     }
 
@@ -153,6 +159,14 @@ public class ProyectoController implements Serializable {
         return ejbestadoproyecto;
     }
     
+    private ConvocatoriaFacade getFacadeConvocatoria() {
+        return ejbconvocatoria;
+    }
+    
+    private PresupuestoTareaFacade getPresupuestoTareaFacade() {
+        return ejbpresupuestotarea;
+    }
+        
     private PresupuestoRubroFacade getFacadePresupuestoRubro() {
         return ejbpresupuestorubro;
     }
@@ -1032,8 +1046,8 @@ public class ProyectoController implements Serializable {
         resultado = p.obtenerTotal(idProyecto);
 
         return resultado.floatValue();
-    }
-
+    }    
+    
     public BigDecimal obtenerPresupuestoTotalCurrent() {
 
         BigDecimal resultado = BigDecimal.ZERO;
@@ -1955,6 +1969,20 @@ public class ProyectoController implements Serializable {
             System.out.println("Error al grabar la Formalización  = " + e);
             return null;
         }
+    }
+        
+     public void findProyectoPorConvocatoria(Integer convocatoriaId){
+        System.out.println("Id de Convocatoria: " + convocatoriaId);
+        items= new ListDataModel(getFacade().buscarProyectoPorConvocatoria(convocatoriaId));
+        this.tablafiltrada= getFacade().buscarProyectoPorConvocatoria(convocatoriaId);
+    }    
+
+    public List<Proyecto> getTablafiltrada() {
+        return tablafiltrada;
+    }
+
+    public void setTablafiltrada(List<Proyecto> tablafiltrada) {
+        this.tablafiltrada = tablafiltrada;
     }
 
 }
