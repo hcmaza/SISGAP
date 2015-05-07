@@ -79,6 +79,22 @@ table {
     width: 100%;
 }
 
+/*.fieldSetCentrado30 .ui-fieldset, .ui-fieldset .ui-fieldset-legend {*/
+.fieldSetCentrado30 .ui-fieldset-legend {
+/*background-color: transparent;
+border-color: transparent;*/
+    position: absolute;
+}
+
+.centrarEnFieldSet30{
+    
+    display: block;
+    margin: 0 0 auto 150px;
+    text-align: center;
+    height: 70%;
+    width: auto;
+}
+
 // Color: #00C7F6 Seleccion de Dario
 // Color 2: #82CADC Seleccion de Dario 
 // Color anterior: #21B2CE

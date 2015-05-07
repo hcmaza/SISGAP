@@ -195,8 +195,8 @@ public class ProyectoController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Proyecto) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Proyecto) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
@@ -932,7 +932,12 @@ public class ProyectoController implements Serializable {
         }
         proyectoagentecontroller.setEquipotrabajo(pa);
         archivoproyectocontroller.setCollectorArchivoProyecto(this.ejbarchivoproyecto.buscarArchivosProyecto(this.current.getId()));
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        
+        System.out.println("asdasdasd");
+        
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        
+        System.out.println("qweqweqwe");
         return "CrearConEtapa";
     }
 

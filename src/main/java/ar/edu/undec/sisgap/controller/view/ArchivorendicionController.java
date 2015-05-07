@@ -4,6 +4,7 @@ import ar.edu.undec.sisgap.model.Archivorendicion;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ArchivorendicionFacade;
+import ar.edu.undec.sisgap.model.Solicitud;
 import com.lowagie.text.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -11,7 +12,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
@@ -27,6 +30,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -39,6 +43,8 @@ public class ArchivorendicionController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -256,19 +262,93 @@ public class ArchivorendicionController implements Serializable {
             }
         }
     }
-    
-    public void nuevoArchivoRendicion(){
-       System.out.println("Nuevo Archivo Rendicion Inicio"); 
-       //current = null;
-       current = new Archivorendicion();
-       System.out.println("Nuevo Archivo rendicion Fin"); 
+
+    public void nuevoArchivoRendicion() {
+        System.out.println("Nuevo Archivo Rendicion Inicio");
+        //current = null;
+        current = new Archivorendicion();
+        System.out.println("Nuevo Archivo rendicion Fin");
     }
-    
-    public void agregarArchivoLista(){
-        System.out.println("Agregar Archivo rendicion Inicio"); 
-        getListaArchivos().add(current);
-        System.out.println("Lista Archivos Rendicion: " + getListaArchivos().size()); 
-        System.out.println("Agregar Archivo rendicion Fin"); 
+
+    public void agregarArchivoLista() {
+
+        // Obtenemos el controlador necesario
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+
+        float sumaArchivosRendicion = 0f;
+
+        for (Archivorendicion ar : getListaArchivos()) {
+            sumaArchivosRendicion = sumaArchivosRendicion + ar.getMontofactura().floatValue();
+        }
+
+        sumaArchivosRendicion = sumaArchivosRendicion + current.getMontofactura().floatValue();
+        System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
+        
+        if(rendicioncontroller.getSolicitudSeleccionada() == null){
+            System.out.println("rendicioncontroller.getSolicitudSeleccionada() NULLLLLLLLLLLLLLLL asd");
+        }
+
+        if (sumaArchivosRendicion > rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue()) {
+
+            float porcentaje = 20f;
+
+            // Obtenemos el porcentaje maximo el cual no se debe superar por la suma de comprobantes
+            try {
+                porcentaje = Float.parseFloat(ejbFacadec.findAtributo("maxporcentajerendicion").getValor());
+            } catch (Exception e) {
+                porcentaje = 20f;
+                System.out.println("Error en obtencion de parametro 'maxporcentajerendicion' desde la base de datos [maxporcentajerendicion = 20]");
+                e.printStackTrace();
+            }
+
+            float porcentajeArchivosRendicion = (rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue() * (porcentaje / 100.0f));
+
+            System.out.println(porcentaje + "% de la suma de Archivos de Rendicion = " + porcentajeArchivosRendicion);
+
+            //validacion de que el el total de archivos de rendicion, 
+            //sea igual o hasta un 20% mayor que el importe de la rendicion
+            if (sumaArchivosRendicion > (rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue() + porcentajeArchivosRendicion)) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
+                return;
+            } else {
+
+                float diferencia = sumaArchivosRendicion - rendicioncontroller.getSolicitudSeleccionada().getImporte().floatValue();
+
+                System.out.println("Diferencia: " + diferencia);
+
+                // la diferencia se encuentra dentro del porcentaje permitido
+                if (diferencia > 0 && diferencia < porcentajeArchivosRendicion) {
+                    // verificar si hay dinero disponible para la diferencia
+                    for (Solicitud s : solicitudcontroller.getItemsDisponiblesNuevo()) {
+                        if (rendicioncontroller.getSolicitudSeleccionada().getPresupuestotarea().getId() == s.getPresupuestotarea().getId() && s.getDisponible().floatValue() >= diferencia) {
+
+                            // agregar el archivo rendicion a la lista                
+                            getListaArchivos().add(current);
+
+                            // a la solicitud encontrada, le cambiamos el importe por la diferencia
+                            s.setImporte(new BigDecimal(diferencia));
+                            // seteamos la solicitud encontrada como la solicitud para el reintegro
+                            rendicioncontroller.setSolicitudReintegroPorDiferencia(s);
+
+                            System.out.println("rendicioncontroller.SolicitudReintegroPorDiferencia: " + rendicioncontroller.getSolicitudReintegroPorDiferencia().getImporte() + " - " + rendicioncontroller.getSolicitudReintegroPorDiferencia().getPresupuestotarea().getDescripcion());
+
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Rendicion: existe una diferencia.", "La suma de comprobantes supera la solicitud a rendir dentro de lo permitido y hay dinero disponible para el item. La diferencia es de: " + diferencia + " y se asigna a " + s.getPresupuestotarea().getDescripcion()));
+                            return;
+                        }
+                    }
+
+                    // si no hay dinero disponible para la diferencia de rendicion.
+                }
+            }
+
+        } else {
+            // agregar el archivo rendicion a la lista
+            getListaArchivos().add(current);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Rendición: comprobante agregado correctamente", "Importe: " + current.getMontofactura().floatValue()));
+        }
+
     }
 
     public void subirArchivoRendicion(FileUploadEvent event) {
@@ -288,9 +368,18 @@ public class ArchivorendicionController implements Serializable {
         }
     }
 
-    public void removerArchivoLista() {
-        getListaArchivos().remove(current);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() + " fue borrado"));
+    public void removerArchivoLista(Archivorendicion archivo) {
+
+        // se quita de la lista de solicitados
+//        Iterator i = this.itemsSolicitados.iterator();
+//        while(i.hasNext()){
+//            if(((Solicitud)i.next()).getPresupuestotarea().equals(solicitud.getPresupuestotarea())){
+//                i.remove();
+//            }
+//        }
+        listaArchivos.remove(archivo);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El comprobante del proveedor: " + current.getProveedor() + " - Nº: " + current.getNrofactura() + " fue borrado"));
+
     }
 
     public StreamedContent obtenerImagen() throws IOException {
@@ -315,4 +404,63 @@ public class ArchivorendicionController implements Serializable {
         return null;
     }
 
+    public float sumarComprobantes() {
+        float r = 0;
+
+        if (listaArchivos != null & listaArchivos.size() > 0) {
+            for (Archivorendicion a : listaArchivos) {
+                r += a.getMontofactura().floatValue();
+            }
+        }
+
+        return r;
+    }
+    
+    public float sumarMontoAprobadoComprobantes() {
+        float r = 0;
+
+        if (listaArchivos != null & listaArchivos.size() > 0) {
+            for (Archivorendicion a : listaArchivos) {
+                r += a.getMontoaprobado().floatValue();
+            }
+        }
+
+        return r;
+    }
+    
+    public void llenarListaArchivosPorSolicitudSeleccionada() {
+        // Obtenemos el controlador necesario
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        
+        
+        
+        if(rendicioncontroller.getSolicitudSeleccionada() != null){
+            System.out.println("rendicioncontroller.getSolicitudSeleccionada NULLLLLLL");
+            listaArchivos.addAll(getFacade().buscarPorRendicion(rendicioncontroller.getSolicitudSeleccionada().getRendicionid().getId()));
+        }
+    }
+
+    public void llenarListaArchivosPorListaSolicitudes(List<Solicitud> listaSolicitudes) {
+        // si la lista no es nula o vacia
+        if (listaSolicitudes != null && listaSolicitudes.size() > 0) {
+            for (Solicitud s : listaSolicitudes) {
+                if (s.getRendicionid() != null) {
+                    listaArchivos.addAll(getFacade().buscarPorRendicion(s.getRendicionid().getId()));
+                }
+            }
+        }
+    }
+    
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+        //String nombreColumna = event.getColumn().getHeaderText();
+        //String nombreColumna = event.getColumn().getFacet("header").toString();
+        
+        if(newValue != null && !newValue.equals(oldValue)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cambio.", "Valor Anterior: " + oldValue + ", Nuevo Valor:" + newValue);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
 }

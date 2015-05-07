@@ -2,6 +2,7 @@ package ar.edu.undec.sisgap.controller.view;
 
 import ar.edu.undec.sisgap.controller.ConfiguracionFacade;
 import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
+import ar.edu.undec.sisgap.controller.ProyectoFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
@@ -51,6 +52,8 @@ public class SolicitudController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     @EJB
+    private ar.edu.undec.sisgap.controller.ProyectoFacade ejbFacadep;
+    @EJB
     private TiposolicitudFacade ejbFacadeTipo;
     @EJB
     private EstadosolicitudFacade ejbFacadeEstado;
@@ -68,7 +71,8 @@ public class SolicitudController implements Serializable {
     //tabs solicitudes
     //private String tabseleccionado = "Anticipo";
     private String tabseleccionado = "Presupuesto Detallado";
-
+    
+  
 
     public SolicitudController() {
     }
@@ -99,6 +103,10 @@ public class SolicitudController implements Serializable {
 
     public EstadosolicitudFacade getEjbFacadeEstado() {
         return ejbFacadeEstado;
+    }
+
+    public ProyectoFacade getEjbFacadep() {
+        return ejbFacadep;
     }
 
     public List<Solicitud> getItemsDisponibles() {
@@ -160,6 +168,11 @@ public class SolicitudController implements Serializable {
         selectedItemIndex = -1;
 
         armarSolicitudesDesembolsosYRendicion();
+        
+        // preparar la rendicion
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        rendicioncontroller.prepararRendicion();
 
         return "CreateSolicitud";
     }
@@ -167,12 +180,25 @@ public class SolicitudController implements Serializable {
     public void armarSolicitudesDesembolsosYRendicion(){
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
-        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+//        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        
+        // Buscar presupuesto por proyecto
+        presupuestocontroller.findProyecto(proyectocontroller.getSelected().getId());
+        
+        // Sumar los gastos del presupuesto
+        presupuestocontroller.sumarGastosView();
 
+        // Seteamos el tree de etapas y tareas para el proyecto actual
+        etapacontroller.armarTreeEtapasYTareasPorProyecto();
+        
+        // Armar presupuesto general
+        presupuestotareacontroller.armarPresupuestoGeneral();
+        
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(proyectocontroller.getSelected().getId(), tabseleccionado);
         
@@ -180,7 +206,7 @@ public class SolicitudController implements Serializable {
         desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
         
         // seteamos los controladores de rendicion y archivos de rendicion
-        rendicioncontroller.prepararRendicion();
+//        rendicioncontroller.prepararRendicion();
 
         // Borramos la lista de items disponibles
         itemsDisponibles = new ArrayList<Solicitud>();
@@ -191,9 +217,11 @@ public class SolicitudController implements Serializable {
         // Llenamos la lista de solicitudes anteriores
         items = new ListDataModel(getFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId()));
 
-        // Llenamos la lista de solicitudes aprobadas anteriores
+        // Llenamos la lista de solicitudes aprobadas, en ejecucion, evaluacion o rendidas anteriores
         itemsAprobados = getFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
-        
+        itemsAprobados.addAll(getFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        itemsAprobados.addAll(getFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
+        itemsAprobados.addAll(getFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
@@ -210,11 +238,12 @@ public class SolicitudController implements Serializable {
             while (i.hasNext()) {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
 
-                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada"
-                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
+                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada" o "Iniciada"
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 1 && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
                     
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
-                    solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                    //solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                    solicitud.setImporte(solicitud.getImporte().subtract(solicitudAnterior.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
                 }
             }
@@ -225,9 +254,6 @@ public class SolicitudController implements Serializable {
             }
         }
         
-        // Seteamos el tree de etapas y tareas para el proyecto actual
-        etapacontroller.armarTreeEtapasYTareasPorProyecto();
-        
         //h:coloco la copia de itemsolicitados tal cual es al principio
         this.itemsDisponiblesNuevo = this.itemsDisponibles;
         
@@ -236,7 +262,7 @@ public class SolicitudController implements Serializable {
          for(Solicitud s : this.itemsDisponiblesNuevo ){
              
              // Se quita, se realiza en el evento tabChange
-             if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) ){
+             if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
                    this.itemsDisponibles.add(s);
              }
         }
@@ -250,8 +276,52 @@ public class SolicitudController implements Serializable {
                 for (Solicitud s : itemsSolicitados) {
 
                     s.setFechasolicitud(new Date());
-                    s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
-                    //s.setTiposolicitudid(current.getTiposolicitudid());
+                    
+                    // segun el tipo de solicitud, se le dan distintos estados
+                    switch(s.getTiposolicitudid().getId()){
+                        // Anticipo
+                        case 1:
+                            // Se le da estado "Iniciada" para que el Administrador la aprueba
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
+                            break;
+                        // Adquisición
+                        case 2:
+                            // Se le da estado "Ejecución"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(4));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;
+                        // Certificacion
+                        case 3:
+                            // Se le da estado "Ejecucion"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(4));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;
+                        // Reintegro
+                        case 4:
+                            // Se le da estado "Rendicion a Evaluar"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(6));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            
+                            // sumar 1 al contador de reintegros del proyecto
+                            try{
+                                this.ejbFacadep.acumularCantidadReintegrosPorProyecto(s.getPresupuestotarea().getTarea().getEtapaid().getProyectoid().getId());
+                                System.out.println("Acumular 1 cantidad reintegros CORRECTO!");
+                            } catch(Exception e){
+                                System.out.println("Acumular 1 cantidad reintegros ERROR");
+                                e.printStackTrace();
+                            }
+                            break;         
+                        // Reintegro por diferencia
+                        case 5:
+                            // Se le da estado "Aprobada", sin acumular 1 a la cantidad de reintegros del proyecto
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;          
+                        default:
+                            // Se le da estado "Iniciada" para que el Administrador la aprueba
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
+                            break;
+                    }
 
                     // Guardamos la solicitud
                     getFacade().create(s);
@@ -370,7 +440,7 @@ public class SolicitudController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    @FacesConverter(forClass = Solicitud.class)
+    @FacesConverter(forClass = Solicitud.class, value = "solicitudConverter")
     public static class SolicitudControllerConverter implements Converter {
 
         @Override
@@ -686,7 +756,7 @@ public class SolicitudController implements Serializable {
                 }
             }
             
-               // buscamos la solicitudNuevo disponible para sumar el monto
+            // buscamos la solicitudNuevo disponible para sumar el monto
             ListIterator in = itemsDisponiblesNuevo.listIterator();
 
             while (in.hasNext()) {
@@ -775,43 +845,6 @@ public class SolicitudController implements Serializable {
 
         return r;
     }
-
-    // Indicador de Ejecucion
-    
-    public MeterGaugeChartModel getIndicadorEjecutado() {
-
-        if (indicadorEjecutado == null){
-            crearIndicadorEjecutado();
-        }
-        
-        return indicadorEjecutado;
-    }
-    
-    private MeterGaugeChartModel inicializarModeloIndicadorPorcentaje() {
-        List<Number> intervalos = new ArrayList<Number>(){{
-            add(25);
-            add(50);
-            add(75);
-            add(100);
-        }};
-         
-        return new MeterGaugeChartModel(54, intervalos);
-    }
- 
-    private void crearIndicadorEjecutado() {
-        indicadorEjecutado = inicializarModeloIndicadorPorcentaje();
-
-        indicadorEjecutado.setSeriesColors("66cc66,93b75f,E7E658,cc6666");
-
-        indicadorEjecutado.setGaugeLabelPosition("bottom");
-        //indicadorEjecutado.setShowTickLabels(false);
-        
-        indicadorEjecutado.setIntervalInnerRadius(85);
-        indicadorEjecutado.setIntervalOuterRadius(80);
-        
-        indicadorEjecutado.setExtender("indicador");
-        
-    }
     
     public HashMap<String,Float> obtenerSaldosRubro(){
 
@@ -844,7 +877,7 @@ public class SolicitudController implements Serializable {
         this.itemsDisponibles = new ArrayList<Solicitud>();
         
         //filtro por rubros
-        if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición") | tabseleccionado.equals("Reintegro")){
+        if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición") | tabseleccionado.equals("Reintegro") | tabseleccionado.equals("Rendición de Gastos")){
             for(Solicitud s : this.itemsDisponiblesNuevo ){
                 // Si NO es de Recursos Humanos, Consultoria y Traslados
                 if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
@@ -862,6 +895,7 @@ public class SolicitudController implements Serializable {
                 }
             }
         }
+
           
 //            if(tabseleccionado.equals("Reintegro")){
 //                for(Solicitud s : this.itemsDisponibles ){

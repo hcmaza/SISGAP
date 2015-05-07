@@ -78,7 +78,7 @@ public class IndicadoresController implements Serializable {
 
     // Saldo del proyecto
     private float saldoProyecto = 0.0f;
-
+    
     // Monto ejecutado del proyecto
     private float ejecutadoProyecto = 0.0f;
 
@@ -87,6 +87,11 @@ public class IndicadoresController implements Serializable {
 
     // Monto pendiente de rendicion por proyecto
     private float pendienteRendicionProyecto;
+    
+    float porcentajeEjecutado = 0.0f;
+    
+//    // total desembolsado
+//    private float totalDesembolsado;
 
     public SolicitudFacade getSolicitudFacade() {
         return solicitudFacade;
@@ -168,6 +173,23 @@ public class IndicadoresController implements Serializable {
         return pendienteRendicionProyecto;
     }
 
+    public float getPorcentajeEjecutado() {
+        return porcentajeEjecutado;
+    }
+
+    public void setPorcentajeEjecutado(float porcentajeEjecutado) {
+        this.porcentajeEjecutado = porcentajeEjecutado;
+    }
+    
+    public String getPorcentajeEjecutadoString(){
+        return String.format("%.02f", porcentajeEjecutado);
+    }
+    
+
+//    public float getTotalDesembolsado() {
+//        return totalDesembolsado;
+//    }
+
     /**
      * Creates a new instance of IndicadoresController
      */
@@ -193,6 +215,10 @@ public class IndicadoresController implements Serializable {
         generarChartEjecutadoPorRubro();
         
         generarChartEjecutadoPorFecha();
+        
+        //calcularTotalDesembolsado();
+        
+        calcularSaldoProyecto();
 
     }
 
@@ -213,6 +239,9 @@ public class IndicadoresController implements Serializable {
 
         // Llenamos la lista de solicitudes anteriores
         listaSolicitudes = getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        listaSolicitudes.addAll(getSolicitudFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        listaSolicitudes.addAll(getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
+        listaSolicitudes.addAll(getSolicitudFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Lista de solicitudes disponibles
         List<Solicitud> listaSolicitudesDisponibles = new ArrayList<Solicitud>();
@@ -230,16 +259,17 @@ public class IndicadoresController implements Serializable {
             solicitud.setImporte(p.getTotal());
             solicitud.setDisponible(solicitud.getImporte());
 
-            // buscamos si el presupuestotarea ya fue solicitado anteriormente, de ser asi, restamos el importe o lo removemos
+            // buscamos si el presupuestotarea ya fue solicitado anteriormente y aprobado o ejecutado, de ser asi, restamos el importe o lo removemos
             Iterator i = listaSolicitudes.iterator();
 
             while (i.hasNext()) {
-                Solicitud solicitudAprobada = (Solicitud) i.next();
+                Solicitud solicitudAprobadaOEnEjecucion = (Solicitud) i.next();
 
                 // si encontramos el presupuestotarea en una solicitud anterior y siendo una solicitud aprobada
-                if (p.getId() == solicitudAprobada.getPresupuestotarea().getId()) {
+                if (p.getId() == solicitudAprobadaOEnEjecucion.getPresupuestotarea().getId()) {
                     // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
-                    solicitud.setImporte(p.getTotal().subtract(solicitudAprobada.getImporte()));
+                    //solicitud.setImporte(p.getTotal().subtract(solicitudAprobadaOEnEjecucion.getImporte()));
+                    solicitud.setImporte(solicitud.getImporte().subtract(solicitudAprobadaOEnEjecucion.getImporte()));
                     solicitud.setDisponible(solicitud.getImporte());
                 }
             }
@@ -251,7 +281,7 @@ public class IndicadoresController implements Serializable {
                 // Acumulamos en la lista de saldos
                 saldos.put(solicitud.getPresupuestotarea().getRubro().getAbreviado(), saldos.get(solicitud.getPresupuestotarea().getRubro().getAbreviado()) + solicitud.getDisponible().floatValue());
 
-                saldoProyecto += solicitud.getDisponible().floatValue();
+                
 
             }
         }
@@ -274,8 +304,10 @@ public class IndicadoresController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
-        // Llenamos la lista de solicitudes (Aprobadas y Rendidas)
+        // Llenamos la lista de solicitudes (Aprobadas, en ejecucion, evaluacion y Rendidas)
         listaSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
         listaSolicitudes.addAll(this.getSolicitudFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Ejecutado por Rubro
@@ -329,7 +361,7 @@ public class IndicadoresController implements Serializable {
         //chartEjecutadoPorRubro.setTitle("Simple Pie");
         //chartEjecutadoPorRubro.setLegendPosition("w");
         chartEjecutadoPorRubro.setExtender("torta");
-        chartEjecutadoPorRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
+        chartEjecutadoPorRubro.setSeriesColors("21B2CE,FF964A,5ACB73,9C4DAD,CE4131,DED7A5");
 
     }
 
@@ -345,6 +377,7 @@ public class IndicadoresController implements Serializable {
         // Llenamos la lista de solicitudes (Aprobadas)
         colSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
         colSolicitudes.addAll(this.getSolicitudFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        colSolicitudes.addAll(this.getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
         colSolicitudes.addAll(this.getSolicitudFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
         
         // Llenamos la lista de desembolsos
@@ -428,7 +461,7 @@ public class IndicadoresController implements Serializable {
         chartEjecutadoPorFecha.getAxes().put(AxisType.X, axis);
         
         chartEjecutadoPorFecha.setExtender("ejecutadofecha");
-        chartEjecutadoPorFecha.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
+        chartEjecutadoPorFecha.setSeriesColors("21B2CE,CE4131,FF964A,5ACB73,9C4DAD,DED7A5");
 
     }
 
@@ -448,15 +481,16 @@ public class IndicadoresController implements Serializable {
                 add(25);
                 add(50);
                 add(75);
-                add(100);
             }
         };
 
-        float ejecutado = 0.0f;
-        ejecutado = (totalPresupuestoProyecto * ejecutadoProyecto) / 100;
+        
+        porcentajeEjecutado = (ejecutadoProyecto / totalPresupuestoProyecto) * 100;
+        
+        System.out.println("INDICADORES: porcentajeEjecutado = " + porcentajeEjecutado);
 
         //return new MeterGaugeChartModel(Integer.parseInt(String.valueOf(ejecutado)), intervalos);
-        return new MeterGaugeChartModel((int) ejecutado, intervalos);
+        return new MeterGaugeChartModel((int) porcentajeEjecutado, intervalos);
     }
 
     private void crearIndicadorEjecutado() {
@@ -467,8 +501,8 @@ public class IndicadoresController implements Serializable {
         indicadorEjecutado.setGaugeLabelPosition("bottom");
         //indicadorEjecutado.setShowTickLabels(false);
 
-        indicadorEjecutado.setIntervalInnerRadius(85);
-        indicadorEjecutado.setIntervalOuterRadius(80);
+        //indicadorEjecutado.setIntervalInnerRadius(25);
+        //indicadorEjecutado.setIntervalOuterRadius(70);
 
         indicadorEjecutado.setExtender("indicador");
         
@@ -482,14 +516,22 @@ public class IndicadoresController implements Serializable {
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
         totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(proyectocontroller.getSelected().getId());
+        System.out.println("INDICADORES: totalPresupuestoProyecto = " + totalPresupuestoProyecto);
     }
 
     public void calcularPendienteRendicion() {
         this.pendienteRendicionProyecto = 12588.12f;
     }
 
-    public void calcularTotalEjecutado() {
-        this.ejecutadoProyecto = 56451.58f;
+    private void calcularSaldoProyecto() {
+        
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        
+        float totalDesembolsado = desembolsocontroller.sumarDesembolsos();
+        
+        saldoProyecto = totalDesembolsado - ejecutadoProyecto;
     }
 
     public static class SaldoRubro {
@@ -514,6 +556,28 @@ public class IndicadoresController implements Serializable {
         }
 
     }
+    
+//    public void calcularTotalDesembolsado() {
+//        
+//        // Obtenemos los controladores necesarios
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+//        
+//        totalDesembolsado = 0f;
+//        
+//        // Llenamos la lista de desembolsos
+//        List<Desembolso> colDesembolsos;
+//        
+//        try{
+//            colDesembolsos = this.getDesembolsoFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId());
+//        } catch(Exception e){
+//            colDesembolsos = new ArrayList<Desembolso>();
+//        }
+//        
+//        for(Desembolso d : colDesembolsos){
+//            totalDesembolsado = totalDesembolsado + d.getMonto().floatValue();
+//        }
+//    }
 
     public static class ItemRubro {
 

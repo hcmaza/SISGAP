@@ -46,17 +46,24 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Proyecto.findByCudap", query = "SELECT p FROM Proyecto p WHERE p.cudap = :cudap")})
 public class Proyecto implements Serializable {
     private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> SISGAPTincho2
     //@Basic(optional = false)
     //@NotNull
     @Column(name = "fecharesolucion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecharesolucion;
+    
     @Column(name = "fechaexpediente")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaexpediente;
+    
     @Size(max = 40)
     @Column(name = "resolucion")
     private String resolucion;
+    
     @Size(max = 40)
     @Column(name = "expediente")
     private String expediente;

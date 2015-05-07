@@ -54,5 +54,9 @@
             <from-outcome>CreateDesembolso</from-outcome>
             <to-view-id>/secure/desembolso/Create.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>CreateEvaluacionRendicion</from-outcome>
+            <to-view-id>/secure/rendicion/Evaluacion.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
 </faces-config>

@@ -92,6 +92,18 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
     }
     
     /**
+     * Obtiene una lista de solicitudes con estado "Ejecucion" para un proyecto determinado
+     * 
+     * @param proyectoid
+     * @return 
+     */
+    public List<Solicitud> obtenerRendicionAEvaluarPorProyecto(int proyectoid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.estadosolicitudid.id = 6 AND s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid", Solicitud.class);
+        consulta.setParameter("proyectoid", proyectoid);
+        return consulta.getResultList();
+    }
+    
+    /**
      * Obtiene una solicitud de un presupuestotarea determinado
      * 
      * @param presupuestotareaid
