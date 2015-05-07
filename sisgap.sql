@@ -2,18 +2,19 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.2.7
--- Dumped by pg_dump version 9.2.7
--- Started on 2015-05-05 17:44:15
+-- Dumped from database version 9.3.3
+-- Dumped by pg_dump version 9.3.3
+-- Started on 2015-05-07 18:46:21
 
 SET statement_timeout = 0;
+SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- TOC entry 6 (class 2615 OID 3179120)
+-- TOC entry 6 (class 2615 OID 80968)
 -- Name: ap; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -23,7 +24,7 @@ CREATE SCHEMA ap;
 ALTER SCHEMA ap OWNER TO postgres;
 
 --
--- TOC entry 7 (class 2615 OID 3179121)
+-- TOC entry 7 (class 2615 OID 80969)
 -- Name: auditoria; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -33,7 +34,7 @@ CREATE SCHEMA auditoria;
 ALTER SCHEMA auditoria OWNER TO postgres;
 
 --
--- TOC entry 248 (class 3079 OID 11727)
+-- TOC entry 250 (class 3079 OID 11750)
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
@@ -41,8 +42,8 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2422 (class 0 OID 0)
--- Dependencies: 248
+-- TOC entry 2436 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
@@ -56,7 +57,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 170 (class 1259 OID 3179122)
+-- TOC entry 172 (class 1259 OID 80970)
 -- Name: agente; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -85,7 +86,7 @@ CREATE TABLE agente (
 ALTER TABLE ap.agente OWNER TO postgres;
 
 --
--- TOC entry 171 (class 1259 OID 3179128)
+-- TOC entry 173 (class 1259 OID 80976)
 -- Name: agente_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -100,8 +101,8 @@ CREATE SEQUENCE agente_id_seq
 ALTER TABLE ap.agente_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2423 (class 0 OID 0)
--- Dependencies: 171
+-- TOC entry 2437 (class 0 OID 0)
+-- Dependencies: 173
 -- Name: agente_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -109,7 +110,7 @@ ALTER SEQUENCE agente_id_seq OWNED BY agente.id;
 
 
 --
--- TOC entry 172 (class 1259 OID 3179130)
+-- TOC entry 174 (class 1259 OID 80978)
 -- Name: agentecargo; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -125,7 +126,7 @@ CREATE TABLE agentecargo (
 ALTER TABLE ap.agentecargo OWNER TO postgres;
 
 --
--- TOC entry 173 (class 1259 OID 3179133)
+-- TOC entry 175 (class 1259 OID 80981)
 -- Name: archivoproyecto; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -141,7 +142,7 @@ CREATE TABLE archivoproyecto (
 ALTER TABLE ap.archivoproyecto OWNER TO postgres;
 
 --
--- TOC entry 174 (class 1259 OID 3179139)
+-- TOC entry 176 (class 1259 OID 80987)
 -- Name: archivoproyecto_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -156,8 +157,8 @@ CREATE SEQUENCE archivoproyecto_id_seq
 ALTER TABLE ap.archivoproyecto_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2424 (class 0 OID 0)
--- Dependencies: 174
+-- TOC entry 2438 (class 0 OID 0)
+-- Dependencies: 176
 -- Name: archivoproyecto_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -165,7 +166,7 @@ ALTER SEQUENCE archivoproyecto_id_seq OWNED BY archivoproyecto.id;
 
 
 --
--- TOC entry 175 (class 1259 OID 3179141)
+-- TOC entry 177 (class 1259 OID 80989)
 -- Name: archivorendicion; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -188,7 +189,7 @@ CREATE TABLE archivorendicion (
 ALTER TABLE ap.archivorendicion OWNER TO postgres;
 
 --
--- TOC entry 176 (class 1259 OID 3179147)
+-- TOC entry 178 (class 1259 OID 80995)
 -- Name: archivorendicion_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -203,8 +204,8 @@ CREATE SEQUENCE archivorendicion_id_seq
 ALTER TABLE ap.archivorendicion_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2425 (class 0 OID 0)
--- Dependencies: 176
+-- TOC entry 2439 (class 0 OID 0)
+-- Dependencies: 178
 -- Name: archivorendicion_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -212,7 +213,7 @@ ALTER SEQUENCE archivorendicion_id_seq OWNED BY archivorendicion.id;
 
 
 --
--- TOC entry 177 (class 1259 OID 3179149)
+-- TOC entry 179 (class 1259 OID 80997)
 -- Name: avanceproyecto; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -225,7 +226,7 @@ CREATE TABLE avanceproyecto (
 ALTER TABLE ap.avanceproyecto OWNER TO postgres;
 
 --
--- TOC entry 178 (class 1259 OID 3179152)
+-- TOC entry 180 (class 1259 OID 81000)
 -- Name: avance_proyecto_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -240,8 +241,8 @@ CREATE SEQUENCE avance_proyecto_id_seq
 ALTER TABLE ap.avance_proyecto_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2426 (class 0 OID 0)
--- Dependencies: 178
+-- TOC entry 2440 (class 0 OID 0)
+-- Dependencies: 180
 -- Name: avance_proyecto_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -249,7 +250,7 @@ ALTER SEQUENCE avance_proyecto_id_seq OWNED BY avanceproyecto.id;
 
 
 --
--- TOC entry 179 (class 1259 OID 3179154)
+-- TOC entry 181 (class 1259 OID 81002)
 -- Name: banco; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -263,7 +264,7 @@ CREATE TABLE banco (
 ALTER TABLE ap.banco OWNER TO postgres;
 
 --
--- TOC entry 180 (class 1259 OID 3179157)
+-- TOC entry 182 (class 1259 OID 81005)
 -- Name: banco_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -278,8 +279,8 @@ CREATE SEQUENCE banco_id_seq
 ALTER TABLE ap.banco_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2427 (class 0 OID 0)
--- Dependencies: 180
+-- TOC entry 2441 (class 0 OID 0)
+-- Dependencies: 182
 -- Name: banco_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -287,7 +288,7 @@ ALTER SEQUENCE banco_id_seq OWNED BY banco.id;
 
 
 --
--- TOC entry 181 (class 1259 OID 3179159)
+-- TOC entry 183 (class 1259 OID 81007)
 -- Name: beneficiario; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -300,7 +301,7 @@ CREATE TABLE beneficiario (
 ALTER TABLE ap.beneficiario OWNER TO postgres;
 
 --
--- TOC entry 182 (class 1259 OID 3179162)
+-- TOC entry 184 (class 1259 OID 81010)
 -- Name: beneficiario_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -315,8 +316,8 @@ CREATE SEQUENCE beneficiario_id_seq
 ALTER TABLE ap.beneficiario_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2428 (class 0 OID 0)
--- Dependencies: 182
+-- TOC entry 2442 (class 0 OID 0)
+-- Dependencies: 184
 -- Name: beneficiario_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -324,7 +325,7 @@ ALTER SEQUENCE beneficiario_id_seq OWNED BY beneficiario.id;
 
 
 --
--- TOC entry 183 (class 1259 OID 3179164)
+-- TOC entry 185 (class 1259 OID 81012)
 -- Name: comitente; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -344,7 +345,7 @@ CREATE TABLE comitente (
 ALTER TABLE ap.comitente OWNER TO postgres;
 
 --
--- TOC entry 184 (class 1259 OID 3179170)
+-- TOC entry 186 (class 1259 OID 81018)
 -- Name: comitente_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -359,8 +360,8 @@ CREATE SEQUENCE comitente_id_seq
 ALTER TABLE ap.comitente_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2429 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 2443 (class 0 OID 0)
+-- Dependencies: 186
 -- Name: comitente_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -368,7 +369,7 @@ ALTER SEQUENCE comitente_id_seq OWNED BY comitente.id;
 
 
 --
--- TOC entry 185 (class 1259 OID 3179172)
+-- TOC entry 187 (class 1259 OID 81020)
 -- Name: configuracion; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -382,7 +383,7 @@ CREATE TABLE configuracion (
 ALTER TABLE ap.configuracion OWNER TO postgres;
 
 --
--- TOC entry 186 (class 1259 OID 3179178)
+-- TOC entry 188 (class 1259 OID 81026)
 -- Name: configuracion_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -397,8 +398,8 @@ CREATE SEQUENCE configuracion_id_seq
 ALTER TABLE ap.configuracion_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2430 (class 0 OID 0)
--- Dependencies: 186
+-- TOC entry 2444 (class 0 OID 0)
+-- Dependencies: 188
 -- Name: configuracion_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -406,7 +407,7 @@ ALTER SEQUENCE configuracion_id_seq OWNED BY configuracion.id;
 
 
 --
--- TOC entry 187 (class 1259 OID 3179180)
+-- TOC entry 189 (class 1259 OID 81028)
 -- Name: convocatoria; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -432,7 +433,7 @@ CREATE TABLE convocatoria (
 ALTER TABLE ap.convocatoria OWNER TO postgres;
 
 --
--- TOC entry 188 (class 1259 OID 3179186)
+-- TOC entry 190 (class 1259 OID 81034)
 -- Name: convocatoria_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -447,8 +448,8 @@ CREATE SEQUENCE convocatoria_id_seq
 ALTER TABLE ap.convocatoria_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2431 (class 0 OID 0)
--- Dependencies: 188
+-- TOC entry 2445 (class 0 OID 0)
+-- Dependencies: 190
 -- Name: convocatoria_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -456,7 +457,7 @@ ALTER SEQUENCE convocatoria_id_seq OWNED BY convocatoria.id;
 
 
 --
--- TOC entry 189 (class 1259 OID 3179188)
+-- TOC entry 191 (class 1259 OID 81036)
 -- Name: cuentabancaria; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -470,7 +471,7 @@ CREATE TABLE cuentabancaria (
 ALTER TABLE ap.cuentabancaria OWNER TO postgres;
 
 --
--- TOC entry 190 (class 1259 OID 3179191)
+-- TOC entry 192 (class 1259 OID 81039)
 -- Name: dependencia; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -483,7 +484,7 @@ CREATE TABLE dependencia (
 ALTER TABLE ap.dependencia OWNER TO postgres;
 
 --
--- TOC entry 191 (class 1259 OID 3179197)
+-- TOC entry 193 (class 1259 OID 81045)
 -- Name: dependencia_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -498,8 +499,8 @@ CREATE SEQUENCE dependencia_id_seq
 ALTER TABLE ap.dependencia_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2432 (class 0 OID 0)
--- Dependencies: 191
+-- TOC entry 2446 (class 0 OID 0)
+-- Dependencies: 193
 -- Name: dependencia_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -507,7 +508,7 @@ ALTER SEQUENCE dependencia_id_seq OWNED BY dependencia.id;
 
 
 --
--- TOC entry 192 (class 1259 OID 3179199)
+-- TOC entry 194 (class 1259 OID 81047)
 -- Name: desembolso; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -525,7 +526,7 @@ CREATE TABLE desembolso (
 ALTER TABLE ap.desembolso OWNER TO postgres;
 
 --
--- TOC entry 193 (class 1259 OID 3179202)
+-- TOC entry 195 (class 1259 OID 81050)
 -- Name: desembolso_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -540,8 +541,8 @@ CREATE SEQUENCE desembolso_id_seq
 ALTER TABLE ap.desembolso_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2433 (class 0 OID 0)
--- Dependencies: 193
+-- TOC entry 2447 (class 0 OID 0)
+-- Dependencies: 195
 -- Name: desembolso_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -549,7 +550,7 @@ ALTER SEQUENCE desembolso_id_seq OWNED BY desembolso.id;
 
 
 --
--- TOC entry 194 (class 1259 OID 3179204)
+-- TOC entry 196 (class 1259 OID 81052)
 -- Name: estadoproyecto; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -565,7 +566,7 @@ CREATE TABLE estadoproyecto (
 ALTER TABLE ap.estadoproyecto OWNER TO postgres;
 
 --
--- TOC entry 195 (class 1259 OID 3179210)
+-- TOC entry 197 (class 1259 OID 81058)
 -- Name: estadoproyecto_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -580,8 +581,8 @@ CREATE SEQUENCE estadoproyecto_id_seq
 ALTER TABLE ap.estadoproyecto_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2434 (class 0 OID 0)
--- Dependencies: 195
+-- TOC entry 2448 (class 0 OID 0)
+-- Dependencies: 197
 -- Name: estadoproyecto_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -589,7 +590,7 @@ ALTER SEQUENCE estadoproyecto_id_seq OWNED BY estadoproyecto.id;
 
 
 --
--- TOC entry 196 (class 1259 OID 3179212)
+-- TOC entry 198 (class 1259 OID 81060)
 -- Name: estadosolicitud; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -602,7 +603,7 @@ CREATE TABLE estadosolicitud (
 ALTER TABLE ap.estadosolicitud OWNER TO postgres;
 
 --
--- TOC entry 197 (class 1259 OID 3179215)
+-- TOC entry 199 (class 1259 OID 81063)
 -- Name: estadosolicitud_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -617,8 +618,8 @@ CREATE SEQUENCE estadosolicitud_id_seq
 ALTER TABLE ap.estadosolicitud_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2435 (class 0 OID 0)
--- Dependencies: 197
+-- TOC entry 2449 (class 0 OID 0)
+-- Dependencies: 199
 -- Name: estadosolicitud_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -626,7 +627,7 @@ ALTER SEQUENCE estadosolicitud_id_seq OWNED BY estadosolicitud.id;
 
 
 --
--- TOC entry 198 (class 1259 OID 3179217)
+-- TOC entry 200 (class 1259 OID 81065)
 -- Name: etapa; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -645,7 +646,7 @@ CREATE TABLE etapa (
 ALTER TABLE ap.etapa OWNER TO postgres;
 
 --
--- TOC entry 199 (class 1259 OID 3179223)
+-- TOC entry 201 (class 1259 OID 81071)
 -- Name: etapa_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -660,8 +661,8 @@ CREATE SEQUENCE etapa_id_seq
 ALTER TABLE ap.etapa_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2436 (class 0 OID 0)
--- Dependencies: 199
+-- TOC entry 2450 (class 0 OID 0)
+-- Dependencies: 201
 -- Name: etapa_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -669,7 +670,7 @@ ALTER SEQUENCE etapa_id_seq OWNED BY etapa.id;
 
 
 --
--- TOC entry 200 (class 1259 OID 3179225)
+-- TOC entry 202 (class 1259 OID 81073)
 -- Name: evaluacion; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -685,7 +686,7 @@ CREATE TABLE evaluacion (
 ALTER TABLE ap.evaluacion OWNER TO postgres;
 
 --
--- TOC entry 201 (class 1259 OID 3179231)
+-- TOC entry 203 (class 1259 OID 81079)
 -- Name: evaluacion_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -700,8 +701,8 @@ CREATE SEQUENCE evaluacion_id_seq
 ALTER TABLE ap.evaluacion_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2437 (class 0 OID 0)
--- Dependencies: 201
+-- TOC entry 2451 (class 0 OID 0)
+-- Dependencies: 203
 -- Name: evaluacion_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -709,7 +710,7 @@ ALTER SEQUENCE evaluacion_id_seq OWNED BY evaluacion.id;
 
 
 --
--- TOC entry 202 (class 1259 OID 3179233)
+-- TOC entry 204 (class 1259 OID 81081)
 -- Name: evaluacion_pregunta; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -725,7 +726,7 @@ CREATE TABLE evaluacion_pregunta (
 ALTER TABLE ap.evaluacion_pregunta OWNER TO postgres;
 
 --
--- TOC entry 203 (class 1259 OID 3179239)
+-- TOC entry 205 (class 1259 OID 81087)
 -- Name: fuentefinanciamiento; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -738,7 +739,7 @@ CREATE TABLE fuentefinanciamiento (
 ALTER TABLE ap.fuentefinanciamiento OWNER TO postgres;
 
 --
--- TOC entry 204 (class 1259 OID 3179245)
+-- TOC entry 206 (class 1259 OID 81093)
 -- Name: fuentefinanciamiento_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -753,8 +754,8 @@ CREATE SEQUENCE fuentefinanciamiento_id_seq
 ALTER TABLE ap.fuentefinanciamiento_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2438 (class 0 OID 0)
--- Dependencies: 204
+-- TOC entry 2452 (class 0 OID 0)
+-- Dependencies: 206
 -- Name: fuentefinanciamiento_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -762,7 +763,7 @@ ALTER SEQUENCE fuentefinanciamiento_id_seq OWNED BY fuentefinanciamiento.id;
 
 
 --
--- TOC entry 205 (class 1259 OID 3179247)
+-- TOC entry 207 (class 1259 OID 81095)
 -- Name: hibernate_sequence; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -777,7 +778,7 @@ CREATE SEQUENCE hibernate_sequence
 ALTER TABLE ap.hibernate_sequence OWNER TO postgres;
 
 --
--- TOC entry 206 (class 1259 OID 3179249)
+-- TOC entry 208 (class 1259 OID 81097)
 -- Name: perfil; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -790,7 +791,7 @@ CREATE TABLE perfil (
 ALTER TABLE ap.perfil OWNER TO postgres;
 
 --
--- TOC entry 207 (class 1259 OID 3179252)
+-- TOC entry 209 (class 1259 OID 81100)
 -- Name: perfil_rolid_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -805,8 +806,8 @@ CREATE SEQUENCE perfil_rolid_seq
 ALTER TABLE ap.perfil_rolid_seq OWNER TO postgres;
 
 --
--- TOC entry 2439 (class 0 OID 0)
--- Dependencies: 207
+-- TOC entry 2453 (class 0 OID 0)
+-- Dependencies: 209
 -- Name: perfil_rolid_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -814,7 +815,7 @@ ALTER SEQUENCE perfil_rolid_seq OWNED BY perfil.rolid;
 
 
 --
--- TOC entry 208 (class 1259 OID 3179254)
+-- TOC entry 210 (class 1259 OID 81102)
 -- Name: pregunta; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -828,7 +829,7 @@ CREATE TABLE pregunta (
 ALTER TABLE ap.pregunta OWNER TO postgres;
 
 --
--- TOC entry 209 (class 1259 OID 3179260)
+-- TOC entry 211 (class 1259 OID 81108)
 -- Name: pregunta_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -843,8 +844,8 @@ CREATE SEQUENCE pregunta_id_seq
 ALTER TABLE ap.pregunta_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2440 (class 0 OID 0)
--- Dependencies: 209
+-- TOC entry 2454 (class 0 OID 0)
+-- Dependencies: 211
 -- Name: pregunta_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -852,7 +853,7 @@ ALTER SEQUENCE pregunta_id_seq OWNED BY pregunta.id;
 
 
 --
--- TOC entry 210 (class 1259 OID 3179262)
+-- TOC entry 212 (class 1259 OID 81111)
 -- Name: presupuesto; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -867,7 +868,7 @@ CREATE TABLE presupuesto (
 ALTER TABLE ap.presupuesto OWNER TO postgres;
 
 --
--- TOC entry 211 (class 1259 OID 3179265)
+-- TOC entry 213 (class 1259 OID 81114)
 -- Name: presupuesto_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -882,8 +883,8 @@ CREATE SEQUENCE presupuesto_id_seq
 ALTER TABLE ap.presupuesto_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2441 (class 0 OID 0)
--- Dependencies: 211
+-- TOC entry 2455 (class 0 OID 0)
+-- Dependencies: 213
 -- Name: presupuesto_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -891,7 +892,7 @@ ALTER SEQUENCE presupuesto_id_seq OWNED BY presupuesto.id;
 
 
 --
--- TOC entry 212 (class 1259 OID 3179267)
+-- TOC entry 214 (class 1259 OID 81116)
 -- Name: presupuesto_rubro; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -909,7 +910,7 @@ CREATE TABLE presupuesto_rubro (
 ALTER TABLE ap.presupuesto_rubro OWNER TO postgres;
 
 --
--- TOC entry 213 (class 1259 OID 3179270)
+-- TOC entry 215 (class 1259 OID 81119)
 -- Name: presupuesto_rubroitem; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -930,7 +931,7 @@ CREATE TABLE presupuesto_rubroitem (
 ALTER TABLE ap.presupuesto_rubroitem OWNER TO postgres;
 
 --
--- TOC entry 214 (class 1259 OID 3179276)
+-- TOC entry 216 (class 1259 OID 81125)
 -- Name: presupuesto_rubroitem_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -945,8 +946,8 @@ CREATE SEQUENCE presupuesto_rubroitem_id_seq
 ALTER TABLE ap.presupuesto_rubroitem_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2442 (class 0 OID 0)
--- Dependencies: 214
+-- TOC entry 2456 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: presupuesto_rubroitem_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -954,7 +955,7 @@ ALTER SEQUENCE presupuesto_rubroitem_id_seq OWNED BY presupuesto_rubroitem.id;
 
 
 --
--- TOC entry 215 (class 1259 OID 3179278)
+-- TOC entry 217 (class 1259 OID 81127)
 -- Name: presupuesto_tarea; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -975,7 +976,7 @@ CREATE TABLE presupuesto_tarea (
 ALTER TABLE ap.presupuesto_tarea OWNER TO postgres;
 
 --
--- TOC entry 216 (class 1259 OID 3179284)
+-- TOC entry 218 (class 1259 OID 81133)
 -- Name: presupuesto_tarea_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -990,8 +991,8 @@ CREATE SEQUENCE presupuesto_tarea_id_seq
 ALTER TABLE ap.presupuesto_tarea_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2443 (class 0 OID 0)
--- Dependencies: 216
+-- TOC entry 2457 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: presupuesto_tarea_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -999,7 +1000,7 @@ ALTER SEQUENCE presupuesto_tarea_id_seq OWNED BY presupuesto_tarea.id;
 
 
 --
--- TOC entry 217 (class 1259 OID 3179286)
+-- TOC entry 219 (class 1259 OID 81135)
 -- Name: proyecto; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1034,7 +1035,7 @@ CREATE TABLE proyecto (
 ALTER TABLE ap.proyecto OWNER TO postgres;
 
 --
--- TOC entry 218 (class 1259 OID 3179292)
+-- TOC entry 220 (class 1259 OID 81141)
 -- Name: proyecto_agente; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1052,7 +1053,7 @@ CREATE TABLE proyecto_agente (
 ALTER TABLE ap.proyecto_agente OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 3179296)
+-- TOC entry 221 (class 1259 OID 81145)
 -- Name: proyecto_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1067,8 +1068,8 @@ CREATE SEQUENCE proyecto_id_seq
 ALTER TABLE ap.proyecto_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2444 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 2458 (class 0 OID 0)
+-- Dependencies: 221
 -- Name: proyecto_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1076,7 +1077,7 @@ ALTER SEQUENCE proyecto_id_seq OWNED BY proyecto.id;
 
 
 --
--- TOC entry 220 (class 1259 OID 3179298)
+-- TOC entry 222 (class 1259 OID 81147)
 -- Name: rendicion; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1090,7 +1091,7 @@ CREATE TABLE rendicion (
 ALTER TABLE ap.rendicion OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 3179301)
+-- TOC entry 223 (class 1259 OID 81150)
 -- Name: rendicion_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1105,8 +1106,8 @@ CREATE SEQUENCE rendicion_id_seq
 ALTER TABLE ap.rendicion_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2445 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 2459 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: rendicion_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1114,7 +1115,7 @@ ALTER SEQUENCE rendicion_id_seq OWNED BY rendicion.id;
 
 
 --
--- TOC entry 222 (class 1259 OID 3179303)
+-- TOC entry 224 (class 1259 OID 81152)
 -- Name: rubro; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1128,7 +1129,7 @@ CREATE TABLE rubro (
 ALTER TABLE ap.rubro OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 3179306)
+-- TOC entry 225 (class 1259 OID 81155)
 -- Name: rubro_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1143,8 +1144,8 @@ CREATE SEQUENCE rubro_id_seq
 ALTER TABLE ap.rubro_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2446 (class 0 OID 0)
--- Dependencies: 223
+-- TOC entry 2460 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: rubro_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1152,7 +1153,7 @@ ALTER SEQUENCE rubro_id_seq OWNED BY rubro.id;
 
 
 --
--- TOC entry 224 (class 1259 OID 3179308)
+-- TOC entry 226 (class 1259 OID 81157)
 -- Name: sector; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1165,7 +1166,7 @@ CREATE TABLE sector (
 ALTER TABLE ap.sector OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 3179311)
+-- TOC entry 227 (class 1259 OID 81160)
 -- Name: sector_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1180,8 +1181,8 @@ CREATE SEQUENCE sector_id_seq
 ALTER TABLE ap.sector_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2447 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 2461 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: sector_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1189,7 +1190,7 @@ ALTER SEQUENCE sector_id_seq OWNED BY sector.id;
 
 
 --
--- TOC entry 226 (class 1259 OID 3179313)
+-- TOC entry 228 (class 1259 OID 81162)
 -- Name: solicitud; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1214,7 +1215,7 @@ CREATE TABLE solicitud (
 ALTER TABLE ap.solicitud OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 3179319)
+-- TOC entry 229 (class 1259 OID 81168)
 -- Name: solicitud_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1229,8 +1230,8 @@ CREATE SEQUENCE solicitud_id_seq
 ALTER TABLE ap.solicitud_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2448 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 2462 (class 0 OID 0)
+-- Dependencies: 229
 -- Name: solicitud_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1238,7 +1239,7 @@ ALTER SEQUENCE solicitud_id_seq OWNED BY solicitud.id;
 
 
 --
--- TOC entry 228 (class 1259 OID 3179321)
+-- TOC entry 230 (class 1259 OID 81170)
 -- Name: solicitudacta; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1252,7 +1253,7 @@ CREATE TABLE solicitudacta (
 ALTER TABLE ap.solicitudacta OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 3179324)
+-- TOC entry 231 (class 1259 OID 81173)
 -- Name: solicitudacta_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1267,8 +1268,8 @@ CREATE SEQUENCE solicitudacta_id_seq
 ALTER TABLE ap.solicitudacta_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2449 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 2463 (class 0 OID 0)
+-- Dependencies: 231
 -- Name: solicitudacta_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1276,7 +1277,7 @@ ALTER SEQUENCE solicitudacta_id_seq OWNED BY solicitudacta.id;
 
 
 --
--- TOC entry 230 (class 1259 OID 3179326)
+-- TOC entry 232 (class 1259 OID 81175)
 -- Name: tarea; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1298,7 +1299,7 @@ CREATE TABLE tarea (
 ALTER TABLE ap.tarea OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 3179332)
+-- TOC entry 233 (class 1259 OID 81181)
 -- Name: tarea_agente; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1316,7 +1317,7 @@ CREATE TABLE tarea_agente (
 ALTER TABLE ap.tarea_agente OWNER TO postgres;
 
 --
--- TOC entry 232 (class 1259 OID 3179338)
+-- TOC entry 234 (class 1259 OID 81187)
 -- Name: tarea_agente_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1331,8 +1332,8 @@ CREATE SEQUENCE tarea_agente_id_seq
 ALTER TABLE ap.tarea_agente_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2450 (class 0 OID 0)
--- Dependencies: 232
+-- TOC entry 2464 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: tarea_agente_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1340,7 +1341,7 @@ ALTER SEQUENCE tarea_agente_id_seq OWNED BY tarea_agente.id;
 
 
 --
--- TOC entry 233 (class 1259 OID 3179340)
+-- TOC entry 235 (class 1259 OID 81189)
 -- Name: tarea_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1355,8 +1356,8 @@ CREATE SEQUENCE tarea_id_seq
 ALTER TABLE ap.tarea_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2451 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 2465 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: tarea_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1364,7 +1365,7 @@ ALTER SEQUENCE tarea_id_seq OWNED BY tarea.id;
 
 
 --
--- TOC entry 234 (class 1259 OID 3179342)
+-- TOC entry 236 (class 1259 OID 81191)
 -- Name: tareaprogreso; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1380,7 +1381,7 @@ CREATE TABLE tareaprogreso (
 ALTER TABLE ap.tareaprogreso OWNER TO postgres;
 
 --
--- TOC entry 235 (class 1259 OID 3179345)
+-- TOC entry 237 (class 1259 OID 81194)
 -- Name: tareaprogreso_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1395,8 +1396,8 @@ CREATE SEQUENCE tareaprogreso_id_seq
 ALTER TABLE ap.tareaprogreso_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2452 (class 0 OID 0)
--- Dependencies: 235
+-- TOC entry 2466 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: tareaprogreso_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1404,7 +1405,7 @@ ALTER SEQUENCE tareaprogreso_id_seq OWNED BY tareaprogreso.id;
 
 
 --
--- TOC entry 236 (class 1259 OID 3179347)
+-- TOC entry 238 (class 1259 OID 81196)
 -- Name: tipocomitente; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1417,7 +1418,7 @@ CREATE TABLE tipocomitente (
 ALTER TABLE ap.tipocomitente OWNER TO postgres;
 
 --
--- TOC entry 237 (class 1259 OID 3179353)
+-- TOC entry 239 (class 1259 OID 81202)
 -- Name: tipocomitente_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1432,8 +1433,8 @@ CREATE SEQUENCE tipocomitente_id_seq
 ALTER TABLE ap.tipocomitente_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2453 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 2467 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: tipocomitente_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1441,7 +1442,7 @@ ALTER SEQUENCE tipocomitente_id_seq OWNED BY tipocomitente.id;
 
 
 --
--- TOC entry 238 (class 1259 OID 3179355)
+-- TOC entry 240 (class 1259 OID 81204)
 -- Name: tipodocumento; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1454,7 +1455,7 @@ CREATE TABLE tipodocumento (
 ALTER TABLE ap.tipodocumento OWNER TO postgres;
 
 --
--- TOC entry 239 (class 1259 OID 3179361)
+-- TOC entry 241 (class 1259 OID 81210)
 -- Name: tipodocumento_tipodocumentoid_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1469,8 +1470,8 @@ CREATE SEQUENCE tipodocumento_tipodocumentoid_seq
 ALTER TABLE ap.tipodocumento_tipodocumentoid_seq OWNER TO postgres;
 
 --
--- TOC entry 2454 (class 0 OID 0)
--- Dependencies: 239
+-- TOC entry 2468 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: tipodocumento_tipodocumentoid_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1478,7 +1479,7 @@ ALTER SEQUENCE tipodocumento_tipodocumentoid_seq OWNED BY tipodocumento.tipodocu
 
 
 --
--- TOC entry 240 (class 1259 OID 3179363)
+-- TOC entry 242 (class 1259 OID 81212)
 -- Name: tipofinanciamiento; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1491,7 +1492,7 @@ CREATE TABLE tipofinanciamiento (
 ALTER TABLE ap.tipofinanciamiento OWNER TO postgres;
 
 --
--- TOC entry 241 (class 1259 OID 3179366)
+-- TOC entry 243 (class 1259 OID 81215)
 -- Name: tipofinanciamiento_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1506,8 +1507,8 @@ CREATE SEQUENCE tipofinanciamiento_id_seq
 ALTER TABLE ap.tipofinanciamiento_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2455 (class 0 OID 0)
--- Dependencies: 241
+-- TOC entry 2469 (class 0 OID 0)
+-- Dependencies: 243
 -- Name: tipofinanciamiento_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1515,7 +1516,7 @@ ALTER SEQUENCE tipofinanciamiento_id_seq OWNED BY tipofinanciamiento.id;
 
 
 --
--- TOC entry 242 (class 1259 OID 3179368)
+-- TOC entry 244 (class 1259 OID 81217)
 -- Name: tipoproyecto; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1528,7 +1529,7 @@ CREATE TABLE tipoproyecto (
 ALTER TABLE ap.tipoproyecto OWNER TO postgres;
 
 --
--- TOC entry 243 (class 1259 OID 3179371)
+-- TOC entry 245 (class 1259 OID 81220)
 -- Name: tipoproyecto_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1543,8 +1544,8 @@ CREATE SEQUENCE tipoproyecto_id_seq
 ALTER TABLE ap.tipoproyecto_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2456 (class 0 OID 0)
--- Dependencies: 243
+-- TOC entry 2470 (class 0 OID 0)
+-- Dependencies: 245
 -- Name: tipoproyecto_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1552,7 +1553,7 @@ ALTER SEQUENCE tipoproyecto_id_seq OWNED BY tipoproyecto.id;
 
 
 --
--- TOC entry 244 (class 1259 OID 3179373)
+-- TOC entry 246 (class 1259 OID 81222)
 -- Name: tiposolicitud; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1565,7 +1566,7 @@ CREATE TABLE tiposolicitud (
 ALTER TABLE ap.tiposolicitud OWNER TO postgres;
 
 --
--- TOC entry 245 (class 1259 OID 3179376)
+-- TOC entry 247 (class 1259 OID 81225)
 -- Name: tiposolicitud_id_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1580,8 +1581,8 @@ CREATE SEQUENCE tiposolicitud_id_seq
 ALTER TABLE ap.tiposolicitud_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2457 (class 0 OID 0)
--- Dependencies: 245
+-- TOC entry 2471 (class 0 OID 0)
+-- Dependencies: 247
 -- Name: tiposolicitud_id_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1589,7 +1590,7 @@ ALTER SEQUENCE tiposolicitud_id_seq OWNED BY tiposolicitud.id;
 
 
 --
--- TOC entry 246 (class 1259 OID 3179378)
+-- TOC entry 248 (class 1259 OID 81227)
 -- Name: usuario; Type: TABLE; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -1608,7 +1609,7 @@ CREATE TABLE usuario (
 ALTER TABLE ap.usuario OWNER TO postgres;
 
 --
--- TOC entry 247 (class 1259 OID 3179385)
+-- TOC entry 249 (class 1259 OID 81234)
 -- Name: usuario_usuarioid_seq; Type: SEQUENCE; Schema: ap; Owner: postgres
 --
 
@@ -1623,8 +1624,8 @@ CREATE SEQUENCE usuario_usuarioid_seq
 ALTER TABLE ap.usuario_usuarioid_seq OWNER TO postgres;
 
 --
--- TOC entry 2458 (class 0 OID 0)
--- Dependencies: 247
+-- TOC entry 2472 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: usuario_usuarioid_seq; Type: SEQUENCE OWNED BY; Schema: ap; Owner: postgres
 --
 
@@ -1632,7 +1633,7 @@ ALTER SEQUENCE usuario_usuarioid_seq OWNED BY usuario.usuarioid;
 
 
 --
--- TOC entry 2066 (class 2604 OID 3179387)
+-- TOC entry 2079 (class 2604 OID 81236)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1640,7 +1641,7 @@ ALTER TABLE ONLY agente ALTER COLUMN id SET DEFAULT nextval('agente_id_seq'::reg
 
 
 --
--- TOC entry 2067 (class 2604 OID 3179388)
+-- TOC entry 2080 (class 2604 OID 81237)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1648,7 +1649,7 @@ ALTER TABLE ONLY archivoproyecto ALTER COLUMN id SET DEFAULT nextval('archivopro
 
 
 --
--- TOC entry 2068 (class 2604 OID 3179389)
+-- TOC entry 2081 (class 2604 OID 81238)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1656,7 +1657,7 @@ ALTER TABLE ONLY archivorendicion ALTER COLUMN id SET DEFAULT nextval('archivore
 
 
 --
--- TOC entry 2069 (class 2604 OID 3179390)
+-- TOC entry 2082 (class 2604 OID 81239)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1664,7 +1665,7 @@ ALTER TABLE ONLY avanceproyecto ALTER COLUMN id SET DEFAULT nextval('avance_proy
 
 
 --
--- TOC entry 2070 (class 2604 OID 3179391)
+-- TOC entry 2083 (class 2604 OID 81240)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1672,7 +1673,7 @@ ALTER TABLE ONLY banco ALTER COLUMN id SET DEFAULT nextval('banco_id_seq'::regcl
 
 
 --
--- TOC entry 2071 (class 2604 OID 3179392)
+-- TOC entry 2084 (class 2604 OID 81241)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1680,7 +1681,7 @@ ALTER TABLE ONLY beneficiario ALTER COLUMN id SET DEFAULT nextval('beneficiario_
 
 
 --
--- TOC entry 2072 (class 2604 OID 3179393)
+-- TOC entry 2085 (class 2604 OID 81242)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1688,7 +1689,7 @@ ALTER TABLE ONLY comitente ALTER COLUMN id SET DEFAULT nextval('comitente_id_seq
 
 
 --
--- TOC entry 2073 (class 2604 OID 3179394)
+-- TOC entry 2086 (class 2604 OID 81243)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1696,7 +1697,7 @@ ALTER TABLE ONLY configuracion ALTER COLUMN id SET DEFAULT nextval('configuracio
 
 
 --
--- TOC entry 2074 (class 2604 OID 3179395)
+-- TOC entry 2087 (class 2604 OID 81244)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1704,7 +1705,7 @@ ALTER TABLE ONLY convocatoria ALTER COLUMN id SET DEFAULT nextval('convocatoria_
 
 
 --
--- TOC entry 2075 (class 2604 OID 3179396)
+-- TOC entry 2088 (class 2604 OID 81245)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1712,7 +1713,7 @@ ALTER TABLE ONLY dependencia ALTER COLUMN id SET DEFAULT nextval('dependencia_id
 
 
 --
--- TOC entry 2076 (class 2604 OID 3179397)
+-- TOC entry 2089 (class 2604 OID 81246)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1720,7 +1721,7 @@ ALTER TABLE ONLY desembolso ALTER COLUMN id SET DEFAULT nextval('desembolso_id_s
 
 
 --
--- TOC entry 2077 (class 2604 OID 3179398)
+-- TOC entry 2090 (class 2604 OID 81247)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1728,7 +1729,7 @@ ALTER TABLE ONLY estadoproyecto ALTER COLUMN id SET DEFAULT nextval('estadoproye
 
 
 --
--- TOC entry 2078 (class 2604 OID 3179399)
+-- TOC entry 2091 (class 2604 OID 81248)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1736,7 +1737,7 @@ ALTER TABLE ONLY estadosolicitud ALTER COLUMN id SET DEFAULT nextval('estadosoli
 
 
 --
--- TOC entry 2079 (class 2604 OID 3179400)
+-- TOC entry 2092 (class 2604 OID 81249)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1744,7 +1745,7 @@ ALTER TABLE ONLY etapa ALTER COLUMN id SET DEFAULT nextval('etapa_id_seq'::regcl
 
 
 --
--- TOC entry 2080 (class 2604 OID 3179401)
+-- TOC entry 2093 (class 2604 OID 81250)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1752,7 +1753,7 @@ ALTER TABLE ONLY evaluacion ALTER COLUMN id SET DEFAULT nextval('evaluacion_id_s
 
 
 --
--- TOC entry 2081 (class 2604 OID 3179402)
+-- TOC entry 2094 (class 2604 OID 81251)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1760,7 +1761,7 @@ ALTER TABLE ONLY fuentefinanciamiento ALTER COLUMN id SET DEFAULT nextval('fuent
 
 
 --
--- TOC entry 2082 (class 2604 OID 3179403)
+-- TOC entry 2095 (class 2604 OID 81252)
 -- Name: rolid; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1768,7 +1769,7 @@ ALTER TABLE ONLY perfil ALTER COLUMN rolid SET DEFAULT nextval('perfil_rolid_seq
 
 
 --
--- TOC entry 2083 (class 2604 OID 3179404)
+-- TOC entry 2096 (class 2604 OID 81253)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1776,7 +1777,7 @@ ALTER TABLE ONLY pregunta ALTER COLUMN id SET DEFAULT nextval('pregunta_id_seq':
 
 
 --
--- TOC entry 2084 (class 2604 OID 3179405)
+-- TOC entry 2097 (class 2604 OID 81254)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1784,7 +1785,7 @@ ALTER TABLE ONLY presupuesto ALTER COLUMN id SET DEFAULT nextval('presupuesto_id
 
 
 --
--- TOC entry 2085 (class 2604 OID 3179406)
+-- TOC entry 2098 (class 2604 OID 81255)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1792,7 +1793,7 @@ ALTER TABLE ONLY presupuesto_rubroitem ALTER COLUMN id SET DEFAULT nextval('pres
 
 
 --
--- TOC entry 2086 (class 2604 OID 3179407)
+-- TOC entry 2099 (class 2604 OID 81256)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1800,7 +1801,7 @@ ALTER TABLE ONLY presupuesto_tarea ALTER COLUMN id SET DEFAULT nextval('presupue
 
 
 --
--- TOC entry 2087 (class 2604 OID 3179408)
+-- TOC entry 2100 (class 2604 OID 81257)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1808,7 +1809,7 @@ ALTER TABLE ONLY proyecto ALTER COLUMN id SET DEFAULT nextval('proyecto_id_seq':
 
 
 --
--- TOC entry 2089 (class 2604 OID 3179409)
+-- TOC entry 2102 (class 2604 OID 81258)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1816,7 +1817,7 @@ ALTER TABLE ONLY rendicion ALTER COLUMN id SET DEFAULT nextval('rendicion_id_seq
 
 
 --
--- TOC entry 2090 (class 2604 OID 3179410)
+-- TOC entry 2103 (class 2604 OID 81259)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1824,7 +1825,7 @@ ALTER TABLE ONLY rubro ALTER COLUMN id SET DEFAULT nextval('rubro_id_seq'::regcl
 
 
 --
--- TOC entry 2091 (class 2604 OID 3179411)
+-- TOC entry 2104 (class 2604 OID 81260)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1832,7 +1833,7 @@ ALTER TABLE ONLY sector ALTER COLUMN id SET DEFAULT nextval('sector_id_seq'::reg
 
 
 --
--- TOC entry 2092 (class 2604 OID 3179412)
+-- TOC entry 2105 (class 2604 OID 81261)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1840,7 +1841,7 @@ ALTER TABLE ONLY solicitud ALTER COLUMN id SET DEFAULT nextval('solicitud_id_seq
 
 
 --
--- TOC entry 2093 (class 2604 OID 3179413)
+-- TOC entry 2106 (class 2604 OID 81262)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1848,7 +1849,7 @@ ALTER TABLE ONLY solicitudacta ALTER COLUMN id SET DEFAULT nextval('solicitudact
 
 
 --
--- TOC entry 2094 (class 2604 OID 3179414)
+-- TOC entry 2107 (class 2604 OID 81263)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1856,7 +1857,7 @@ ALTER TABLE ONLY tarea ALTER COLUMN id SET DEFAULT nextval('tarea_id_seq'::regcl
 
 
 --
--- TOC entry 2095 (class 2604 OID 3179415)
+-- TOC entry 2108 (class 2604 OID 81264)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1864,7 +1865,7 @@ ALTER TABLE ONLY tarea_agente ALTER COLUMN id SET DEFAULT nextval('tarea_agente_
 
 
 --
--- TOC entry 2096 (class 2604 OID 3179416)
+-- TOC entry 2109 (class 2604 OID 81265)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1872,7 +1873,7 @@ ALTER TABLE ONLY tareaprogreso ALTER COLUMN id SET DEFAULT nextval('tareaprogres
 
 
 --
--- TOC entry 2097 (class 2604 OID 3179417)
+-- TOC entry 2110 (class 2604 OID 81266)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1880,7 +1881,7 @@ ALTER TABLE ONLY tipocomitente ALTER COLUMN id SET DEFAULT nextval('tipocomitent
 
 
 --
--- TOC entry 2098 (class 2604 OID 3179418)
+-- TOC entry 2111 (class 2604 OID 81267)
 -- Name: tipodocumentoid; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1888,7 +1889,7 @@ ALTER TABLE ONLY tipodocumento ALTER COLUMN tipodocumentoid SET DEFAULT nextval(
 
 
 --
--- TOC entry 2099 (class 2604 OID 3179419)
+-- TOC entry 2112 (class 2604 OID 81268)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1896,7 +1897,7 @@ ALTER TABLE ONLY tipofinanciamiento ALTER COLUMN id SET DEFAULT nextval('tipofin
 
 
 --
--- TOC entry 2100 (class 2604 OID 3179420)
+-- TOC entry 2113 (class 2604 OID 81269)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1904,7 +1905,7 @@ ALTER TABLE ONLY tipoproyecto ALTER COLUMN id SET DEFAULT nextval('tipoproyecto_
 
 
 --
--- TOC entry 2101 (class 2604 OID 3179421)
+-- TOC entry 2114 (class 2604 OID 81270)
 -- Name: id; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1912,7 +1913,7 @@ ALTER TABLE ONLY tiposolicitud ALTER COLUMN id SET DEFAULT nextval('tiposolicitu
 
 
 --
--- TOC entry 2103 (class 2604 OID 3179422)
+-- TOC entry 2116 (class 2604 OID 81271)
 -- Name: usuarioid; Type: DEFAULT; Schema: ap; Owner: postgres
 --
 
@@ -1920,8 +1921,8 @@ ALTER TABLE ONLY usuario ALTER COLUMN usuarioid SET DEFAULT nextval('usuario_usu
 
 
 --
--- TOC entry 2337 (class 0 OID 3179122)
--- Dependencies: 170
+-- TOC entry 2351 (class 0 OID 80970)
+-- Dependencies: 172
 -- Data for Name: agente; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -2413,8 +2414,8 @@ INSERT INTO agente VALUES ('SANDES              ', 'GABRIELA ALEJANDRA  ', 1, '1
 
 
 --
--- TOC entry 2459 (class 0 OID 0)
--- Dependencies: 171
+-- TOC entry 2473 (class 0 OID 0)
+-- Dependencies: 173
 -- Name: agente_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -2422,8 +2423,8 @@ SELECT pg_catalog.setval('agente_id_seq', 4956, true);
 
 
 --
--- TOC entry 2339 (class 0 OID 3179130)
--- Dependencies: 172
+-- TOC entry 2353 (class 0 OID 80978)
+-- Dependencies: 174
 -- Data for Name: agentecargo; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -2961,8 +2962,8 @@ INSERT INTO agentecargo VALUES (9385, 20, 913, 'SALU', 0.00);
 
 
 --
--- TOC entry 2340 (class 0 OID 3179133)
--- Dependencies: 173
+-- TOC entry 2354 (class 0 OID 80981)
+-- Dependencies: 175
 -- Data for Name: archivoproyecto; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -2971,8 +2972,8 @@ INSERT INTO archivoproyecto VALUES ('tatuaje-de-alas-4998.jpg', 21, 'tatuaje-de-
 
 
 --
--- TOC entry 2460 (class 0 OID 0)
--- Dependencies: 174
+-- TOC entry 2474 (class 0 OID 0)
+-- Dependencies: 176
 -- Name: archivoproyecto_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -2980,8 +2981,8 @@ SELECT pg_catalog.setval('archivoproyecto_id_seq', 27, true);
 
 
 --
--- TOC entry 2342 (class 0 OID 3179141)
--- Dependencies: 175
+-- TOC entry 2356 (class 0 OID 80989)
+-- Dependencies: 177
 -- Data for Name: archivorendicion; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -2989,8 +2990,8 @@ INSERT INTO archivorendicion VALUES (2, 3, '01.png', '\x89504e470d0a1a0a0000000d
 
 
 --
--- TOC entry 2461 (class 0 OID 0)
--- Dependencies: 176
+-- TOC entry 2475 (class 0 OID 0)
+-- Dependencies: 178
 -- Name: archivorendicion_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -2998,8 +2999,8 @@ SELECT pg_catalog.setval('archivorendicion_id_seq', 2, true);
 
 
 --
--- TOC entry 2462 (class 0 OID 0)
--- Dependencies: 178
+-- TOC entry 2476 (class 0 OID 0)
+-- Dependencies: 180
 -- Name: avance_proyecto_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3007,8 +3008,8 @@ SELECT pg_catalog.setval('avance_proyecto_id_seq', 4, true);
 
 
 --
--- TOC entry 2344 (class 0 OID 3179149)
--- Dependencies: 177
+-- TOC entry 2358 (class 0 OID 80997)
+-- Dependencies: 179
 -- Data for Name: avanceproyecto; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3019,8 +3020,8 @@ INSERT INTO avanceproyecto VALUES (4, 'Parcialmente Ejecutado');
 
 
 --
--- TOC entry 2346 (class 0 OID 3179154)
--- Dependencies: 179
+-- TOC entry 2360 (class 0 OID 81002)
+-- Dependencies: 181
 -- Data for Name: banco; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3029,8 +3030,8 @@ INSERT INTO banco VALUES (2, 'Banco Patagonia', 'Chilecito');
 
 
 --
--- TOC entry 2463 (class 0 OID 0)
--- Dependencies: 180
+-- TOC entry 2477 (class 0 OID 0)
+-- Dependencies: 182
 -- Name: banco_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3038,8 +3039,8 @@ SELECT pg_catalog.setval('banco_id_seq', 1, true);
 
 
 --
--- TOC entry 2348 (class 0 OID 3179159)
--- Dependencies: 181
+-- TOC entry 2362 (class 0 OID 81007)
+-- Dependencies: 183
 -- Data for Name: beneficiario; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3049,8 +3050,8 @@ INSERT INTO beneficiario VALUES (3, 'Comitente/Universidad');
 
 
 --
--- TOC entry 2464 (class 0 OID 0)
--- Dependencies: 182
+-- TOC entry 2478 (class 0 OID 0)
+-- Dependencies: 184
 -- Name: beneficiario_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3058,8 +3059,8 @@ SELECT pg_catalog.setval('beneficiario_id_seq', 3, true);
 
 
 --
--- TOC entry 2350 (class 0 OID 3179164)
--- Dependencies: 183
+-- TOC entry 2364 (class 0 OID 81012)
+-- Dependencies: 185
 -- Data for Name: comitente; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3072,8 +3073,8 @@ INSERT INTO comitente VALUES (6, '6867676', '77777777777', '8888888', 'uuuu@uuu.
 
 
 --
--- TOC entry 2465 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 2479 (class 0 OID 0)
+-- Dependencies: 186
 -- Name: comitente_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3081,8 +3082,8 @@ SELECT pg_catalog.setval('comitente_id_seq', 6, true);
 
 
 --
--- TOC entry 2352 (class 0 OID 3179172)
--- Dependencies: 185
+-- TOC entry 2366 (class 0 OID 81020)
+-- Dependencies: 187
 -- Data for Name: configuracion; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3098,8 +3099,8 @@ INSERT INTO configuracion VALUES (9, 'maxporcentajerendicion', '20');
 
 
 --
--- TOC entry 2466 (class 0 OID 0)
--- Dependencies: 186
+-- TOC entry 2480 (class 0 OID 0)
+-- Dependencies: 188
 -- Name: configuracion_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3107,8 +3108,8 @@ SELECT pg_catalog.setval('configuracion_id_seq', 9, true);
 
 
 --
--- TOC entry 2354 (class 0 OID 3179180)
--- Dependencies: 187
+-- TOC entry 2368 (class 0 OID 81028)
+-- Dependencies: 189
 -- Data for Name: convocatoria; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3117,8 +3118,8 @@ INSERT INTO convocatoria VALUES (3, 'Convocatoria 2', NULL, NULL, 'http://www.un
 
 
 --
--- TOC entry 2467 (class 0 OID 0)
--- Dependencies: 188
+-- TOC entry 2481 (class 0 OID 0)
+-- Dependencies: 190
 -- Name: convocatoria_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3126,16 +3127,16 @@ SELECT pg_catalog.setval('convocatoria_id_seq', 3, true);
 
 
 --
--- TOC entry 2356 (class 0 OID 3179188)
--- Dependencies: 189
+-- TOC entry 2370 (class 0 OID 81036)
+-- Dependencies: 191
 -- Data for Name: cuentabancaria; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
 
 
 --
--- TOC entry 2357 (class 0 OID 3179191)
--- Dependencies: 190
+-- TOC entry 2371 (class 0 OID 81039)
+-- Dependencies: 192
 -- Data for Name: dependencia; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3144,8 +3145,8 @@ INSERT INTO dependencia VALUES (2, 'Departamento Ciencias Biologicas');
 
 
 --
--- TOC entry 2468 (class 0 OID 0)
--- Dependencies: 191
+-- TOC entry 2482 (class 0 OID 0)
+-- Dependencies: 193
 -- Name: dependencia_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3153,8 +3154,8 @@ SELECT pg_catalog.setval('dependencia_id_seq', 2, true);
 
 
 --
--- TOC entry 2359 (class 0 OID 3179199)
--- Dependencies: 192
+-- TOC entry 2373 (class 0 OID 81047)
+-- Dependencies: 194
 -- Data for Name: desembolso; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3163,8 +3164,8 @@ INSERT INTO desembolso VALUES (6, NULL, '2015-02-13 19:25:43.613', 27, '1', NULL
 
 
 --
--- TOC entry 2469 (class 0 OID 0)
--- Dependencies: 193
+-- TOC entry 2483 (class 0 OID 0)
+-- Dependencies: 195
 -- Name: desembolso_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3172,8 +3173,8 @@ SELECT pg_catalog.setval('desembolso_id_seq', 7, true);
 
 
 --
--- TOC entry 2361 (class 0 OID 3179204)
--- Dependencies: 194
+-- TOC entry 2375 (class 0 OID 81052)
+-- Dependencies: 196
 -- Data for Name: estadoproyecto; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3191,8 +3192,8 @@ INSERT INTO estadoproyecto VALUES (5, 'Proyecto Pre-Aprobado', NULL, 'PP ', true
 
 
 --
--- TOC entry 2470 (class 0 OID 0)
--- Dependencies: 195
+-- TOC entry 2484 (class 0 OID 0)
+-- Dependencies: 197
 -- Name: estadoproyecto_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3200,8 +3201,8 @@ SELECT pg_catalog.setval('estadoproyecto_id_seq', 13, true);
 
 
 --
--- TOC entry 2363 (class 0 OID 3179212)
--- Dependencies: 196
+-- TOC entry 2377 (class 0 OID 81060)
+-- Dependencies: 198
 -- Data for Name: estadosolicitud; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3214,8 +3215,8 @@ INSERT INTO estadosolicitud VALUES (6, 'Rendicion a Evaluar');
 
 
 --
--- TOC entry 2471 (class 0 OID 0)
--- Dependencies: 197
+-- TOC entry 2485 (class 0 OID 0)
+-- Dependencies: 199
 -- Name: estadosolicitud_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3223,8 +3224,8 @@ SELECT pg_catalog.setval('estadosolicitud_id_seq', 6, true);
 
 
 --
--- TOC entry 2365 (class 0 OID 3179217)
--- Dependencies: 198
+-- TOC entry 2379 (class 0 OID 81065)
+-- Dependencies: 200
 -- Data for Name: etapa; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3235,8 +3236,8 @@ INSERT INTO etapa VALUES (113, 'Etapa 2', '2015-02-23 00:00:00-03', 360, NULL, 2
 
 
 --
--- TOC entry 2472 (class 0 OID 0)
--- Dependencies: 199
+-- TOC entry 2486 (class 0 OID 0)
+-- Dependencies: 201
 -- Name: etapa_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3244,32 +3245,16 @@ SELECT pg_catalog.setval('etapa_id_seq', 115, true);
 
 
 --
--- TOC entry 2367 (class 0 OID 3179225)
--- Dependencies: 200
+-- TOC entry 2381 (class 0 OID 81073)
+-- Dependencies: 202
 -- Data for Name: evaluacion; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
-INSERT INTO evaluacion VALUES (12, '2014-10-02 13:41:04.654-03', 'Estimado docente-investigador:
-Por medio del presente informamos a Ud. que la Idea-Proyecto Nº 21 - Prueba uno de la cual Ud. Es responsable, ha sido  APROBADA según el siguiente detalle:
-Observaciones:
- - swaertwert
- - werqre
- - qrewerqw
-Resultados según criterios evaluados:
- - ¿La idea proyecto resulta pertinente a nivel institucional ? - MUY BUENO
- - El diagnostico describe de forma clara el problema a resolver ? - MUY BUENO
- - La decripcion de la idea-proyecto resulta clara y precisa? - MUY BUENO
- - Los objetivos de la idea-proyecto responden al dianostico presentado? - MUY BUENO
- - La idea proyecto dentro bases y conidciones del instrumento de financiamiento? - CORRECTO
- - El prespuesto resulta acorde a los objertivos planteados y encuadra dentro de las bases y conidciones del instrumento de financiamiento? - REGULAR
- - Los resultados son alcanzables en funcion de los objetivos planteados? - REGULAR
-Sin otro particular lo saludo a Ud. cordialmente.
-Unidad de Vinculación Tecnológica', 1, 21);
 
 
 --
--- TOC entry 2473 (class 0 OID 0)
--- Dependencies: 201
+-- TOC entry 2487 (class 0 OID 0)
+-- Dependencies: 203
 -- Name: evaluacion_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3277,23 +3262,16 @@ SELECT pg_catalog.setval('evaluacion_id_seq', 15, true);
 
 
 --
--- TOC entry 2369 (class 0 OID 3179233)
--- Dependencies: 202
+-- TOC entry 2383 (class 0 OID 81081)
+-- Dependencies: 204
 -- Data for Name: evaluacion_pregunta; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
-INSERT INTO evaluacion_pregunta VALUES (12, 1, 4, 'swaertwert', false);
-INSERT INTO evaluacion_pregunta VALUES (12, 2, 4, 'werqre', false);
-INSERT INTO evaluacion_pregunta VALUES (12, 3, 4, '', false);
-INSERT INTO evaluacion_pregunta VALUES (12, 4, 4, '', false);
-INSERT INTO evaluacion_pregunta VALUES (12, 5, 3, '', false);
-INSERT INTO evaluacion_pregunta VALUES (12, 6, 1, 'qrewerqw', false);
-INSERT INTO evaluacion_pregunta VALUES (12, 7, 1, '', false);
 
 
 --
--- TOC entry 2370 (class 0 OID 3179239)
--- Dependencies: 203
+-- TOC entry 2384 (class 0 OID 81087)
+-- Dependencies: 205
 -- Data for Name: fuentefinanciamiento; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3305,8 +3283,8 @@ INSERT INTO fuentefinanciamiento VALUES (5, 'FI');
 
 
 --
--- TOC entry 2474 (class 0 OID 0)
--- Dependencies: 204
+-- TOC entry 2488 (class 0 OID 0)
+-- Dependencies: 206
 -- Name: fuentefinanciamiento_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3314,8 +3292,8 @@ SELECT pg_catalog.setval('fuentefinanciamiento_id_seq', 5, true);
 
 
 --
--- TOC entry 2475 (class 0 OID 0)
--- Dependencies: 205
+-- TOC entry 2489 (class 0 OID 0)
+-- Dependencies: 207
 -- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3323,8 +3301,8 @@ SELECT pg_catalog.setval('hibernate_sequence', 1, false);
 
 
 --
--- TOC entry 2373 (class 0 OID 3179249)
--- Dependencies: 206
+-- TOC entry 2387 (class 0 OID 81097)
+-- Dependencies: 208
 -- Data for Name: perfil; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3334,8 +3312,8 @@ INSERT INTO perfil VALUES (3, 'Empleado');
 
 
 --
--- TOC entry 2476 (class 0 OID 0)
--- Dependencies: 207
+-- TOC entry 2490 (class 0 OID 0)
+-- Dependencies: 209
 -- Name: perfil_rolid_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3343,8 +3321,8 @@ SELECT pg_catalog.setval('perfil_rolid_seq', 3, true);
 
 
 --
--- TOC entry 2375 (class 0 OID 3179254)
--- Dependencies: 208
+-- TOC entry 2389 (class 0 OID 81102)
+-- Dependencies: 210
 -- Data for Name: pregunta; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3355,12 +3333,11 @@ INSERT INTO pregunta VALUES (4, 'Los objetivos de la idea-proyecto responden al 
 INSERT INTO pregunta VALUES (5, 'La idea proyecto dentro bases y conidciones del instrumento de financiamiento?', false);
 INSERT INTO pregunta VALUES (6, 'El prespuesto resulta acorde a los objertivos planteados y encuadra dentro de las bases y conidciones del instrumento de financiamiento?', false);
 INSERT INTO pregunta VALUES (7, 'Los resultados son alcanzables en funcion de los objetivos planteados?', false);
-INSERT INTO pregunta VALUES (8, 'Chincho se lq x', true);
 
 
 --
--- TOC entry 2477 (class 0 OID 0)
--- Dependencies: 209
+-- TOC entry 2491 (class 0 OID 0)
+-- Dependencies: 211
 -- Name: pregunta_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3368,8 +3345,8 @@ SELECT pg_catalog.setval('pregunta_id_seq', 8, true);
 
 
 --
--- TOC entry 2377 (class 0 OID 3179262)
--- Dependencies: 210
+-- TOC entry 2391 (class 0 OID 81111)
+-- Dependencies: 212
 -- Data for Name: presupuesto; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3378,8 +3355,8 @@ INSERT INTO presupuesto VALUES (27, 27, '2015-02-12 07:23:47.016', 'P');
 
 
 --
--- TOC entry 2478 (class 0 OID 0)
--- Dependencies: 211
+-- TOC entry 2492 (class 0 OID 0)
+-- Dependencies: 213
 -- Name: presupuesto_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3387,8 +3364,8 @@ SELECT pg_catalog.setval('presupuesto_id_seq', 27, true);
 
 
 --
--- TOC entry 2379 (class 0 OID 3179267)
--- Dependencies: 212
+-- TOC entry 2393 (class 0 OID 81116)
+-- Dependencies: 214
 -- Data for Name: presupuesto_rubro; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3407,16 +3384,16 @@ INSERT INTO presupuesto_rubro VALUES (27, 6, 0.00, 0.00, NULL, 10000.00, 10000.0
 
 
 --
--- TOC entry 2380 (class 0 OID 3179270)
--- Dependencies: 213
+-- TOC entry 2394 (class 0 OID 81119)
+-- Dependencies: 215
 -- Data for Name: presupuesto_rubroitem; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
 
 
 --
--- TOC entry 2479 (class 0 OID 0)
--- Dependencies: 214
+-- TOC entry 2493 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: presupuesto_rubroitem_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3424,8 +3401,8 @@ SELECT pg_catalog.setval('presupuesto_rubroitem_id_seq', 34, true);
 
 
 --
--- TOC entry 2382 (class 0 OID 3179278)
--- Dependencies: 215
+-- TOC entry 2396 (class 0 OID 81127)
+-- Dependencies: 217
 -- Data for Name: presupuesto_tarea; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3462,8 +3439,8 @@ INSERT INTO presupuesto_tarea VALUES ('Maza, Hugo', 52.36, 180.00, 8077.05, 5, 1
 
 
 --
--- TOC entry 2480 (class 0 OID 0)
--- Dependencies: 216
+-- TOC entry 2494 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: presupuesto_tarea_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3471,8 +3448,8 @@ SELECT pg_catalog.setval('presupuesto_tarea_id_seq', 54, true);
 
 
 --
--- TOC entry 2384 (class 0 OID 3179286)
--- Dependencies: 217
+-- TOC entry 2398 (class 0 OID 81135)
+-- Dependencies: 219
 -- Data for Name: proyecto; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3481,8 +3458,8 @@ INSERT INTO proyecto VALUES (2, 1, 'Prueba uno', 'Prueba uno', NULL, 'Prueba uno
 
 
 --
--- TOC entry 2385 (class 0 OID 3179292)
--- Dependencies: 218
+-- TOC entry 2399 (class 0 OID 81141)
+-- Dependencies: 220
 -- Data for Name: proyecto_agente; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3516,8 +3493,8 @@ INSERT INTO proyecto_agente VALUES (4480, 23, 'solicitud', 0, NULL, true, 9000.0
 
 
 --
--- TOC entry 2481 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 2495 (class 0 OID 0)
+-- Dependencies: 221
 -- Name: proyecto_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3525,8 +3502,8 @@ SELECT pg_catalog.setval('proyecto_id_seq', 27, true);
 
 
 --
--- TOC entry 2387 (class 0 OID 3179298)
--- Dependencies: 220
+-- TOC entry 2401 (class 0 OID 81147)
+-- Dependencies: 222
 -- Data for Name: rendicion; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3536,8 +3513,8 @@ INSERT INTO rendicion VALUES (3, '2015-05-05 17:41:00.533-03', NULL);
 
 
 --
--- TOC entry 2482 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 2496 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: rendicion_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3545,8 +3522,8 @@ SELECT pg_catalog.setval('rendicion_id_seq', 3, true);
 
 
 --
--- TOC entry 2389 (class 0 OID 3179303)
--- Dependencies: 222
+-- TOC entry 2403 (class 0 OID 81152)
+-- Dependencies: 224
 -- Data for Name: rubro; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3560,8 +3537,8 @@ INSERT INTO rubro VALUES (7, 'Traslados', 'Traslados');
 
 
 --
--- TOC entry 2483 (class 0 OID 0)
--- Dependencies: 223
+-- TOC entry 2497 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: rubro_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3569,16 +3546,16 @@ SELECT pg_catalog.setval('rubro_id_seq', 6, true);
 
 
 --
--- TOC entry 2391 (class 0 OID 3179308)
--- Dependencies: 224
+-- TOC entry 2405 (class 0 OID 81157)
+-- Dependencies: 226
 -- Data for Name: sector; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
 
 
 --
--- TOC entry 2484 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 2498 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: sector_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3586,8 +3563,8 @@ SELECT pg_catalog.setval('sector_id_seq', 1, false);
 
 
 --
--- TOC entry 2393 (class 0 OID 3179313)
--- Dependencies: 226
+-- TOC entry 2407 (class 0 OID 81162)
+-- Dependencies: 228
 -- Data for Name: solicitud; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3595,8 +3572,8 @@ INSERT INTO solicitud VALUES (22, '2015-05-05 17:38:14.117-03', '2015-05-05 17:3
 
 
 --
--- TOC entry 2485 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 2499 (class 0 OID 0)
+-- Dependencies: 229
 -- Name: solicitud_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3604,8 +3581,8 @@ SELECT pg_catalog.setval('solicitud_id_seq', 22, true);
 
 
 --
--- TOC entry 2395 (class 0 OID 3179321)
--- Dependencies: 228
+-- TOC entry 2409 (class 0 OID 81170)
+-- Dependencies: 230
 -- Data for Name: solicitudacta; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3613,8 +3590,8 @@ INSERT INTO solicitudacta VALUES (8, '2015-05-05 17:39:18.855-03', NULL);
 
 
 --
--- TOC entry 2486 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 2500 (class 0 OID 0)
+-- Dependencies: 231
 -- Name: solicitudacta_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3622,8 +3599,8 @@ SELECT pg_catalog.setval('solicitudacta_id_seq', 8, true);
 
 
 --
--- TOC entry 2397 (class 0 OID 3179326)
--- Dependencies: 230
+-- TOC entry 2411 (class 0 OID 81175)
+-- Dependencies: 232
 -- Data for Name: tarea; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3636,8 +3613,8 @@ INSERT INTO tarea VALUES ('Tarea 3: Construccion', 'Alta', '2015-02-13 19:11:07.
 
 
 --
--- TOC entry 2398 (class 0 OID 3179332)
--- Dependencies: 231
+-- TOC entry 2412 (class 0 OID 81181)
+-- Dependencies: 233
 -- Data for Name: tarea_agente; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3656,8 +3633,8 @@ INSERT INTO tarea_agente VALUES (131, 3, 'Desarrollador. Muñecas Habiles', NULL
 
 
 --
--- TOC entry 2487 (class 0 OID 0)
--- Dependencies: 232
+-- TOC entry 2501 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: tarea_agente_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3665,8 +3642,8 @@ SELECT pg_catalog.setval('tarea_agente_id_seq', 16, true);
 
 
 --
--- TOC entry 2488 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 2502 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: tarea_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3674,16 +3651,16 @@ SELECT pg_catalog.setval('tarea_id_seq', 134, true);
 
 
 --
--- TOC entry 2401 (class 0 OID 3179342)
--- Dependencies: 234
+-- TOC entry 2415 (class 0 OID 81191)
+-- Dependencies: 236
 -- Data for Name: tareaprogreso; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
 
 
 --
--- TOC entry 2489 (class 0 OID 0)
--- Dependencies: 235
+-- TOC entry 2503 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: tareaprogreso_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3691,8 +3668,8 @@ SELECT pg_catalog.setval('tareaprogreso_id_seq', 3, true);
 
 
 --
--- TOC entry 2403 (class 0 OID 3179347)
--- Dependencies: 236
+-- TOC entry 2417 (class 0 OID 81196)
+-- Dependencies: 238
 -- Data for Name: tipocomitente; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3701,8 +3678,8 @@ INSERT INTO tipocomitente VALUES ('Organismo Estatal', 2);
 
 
 --
--- TOC entry 2490 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 2504 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: tipocomitente_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3710,8 +3687,8 @@ SELECT pg_catalog.setval('tipocomitente_id_seq', 2, true);
 
 
 --
--- TOC entry 2405 (class 0 OID 3179355)
--- Dependencies: 238
+-- TOC entry 2419 (class 0 OID 81204)
+-- Dependencies: 240
 -- Data for Name: tipodocumento; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3722,8 +3699,8 @@ INSERT INTO tipodocumento VALUES (4, 'NN');
 
 
 --
--- TOC entry 2491 (class 0 OID 0)
--- Dependencies: 239
+-- TOC entry 2505 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: tipodocumento_tipodocumentoid_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3731,8 +3708,8 @@ SELECT pg_catalog.setval('tipodocumento_tipodocumentoid_seq', 4, true);
 
 
 --
--- TOC entry 2407 (class 0 OID 3179363)
--- Dependencies: 240
+-- TOC entry 2421 (class 0 OID 81212)
+-- Dependencies: 242
 -- Data for Name: tipofinanciamiento; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3744,8 +3721,8 @@ INSERT INTO tipofinanciamiento VALUES (4, 'Efectivo por Contrato comitente');
 
 
 --
--- TOC entry 2492 (class 0 OID 0)
--- Dependencies: 241
+-- TOC entry 2506 (class 0 OID 0)
+-- Dependencies: 243
 -- Name: tipofinanciamiento_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3753,8 +3730,8 @@ SELECT pg_catalog.setval('tipofinanciamiento_id_seq', 5, true);
 
 
 --
--- TOC entry 2409 (class 0 OID 3179368)
--- Dependencies: 242
+-- TOC entry 2423 (class 0 OID 81217)
+-- Dependencies: 244
 -- Data for Name: tipoproyecto; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3767,8 +3744,8 @@ INSERT INTO tipoproyecto VALUES (6, 'Administración de Fondos UVT');
 
 
 --
--- TOC entry 2493 (class 0 OID 0)
--- Dependencies: 243
+-- TOC entry 2507 (class 0 OID 0)
+-- Dependencies: 245
 -- Name: tipoproyecto_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3776,8 +3753,8 @@ SELECT pg_catalog.setval('tipoproyecto_id_seq', 2, true);
 
 
 --
--- TOC entry 2411 (class 0 OID 3179373)
--- Dependencies: 244
+-- TOC entry 2425 (class 0 OID 81222)
+-- Dependencies: 246
 -- Data for Name: tiposolicitud; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3788,8 +3765,8 @@ INSERT INTO tiposolicitud VALUES (4, 'Reintegro');
 
 
 --
--- TOC entry 2494 (class 0 OID 0)
--- Dependencies: 245
+-- TOC entry 2508 (class 0 OID 0)
+-- Dependencies: 247
 -- Name: tiposolicitud_id_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3797,8 +3774,8 @@ SELECT pg_catalog.setval('tiposolicitud_id_seq', 3, true);
 
 
 --
--- TOC entry 2413 (class 0 OID 3179378)
--- Dependencies: 246
+-- TOC entry 2427 (class 0 OID 81227)
+-- Dependencies: 248
 -- Data for Name: usuario; Type: TABLE DATA; Schema: ap; Owner: postgres
 --
 
@@ -3813,8 +3790,8 @@ INSERT INTO usuario VALUES (8, 'chincha', '8fc84bd4f04b5ca02a3c3b2a7864897431818
 
 
 --
--- TOC entry 2495 (class 0 OID 0)
--- Dependencies: 247
+-- TOC entry 2509 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: usuario_usuarioid_seq; Type: SEQUENCE SET; Schema: ap; Owner: postgres
 --
 
@@ -3822,7 +3799,7 @@ SELECT pg_catalog.setval('usuario_usuarioid_seq', 8, true);
 
 
 --
--- TOC entry 2107 (class 2606 OID 3179442)
+-- TOC entry 2120 (class 2606 OID 81276)
 -- Name: agentecargo_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3831,7 +3808,7 @@ ALTER TABLE ONLY agentecargo
 
 
 --
--- TOC entry 2109 (class 2606 OID 3179444)
+-- TOC entry 2122 (class 2606 OID 81278)
 -- Name: archivoproyecto_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3840,7 +3817,7 @@ ALTER TABLE ONLY archivoproyecto
 
 
 --
--- TOC entry 2111 (class 2606 OID 3179446)
+-- TOC entry 2124 (class 2606 OID 81280)
 -- Name: archivorendicionid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3849,7 +3826,7 @@ ALTER TABLE ONLY archivorendicion
 
 
 --
--- TOC entry 2113 (class 2606 OID 3179448)
+-- TOC entry 2126 (class 2606 OID 81282)
 -- Name: avance_proyecto_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3858,7 +3835,7 @@ ALTER TABLE ONLY avanceproyecto
 
 
 --
--- TOC entry 2115 (class 2606 OID 3179450)
+-- TOC entry 2128 (class 2606 OID 81284)
 -- Name: banco_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3867,7 +3844,7 @@ ALTER TABLE ONLY banco
 
 
 --
--- TOC entry 2117 (class 2606 OID 3179452)
+-- TOC entry 2130 (class 2606 OID 81286)
 -- Name: beneficiario_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3876,7 +3853,7 @@ ALTER TABLE ONLY beneficiario
 
 
 --
--- TOC entry 2121 (class 2606 OID 3179454)
+-- TOC entry 2134 (class 2606 OID 81288)
 -- Name: configuracion_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3885,7 +3862,7 @@ ALTER TABLE ONLY configuracion
 
 
 --
--- TOC entry 2123 (class 2606 OID 3179456)
+-- TOC entry 2136 (class 2606 OID 81290)
 -- Name: convocatoriaid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3894,7 +3871,7 @@ ALTER TABLE ONLY convocatoria
 
 
 --
--- TOC entry 2125 (class 2606 OID 3179458)
+-- TOC entry 2138 (class 2606 OID 81292)
 -- Name: cuentabancaria_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3903,7 +3880,7 @@ ALTER TABLE ONLY cuentabancaria
 
 
 --
--- TOC entry 2127 (class 2606 OID 3179460)
+-- TOC entry 2140 (class 2606 OID 81294)
 -- Name: dependenciaid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3912,7 +3889,7 @@ ALTER TABLE ONLY dependencia
 
 
 --
--- TOC entry 2129 (class 2606 OID 3179462)
+-- TOC entry 2142 (class 2606 OID 81296)
 -- Name: desembolso_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3921,7 +3898,7 @@ ALTER TABLE ONLY desembolso
 
 
 --
--- TOC entry 2119 (class 2606 OID 3179464)
+-- TOC entry 2132 (class 2606 OID 81298)
 -- Name: entidadbenefiaciariaid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3930,7 +3907,7 @@ ALTER TABLE ONLY comitente
 
 
 --
--- TOC entry 2131 (class 2606 OID 3179466)
+-- TOC entry 2144 (class 2606 OID 81300)
 -- Name: estadoproyecto_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3939,7 +3916,7 @@ ALTER TABLE ONLY estadoproyecto
 
 
 --
--- TOC entry 2133 (class 2606 OID 3179468)
+-- TOC entry 2146 (class 2606 OID 81302)
 -- Name: estadosolicitud_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3948,7 +3925,7 @@ ALTER TABLE ONLY estadosolicitud
 
 
 --
--- TOC entry 2135 (class 2606 OID 3179470)
+-- TOC entry 2148 (class 2606 OID 81304)
 -- Name: etapa_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3957,7 +3934,7 @@ ALTER TABLE ONLY etapa
 
 
 --
--- TOC entry 2137 (class 2606 OID 3179472)
+-- TOC entry 2150 (class 2606 OID 81306)
 -- Name: evaluacion_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3966,7 +3943,7 @@ ALTER TABLE ONLY evaluacion
 
 
 --
--- TOC entry 2139 (class 2606 OID 3179474)
+-- TOC entry 2152 (class 2606 OID 81308)
 -- Name: evaluacion_pregunta_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3975,7 +3952,7 @@ ALTER TABLE ONLY evaluacion_pregunta
 
 
 --
--- TOC entry 2141 (class 2606 OID 3179476)
+-- TOC entry 2154 (class 2606 OID 81310)
 -- Name: fuentefinanciamiento_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3984,7 +3961,7 @@ ALTER TABLE ONLY fuentefinanciamiento
 
 
 --
--- TOC entry 2105 (class 2606 OID 3179478)
+-- TOC entry 2118 (class 2606 OID 81312)
 -- Name: id; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -3993,7 +3970,7 @@ ALTER TABLE ONLY agente
 
 
 --
--- TOC entry 2145 (class 2606 OID 3179480)
+-- TOC entry 2158 (class 2606 OID 81314)
 -- Name: preguntaevaluacion_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4002,7 +3979,7 @@ ALTER TABLE ONLY pregunta
 
 
 --
--- TOC entry 2149 (class 2606 OID 3179482)
+-- TOC entry 2162 (class 2606 OID 81316)
 -- Name: presu_rubro; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4011,7 +3988,7 @@ ALTER TABLE ONLY presupuesto_rubro
 
 
 --
--- TOC entry 2151 (class 2606 OID 3179484)
+-- TOC entry 2164 (class 2606 OID 81318)
 -- Name: presupuesto_rubroitem_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4020,7 +3997,7 @@ ALTER TABLE ONLY presupuesto_rubroitem
 
 
 --
--- TOC entry 2153 (class 2606 OID 3179486)
+-- TOC entry 2166 (class 2606 OID 81320)
 -- Name: presupuesto_tarea_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4029,7 +4006,7 @@ ALTER TABLE ONLY presupuesto_tarea
 
 
 --
--- TOC entry 2147 (class 2606 OID 3179488)
+-- TOC entry 2160 (class 2606 OID 81322)
 -- Name: presupuestoid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4038,7 +4015,7 @@ ALTER TABLE ONLY presupuesto
 
 
 --
--- TOC entry 2157 (class 2606 OID 3179490)
+-- TOC entry 2170 (class 2606 OID 81324)
 -- Name: proyecto_agente_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4047,7 +4024,7 @@ ALTER TABLE ONLY proyecto_agente
 
 
 --
--- TOC entry 2155 (class 2606 OID 3179492)
+-- TOC entry 2168 (class 2606 OID 81326)
 -- Name: proyectoid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4056,7 +4033,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2159 (class 2606 OID 3179494)
+-- TOC entry 2172 (class 2606 OID 81328)
 -- Name: rendicionid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4065,7 +4042,7 @@ ALTER TABLE ONLY rendicion
 
 
 --
--- TOC entry 2143 (class 2606 OID 3179496)
+-- TOC entry 2156 (class 2606 OID 81330)
 -- Name: rolid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4074,7 +4051,7 @@ ALTER TABLE ONLY perfil
 
 
 --
--- TOC entry 2161 (class 2606 OID 3179498)
+-- TOC entry 2174 (class 2606 OID 81332)
 -- Name: rubroid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4083,7 +4060,7 @@ ALTER TABLE ONLY rubro
 
 
 --
--- TOC entry 2163 (class 2606 OID 3179500)
+-- TOC entry 2176 (class 2606 OID 81334)
 -- Name: sector_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4092,7 +4069,7 @@ ALTER TABLE ONLY sector
 
 
 --
--- TOC entry 2167 (class 2606 OID 3179502)
+-- TOC entry 2180 (class 2606 OID 81336)
 -- Name: solicitudactaid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4101,7 +4078,7 @@ ALTER TABLE ONLY solicitudacta
 
 
 --
--- TOC entry 2165 (class 2606 OID 3179504)
+-- TOC entry 2178 (class 2606 OID 81338)
 -- Name: solicitudid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4110,7 +4087,7 @@ ALTER TABLE ONLY solicitud
 
 
 --
--- TOC entry 2171 (class 2606 OID 3179506)
+-- TOC entry 2184 (class 2606 OID 81340)
 -- Name: tarea_agente_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4119,7 +4096,7 @@ ALTER TABLE ONLY tarea_agente
 
 
 --
--- TOC entry 2169 (class 2606 OID 3179508)
+-- TOC entry 2182 (class 2606 OID 81342)
 -- Name: tarea_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4128,7 +4105,7 @@ ALTER TABLE ONLY tarea
 
 
 --
--- TOC entry 2173 (class 2606 OID 3179510)
+-- TOC entry 2186 (class 2606 OID 81344)
 -- Name: tareaprogreso_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4137,7 +4114,7 @@ ALTER TABLE ONLY tareaprogreso
 
 
 --
--- TOC entry 2177 (class 2606 OID 3179512)
+-- TOC entry 2190 (class 2606 OID 81346)
 -- Name: tipodocumentoid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4146,7 +4123,7 @@ ALTER TABLE ONLY tipodocumento
 
 
 --
--- TOC entry 2175 (class 2606 OID 3179514)
+-- TOC entry 2188 (class 2606 OID 81348)
 -- Name: tipoentidadid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4155,7 +4132,7 @@ ALTER TABLE ONLY tipocomitente
 
 
 --
--- TOC entry 2179 (class 2606 OID 3179516)
+-- TOC entry 2192 (class 2606 OID 81350)
 -- Name: tipofinanciamiento_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4164,7 +4141,7 @@ ALTER TABLE ONLY tipofinanciamiento
 
 
 --
--- TOC entry 2181 (class 2606 OID 3179518)
+-- TOC entry 2194 (class 2606 OID 81352)
 -- Name: tipoproyectoid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4173,7 +4150,7 @@ ALTER TABLE ONLY tipoproyecto
 
 
 --
--- TOC entry 2183 (class 2606 OID 3179520)
+-- TOC entry 2196 (class 2606 OID 81354)
 -- Name: tiposolicitud_pkey; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4182,7 +4159,7 @@ ALTER TABLE ONLY tiposolicitud
 
 
 --
--- TOC entry 2185 (class 2606 OID 3179522)
+-- TOC entry 2198 (class 2606 OID 81356)
 -- Name: username; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4191,7 +4168,7 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 2187 (class 2606 OID 3179524)
+-- TOC entry 2200 (class 2606 OID 81358)
 -- Name: usuarioid; Type: CONSTRAINT; Schema: ap; Owner: postgres; Tablespace: 
 --
 
@@ -4200,7 +4177,7 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 2212 (class 2606 OID 3179525)
+-- TOC entry 2225 (class 2606 OID 81359)
 -- Name: agenteid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4209,7 +4186,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2227 (class 2606 OID 3179530)
+-- TOC entry 2240 (class 2606 OID 81364)
 -- Name: agenteid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4218,7 +4195,7 @@ ALTER TABLE ONLY tarea_agente
 
 
 --
--- TOC entry 2213 (class 2606 OID 3179535)
+-- TOC entry 2226 (class 2606 OID 81369)
 -- Name: avanceproyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4227,7 +4204,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2214 (class 2606 OID 3179540)
+-- TOC entry 2227 (class 2606 OID 81374)
 -- Name: beneficiarioid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4236,7 +4213,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2215 (class 2606 OID 3179545)
+-- TOC entry 2228 (class 2606 OID 81379)
 -- Name: comitenteid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4245,7 +4222,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2216 (class 2606 OID 3179550)
+-- TOC entry 2229 (class 2606 OID 81384)
 -- Name: convocatoriaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4254,7 +4231,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2197 (class 2606 OID 3179555)
+-- TOC entry 2210 (class 2606 OID 81389)
 -- Name: cuentabancaria_bancoid_fkey; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4263,7 +4240,7 @@ ALTER TABLE ONLY cuentabancaria
 
 
 --
--- TOC entry 2188 (class 2606 OID 3179560)
+-- TOC entry 2201 (class 2606 OID 81394)
 -- Name: dependenciaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4272,7 +4249,7 @@ ALTER TABLE ONLY agente
 
 
 --
--- TOC entry 2198 (class 2606 OID 3179565)
+-- TOC entry 2211 (class 2606 OID 81399)
 -- Name: desembolso_numerocuentabancaria_fkey; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4281,7 +4258,7 @@ ALTER TABLE ONLY desembolso
 
 
 --
--- TOC entry 2199 (class 2606 OID 3179570)
+-- TOC entry 2212 (class 2606 OID 81404)
 -- Name: desembolso_proyectoid_fkey; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4290,7 +4267,7 @@ ALTER TABLE ONLY desembolso
 
 
 --
--- TOC entry 2217 (class 2606 OID 3179575)
+-- TOC entry 2230 (class 2606 OID 81409)
 -- Name: estadoproyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4299,7 +4276,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2221 (class 2606 OID 3179580)
+-- TOC entry 2234 (class 2606 OID 81414)
 -- Name: estadosolicitudid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4308,7 +4285,7 @@ ALTER TABLE ONLY solicitud
 
 
 --
--- TOC entry 2226 (class 2606 OID 3179585)
+-- TOC entry 2239 (class 2606 OID 81419)
 -- Name: etapaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4317,7 +4294,7 @@ ALTER TABLE ONLY tarea
 
 
 --
--- TOC entry 2203 (class 2606 OID 3179590)
+-- TOC entry 2216 (class 2606 OID 81424)
 -- Name: evaluacionid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4326,7 +4303,7 @@ ALTER TABLE ONLY evaluacion_pregunta
 
 
 --
--- TOC entry 2218 (class 2606 OID 3179595)
+-- TOC entry 2231 (class 2606 OID 81429)
 -- Name: fuentefinanciamientoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4335,7 +4312,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2204 (class 2606 OID 3179600)
+-- TOC entry 2217 (class 2606 OID 81434)
 -- Name: preguntaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4344,7 +4321,7 @@ ALTER TABLE ONLY evaluacion_pregunta
 
 
 --
--- TOC entry 2206 (class 2606 OID 3179605)
+-- TOC entry 2219 (class 2606 OID 81439)
 -- Name: presupuestoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4353,7 +4330,7 @@ ALTER TABLE ONLY presupuesto_rubro
 
 
 --
--- TOC entry 2208 (class 2606 OID 3179610)
+-- TOC entry 2221 (class 2606 OID 81444)
 -- Name: presupuestoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4362,7 +4339,7 @@ ALTER TABLE ONLY presupuesto_rubroitem
 
 
 --
--- TOC entry 2222 (class 2606 OID 3179615)
+-- TOC entry 2235 (class 2606 OID 81449)
 -- Name: presupuestotareaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4371,7 +4348,7 @@ ALTER TABLE ONLY solicitud
 
 
 --
--- TOC entry 2191 (class 2606 OID 3179620)
+-- TOC entry 2204 (class 2606 OID 81454)
 -- Name: proyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4380,7 +4357,7 @@ ALTER TABLE ONLY archivoproyecto
 
 
 --
--- TOC entry 2201 (class 2606 OID 3179625)
+-- TOC entry 2214 (class 2606 OID 81459)
 -- Name: proyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4389,7 +4366,7 @@ ALTER TABLE ONLY evaluacion
 
 
 --
--- TOC entry 2205 (class 2606 OID 3179630)
+-- TOC entry 2218 (class 2606 OID 81464)
 -- Name: proyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4398,7 +4375,7 @@ ALTER TABLE ONLY presupuesto
 
 
 --
--- TOC entry 2200 (class 2606 OID 3179635)
+-- TOC entry 2213 (class 2606 OID 81469)
 -- Name: proyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4407,7 +4384,7 @@ ALTER TABLE ONLY etapa
 
 
 --
--- TOC entry 2223 (class 2606 OID 3179640)
+-- TOC entry 2236 (class 2606 OID 81474)
 -- Name: rendicionid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4416,7 +4393,7 @@ ALTER TABLE ONLY solicitud
 
 
 --
--- TOC entry 2192 (class 2606 OID 3179645)
+-- TOC entry 2205 (class 2606 OID 81479)
 -- Name: rendicionid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4425,7 +4402,7 @@ ALTER TABLE ONLY archivorendicion
 
 
 --
--- TOC entry 2207 (class 2606 OID 3179650)
+-- TOC entry 2220 (class 2606 OID 81484)
 -- Name: rubroid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4434,7 +4411,7 @@ ALTER TABLE ONLY presupuesto_rubro
 
 
 --
--- TOC entry 2209 (class 2606 OID 3179655)
+-- TOC entry 2222 (class 2606 OID 81489)
 -- Name: rubroid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4443,7 +4420,7 @@ ALTER TABLE ONLY presupuesto_rubroitem
 
 
 --
--- TOC entry 2210 (class 2606 OID 3179660)
+-- TOC entry 2223 (class 2606 OID 81494)
 -- Name: rubroid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4452,7 +4429,7 @@ ALTER TABLE ONLY presupuesto_tarea
 
 
 --
--- TOC entry 2193 (class 2606 OID 3179665)
+-- TOC entry 2206 (class 2606 OID 81499)
 -- Name: sectorid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4461,7 +4438,7 @@ ALTER TABLE ONLY comitente
 
 
 --
--- TOC entry 2224 (class 2606 OID 3179670)
+-- TOC entry 2237 (class 2606 OID 81504)
 -- Name: solicitudactaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4470,7 +4447,7 @@ ALTER TABLE ONLY solicitud
 
 
 --
--- TOC entry 2229 (class 2606 OID 3179675)
+-- TOC entry 2242 (class 2606 OID 81509)
 -- Name: tareaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4479,7 +4456,7 @@ ALTER TABLE ONLY tareaprogreso
 
 
 --
--- TOC entry 2211 (class 2606 OID 3179680)
+-- TOC entry 2224 (class 2606 OID 81514)
 -- Name: tareaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4488,7 +4465,7 @@ ALTER TABLE ONLY presupuesto_tarea
 
 
 --
--- TOC entry 2228 (class 2606 OID 3179685)
+-- TOC entry 2241 (class 2606 OID 81519)
 -- Name: tareaid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4497,7 +4474,7 @@ ALTER TABLE ONLY tarea_agente
 
 
 --
--- TOC entry 2194 (class 2606 OID 3179690)
+-- TOC entry 2207 (class 2606 OID 81524)
 -- Name: tipocomitenteid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4506,7 +4483,7 @@ ALTER TABLE ONLY comitente
 
 
 --
--- TOC entry 2189 (class 2606 OID 3179695)
+-- TOC entry 2202 (class 2606 OID 81529)
 -- Name: tipodocumentoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4515,7 +4492,7 @@ ALTER TABLE ONLY agente
 
 
 --
--- TOC entry 2195 (class 2606 OID 3179700)
+-- TOC entry 2208 (class 2606 OID 81534)
 -- Name: tipofinanciamientoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4524,7 +4501,7 @@ ALTER TABLE ONLY convocatoria
 
 
 --
--- TOC entry 2219 (class 2606 OID 3179705)
+-- TOC entry 2232 (class 2606 OID 81539)
 -- Name: tipofinanciamientoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4533,7 +4510,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2196 (class 2606 OID 3179710)
+-- TOC entry 2209 (class 2606 OID 81544)
 -- Name: tipoproyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4542,7 +4519,7 @@ ALTER TABLE ONLY convocatoria
 
 
 --
--- TOC entry 2220 (class 2606 OID 3179715)
+-- TOC entry 2233 (class 2606 OID 81549)
 -- Name: tipoproyectoid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4551,7 +4528,7 @@ ALTER TABLE ONLY proyecto
 
 
 --
--- TOC entry 2225 (class 2606 OID 3179720)
+-- TOC entry 2238 (class 2606 OID 81554)
 -- Name: tiposolicitudid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4560,7 +4537,7 @@ ALTER TABLE ONLY solicitud
 
 
 --
--- TOC entry 2202 (class 2606 OID 3179725)
+-- TOC entry 2215 (class 2606 OID 81559)
 -- Name: usuarioid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4569,7 +4546,7 @@ ALTER TABLE ONLY evaluacion
 
 
 --
--- TOC entry 2190 (class 2606 OID 3179730)
+-- TOC entry 2203 (class 2606 OID 81564)
 -- Name: usuarioid; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4578,7 +4555,7 @@ ALTER TABLE ONLY agente
 
 
 --
--- TOC entry 2230 (class 2606 OID 3179735)
+-- TOC entry 2243 (class 2606 OID 81569)
 -- Name: usuariorol; Type: FK CONSTRAINT; Schema: ap; Owner: postgres
 --
 
@@ -4587,7 +4564,7 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 2421 (class 0 OID 0)
+-- TOC entry 2435 (class 0 OID 0)
 -- Dependencies: 8
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -4598,7 +4575,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2015-05-05 17:44:15
+-- Completed on 2015-05-07 18:46:22
 
 --
 -- PostgreSQL database dump complete
