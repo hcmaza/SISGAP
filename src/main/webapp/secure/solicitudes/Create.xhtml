@@ -529,12 +529,13 @@
                             <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
                         </p:inputText>    
 
-                        <p:outputLabel value="Archivo de Presupuesto" rendered="#{ solicitudController.tabseleccionado ne 'Anticipo'}" />
+                        <p:outputLabel value="Especificación" rendered="#{ solicitudController.tabseleccionado ne 'Anticipo' and solicitudController.tabseleccionado eq 'Adquisición'}" />
+                        <p:outputLabel value="Comprobante" rendered="#{ solicitudController.tabseleccionado ne 'Anticipo' and solicitudController.tabseleccionado eq 'Certificación'}" />
                         <p:fileUpload label="Presupuesto" id="fdocumentacion" fileUploadListener="#{solicitudController.subirArchivoSolicitud}" mode="advanced" rendered="#{solicitudController.tabseleccionado ne 'Anticipo'}" 
                                       sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
                         </p:fileUpload>    
 
-                        <p:outputLabel value="Especificación" />
+                        <p:outputLabel value="Observación" />
                         <p:inputTextarea id="dobservacionItem" value="#{solicitudController.selected.observacion}" />
 
                     </p:panelGrid>

@@ -629,7 +629,8 @@ public class ProyectoController implements Serializable {
 
     public void evaluarIdea() {
         boolean todobien = false;
-        if (current.getEstadoproyectoid().getId() > 1) {
+        
+        if (current.getEstadoproyectoid().getId() > 0) {
 
             FacesContext context = FacesContext.getCurrentInstance();
             EvaluacionPreguntaController evaluacionpregunta = (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
@@ -637,11 +638,21 @@ public class ProyectoController implements Serializable {
             AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
 
             try {
+                // Editamos para cambiar el estado del proyecto
+                this.ejbFacade.edit(current);
 
                 evaluacion.getSelected().setFecha(new Date());
+                
+                System.out.println("PROYECTO current" + current.toString() + " - " + current.getNombre());
+                System.out.println("USUARIO current" + agente.getSelected().toString() + " - " + agente.getSelected().getApellido() + ", " + agente.getSelected().getNombres() );
+                System.out.println("EVALUACION ID:" + evaluacion.getSelected().getId());
+                
                 evaluacion.getSelected().setProyectoid(current);
                 evaluacion.getSelected().setUsuarioid(agente.getSelected().getUsuarioid());
+                
                 ejbevaluacion.createWithPersist(evaluacion.getSelected());
+                
+                System.out.println("evaluarIDEA persistencia");
 
                 for (EvaluacionPregunta eval : evaluacionpregunta.getEvaluaciones()) {
                     eval.setEvaluacionPreguntaPK(new EvaluacionPreguntaPK());
@@ -650,8 +661,10 @@ public class ProyectoController implements Serializable {
 
                     ejbevaluacionproyecto.create(eval);
                 }
-                this.ejbFacade.edit(current);
-
+                
+                // borrar cuando se utilice mail
+                RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+                
 //                if (new EnviarMail().enviarMailEvaluacionIdeaProyecto(current.getAgenteid(), evaluacion.getSelected().getObservacion())) {
 //
 //                    todobien = true;

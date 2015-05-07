@@ -84,7 +84,7 @@
                                 <p:menuButton value="Opciones">
                                     <c:if test="#{request.isUserInRole('Administrador')}" > 
 
-                                        <p:menuitem value="Formalizar" rendered="#{item.estadoproyectoid.id eq 2}" action="#{proyectoController.prepareFormalizar()}" ajax="false" icon="ui-icon-script">
+                                        <p:menuitem value="Formalizar" rendered="#{item.estadoproyectoid.id eq 6}" action="#{proyectoController.prepareFormalizar()}" ajax="false" icon="ui-icon-script">
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
                                         <p:menuitem value="Crear Desembolso" rendered="#{item.estadoproyectoid.id eq 5 || item.estadoproyectoid.id eq 6 || item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{desembolsoController.prepareCreate()}" ajax="false" icon="ui-icon-plus">
