@@ -448,7 +448,7 @@ public class PresupuestoRubroController implements Serializable {
             pieModel.setTitle("Aportes");
             pieModel.setSliceMargin(5);
             pieModel.setShowDataLabels(true);
-            pieModel.setDiameter(50);
+            pieModel.setDiameter(30);
 
         }
         return pieModel;
@@ -471,7 +471,7 @@ public class PresupuestoRubroController implements Serializable {
             pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
             pieModelRubro.setSliceMargin(5);
             pieModelRubro.setShowDataLabels(true);
-            pieModel.setDiameter(50);
+            pieModel.setDiameter(30);
 
         }
         return pieModelRubro;

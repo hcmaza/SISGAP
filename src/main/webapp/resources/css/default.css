@@ -133,6 +133,10 @@ border-color: transparent;*/
     table-layout: fixed !important;
 }
 
+.esconder-cabecera-columnas table thead tr {
+    display: none;
+}
+
 /* TREETABLE */
 
 ui-treetable-header {
