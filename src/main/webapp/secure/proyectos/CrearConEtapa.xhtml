@@ -272,8 +272,6 @@
                         <p:tab id="panelequipo" title="Equipo de Trabajo" >
 
                             <p:fieldset legend="Personas" style="margin-bottom: 10px;" >
-                                <p:commandButton value="Nueva Persona" onclick="PF('dregistrar').show();" />
-
                                 <h:panelGrid columns="4">
                                     <p:outputLabel style="font-weight: bold" value="Ingrese N° de Documento / Cuil " ></p:outputLabel>
                                     <p:selectOneMenu  id="advancedfiltroa" value="#{agenteViewController.selected}" filter="true" filterMatchMode="contains"    >
@@ -281,7 +279,8 @@
                                         <f:selectItems value="#{agenteViewController.itemsAvailableSelectOne}"  />
                                     </p:selectOneMenu> 
                                     <h:panelGrid columns="6" id="agenteselecciona" >
-                                        <p:commandButton immediate="true" update="agentesa" value="Agregar a la Tarea" action="#{proyectoAgenteController.agregarEquipo}" />
+                                        <p:commandButton title="Agregar al Proyecto" icon="ui-icon-plus" immediate="true" update="agentesa" action="#{proyectoAgenteController.agregarEquipo}" style="margin: 3px;" />
+                                        <p:commandButton title="Nueva Persona"  icon="ui-icon-person" onclick="PF('dregistrar').show();"  />
                                     </h:panelGrid>
                                 </h:panelGrid>
                             </p:fieldset>
