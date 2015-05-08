@@ -116,6 +116,8 @@ border-color: transparent;*/
   background-color: #878787 !important;
 }*/
 
+/* DATATABLE */
+
 .ui-datatable-header {
     background: #00C7F6 !important;
     background-color: #00C7F6 !important;
@@ -131,9 +133,41 @@ border-color: transparent;*/
     table-layout: fixed !important;
 }
 
+/* TREETABLE */
+
+ui-treetable-header {
+    background: #00C7F6 !important;
+    background-color: #00C7F6 !important;
+    color: white;
+    border: none;
+}
+
+.ui-treetable table, .ui-treetable-resizable table {
+    table-layout: auto !important;
+}
+
+.ui-treetable-scrollable table {
+    table-layout: fixed !important;
+}
+
+/* TABS a la IZQUIERDA >> Prespuesto Tarea en CrearConEtapa*/
+
+/** tabs **/
+.ui-tabs.ui-tabs-left > .ui-tabs-nav {
+   width: 15%;
+}
+/** panels **/
+.ui-tabs.ui-tabs-left > .ui-tabs-panels {
+   width: 85%;
+}
+
+/* PANEL GRID */
+
 .sinFondo tr, .sinBordes td{
     background: none !important;
 }
+
+/* ESTILOS FILAS de DATATABLE */
 
 .filaResaltada1{
     background: none repeat scroll 0 0 #FFFFFF !important;

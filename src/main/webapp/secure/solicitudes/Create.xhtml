@@ -114,6 +114,9 @@
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
                                 <p:treeTable id="tablapresupuesto" value="#{presupuestoTareaController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;"  >
+                                    <f:facet name="header">
+                                        <h:outputText value="Presupuesto" />
+                                    </f:facet>
                                     <p:column headerText="Etapa">
                                         <h:outputText value="#{item.descripcion}" />
                                     </p:column>
