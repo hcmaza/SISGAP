@@ -171,6 +171,19 @@ ui-treetable-header {
     background: none !important;
 }
 
+/* ACCORDION y TABS */
+
+.tabDario {
+/*  background: #00C7F6 !important;
+  background-color: #00C7F6 !important;
+  color: white;
+  font-weight: bold;*/
+}
+
+/* RATING >> ESTRELLAS */
+
+.ui-rating-star-on { color: #00C7F6 !important; }
+
 /* ESTILOS FILAS de DATATABLE */
 
 .filaResaltada1{

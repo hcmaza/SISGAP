@@ -306,8 +306,13 @@ public class PresupuestoRubroController implements Serializable {
 //           DataTable s = (DataTable) event.getSource();
         // MyEntity d = (MyEntity) s.getRowData();
         
+        System.out.println("PresupuestoRubroController - sumarGastos ajsdjkaskdjka");
+        
+        System.out.println("PresupuestoRubroController - sumarGastos - presupuestosrubros: " + presupuestosrubros.size());
+        
         if (presupuestosrubros == null) {
             presupuestosrubros = new ArrayList<PresupuestoRubro>();
+            System.out.println("PresupuestoRubroController - sumarGastos >> presupuestosrubros NULO");
         }
         
         Iterator it = presupuestosrubros.iterator();
@@ -339,6 +344,12 @@ public class PresupuestoRubroController implements Serializable {
         sumagastouniversidad = totaluniversidad;
         sumagastoorganismo = totalorganismo;
         sumatotal = sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+        
+        System.out.println("PresupuestoRubroController - SUMAR GASTOS");
+        System.out.println("sumagastocomitente= " + sumagastocomitente.floatValue());
+        System.out.println("sumagastouniversidad= " + sumagastouniversidad.floatValue());
+        System.out.println("sumagastoorganismo= " + sumagastoorganismo.floatValue());
+        System.out.println("sumatotal= " + sumatotal.floatValue());
 
         // Armar grafico de aportes
         pieModel = new PieChartModel();
@@ -486,6 +497,10 @@ public class PresupuestoRubroController implements Serializable {
         getFacade().edit(pr);
     }
 
+    public void buscarPorPresupuesto(int id) {
+        this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);
+    }
+    
     public void findporPresupuestoEdit(int id) {
         if (iseditar) {
             this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);
