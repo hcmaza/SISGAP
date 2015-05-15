@@ -92,7 +92,7 @@
                                     <f:setPropertyActionListener value="#{item}" target="#{desembolsoController.selected}" />
                                 </p:commandButton>
                                 <h:outputText value=" "/>
-                                <p:commandButton action="#{desembolsoController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" >
+                                <p:commandButton action="#{desembolsoController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" disabled="true" >
                                     <f:setPropertyActionListener value="#{item}" target="#{desembolsoController.selected}" />
                                     <p:confirm header="Eliminar" message="¿Esta seguro que desea eliminar el Desembolso?" icon="ui-icon-alert"   />
                                 </p:commandButton>

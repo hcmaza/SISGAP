@@ -81,7 +81,7 @@
                                     <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                 </p:commandButton>
                                 <h:outputText value=" "/>
-                                <p:commandButton action="#{solicitudController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" >
+                                <p:commandButton action="#{solicitudController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" disabled="true" >
                                     <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                     <p:confirm header="Eliminar" message="¿Esta seguro que desea eliminar la Solicitud?" icon="ui-icon-alert"   />
                                 </p:commandButton>
