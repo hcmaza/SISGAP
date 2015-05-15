@@ -139,7 +139,7 @@ border-color: transparent;*/
 
 /* TREETABLE */
 
-ui-treetable-header {
+.ui-treetable-header {
     background: #00C7F6 !important;
     background-color: #00C7F6 !important;
     color: white;

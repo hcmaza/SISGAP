@@ -58,5 +58,17 @@
             <from-outcome>CreateEvaluacionRendicion</from-outcome>
             <to-view-id>/secure/rendicion/Evaluacion.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>ListDesembolsosPorProyecto</from-outcome>
+            <to-view-id>/secure/desembolso/ListDesembolsosPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>ListSolicitudesPorProyecto</from-outcome>
+            <to-view-id>/secure/solicitudes/ListSolicitudesPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>ListRendicionesPorProyecto</from-outcome>
+            <to-view-id>/secure/rendicion/ListRendicionesPorProyecto.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
 </faces-config>
