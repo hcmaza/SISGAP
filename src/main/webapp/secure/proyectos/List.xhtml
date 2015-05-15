@@ -99,6 +99,20 @@
                                         <p:menuitem value="Evaluar Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{rendicionController.prepareEvaluacion()}" ajax="false" icon="ui-icon-tag" >
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
+                                        
+                                        <p:separator />
+                                        
+                                        <p:menuitem value="Lista: Desembolsos" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{desembolsoController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
+                                        
+                                        <p:menuitem value="Lista: Solicitudes" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
+                                        
+                                        <p:menuitem value="Lista: Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{rendicionController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
                                     </c:if>
 
                                     <c:if test="#{request.isUserInRole('Docente')}" > 
@@ -116,15 +130,15 @@
                                         
                                         <p:separator />
                                         
-                                        <p:menuitem value="Lista Desembolsos" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{desembolsoController.prepareList}" ajax="false" icon="ui-icon-document" >
+                                        <p:menuitem value="Lista: Desembolsos" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{desembolsoController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
                                         
-                                        <p:menuitem value="Lista Solicitudes" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareList}" ajax="false" icon="ui-icon-document" >
+                                        <p:menuitem value="Lista: Solicitudes" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{solicitudController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
                                         
-                                        <p:menuitem value="Lista Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{rendicionController.prepareList}" ajax="false" icon="ui-icon-document" >
+                                        <p:menuitem value="Lista: Rendiciones" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{rendicionController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
                                         
