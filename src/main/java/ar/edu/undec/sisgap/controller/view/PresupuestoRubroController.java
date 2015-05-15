@@ -363,6 +363,7 @@ public class PresupuestoRubroController implements Serializable {
         pieModel.setTitle("Aportes");
         pieModel.setSliceMargin(5);
         pieModel.setShowDataLabels(true);
+        pieModel.setExtender("tortaPresupuesto");
         
         // Armar grafico de rubros
         pieModelRubro = new PieChartModel();
@@ -375,6 +376,7 @@ public class PresupuestoRubroController implements Serializable {
         pieModelRubro.setTitle("Rubros");
         pieModelRubro.setSliceMargin(5);
         pieModelRubro.setShowDataLabels(true);
+        pieModelRubro.setExtender("tortaPresupuesto");
                 // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
         //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
         //               System.out.println("gggggggggggggggggggggggggggggg");
