@@ -32,6 +32,7 @@ import java.io.InputStream;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,8 +61,12 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -136,7 +141,8 @@ public class ProyectoController implements Serializable {
     //variable utilizada para recolectar los agentes del proyecto en todas las etapas
     private List<TareaAgente> tareaagentesproyecto = new ArrayList<TareaAgente>();
     private List<Proyecto> tablafiltrada=null; 
-    
+    private float porcentajeConvocatoria=0.0f;
+            
     public ProyectoController() {
     }
 
@@ -728,7 +734,7 @@ public class ProyectoController implements Serializable {
         String calificacionpregunta = "";
         try {
             observacionfinal = "Estimado docente-investigador:\n"
-                    + "Por medio del presente informamos a Ud. que la Idea-Proyecto Nº " + current.getId() + " - " + current.getNombre() + " de la cual Ud. Es responsable, ha sido " + current.getEstadoproyectoid().getEstado().replace("Idea Proyecto", "").toUpperCase() + " según el siguiente detalle:\n"
+                    + "Por medio del presente informamos a Ud. que la Idea-Proyecto NÂº " + current.getId() + " - " + current.getNombre() + " de la cual Ud. Es responsable, ha sido " + current.getEstadoproyectoid().getEstado().replace("Idea Proyecto", "").toUpperCase() + " segÃºn el siguiente detalle:\n"
                     + "Observaciones:\n";
 
             for (EvaluacionPregunta eval : evaluacionpregunta.getEvaluaciones()) {
@@ -754,11 +760,11 @@ public class ProyectoController implements Serializable {
             }
             String isaceptada = "";
             if (current.getEstadoproyectoid().getId() == 2) {
-                isaceptada = "A partir de la recepción del presente correo, el sistema quedará habilitado para la carga del proyecto definitivo.\n";
+                isaceptada = "A partir de la recepciÃ³n del presente correo, el sistema quedarÃ¡ habilitado para la carga del proyecto definitivo.\n";
             }
-            observacionfinal += "Resultados según criterios evaluados:\n" + obs
+            observacionfinal += "Resultados segÃºn criterios evaluados:\n" + obs
                     + "Sin otro particular lo saludo a Ud. cordialmente.\n"
-                    + "Unidad de Vinculación Tecnológica";
+                    + "Unidad de VinculaciÃ³n TecnolÃ³gica";
             evaluacion.getSelected().setObservacion(observacionfinal);
         } catch (Exception e) {
             System.out.println(e);
@@ -1785,7 +1791,7 @@ public class ProyectoController implements Serializable {
             }
         }
 
-        // Ordenación por fecha de inicio
+        // OrdenaciÃ³n por fecha de inicio
         Collections.sort(listaTareas, new Comparator<Tarea>() {
             @Override
             public int compare(Tarea tarea1, Tarea tarea2) {
@@ -1884,6 +1890,53 @@ public class ProyectoController implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
     }
 
+     public void pdfProyectosPorConvocatorias() throws JRException, IOException {
+
+        if(!tablafiltrada.isEmpty()){
+            FacesContext context = FacesContext.getCurrentInstance();
+            IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
+            // Obtengo la ruta absoluta del archivo compilado del reporte
+            String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/convocatoria.jasper");
+
+            List<IndicadoresController> listaE=new ArrayList<IndicadoresController>();        
+            float total=0.0f;
+            float totalEjecutado=0.0f;
+            for (Proyecto e : tablafiltrada) {
+                IndicadoresController obj=new IndicadoresController();
+                obj.setEjecutadoProyecto(indicadorescontroller.calcularEjecutadoPorProyecto(e.getId()));
+                String valor=indicadorescontroller.calcularPorcenjateEjecutadoPorProyecto(e.getId());
+                valor=valor.replace(",", ".");
+                obj.setPorcentajeEjecutado(Float.parseFloat(valor));            
+                listaE.add(obj);     
+                total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
+                totalEjecutado+=obj.getEjecutadoProyecto();
+            }
+
+            JRDataSource lista = new JRBeanCollectionDataSource(listaE);  
+            JRDataSource proyectos = new JRBeanCollectionDataSource(this.tablafiltrada); 
+
+            //Agregando los parametros
+            Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+            parametros.put("lista", lista);
+            parametros.put("proyectos", proyectos);
+            parametros.put("convocatoria", this.getSelected().getConvocatoriaid().getConvocatoria());
+            parametros.put("ejecutadoConvocatoria", String.format("%.02f",(totalEjecutado*100)/total));
+
+            // Llenamos el reporte
+            JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, new JREmptyDataSource());
+
+            // Generamos el archivo a descargar
+            HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            httpServletResponse.addHeader("Content-disposition", "attachment; filename=Proyectos_por_Convocatorias.pdf");
+            ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+            JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+            FacesContext.getCurrentInstance().responseComplete();
+        }
+        else{
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
+        }
+    }
+    
     public List<Agente> obtenerEquipoTrabajo() {
 
         List<Agente> listaAgentes = new ArrayList<Agente>();
@@ -1951,17 +2004,18 @@ public class ProyectoController implements Serializable {
             FacesMessage message = new FacesMessage();
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             message.setSummary("ERROR");
-            message.setDetail("No se pudo crear la Formalización del Proyecto " + e);
+            message.setDetail("No se pudo crear la FormalizaciÃ³n del Proyecto " + e);
             FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
-            System.out.println("Error al grabar la Formalización  = " + e);
+            System.out.println("Error al grabar la FormalizaciÃ³n  = " + e);
             return null;
         }
     }
         
      public void findProyectoPorConvocatoria(Integer convocatoriaId){
-        System.out.println("Id de Convocatoria: " + convocatoriaId);
+        recreateModel();
         items= new ListDataModel(getFacade().buscarProyectoPorConvocatoria(convocatoriaId));
         this.tablafiltrada= getFacade().buscarProyectoPorConvocatoria(convocatoriaId);
+        this.porcentajeGeneral();
     }    
 
     public List<Proyecto> getTablafiltrada() {
@@ -1970,6 +2024,33 @@ public class ProyectoController implements Serializable {
 
     public void setTablafiltrada(List<Proyecto> tablafiltrada) {
         this.tablafiltrada = tablafiltrada;
+    }
+    
+    public String getporcentajeConvocatoria() {
+        return String.format("%.02f", porcentajeConvocatoria);
+    }
+
+    public void setporcentajeConvocatoria(float porcentaje) {
+        porcentajeConvocatoria=porcentaje;
+    }
+    
+     public void porcentajeGeneral(){
+
+        if(!tablafiltrada.isEmpty()){
+            FacesContext context = FacesContext.getCurrentInstance();
+            IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
+
+            float total=0.0f;
+            float totalEjecutado=0.0f;
+            for (Proyecto e : tablafiltrada) {
+                total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
+                totalEjecutado+=indicadorescontroller.calcularEjecutadoPorProyecto(e.getId());
+            }
+            this.porcentajeConvocatoria=(totalEjecutado*100)/total;
+        }
+        else{
+            this.porcentajeConvocatoria=0.0F;
+        }
     }
 
 }

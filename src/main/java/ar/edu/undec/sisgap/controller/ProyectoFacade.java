@@ -151,16 +151,17 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
         }
     }
     
-<<<<<<< HEAD
+
     public List<Proyecto> buscarProyectoPorConvocatoria(int idConvocatoria){        
        try{
-           return em.createQuery("select p from Proyecto p where p.convocatoriaid.id = :idConvocatoria", Proyecto.class).setParameter("idConvocatoria", idConvocatoria).getResultList();
+           return em.createQuery("select p from Proyecto p where p.convocatoriaid.id = :idConvocatoria and p.estadoproyectoid.id=8", Proyecto.class).setParameter("idConvocatoria", idConvocatoria).getResultList();
        }
        catch(Exception e){
            System.out.println("No se pudo realizar la consulta "+e);
            return null;
-       }                 
-=======
+       }  
+    }
+
     
     public void acumularCantidadReintegrosPorProyecto(int proyectoId){
         Query consulta = em.createQuery("UPDATE Proyecto SET cantidadreintegros = cantidadreintegros + 1 WHERE id = :proyectoId" );
@@ -174,7 +175,7 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
                 .getSingleResult())
                 .intValue();
         
->>>>>>> SISGAPTincho2
+
     }
     
 }
