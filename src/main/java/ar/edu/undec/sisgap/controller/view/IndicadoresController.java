@@ -13,6 +13,7 @@ import ar.edu.undec.sisgap.model.Desembolso;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Rubro;
 import ar.edu.undec.sisgap.model.Solicitud;
+import ar.edu.undec.sisgap.model.Proyecto;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -159,6 +160,10 @@ public class IndicadoresController implements Serializable {
 
     public float getEjecutadoProyecto() {
         return ejecutadoProyecto;
+    }
+    
+     public void setEjecutadoProyecto(float ejecutado) {
+        this.ejecutadoProyecto=ejecutado;
     }
 
     public float getTotalPresupuestoProyecto() {
@@ -533,7 +538,38 @@ public class IndicadoresController implements Serializable {
         
         saldoProyecto = totalDesembolsado - ejecutadoProyecto;
     }
+    
+    public float calcularEjecutadoPorProyecto(Integer idProyecto) {
 
+        List<Solicitud> listaSolicitudes;
+
+        // Total Ejecutado del proyecto
+        ejecutadoProyecto = 0.0f;        
+
+        // Llenamos la lista de solicitudes (Aprobadas, en ejecucion, evaluacion y Rendidas)
+        listaSolicitudes = this.getSolicitudFacade().obtenerAprobadasPorProyecto(idProyecto);
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerEjecucionPorProyecto(idProyecto));
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerRendicionAEvaluarPorProyecto(idProyecto));
+        listaSolicitudes.addAll(this.getSolicitudFacade().obtenerRendidasPorProyecto(idProyecto));
+       
+        for (Solicitud solicitud : listaSolicitudes) {
+            ejecutadoProyecto += solicitud.getImporte().floatValue();
+        }
+        return ejecutadoProyecto;
+    }
+    
+     public String calcularPorcenjateEjecutadoPorProyecto(Integer idProyecto) {
+        totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(idProyecto); 
+        ejecutadoProyecto=this.calcularEjecutadoPorProyecto(idProyecto);
+        porcentajeEjecutado = (ejecutadoProyecto / totalPresupuestoProyecto) * 100;
+        return String.format("%.02f", porcentajeEjecutado);
+    }
+     
+     public float calcularTotalesPorProyecto(Integer idProyecto) {
+        totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(idProyecto);        
+        return totalPresupuestoProyecto;
+    }
+          
     public static class SaldoRubro {
 
         private String nombre;

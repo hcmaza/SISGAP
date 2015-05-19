@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="solicitud" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="57f0488e-ee25-4833-aeef-dac18217699f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="97"/>
+	<property name="ireport.y" value="480"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Postgres localhost"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -365,7 +364,7 @@
 			<componentElement>
 				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="13" y="480" width="529" height="110" uuid="9ec69a77-de11-4c82-8d97-78ea3db079b6"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="datasetEquipoTrabajo" uuid="a74f937c-e559-4eed-8087-870186dc902a">
+					<datasetRun subDataset="datasetEquipoTrabajo" uuid="bab826c2-3f64-41c3-88b5-84fb1681b3d1">
 						<dataSourceExpression><![CDATA[$P{equipoTrabajo}]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="170" uuid="6548a7fc-cfc6-4fa7-bc2a-3233f7709568">
