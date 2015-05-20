@@ -2,6 +2,7 @@ package ar.edu.undec.sisgap.controller.view;
 
 import ar.edu.undec.sisgap.controller.ConfiguracionFacade;
 import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
+import ar.edu.undec.sisgap.controller.ProyectoFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
@@ -32,6 +33,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TransferEvent;
@@ -50,6 +52,8 @@ public class SolicitudController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     @EJB
+    private ar.edu.undec.sisgap.controller.ProyectoFacade ejbFacadep;
+    @EJB
     private TiposolicitudFacade ejbFacadeTipo;
     @EJB
     private EstadosolicitudFacade ejbFacadeEstado;
@@ -65,8 +69,10 @@ public class SolicitudController implements Serializable {
     private MeterGaugeChartModel indicadorEjecutado;
     
     //tabs solicitudes
-    private String tabseleccionado = "Anticipo";
+    //private String tabseleccionado = "Anticipo";
+    private String tabseleccionado = "Presupuesto Detallado";
     
+  
 
     public SolicitudController() {
     }
@@ -99,6 +105,10 @@ public class SolicitudController implements Serializable {
         return ejbFacadeEstado;
     }
 
+    public ProyectoFacade getEjbFacadep() {
+        return ejbFacadep;
+    }
+
     public List<Solicitud> getItemsDisponibles() {
         return itemsDisponibles;
     }
@@ -125,7 +135,7 @@ public class SolicitudController implements Serializable {
 
     public PaginationHelper getPagination() {
         if (pagination == null) {
-            pagination = new PaginationHelper(10) {
+            pagination = new PaginationHelper(10000000) {
 
                 @Override
                 public int getItemsCount() {
@@ -143,7 +153,7 @@ public class SolicitudController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "ListPorProyecto";
+        return "ListSolicitudesPorProyecto";
     }
 
     public String prepareView() {
@@ -157,21 +167,46 @@ public class SolicitudController implements Serializable {
         current.setFechasolicitud(new Date());
         selectedItemIndex = -1;
 
-        armarSolicitudesYDesembolsos();
+        armarSolicitudesDesembolsosYRendicion();
+        
+        // preparar la rendicion
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        rendicioncontroller.prepararRendicion();
 
         return "CreateSolicitud";
     }
     
-    public void armarSolicitudesYDesembolsos(){
+    public void armarSolicitudesDesembolsosYRendicion(){
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
         PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+//        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        
+        // Buscar presupuesto por proyecto
+        presupuestocontroller.findProyecto(proyectocontroller.getSelected().getId());
+        
+        // Sumar los gastos del presupuesto
+        presupuestocontroller.sumarGastosView();
 
+        // Seteamos el tree de etapas y tareas para el proyecto actual
+        etapacontroller.armarTreeEtapasYTareasPorProyecto();
+        
+        // Armar presupuesto general
+        presupuestotareacontroller.armarPresupuestoGeneral();
+        
         // Seteamos la lista de presupuesto tareas para el proyecto actual
         presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(proyectocontroller.getSelected().getId(), tabseleccionado);
+        
+        // Seteamos la lista de desembolsos para el proyecto actual
+        desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
+        
+        // seteamos los controladores de rendicion y archivos de rendicion
+//        rendicioncontroller.prepararRendicion();
 
         // Borramos la lista de items disponibles
         itemsDisponibles = new ArrayList<Solicitud>();
@@ -182,9 +217,11 @@ public class SolicitudController implements Serializable {
         // Llenamos la lista de solicitudes anteriores
         items = new ListDataModel(getFacade().obtenerPorProyecto(proyectocontroller.getSelected().getId()));
 
-        // Llenamos la lista de solicitudes aprobadas anteriores
+        // Llenamos la lista de solicitudes aprobadas, en ejecucion, evaluacion o rendidas anteriores
         itemsAprobados = getFacade().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
-        
+        itemsAprobados.addAll(getFacade().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        itemsAprobados.addAll(getFacade().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId()));
+        itemsAprobados.addAll(getFacade().obtenerRendidasPorProyecto(proyectocontroller.getSelected().getId()));
 
         // Llenamos la lista de items disponibles
         for (PresupuestoTarea p : presupuestotareacontroller.getPresupuestostareas()) {
@@ -201,14 +238,13 @@ public class SolicitudController implements Serializable {
             while (i.hasNext()) {
                 Solicitud solicitudAnterior = (Solicitud) i.next();
 
-                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada"
-                //if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
-                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId()) {
-                    // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
-                    solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
-                    solicitud.setDisponible(solicitud.getImporte());
-                    System.out.println("llllll");
+                // si encontramos el presupuestotarea en una solicitud anterior y no es una solicitud con estado "Rechazada" o "Iniciada"
+                if (p.getId() == solicitudAnterior.getPresupuestotarea().getId() && solicitudAnterior.getEstadosolicitudid().getId() != 1 && solicitudAnterior.getEstadosolicitudid().getId() != 3) {
                     
+                    // restamos al importe de la solicitud disponible, el importe de la solicitud anterior
+                    //solicitud.setImporte(p.getTotal().subtract(solicitudAnterior.getImporte()));
+                    solicitud.setImporte(solicitud.getImporte().subtract(solicitudAnterior.getImporte()));
+                    solicitud.setDisponible(solicitud.getImporte());
                 }
             }
 
@@ -218,27 +254,18 @@ public class SolicitudController implements Serializable {
             }
         }
         
-        // Vaciamos la lista de presupuestos tareas solicitados
-        //presupuestotareacontroller.vaciarListaPresupuestoTareaSolicitadosPorProyecto();
-        //items = new ListDataModel(new ArrayList<Solicitud>());
-        // Seteamos el tree de etapas y tareas para el proyecto actual
-        etapacontroller.armarTreeEtapasYTareasPorProyecto();
-
-        // Seteamos la lista de desembolsos para el proyecto actual
-        desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
-        
         //h:coloco la copia de itemsolicitados tal cual es al principio
         this.itemsDisponiblesNuevo = this.itemsDisponibles;
         
         //h:filtro por defecto para anticipo
          this.itemsDisponibles = new ArrayList<Solicitud>();
          for(Solicitud s : this.itemsDisponiblesNuevo ){
-             if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) ){
+             
+             // Se quita, se realiza en el evento tabChange
+             if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
                    this.itemsDisponibles.add(s);
              }
         }
-            
-       
     }
 
     public String create() {
@@ -249,8 +276,52 @@ public class SolicitudController implements Serializable {
                 for (Solicitud s : itemsSolicitados) {
 
                     s.setFechasolicitud(new Date());
-                    s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
-                    //s.setTiposolicitudid(current.getTiposolicitudid());
+                    
+                    // segun el tipo de solicitud, se le dan distintos estados
+                    switch(s.getTiposolicitudid().getId()){
+                        // Anticipo
+                        case 1:
+                            // Se le da estado "Iniciada" para que el Administrador la aprueba
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
+                            break;
+                        // Adquisición
+                        case 2:
+                            // Se le da estado "Ejecución"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(4));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;
+                        // Certificacion
+                        case 3:
+                            // Se le da estado "Ejecucion"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(4));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;
+                        // Reintegro
+                        case 4:
+                            // Se le da estado "Rendicion a Evaluar"
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(6));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            
+                            // sumar 1 al contador de reintegros del proyecto
+                            try{
+                                this.ejbFacadep.acumularCantidadReintegrosPorProyecto(s.getPresupuestotarea().getTarea().getEtapaid().getProyectoid().getId());
+                                System.out.println("Acumular 1 cantidad reintegros CORRECTO!");
+                            } catch(Exception e){
+                                System.out.println("Acumular 1 cantidad reintegros ERROR");
+                                e.printStackTrace();
+                            }
+                            break;         
+                        // Reintegro por diferencia
+                        case 5:
+                            // Se le da estado "Aprobada", sin acumular 1 a la cantidad de reintegros del proyecto
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;          
+                        default:
+                            // Se le da estado "Iniciada" para que el Administrador la aprueba
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
+                            break;
+                    }
 
                     // Guardamos la solicitud
                     getFacade().create(s);
@@ -369,7 +440,7 @@ public class SolicitudController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    @FacesConverter(forClass = Solicitud.class)
+    @FacesConverter(forClass = Solicitud.class, value = "solicitudConverter")
     public static class SolicitudControllerConverter implements Converter {
 
         @Override
@@ -417,32 +488,13 @@ public class SolicitudController implements Serializable {
      */
     public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
-
-//        Iterator i = items.iterator();
-//
-//        while (i.hasNext()) {
-//            System.out.println("SOLICITUD CONTROLLER: obtenerPorProyecto: " + ((Solicitud) i.next()).getId());
-//        }
     }
-
-//    public void establecerSolicitudItemsDisponibles(Proyecto p){
-//        //this.setSolicitudItems(new DualListModel<SolicitudItem>);
-//        
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        
-//        //ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-//        PresupuestoTareaController presupuestotareacontroller= (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
-//        
-//        // Obtener los presupuestos_tarea del proyecto
-//        presupuestotareacontroller.establecerListaPresupuestoTareaBienesPorProyecto(p.getId());
-//        
-//        // Setear la lista dual del pick list
-//        plSolicitudItems = new DualListModel<SolicitudItem>(presupuestotareacontroller.getPresupuestostareas(),new ArrayList<SolicitudItem>());
-//    }
+    
     public void agregarItemSolicitado() {
 
         float maxanticipo = 0;
-        System.out.println("tipo de solicitud---------"+ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
+        int maxcantidadreintegros;
+        
         current.setTiposolicitudid(ejbFacadeTipo.findWithTiposolicitud(tabseleccionado));
         Solicitud solicitud = current;
 
@@ -453,17 +505,20 @@ public class SolicitudController implements Serializable {
             System.out.println("Current Tipo de Solicitud: " + current.getTiposolicitudid().getTiposolicitud());
         }
                 */
-        // Validar que no supere la cantidad disponible (los desembolsos menos las solicitudes anteriores)
+        
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
+        // obtenemos el dinero disponible (los desembolsos menos las solicitudes anteriores)
         float dineroDisponible = desembolsocontroller.sumarDesembolsos() - sumarSolicitudesAprobadas();
 
         System.out.println("dinero disponible : " + dineroDisponible);
         System.out.println("sumarSolicitado() : " + sumarSolicitado());
         System.out.println("current.getImporte() : " + current.getImporte().floatValue());
                
+        // Validacion de no superar el dinero disponible
         if (sumarSolicitado() + current.getImporte().floatValue() > dineroDisponible) {
             System.out.println("El importe del item a solicitar supera el dinero disponible");
 
@@ -476,12 +531,13 @@ public class SolicitudController implements Serializable {
             return;
         }
 
-        // Obtenemos el monto maximo para anticipos desde la configuracion
+        // Obtenemos el monto maximo para anticipos desde la configuracion 
         try {
             maxanticipo = Float.parseFloat(ejbFacadec.findAtributo("maxanticipo").getValor());
            // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
         } catch (Exception e) {
-            System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos");
+            maxanticipo = 0;
+            System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos [maxanticipo = 0]");
             e.printStackTrace();
         }
 
@@ -491,6 +547,29 @@ public class SolicitudController implements Serializable {
             System.out.println("En un anticipo no se puede superar el valor maximo de un anticipo");
 
             context.addMessage(null, new FacesMessage("Inválido", "Al Solicitar un anticipo no se puede superar el máximo permitido. El monto máximo permitido es de $" + maxanticipo));
+
+            // Restauramos el valor de la solicitad al total de presupuesto tarea
+            current.setImporte(current.getDisponible());
+
+            return;
+        }
+        
+        // Obtenemos la cantidad maxima de reintegros por proyecto desde la configuracion 
+        try {
+            maxcantidadreintegros = Integer.parseInt(ejbFacadec.findAtributo("maxcantidadreintegros").getValor());
+            System.out.println("maxcantidadreitegros=" + String.valueOf(maxcantidadreintegros));
+        } catch (Exception e) {
+            maxcantidadreintegros = 0;
+            System.out.println("Error en obtencion de parametro 'maxcantidadreitegros' desde la base de datos [maxcantidadreitegros = 0]");
+            e.printStackTrace();
+        }
+
+        // Validar que si es un reintegro, no supere la cantidad permitida para el proyecto
+        if (this.tabseleccionado.equals("Reintegro") && (proyectocontroller.getSelected().getCantidadreintegros() + 1) > maxcantidadreintegros) {
+
+            System.out.println("Se ha superado la cantidad maxima de reintegros permitidos para este proyecto");
+
+            context.addMessage(null, new FacesMessage("Inválido", "Se ha superado la cantidad máxima de reintegros (" + + maxcantidadreintegros + ") permitidos para este proyecto."));
 
             // Restauramos el valor de la solicitad al total de presupuesto tarea
             current.setImporte(current.getDisponible());
@@ -516,8 +595,6 @@ public class SolicitudController implements Serializable {
                     iDisp1.remove();
                     //h
                     sencontrado = solicitud;
-                    
-                    
                 }
             }
             
@@ -535,9 +612,8 @@ public class SolicitudController implements Serializable {
                        
                     }
                 }
-            
-               
             }
+            
             // agregamos a la lista de solicitados
             //itemsSolicitados.add(solicitud);
             // agregamos a la lista de solicitados, checkeamos si hay un item del 
@@ -568,8 +644,6 @@ public class SolicitudController implements Serializable {
 
             //System.out.println("CURRENT: " + solicitud.getId() + " - Desc: " + solicitud.getPresupuestotarea().getDescripcion());
             System.out.println("Transferencia PARCIAL");
-
-           
 
             // agregamos a la lista de solicitados, checkeamos si hay un item del 
             // mismo presupuestotarea anterior, si es asi lo sumamos
@@ -682,7 +756,7 @@ public class SolicitudController implements Serializable {
                 }
             }
             
-               // buscamos la solicitudNuevo disponible para sumar el monto
+            // buscamos la solicitudNuevo disponible para sumar el monto
             ListIterator in = itemsDisponiblesNuevo.listIterator();
 
             while (in.hasNext()) {
@@ -771,43 +845,6 @@ public class SolicitudController implements Serializable {
 
         return r;
     }
-
-    // Indicador de Ejecucion
-    
-    public MeterGaugeChartModel getIndicadorEjecutado() {
-
-        if (indicadorEjecutado == null){
-            crearIndicadorEjecutado();
-        }
-        
-        return indicadorEjecutado;
-    }
-    
-    private MeterGaugeChartModel inicializarModeloIndicadorPorcentaje() {
-        List<Number> intervalos = new ArrayList<Number>(){{
-            add(25);
-            add(50);
-            add(75);
-            add(100);
-        }};
-         
-        return new MeterGaugeChartModel(54, intervalos);
-    }
- 
-    private void crearIndicadorEjecutado() {
-        indicadorEjecutado = inicializarModeloIndicadorPorcentaje();
-
-        indicadorEjecutado.setSeriesColors("66cc66,93b75f,E7E658,cc6666");
-
-        indicadorEjecutado.setGaugeLabelPosition("bottom");
-        //indicadorEjecutado.setShowTickLabels(false);
-        
-        indicadorEjecutado.setIntervalInnerRadius(85);
-        indicadorEjecutado.setIntervalOuterRadius(80);
-        
-        indicadorEjecutado.setExtender("indicador");
-        
-    }
     
     public HashMap<String,Float> obtenerSaldosRubro(){
 
@@ -832,41 +869,42 @@ public class SolicitudController implements Serializable {
     
     //Cuando clickea un tab de solicitudes elije un tipo de solicitud por default es 0
     public void onTabChange(TabChangeEvent event) {
+        
         tabseleccionado = event.getTab().getTitle();
-        System.out.println("------------------"+tabseleccionado);
+        
+        System.out.println("TAB SELECCIONADO >> "+tabseleccionado);
+        
         this.itemsDisponibles = new ArrayList<Solicitud>();
+        
         //filtro por rubros
-            if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición")){
-                for(Solicitud s : this.itemsDisponiblesNuevo ){
-                    
-                    if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) ){
-                        this.itemsDisponibles.add(s);
-                    }
+        if(tabseleccionado.equals("Anticipo") | tabseleccionado.equals("Adquisición") | tabseleccionado.equals("Reintegro") | tabseleccionado.equals("Rendición de Gastos")){
+            for(Solicitud s : this.itemsDisponiblesNuevo ){
+                // Si NO es de Recursos Humanos, Consultoria y Traslados
+                if(!s.getPresupuestotarea().getRubro().getId().equals(4) && !s.getPresupuestotarea().getRubro().getId().equals(5) && !s.getPresupuestotarea().getRubro().getId().equals(7) ){
+                    this.itemsDisponibles.add(s);
                 }
             }
-            
-            if(tabseleccionado.equals("Certificación")){
-                for(Solicitud s : this.itemsDisponiblesNuevo ){
-                    
-                    if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
-                        this.itemsDisponibles.add(s);
-                    }
+        }
+
+        // Si es de Recursos Humanos, Consultoria
+        if(tabseleccionado.equals("Certificación")){
+            for(Solicitud s : this.itemsDisponiblesNuevo ){
+
+                if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
+                    this.itemsDisponibles.add(s);
                 }
             }
-            
-            if(tabseleccionado.equals("Ampliación de Presupuesto")){
-                for(Solicitud s : this.itemsDisponibles ){
-                    
-                   // if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
-                        this.itemsDisponibles.add(s);
-                   // }
-                }
-            }
-        
-        
-        
-        
-      
+        }
+
+          
+//            if(tabseleccionado.equals("Reintegro")){
+//                for(Solicitud s : this.itemsDisponibles ){
+//                    
+//                   // if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
+//                        this.itemsDisponibles.add(s);
+//                   // }
+//                }
+//            }
         
     }
 
@@ -886,6 +924,21 @@ public class SolicitudController implements Serializable {
         this.itemsDisponiblesNuevo = itemsDisponiblesNuevo;
     }
 
-    
+    public void subirArchivoSolicitud(FileUploadEvent event) {
+        System.out.println("Subiendo Archivo de Solicitud - Presupuesto");
+
+        try {
+            //current = new Archivorendicion();
+            current.setArchivonombre(event.getFile().getFileName());
+            current.setArchivo(event.getFile().getContents());
+            //getListaArchivos().add(current);
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getArchivonombre() + " fue subido satisfactoriamente!"));
+        } catch (Exception e) {
+            System.out.println("Excepcion en RendicionController - subirArchivo");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error", "Ocurrió un error al subir el archivo"));
+            e.printStackTrace();
+        }
+    }
     
 }

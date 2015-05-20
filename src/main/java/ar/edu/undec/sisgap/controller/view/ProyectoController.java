@@ -1,13 +1,17 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.ConvocatoriaFacade;
 import ar.edu.undec.sisgap.controller.EnviarMail;
+import ar.edu.undec.sisgap.controller.EstadoproyectoFacade;
 import ar.edu.undec.sisgap.controller.PresupuestoRubroFacade;
+import ar.edu.undec.sisgap.controller.PresupuestoTareaFacade;
 import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ProyectoFacade;
 import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.Archivoproyecto;
+import ar.edu.undec.sisgap.model.Convocatoria;
 import ar.edu.undec.sisgap.model.Estadoproyecto;
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.Evaluacion;
@@ -21,6 +25,7 @@ import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.ProyectoAgentePK;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
+import ar.edu.undec.sisgap.model.Tareaavance;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,6 +33,7 @@ import java.io.InputStream;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,8 +62,12 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -105,12 +115,22 @@ public class ProyectoController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.PresupuestoTareaFacade ejbpresupuestotarea;
     @EJB
+    private ar.edu.undec.sisgap.controller.PresupuestoRubroFacade ejbpresupuestorubro;
+    @EJB
     private ar.edu.undec.sisgap.controller.ProyectoAgenteFacade ejbproyectoagente;
     @EJB
     PresupuestoRubroFacade prfacade;
     @EJB
     private ar.edu.undec.sisgap.controller.ArchivoproyectoFacade ejbarchivoproyecto;
-
+    @EJB
+    private ar.edu.undec.sisgap.controller.EstadoproyectoFacade ejbestadoproyecto;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConvocatoriaFacade ejbconvocatoria;
+    
+    @EJB
+    private ar.edu.undec.sisgap.controller.TareaavanceFacade ejbtareaavance;
+    
+    
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private byte[] imagen = null;
@@ -125,7 +145,9 @@ public class ProyectoController implements Serializable {
     private Proyecto proyectoViejo;
     //variable utilizada para recolectar los agentes del proyecto en todas las etapas
     private List<TareaAgente> tareaagentesproyecto = new ArrayList<TareaAgente>();
-
+    private List<Proyecto> tablafiltrada=null; 
+    private float porcentajeConvocatoria=0.0f;
+            
     public ProyectoController() {
     }
 
@@ -144,6 +166,22 @@ public class ProyectoController implements Serializable {
         return ejbFacade;
     }
 
+    private EstadoproyectoFacade getFacadeEstadoProyecto() {
+        return ejbestadoproyecto;
+    }
+    
+    private ConvocatoriaFacade getFacadeConvocatoria() {
+        return ejbconvocatoria;
+    }
+    
+    private PresupuestoTareaFacade getPresupuestoTareaFacade() {
+        return ejbpresupuestotarea;
+    }
+        
+    private PresupuestoRubroFacade getFacadePresupuestoRubro() {
+        return ejbpresupuestorubro;
+    }
+    
     public PaginationHelper getPagination() {
         if (pagination == null) {
             pagination = new PaginationHelper(10000000) {
@@ -168,8 +206,8 @@ public class ProyectoController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Proyecto) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        //current = (Proyecto) getItems().getRowData();
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
@@ -318,6 +356,11 @@ public class ProyectoController implements Serializable {
         return "Edit";
     }
 
+    public String prepareFormalizar() {
+        current = (Proyecto) getItems().getRowData(); 
+        return "Formalizar";
+    }
+    
     public String update() {
         try {
             getFacade().edit(current);
@@ -611,7 +654,8 @@ public class ProyectoController implements Serializable {
 
     public void evaluarIdea() {
         boolean todobien = false;
-        if (current.getEstadoproyectoid().getId() > 1) {
+        
+        if (current.getEstadoproyectoid().getId() > 0) {
 
             FacesContext context = FacesContext.getCurrentInstance();
             EvaluacionPreguntaController evaluacionpregunta = (EvaluacionPreguntaController) context.getApplication().evaluateExpressionGet(context, "#{evaluacionPreguntaController}", EvaluacionPreguntaController.class);
@@ -619,11 +663,21 @@ public class ProyectoController implements Serializable {
             AgenteController agente = (AgenteController) context.getApplication().evaluateExpressionGet(context, "#{agenteController}", AgenteController.class);
 
             try {
+                // Editamos para cambiar el estado del proyecto
+                this.ejbFacade.edit(current);
 
                 evaluacion.getSelected().setFecha(new Date());
+                
+                System.out.println("PROYECTO current" + current.toString() + " - " + current.getNombre());
+                System.out.println("USUARIO current" + agente.getSelected().toString() + " - " + agente.getSelected().getApellido() + ", " + agente.getSelected().getNombres() );
+                System.out.println("EVALUACION ID:" + evaluacion.getSelected().getId());
+                
                 evaluacion.getSelected().setProyectoid(current);
                 evaluacion.getSelected().setUsuarioid(agente.getSelected().getUsuarioid());
+                
                 ejbevaluacion.createWithPersist(evaluacion.getSelected());
+                
+                System.out.println("evaluarIDEA persistencia");
 
                 for (EvaluacionPregunta eval : evaluacionpregunta.getEvaluaciones()) {
                     eval.setEvaluacionPreguntaPK(new EvaluacionPreguntaPK());
@@ -632,8 +686,10 @@ public class ProyectoController implements Serializable {
 
                     ejbevaluacionproyecto.create(eval);
                 }
-                this.ejbFacade.edit(current);
-
+                
+                // borrar cuando se utilice mail
+                RequestContext.getCurrentInstance().execute("PF('dfinal').show()"); 
+                
 //                if (new EnviarMail().enviarMailEvaluacionIdeaProyecto(current.getAgenteid(), evaluacion.getSelected().getObservacion())) {
 //
 //                    todobien = true;
@@ -825,15 +881,27 @@ public class ProyectoController implements Serializable {
 
                         t.setTareaAgenteList(null);
                         t.setPresupuestoTareaList(null);
-
+                        
+                        
+                        
                         this.ejbtarea.createWithPersist(t);
+                        
+                        //inserto tarea avance
+                        Tareaavance tav = new Tareaavance();
+                        tav.setAvance(t.getAvance());
+                        tav.setFecha(new Date());
+                        tav.setFechainicial(t.getFechainicio());
+                        tav.setFechafinal(t.getFechafin());
+                        tav.setTareaid(t);
+                        tav.setId(null);
+                        this.ejbtareaavance.create(tav);
                         if (OldTareaAgente != null) {
                             for (TareaAgente ta : OldTareaAgente) {
                                 ta.setTareaid(t);
                                 ejbtareaagente.create(ta);
                             }
                         }
-
+                        //----------------------------
                         if (OldPresupuestoTarea != null) {
                             for (PresupuestoTarea pt : OldPresupuestoTarea) {
                                 pt.setTarea(t);
@@ -900,7 +968,12 @@ public class ProyectoController implements Serializable {
         }
         proyectoagentecontroller.setEquipotrabajo(pa);
         archivoproyectocontroller.setCollectorArchivoProyecto(this.ejbarchivoproyecto.buscarArchivosProyecto(this.current.getId()));
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        
+        System.out.println("asdasdasd");
+        
+        //selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+        
+        System.out.println("qweqweqwe");
         return "CrearConEtapa";
     }
 
@@ -996,8 +1069,8 @@ public class ProyectoController implements Serializable {
         resultado = p.obtenerTotal(idProyecto);
 
         return resultado.floatValue();
-    }
-
+    }    
+    
     public BigDecimal obtenerPresupuestoTotalCurrent() {
 
         BigDecimal resultado = BigDecimal.ZERO;
@@ -1819,7 +1892,81 @@ public class ProyectoController implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
 
     }
+    
+    public void pdfFormalizarProyecto() throws JRException, IOException {
 
+        // Obtengo la ruta absoluta del archivo compilado del reporte
+        String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/formalizar.jasper");
+
+        // Fuente de datos del reporte
+        JRBeanArrayDataSource beanArrayDataSource = new JRBeanArrayDataSource(new Proyecto[]{this.getSelected()});
+
+        float monto=obtenerPresupuestoTotalCurrent().floatValue();
+        
+        //Agregando los parametros
+        Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+        parametros.put("idProyecto", this.getSelected().getId());
+        parametros.put("monto", monto);
+       // parametros.put("equipoTrabajo", equipoTrabajo);
+
+        // Llenamos el reporte
+        JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, beanArrayDataSource);
+
+        // Generamos el archivo a descargar
+        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        httpServletResponse.addHeader("Content-disposition", "attachment; filename=formalizarProyecto.pdf");
+        ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+     public void pdfProyectosPorConvocatorias() throws JRException, IOException {
+
+        if(!tablafiltrada.isEmpty()){
+            FacesContext context = FacesContext.getCurrentInstance();
+            IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
+            // Obtengo la ruta absoluta del archivo compilado del reporte
+            String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/convocatoria.jasper");
+
+            List<IndicadoresController> listaE=new ArrayList<IndicadoresController>();        
+            float total=0.0f;
+            float totalEjecutado=0.0f;
+            for (Proyecto e : tablafiltrada) {
+                IndicadoresController obj=new IndicadoresController();
+                obj.setEjecutadoProyecto(indicadorescontroller.calcularEjecutadoPorProyecto(e.getId()));
+                String valor=indicadorescontroller.calcularPorcenjateEjecutadoPorProyecto(e.getId());
+                valor=valor.replace(",", ".");
+                obj.setPorcentajeEjecutado(Float.parseFloat(valor));            
+                listaE.add(obj);     
+                total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
+                totalEjecutado+=obj.getEjecutadoProyecto();
+            }
+
+            JRDataSource lista = new JRBeanCollectionDataSource(listaE);  
+            JRDataSource proyectos = new JRBeanCollectionDataSource(this.tablafiltrada); 
+
+            //Agregando los parametros
+            Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+            parametros.put("lista", lista);
+            parametros.put("proyectos", proyectos);
+            parametros.put("convocatoria", this.getSelected().getConvocatoriaid().getConvocatoria());
+            parametros.put("ejecutadoConvocatoria", String.format("%.02f",(totalEjecutado*100)/total));
+
+            // Llenamos el reporte
+            JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, new JREmptyDataSource());
+
+            // Generamos el archivo a descargar
+            HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            httpServletResponse.addHeader("Content-disposition", "attachment; filename=Proyectos_por_Convocatorias.pdf");
+            ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+            JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+            FacesContext.getCurrentInstance().responseComplete();
+        }
+        else{
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
+        }
+    }
+    
     public List<Agente> obtenerEquipoTrabajo() {
 
         List<Agente> listaAgentes = new ArrayList<Agente>();
@@ -1874,6 +2021,66 @@ public class ProyectoController implements Serializable {
 //    }
     public void setSelected(Proyecto proyecto) {
         current = proyecto;
+    }
+    
+    public String setFormalizar(){
+        try{
+            Estadoproyecto ep = getFacadeEstadoProyecto().buscarPorId(8);            
+            current.setEstadoproyectoid(ep);   
+            getFacade().edit(current);          
+            RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
+            return null;
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage();
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            message.setSummary("ERROR");
+            message.setDetail("No se pudo crear la Formalización del Proyecto " + e);
+            FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
+            System.out.println("Error al grabar la Formalización  = " + e);
+            return null;
+        }
+    }
+        
+     public void findProyectoPorConvocatoria(Integer convocatoriaId){
+        recreateModel();
+        items= new ListDataModel(getFacade().buscarProyectoPorConvocatoria(convocatoriaId));
+        this.tablafiltrada= getFacade().buscarProyectoPorConvocatoria(convocatoriaId);
+        this.porcentajeGeneral();
+    }    
+
+    public List<Proyecto> getTablafiltrada() {
+        return tablafiltrada;
+    }
+
+    public void setTablafiltrada(List<Proyecto> tablafiltrada) {
+        this.tablafiltrada = tablafiltrada;
+    }
+    
+    public String getporcentajeConvocatoria() {
+        return String.format("%.02f", porcentajeConvocatoria);
+    }
+
+    public void setporcentajeConvocatoria(float porcentaje) {
+        porcentajeConvocatoria=porcentaje;
+    }
+    
+     public void porcentajeGeneral(){
+
+        if(!tablafiltrada.isEmpty()){
+            FacesContext context = FacesContext.getCurrentInstance();
+            IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
+
+            float total=0.0f;
+            float totalEjecutado=0.0f;
+            for (Proyecto e : tablafiltrada) {
+                total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
+                totalEjecutado+=indicadorescontroller.calcularEjecutadoPorProyecto(e.getId());
+            }
+            this.porcentajeConvocatoria=(totalEjecutado*100)/total;
+        }
+        else{
+            this.porcentajeConvocatoria=0.0F;
+        }
     }
 
 }

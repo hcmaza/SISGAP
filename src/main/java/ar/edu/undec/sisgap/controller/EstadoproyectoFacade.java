@@ -34,4 +34,8 @@ public class EstadoproyectoFacade extends AbstractFacade<Estadoproyecto> {
         return em.createQuery("select e from Estadoproyecto e where e.proyecto="+x, Estadoproyecto.class).getResultList();
     }
     
+     public Estadoproyecto buscarPorId(int id){
+        return em.createQuery("select e from Estadoproyecto e where e.id="+ id, Estadoproyecto.class).getSingleResult();
+    }
+    
 }

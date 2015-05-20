@@ -6,9 +6,12 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Archivorendicion;
+import ar.edu.undec.sisgap.model.Solicitud;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -26,6 +29,14 @@ public class ArchivorendicionFacade extends AbstractFacade<Archivorendicion> {
 
     public ArchivorendicionFacade() {
         super(Archivorendicion.class);
+    }
+    
+    public List<Archivorendicion> buscarPorRendicion(int rendicionId){
+        
+        Query consulta = em.createQuery("SELECT ar FROM Archivorendicion ar WHERE ar.rendicionid.id = :rendicionId)", Archivorendicion.class);
+        consulta.setParameter("rendicionId", rendicionId);
+        return consulta.getResultList();
+        
     }
     
 }

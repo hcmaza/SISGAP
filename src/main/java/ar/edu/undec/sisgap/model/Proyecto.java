@@ -46,8 +46,23 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Proyecto.findByCudap", query = "SELECT p FROM Proyecto p WHERE p.cudap = :cudap")})
 public class Proyecto implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Basic(optional = false)
-    @NotNull
+    //@Basic(optional = false)
+    //@NotNull
+    @Column(name = "fecharesolucion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecharesolucion;
+    
+    @Column(name = "fechaexpediente")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaexpediente;
+    
+    @Size(max = 40)
+    @Column(name = "resolucion")
+    private String resolucion;
+    
+    @Size(max = 40)
+    @Column(name = "expediente")
+    private String expediente;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
@@ -70,6 +85,9 @@ public class Proyecto implements Serializable {
     private String localizacion;
     @Column(name = "duracion")
     private Short duracion;
+    @Column(name = "cantidadreintegros")
+    private Integer cantidadreintegros;
+    
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="proyecto_id_seq")
@@ -127,6 +145,38 @@ public class Proyecto implements Serializable {
         this.fecha = fecha;
     }
 
+    public Date getFecharesolucion() {
+        return fecharesolucion;
+    }
+
+    public void setFecharesolucion(Date fecharesolucion) {
+        this.fecharesolucion = fecharesolucion;
+    }
+
+    public Date getFechaexpediente() {
+        return fechaexpediente;
+    }
+
+    public void setFechaexpediente(Date fechaexpediente) {
+        this.fechaexpediente = fechaexpediente;
+    }
+
+    public String getResolucion() {
+        return resolucion;
+    }
+
+    public void setResolucion(String resolucion) {
+        this.resolucion = resolucion;
+    }
+
+    public String getExpediente() {
+        return expediente;
+    }
+
+    public void setExpediente(String expediente) {
+        this.expediente = expediente;
+    }
+        
     public String getNombre() {
         return nombre;
     }
@@ -160,7 +210,13 @@ public class Proyecto implements Serializable {
         this.documentacionnombre = documentacionnombre;
     }
 
-    
+    public Integer getCantidadreintegros() {
+        return cantidadreintegros;
+    }
+
+    public void setCantidadreintegros(Integer cantidadreintegros) {
+        this.cantidadreintegros = cantidadreintegros;
+    }
     
     public String getObservaciones() {
         return observaciones;
@@ -178,8 +234,6 @@ public class Proyecto implements Serializable {
         this.localizacion = localizacion;
     }
     
-    
-    
     public Short getDuracion() {
         return duracion;
     }
@@ -187,8 +241,6 @@ public class Proyecto implements Serializable {
     public void setDuracion(Short duracion) {
         this.duracion = duracion;
     }
-
-   
 
     public Integer getId() {
         return id;

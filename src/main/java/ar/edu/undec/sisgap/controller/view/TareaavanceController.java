@@ -1,9 +1,9 @@
 package ar.edu.undec.sisgap.controller.view;
 
-import ar.edu.undec.sisgap.model.Tareaprogreso;
+import ar.edu.undec.sisgap.model.Tareaavance;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
-import ar.edu.undec.sisgap.controller.TareaprogresoFacade;
+import ar.edu.undec.sisgap.controller.TareaavanceFacade;
 
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -18,29 +18,29 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
-@ManagedBean(name = "tareaprogresoController")
+@ManagedBean(name = "tareaavanceController")
 @SessionScoped
-public class TareaprogresoController implements Serializable {
+public class TareaavanceController implements Serializable {
 
-    private Tareaprogreso current;
+    private Tareaavance current;
     private DataModel items = null;
     @EJB
-    private ar.edu.undec.sisgap.controller.TareaprogresoFacade ejbFacade;
+    private ar.edu.undec.sisgap.controller.TareaavanceFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    public TareaprogresoController() {
+    public TareaavanceController() {
     }
 
-    public Tareaprogreso getSelected() {
+    public Tareaavance getSelected() {
         if (current == null) {
-            current = new Tareaprogreso();
+            current = new Tareaavance();
             selectedItemIndex = -1;
         }
         return current;
     }
 
-    private TareaprogresoFacade getFacade() {
+    private TareaavanceFacade getFacade() {
         return ejbFacade;
     }
 
@@ -68,13 +68,13 @@ public class TareaprogresoController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Tareaprogreso) getItems().getRowData();
+        current = (Tareaavance) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
     public String prepareCreate() {
-        current = new Tareaprogreso();
+        current = new Tareaavance();
         selectedItemIndex = -1;
         return "Create";
     }
@@ -82,7 +82,7 @@ public class TareaprogresoController implements Serializable {
     public String create() {
         try {
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TareaprogresoCreated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TareaavanceCreated"));
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -91,7 +91,7 @@ public class TareaprogresoController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Tareaprogreso) getItems().getRowData();
+        current = (Tareaavance) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
@@ -99,7 +99,7 @@ public class TareaprogresoController implements Serializable {
     public String update() {
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TareaprogresoUpdated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TareaavanceUpdated"));
             return "View";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -108,7 +108,7 @@ public class TareaprogresoController implements Serializable {
     }
 
     public String destroy() {
-        current = (Tareaprogreso) getItems().getRowData();
+        current = (Tareaavance) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
@@ -132,7 +132,7 @@ public class TareaprogresoController implements Serializable {
     private void performDestroy() {
         try {
             getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TareaprogresoDeleted"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TareaavanceDeleted"));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
         }
@@ -188,16 +188,16 @@ public class TareaprogresoController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    @FacesConverter(forClass = Tareaprogreso.class)
-    public static class TareaprogresoControllerConverter implements Converter {
+    @FacesConverter(forClass = Tareaavance.class)
+    public static class TareaavanceControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TareaprogresoController controller = (TareaprogresoController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "tareaprogresoController");
+            TareaavanceController controller = (TareaavanceController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "tareaavanceController");
             return controller.ejbFacade.find(getKey(value));
         }
 
@@ -218,11 +218,11 @@ public class TareaprogresoController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Tareaprogreso) {
-                Tareaprogreso o = (Tareaprogreso) object;
+            if (object instanceof Tareaavance) {
+                Tareaavance o = (Tareaavance) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Tareaprogreso.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Tareaavance.class.getName());
             }
         }
 

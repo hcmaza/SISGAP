@@ -52,6 +52,12 @@
                                 </f:facet>
                                 <h:outputText value="#{item.rubro}"/>
                             </p:column>
+                            <p:column id="columnaAbreviado" filterBy="abreviado" filterMatchMode="contains" sortBy="abreviado">
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre de Rubro Abreviado"/>
+                                </f:facet>
+                                <h:outputText value="#{item.abreviado}"/>
+                            </p:column>
                             <p:column >
                                 <f:facet name="header">
                                     <h:outputText value="&nbsp;"/>

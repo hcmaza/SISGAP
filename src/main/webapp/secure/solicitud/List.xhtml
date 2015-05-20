@@ -21,20 +21,28 @@
                     <h:outputText escape="false" value="La lista de solicitudes está vacía" rendered="#{proyectoController.items.rowCount == 0}"/>
 
                     <h:panelGroup rendered="#{proyectoController.items.rowCount > 0}">
-                      
-                        <p:dataTable scrollable="true" liveScroll="true" scrollWidth="95%" 
-                                     id="tbl" 
-                                     value="#{proyectoController.items}" 
-                                     var="item" 
-                                     widgetVar="tblW"
-                                     rowKey="#{item.id}" 
 
-                                     emptyMessage="No se encontraron resultados para el criterio de busqueda"
-                                     paginator="true" rows="10" paginatorPosition="bottom"
-                                     draggableColumns="true"
-                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="10,15,30">
+                        <p:dataTable 
+                            id="tbl" 
+                            value="#{proyectoController.items}"  
+                            var="item" 
+                            widgetVar="tblW"
+                            rowKey="#{item.id}" 
+                            emptyMessage="No se encontraron resultados para el criterio de busqueda"
+                            paginator="true" rows="10" paginatorPosition="bottom"
+                            draggableColumns="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="10,15,30" 
+                            rowIndexVar="indice"
+                            rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                            styleClass="tabla" >
 
+                            <p:column id="columnaId" sortBy="#{item.id}" width="10px" style="width: 10px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Nº" />
+                                </f:facet>
+                                <h:outputText value="#{item.id}" />
+                            </p:column>
                             <p:column id="columnaFecha" filterBy="#{item.fecha}" filterMatchMode="contains" sortBy="#{item.fecha}">
                                 <f:facet name="header">
                                     <h:outputText value="Fecha" />
@@ -43,13 +51,6 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column id="columnaId" sortBy="#{item.id}" width="10px" style="width: 10px;">
-                                <f:facet name="header">
-                                    <h:outputText value="Nº" />
-                                </f:facet>
-                                <h:outputText value="#{item.id}" />
-                            </p:column>
-
                             <p:column id="columnaNombre" filterBy="#{item.nombre}" filterMatchMode="contains" sortBy="#{item.nombre}">
                                 <f:facet name="header">
                                     <h:outputText value="Titulo" />
@@ -71,12 +72,12 @@
                                 <h:outputText value="#{item.fuentefinanciamientoid.fuentefinanciamiento}"/>
                             </p:column>                    
 
-                            <p:column id="columnaConvocatoria" filterBy="#{item.convocatoriaid}" filterMatchMode="exact" filterOptions="#{convocatoriaController.itemsAvailableSelectOne}" sortBy="#{item.convocatoriaid.convocatoria}">
+<!--                            <p:column id="columnaConvocatoria" filterBy="{item.convocatoriaid}" filterMatchMode="exact" filterOptions="{convocatoriaController.itemsAvailableSelectOne}" sortBy="{item.convocatoriaid.convocatoria}">
                                 <f:facet name="header">
                                     <h:outputText value="Convocatoria" />
                                 </f:facet>                                                
-                                <h:outputText value="#{item.convocatoriaid.convocatoria}"/>
-                            </p:column>
+                                <h:outputText value="{item.convocatoriaid.convocatoria}"/>
+                            </p:column>-->
 
                             <p:column id="columnaPresupuesto" >
                                 <f:facet name="header">
@@ -93,13 +94,15 @@
                             </p:column>
 
                             <p:column style="width:4%" exportable="false">
-                                <p:commandButton icon="ui-icon-search" action="#{proyectoController.prepareView}" ajax="false"/>
+                                <p:commandButton icon="ui-icon-search" action="#{proyectoController.prepareView}" ajax="false">
+                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                </p:commandButton>
                                 <p:commandButton icon="ui-icon-pencil" action="#{proyectoController.prepareEdit}" ajax="false" />
                                 <!--                                <p:commandButton id="selectButton" update=":formDialogoProyecto:verProy" oncomplete="PF('verProyecto').show()" icon="ui-icon-search" title="Ver">
-                                                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                                                    <f:setPropertyActionListener value="{item}" target="{proyectoController.selected}" />
                                                                 </p:commandButton>
                                                                 <p:commandButton id="selectButton" update=":formDialogoProyecto:verProy" oncomplete="PF('verProyecto').show()" icon="ui-icon-search" title="Editar">
-                                                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                                                    <f:setPropertyActionListener value="{item}" target="{proyectoController.selected}" />
                                                                 </p:commandButton>                                -->
                             </p:column>    
 
@@ -107,9 +110,9 @@
                                                             <f:facet name="header">
                                                                 <h:outputText value="&nbsp;"/>
                                                             </f:facet>
-                                                            <p:commandLink action="#{proyectoController.prepareView}" value="Ver" ajax="false" />
+                                                            <p:commandLink action="{proyectoController.prepareView}" value="Ver" ajax="false" />
                                                             <h:outputText value=" "/>
-                                                            <p:commandLink action="#{proyectoController.prepareEdit}" value="Editar" ajax="false" />
+                                                            <p:commandLink action="{proyectoController.prepareEdit}" value="Editar" ajax="false" />
                                                         </p:column>-->
                         </p:dataTable>
                     </h:panelGroup>

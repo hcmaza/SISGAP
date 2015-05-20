@@ -6,14 +6,14 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://java.sun.com/jsp/jstl/core">
     <f:event type="preRenderView" listener="#{notificacionController.contarnotificaciones()}" ></f:event> 
-     
+
     <h:form id="formmenu" styleClass="menu1 rounded-corners">
-          <p:growl id="growlnotificaciones" redisplay="false" showDetail="true" sticky="true"  />  
-      
+        <p:growl id="growlnotificaciones" redisplay="false" showDetail="true" sticky="true"  />  
+
         <p:menubar autoDisplay="Home"   >
-            
+
             <c:if test="#{request.isUserInRole('Administrador')}" > 
-                    
+
                 <p:submenu label="Idea Proyecto" icon="ui-icon-document">  
                     <p:menuitem value="Evaluacion de Ideas Proyectos" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/evaluacionideaproyecto/List.xhtml' />  
 
@@ -22,10 +22,12 @@
                 <p:submenu label="Proyectos" icon="ui-icon-pencil">  
                     <p:menuitem value="Listado de Proyectos" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/List.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
                     
+                    <p:menuitem value="Proyectos por Convocatoria" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/ProyectosPorConvocatoria.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
+
                 </p:submenu>
 
                 <p:submenu label="Sistema" icon="ui-icon-pencil">  
-                    
+
                     <p:menuitem value="Agente" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/agente/List.xhtml' />  
                     <p:menuitem value="Beneficiario" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/beneficiario/List.xhtml'  />  
                     <p:menuitem value="Comitente" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/comitente/List.xhtml'  />  
@@ -61,20 +63,20 @@
                 <p:submenu label="Mi Cuenta" icon="ui-icon-help">  
                     <p:menuitem value="Mi Cuenta" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/micuenta/Edit.xhtml' icon="ui-icon-close" />  
                 </p:submenu> 
-                            
-                    
-                
+
+
+
                 <f:facet name="options"> 
-                      <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
-                    
+                    <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
+
                     <div id="noti_Container">
                         <p:commandButton value="Notificaciones" actionListener="#{notificacionController.notificar()}" update=":formmenu:growlnotificaciones" />
                         <div class="noti_bubble">#{notificacionController.contadornotifadministrador}</div>
-                    
+
                     </div>
-                      
-                        <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
-                   
+
+                    <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
+
                 </f:facet>  
 
             </c:if>
@@ -90,7 +92,7 @@
                 <p:submenu label="Proyectos" icon="ui-icon-pencil">  
                     <p:menuitem value="Lista de Proyectos" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/List.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
                 </p:submenu>
-                
+
                 <p:submenu label="Ayuda" icon="ui-icon-help">  
                     <p:menuitem value="Acerca de ..." onclick="PF('dabout').show()" />  
                     <p:submenu label="Manual" icon="ui-icon-search">  
@@ -102,19 +104,16 @@
                     <p:menuitem value="Mi Cuenta" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/micuenta/Edit.xhtml' icon="ui-icon-close" />  
                 </p:submenu> 
 
-
-
-
                 <f:facet name="options">  
-                    <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 10px;"/>
-                    
-                     <div id="noti_Container">
+                    <p:outputLabel value="Bienvenido #{request.getUserPrincipal()}" style="font-family: 'Montserrat'; font-size: 12px !important; margin-right: 5px; margin-top: 4px; float: left; "/>
+
+                    <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="float: right; margin-left: 10px;" /> 
+
+                    <div id="noti_Container" >
                         <p:commandButton value="Notificaciones" actionListener="#{notificacionController.notificar()}" update=":formmenu:growlnotificaciones" />
                         <div class="noti_bubble">#{notificacionController.contadornotifadministrador}</div>
-                    
+
                     </div>
-                    
-                    <p:commandButton actionListener="#{usuarioController.logout()}" value="Salir" style="font-size: 12px !important;" /> 
 
                 </f:facet>  
 

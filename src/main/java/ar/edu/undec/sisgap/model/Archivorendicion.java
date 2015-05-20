@@ -7,6 +7,7 @@ package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,6 +65,20 @@ public class Archivorendicion implements Serializable {
     @Column(name = "montofactura")
     private BigDecimal montofactura;
     
+    @Column(name = "proveedor")
+    private String proveedor;
+    
+    @Column(name = "fechafactura")
+    private Date fechafactura;
+    
+    @Column(name = "montoaprobado")
+    private BigDecimal montoaprobado;
+    
+    @Column(name = "estado")
+    private Integer estado;
+    
+    @Column(name = "obsevaluacion")
+    private String obsevaluacion;
 
     public Archivorendicion() {
     }
@@ -126,6 +141,46 @@ public class Archivorendicion implements Serializable {
 
     public void setMontofactura(BigDecimal montofactura) {
         this.montofactura = montofactura;
+    }
+
+    public String getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(String proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    public Date getFechafactura() {
+        return fechafactura;
+    }
+
+    public void setFechafactura(Date fechafactura) {
+        this.fechafactura = fechafactura;
+    }
+
+    public BigDecimal getMontoaprobado() {
+        return montoaprobado;
+    }
+
+    public void setMontoaprobado(BigDecimal montoaprobado) {
+        this.montoaprobado = montoaprobado;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
+    public String getObsevaluacion() {
+        return obsevaluacion;
+    }
+
+    public void setObsevaluacion(String obsevaluacion) {
+        this.obsevaluacion = obsevaluacion;
     }
     
     @Override

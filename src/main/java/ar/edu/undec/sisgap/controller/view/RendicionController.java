@@ -11,6 +11,7 @@ import ar.edu.undec.sisgap.controller.TiposolicitudFacade;
 import ar.edu.undec.sisgap.model.Archivorendicion;
 import ar.edu.undec.sisgap.model.Estadosolicitud;
 import ar.edu.undec.sisgap.model.Solicitud;
+import ar.edu.undec.sisgap.model.Tiposolicitud;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,7 +44,12 @@ public class RendicionController implements Serializable {
     @EJB
     private ar.edu.undec.sisgap.controller.EstadosolicitudFacade ejbFacadees;
     @EJB
+    private ar.edu.undec.sisgap.controller.TiposolicitudFacade ejbFacadets;
+
+    @EJB
     private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbFacadear;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ConfiguracionFacade ejbFacadec;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -51,6 +57,9 @@ public class RendicionController implements Serializable {
 
     private List<Solicitud> listaSolicitudesSeleccionadas;
     private Solicitud solicitudSeleccionada;
+
+    // creada cuando la suma de los comprobantes de rendicion supera el importe de la solicitud que se está rindiendo
+    private Solicitud solicitudReintegroPorDiferencia;
 
     public RendicionController() {
     }
@@ -79,6 +88,10 @@ public class RendicionController implements Serializable {
         return ejbFacadees;
     }
 
+    public TiposolicitudFacade getEjbFacadets() {
+        return ejbFacadets;
+    }
+
     public ArchivorendicionFacade getFacadear() {
         return ejbFacadear;
     }
@@ -100,6 +113,10 @@ public class RendicionController implements Serializable {
     }
 
     public Solicitud getSolicitudSeleccionada() {
+
+        if (solicitudSeleccionada == null) {
+            solicitudSeleccionada = new Solicitud();
+        }
         return solicitudSeleccionada;
     }
 
@@ -107,9 +124,17 @@ public class RendicionController implements Serializable {
         this.solicitudSeleccionada = solicitudSeleccionada;
     }
 
+    public Solicitud getSolicitudReintegroPorDiferencia() {
+        return solicitudReintegroPorDiferencia;
+    }
+
+    public void setSolicitudReintegroPorDiferencia(Solicitud solicitudReintegroPorDiferencia) {
+        this.solicitudReintegroPorDiferencia = solicitudReintegroPorDiferencia;
+    }
+
     public PaginationHelper getPagination() {
         if (pagination == null) {
-            pagination = new PaginationHelper(10) {
+            pagination = new PaginationHelper(10000000) {
 
                 @Override
                 public int getItemsCount() {
@@ -127,7 +152,7 @@ public class RendicionController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "ListPorProyecto";
+        return "ListRendicionesPorProyecto";
     }
 
     public String prepareView() {
@@ -136,82 +161,232 @@ public class RendicionController implements Serializable {
         return "View";
     }
 
-    public String prepareCreate() {
+    public void iniciarRendicion() {
+
+        // Evitar que salte nuevamente el prerender
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            prepararRendicion();
+            System.out.println("RendicionController - iniciarRendicion SIN POSTBACK");
+        }
+    }
+
+    public void prepararRendicion() {
+
+        System.out.println("RendicionController - prepararRendicion()");
+
         current = new Rendicion();
         selectedItemIndex = -1;
-
-        System.out.println("Inicio Rendicion - prepareCreate");
 
         current.setFecha(new Date());
 
         // Obtenemos los controladores necesarios
         FacesContext context = FacesContext.getCurrentInstance();
-        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
         ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
 
         // Vaciamos la lista de archivos de rendicion
         archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
 
-        // Llenamos la lista de solicitudes "Aprobadas", es decir que ya pueden ser rendidas.
+        boolean admin = false;
+        admin = context.getExternalContext().isUserInRole("Administrador");
+        
+        System.out.println("USUARIO admin? " + admin);
+        
+        // dependiendo del usuario llenamos la lista de solicitudes a rendir
+        // si es un "DOCENTE" las solicitudes a rendir, seran las que tienen Estado = APROBADA
+        // si es un "ADMINISTRADOR" las solicitudes a rendir, seran las que tienen Estado = APROBADA y EJECUCION
         listaSolicitudes = getFacades().obtenerAprobadasPorProyecto(proyectocontroller.getSelected().getId());
+        
+        if(admin){
+            // preparar solicitudes
+            solicitudcontroller.armarSolicitudesDesembolsosYRendicion();
+            
+            listaSolicitudes.addAll(getFacades().obtenerEjecucionPorProyecto(proyectocontroller.getSelected().getId()));
+        } 
+        
+        System.out.println("TAMAÑO listaSolicitudes: " + listaSolicitudes.size());
 
-        // Vaciamos la lista de solicitudes seleccionadas
+        // Vaciamos la lista de solicitudes seleccionadas [Seleccion de Multiples Solicitudes]
         listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+
+        // Vaciamos la solicitud seleccionada [Seleccion de Solicitud Unica]
+        solicitudSeleccionada = new Solicitud();
+
+    }
+
+    public String prepareCreate() {
+
+        prepararRendicion();
 
         return "CreateRendicion";
     }
+    
+    
 
     public String create() {
         try {
 
-            if (!listaSolicitudesSeleccionadas.isEmpty()) {
-                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() +  " fue subido satisfactoriamente!"));
+            // si la solicitud, tiene ID y la referencia a un presupuesto_tarea...
+            if (solicitudSeleccionada.getId() != null && solicitudSeleccionada.getId() != 0 && solicitudSeleccionada.getPresupuestotarea() != null) {
 
-                current.setFecha(new Date());
+                // Obtenemos el controlador necesario
+                FacesContext context = FacesContext.getCurrentInstance();
+                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+                SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
 
-                // se guarda la rendicion
-                getFacade().createWithPersist(current);
+                float sumaArchivosRendicion = 0f;
 
-                // Estado de la solicitud
-                Estadosolicitud estado;
+                for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+                    sumaArchivosRendicion = sumaArchivosRendicion + ar.getMontofactura().floatValue();
+                }
 
+                System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
+
+                float porcentaje = 20f;
+
+                // Obtenemos el porcentaje maximo el cual no se debe superar por la suma de comprobantes
                 try {
-                    // Estado de la Solicitud = "Rendida"
-                    estado = getFacadees().find(5);
+                    porcentaje = Float.parseFloat(ejbFacadec.findAtributo("maxporcentajerendicion").getValor());
+                    // System.out.println("maxanticipo=" + String.valueOf(maxanticipo));
                 } catch (Exception e) {
-                    estado = null;
-                    System.out.println("EstadosolicitudFacade: problema de recuperacion");
+                    porcentaje = 20f;
+                    System.out.println("Error en obtencion de parametro 'maxanticipo' desde la base de datos [maxanticipo = 0]");
                     e.printStackTrace();
                 }
 
-                // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
-                for (Solicitud s : listaSolicitudesSeleccionadas) {
-                    s.setRendicionid(current);
-                    //s.setFechaejecucion(new Date());
-                    s.setEstadosolicitudid(estado);
-                    getFacades().edit(s);
+                float porcentajeArchivosRendicion = (solicitudSeleccionada.getImporte().floatValue() * (porcentaje / 100.0f));
+
+                System.out.println(porcentaje + "% de la suma de Archivos de Rendicion = " + porcentajeArchivosRendicion);
+
+                //validacion de que el el total de archivos de rendicion, 
+                //sea igual o hasta un 20% mayor que el importe de la rendicion
+                if (sumaArchivosRendicion >= solicitudSeleccionada.getImporte().floatValue() && sumaArchivosRendicion <= (solicitudSeleccionada.getImporte().floatValue() + porcentajeArchivosRendicion)) {
+
+                    // rendicion con fecha actual del sistema
+                    current.setFecha(new Date());
+
+                    // se guarda la rendicion
+                    getFacade().createWithPersist(current);
+
+                    // Estado de la solicitud que se rinde
+                    Estadosolicitud estadoRendicionAEvaluar;
+                    // Estado de la solicitud que se crea por diferencia
+                    Estadosolicitud estadoAprobada;
+
+                    // obtenemos los estados
+                    try {
+                        // Estado de la Solicitud = "Rendicion a Evaluar"
+                        estadoRendicionAEvaluar = getFacadees().find(6);
+                        // Estado de la Solicitud = "Aprobada"
+                        estadoAprobada = getFacadees().find(2);
+                    } catch (Exception e) {
+                        estadoRendicionAEvaluar = null;
+                        estadoAprobada = null;
+                        System.out.println("EstadosolicitudFacade: problema de recuperacion");
+                        e.printStackTrace();
+                    }
+
+                    // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
+                    solicitudSeleccionada.setRendicionid(current);
+                    solicitudSeleccionada.setEstadosolicitudid(estadoRendicionAEvaluar);
+                    solicitudSeleccionada.setFechaejecucion(new Date());
+                    getFacades().edit(solicitudSeleccionada);
+
+                    // Caso Alternativo: la suma de todos los comprobantes cargados es superior (dentro de lo permitido)
+                    // al importe de la solicitud que se rinde
+                    if (sumaArchivosRendicion > solicitudSeleccionada.getImporte().floatValue()) {
+
+                        // tipo reintegro
+                        Tiposolicitud tipoReintegro;
+
+                        // obtenemos el tipo
+                        try {
+                            // Tipo de Solicitud = "Reintegro"
+                            tipoReintegro = getEjbFacadets().find(4);
+                        } catch (Exception e) {
+                            tipoReintegro = null;
+                            System.out.println("TipoSolicitudFacade: problema de recuperacion");
+                            e.printStackTrace();
+                        }
+
+                        // seteamos la solicitud por diferencia
+                        solicitudReintegroPorDiferencia.setFechasolicitud(new Date());
+                        solicitudReintegroPorDiferencia.setFechaaprobacion(new Date());
+                        solicitudReintegroPorDiferencia.setRendicionid(current);
+                        solicitudReintegroPorDiferencia.setTiposolicitudid(tipoReintegro);
+                        solicitudReintegroPorDiferencia.setEstadosolicitudid(estadoAprobada);
+                        solicitudReintegroPorDiferencia.setObservacion("Diferencia por: $" + solicitudReintegroPorDiferencia.getImporte().floatValue() + " - " + solicitudSeleccionada.getPresupuestotarea().getDescripcion());
+
+                        // Guardamos la solicitud de reintegro por diferencia con Estado = Aprobada
+                        getFacades().createWithPersist(solicitudReintegroPorDiferencia);
+
+                    }
+                    
+                    // Para cada archivo de rendicion subido
+                    for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+                        // le damos la referencia a la rendicion actual y persistimos el archivo
+                        ar.setRendicionid(current);
+                        getFacadear().create(ar);
+                    }
+
+                    //JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
+                    JsfUtil.addSuccessMessage("Rendición Creada Correctamente!");
+
+                } else {
+                    FacesContext.getCurrentInstance().addMessage("mensajeRendicion", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en Creación de la Rendicion", "La suma de comprobantes de pago debe ser igual o mayor hasta un " + porcentaje + "% del total de la solicitud a rendir."));
+                    return null;
                 }
-
-                // Para cada archivo de rendicion subido
-                // Obtenemos el controladores necesario
-                FacesContext context = FacesContext.getCurrentInstance();
-                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
-                
-                for(Archivorendicion ar : arcontroller.getListaArchivos()){
-                    ar.setRendicionid(current);
-                    getFacadear().create(ar);
-                }
-
-                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
-
             }
+            //return prepareList();
+            return null;
 
-            return prepareList();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
         }
+
+        //            // Usado para la rendicion de multiples solicitudes
+//            if (!listaSolicitudesSeleccionadas.isEmpty()) {
+//                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Información", "El archivo" + current.getNombrearchivo() +  " fue subido satisfactoriamente!"));
+//
+//                current.setFecha(new Date());
+//
+//                // se guarda la rendicion
+//                getFacade().createWithPersist(current);
+//
+//                // Estado de la solicitud
+//                Estadosolicitud estado;
+//
+//                try {
+//                    // Estado de la Solicitud = "Rendida"
+//                    estado = getFacadees().find(5);
+//                } catch (Exception e) {
+//                    estado = null;
+//                    System.out.println("EstadosolicitudFacade: problema de recuperacion");
+//                    e.printStackTrace();
+//                }
+//
+//                // Para cada Solicitud seleccionada, actualizar con el nuevo estado y rendicion correspondiente
+//                for (Solicitud s : listaSolicitudesSeleccionadas) {
+//                    s.setRendicionid(current);
+//                    //s.setFechaejecucion(new Date());
+//                    s.setEstadosolicitudid(estado);
+//                    getFacades().edit(s);
+//                }
+//
+//                // Para cada archivo de rendicion subido
+//                // Obtenemos el controladores necesario
+//                FacesContext context = FacesContext.getCurrentInstance();
+//                ArchivorendicionController arcontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+//
+//                for (Archivorendicion ar : arcontroller.getListaArchivos()) {
+//                    ar.setRendicionid(current);
+//                    getFacadear().create(ar);
+//                }
+//
+//                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionCreated"));
+//            }
     }
 
     public String prepareEdit() {
@@ -257,35 +432,34 @@ public class RendicionController implements Serializable {
         try {
             // buscar solicitud para actualizarla
             Solicitud s;
-            
-            try{
+
+            try {
                 s = getFacades().obtenerPorRendicion(current.getId());
-                
+
                 // Sin Rendicion
                 s.setRendicionid(null);
-            } catch(Exception e){
+            } catch (Exception e) {
                 s = null;
                 e.printStackTrace();
             }
-            
+
             // buscar estado de solicitud anterior: "Aprobada"
             Estadosolicitud es;
-            
-            try{
-                
+
+            try {
+
                 es = getFacadees().find(2);
-                
-            }catch(Exception e){
+
+            } catch (Exception e) {
                 es = null;
                 e.printStackTrace();
             }
-            
+
             s.setEstadosolicitudid(es);
-            
+
             //Actualizamos la Solicitud
             getFacades().edit(s);
-            
-            
+
             getFacade().remove(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RendicionDeleted"));
         } catch (Exception e) {
@@ -387,4 +561,96 @@ public class RendicionController implements Serializable {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
 
+    public float sumarSolicitudesARendir() {
+
+        float resultado = 0f;
+
+        if (listaSolicitudes != null && listaSolicitudes.size() > 0) {
+            for (Solicitud s : listaSolicitudes) {
+                resultado = resultado + s.getImporte().floatValue();
+            }
+        }
+
+        return resultado;
+    }
+    
+    public String prepareEvaluacion() {
+
+        prepararEvaluacion();
+
+        return "CreateEvaluacionRendicion";
+    }
+    
+    public void prepararEvaluacion() {
+
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+        
+        // llamamos al metodo que arma el presupuesto, solicitudes y desembolsos del proyecto
+        solicitudcontroller.armarSolicitudesDesembolsosYRendicion();
+
+        // Vaciamos la lista de archivos de rendicion
+        //archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+        
+        // Llenamos la lista de solicitudes con "Rendicion a Evaluar", es decir que ya pueden ser evaluadas por el administrador.
+        listaSolicitudes = getFacades().obtenerRendicionAEvaluarPorProyecto(proyectocontroller.getSelected().getId());
+        
+        // Llenamos la lista de comprobantes de rendicion
+        //archivorendicioncontroller.setListaArchivos(new ArrayList<Archivorendicion>());
+        //archivorendicioncontroller.llenarListaArchivosPorListaSolicitudes(listaSolicitudes);
+
+        // Vaciamos la lista de solicitudes seleccionadas [Seleccion de Multiples Solicitudes]
+        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+
+        // Vaciamos la solicitud seleccionada [Seleccion de Solicitud Unica]
+        solicitudSeleccionada = new Solicitud();
+
+    }
+
+    public String createEvaluacion() {
+        
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        //SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        ArchivorendicionController archivorendicioncontroller = (ArchivorendicionController) context.getApplication().evaluateExpressionGet(context, "#{archivorendicionController}", ArchivorendicionController.class);
+        
+        //verificamos que la suma de los montos aprobados de los comprobantes sea igual a la rendicion
+        float totalMontoAprobadoComprobantes = archivorendicioncontroller.sumarMontoAprobadoComprobantes();
+        float totalMontoComprobantes = archivorendicioncontroller.sumarComprobantes();
+        
+        Estadosolicitud estadoRendida = null;
+        
+        try{
+            // EstadoSolicitud "Rendida" id=5
+            estadoRendida = this.ejbFacadees.find(5);
+        } catch(Exception e){
+            System.out.println("ERROR: Recuperacion de EstadoSolicitud = estadoRendida = this.ejbFacadees.find(5);");
+            e.printStackTrace();
+        }
+        
+        // si los montos de los comprobantes son iguales, se pone la Solicitud como "Rendida"
+        if(totalMontoComprobantes == totalMontoAprobadoComprobantes){
+            
+            // damos el estado "Rendida" a la solicitud
+            solicitudSeleccionada.setEstadosolicitudid(estadoRendida);
+            
+            // guardamos el cambio de estado en la solicitud
+            this.getFacades().edit(solicitudSeleccionada);
+            
+            // guardamos los cambios en los comprobantes de rendicion
+            for(Archivorendicion ar : archivorendicioncontroller.getListaArchivos()){
+                this.getFacadear().edit(ar);
+            }
+        }
+        
+        
+        return "asd";
+    }
+    
 }

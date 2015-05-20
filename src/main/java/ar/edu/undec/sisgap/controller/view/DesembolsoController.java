@@ -72,7 +72,7 @@ public class DesembolsoController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "ListPorProyecto";
+        return "ListDesembolsosPorProyecto";
     }
 
     public String prepareView() {

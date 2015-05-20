@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -148,6 +149,33 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
             e.printStackTrace();
             return new ArrayList<Proyecto>();
         }
+    }
+    
+
+    public List<Proyecto> buscarProyectoPorConvocatoria(int idConvocatoria){        
+       try{
+           return em.createQuery("select p from Proyecto p where p.convocatoriaid.id = :idConvocatoria and p.estadoproyectoid.id=8", Proyecto.class).setParameter("idConvocatoria", idConvocatoria).getResultList();
+       }
+       catch(Exception e){
+           System.out.println("No se pudo realizar la consulta "+e);
+           return null;
+       }  
+    }
+
+    
+    public void acumularCantidadReintegrosPorProyecto(int proyectoId){
+        Query consulta = em.createQuery("UPDATE Proyecto SET cantidadreintegros = cantidadreintegros + 1 WHERE id = :proyectoId" );
+        consulta.setParameter( "proyectoId", proyectoId );
+        consulta.executeUpdate();
+    }
+    
+    public int obtenerCantidadReintegrosPorProyecto(int proyectoId){
+        return ((Number)em.createQuery("SELECT p.cantidadreintegros FROM Proyecto p WHERE p.id = :proyectoId")
+                .setParameter("proyectoId", proyectoId)
+                .getSingleResult())
+                .intValue();
+        
+
     }
     
 }

@@ -43,9 +43,15 @@ public class Rubro implements Serializable {
     @Basic(optional = true)
     @Column(name = "id")
     private Integer id;
+    
     @Size(max = 60)
     @Column(name = "rubro")
     private String rubro;
+    
+    @Size(max = 60)
+    @Column(name = "abreviado")
+    private String abreviado;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rubro")
     private List<PresupuestoRubro> presupuestoRubroList;
 
@@ -70,6 +76,14 @@ public class Rubro implements Serializable {
 
     public void setRubro(String rubro) {
         this.rubro = rubro;
+    }
+
+    public String getAbreviado() {
+        return abreviado;
+    }
+
+    public void setAbreviado(String abreviado) {
+        this.abreviado = abreviado;
     }
 
     @XmlTransient

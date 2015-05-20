@@ -22,6 +22,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -29,37 +30,44 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Hugo
  */
 @Entity
-@Table(name = "tareaprogreso", schema = "ap")
-@SequenceGenerator(name="tareaprogreso_id_seq", sequenceName="ap.tareaprogreso_id_seq", allocationSize=1)
+@Table(name = "tareaavance", schema = "ap")
+@SequenceGenerator(name="tareaavance_id_seq", sequenceName="ap.tareaavance_id_seq", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Tareaprogreso.findAll", query = "SELECT t FROM Tareaprogreso t"),
-    @NamedQuery(name = "Tareaprogreso.findById", query = "SELECT t FROM Tareaprogreso t WHERE t.id = :id"),
-    @NamedQuery(name = "Tareaprogreso.findByFecha", query = "SELECT t FROM Tareaprogreso t WHERE t.fecha = :fecha"),
-    @NamedQuery(name = "Tareaprogreso.findByProgreso", query = "SELECT t FROM Tareaprogreso t WHERE t.progreso = :progreso"),
-    @NamedQuery(name = "Tareaprogreso.findByEstado", query = "SELECT t FROM Tareaprogreso t WHERE t.estado = :estado")})
-public class Tareaprogreso implements Serializable {
+    @NamedQuery(name = "Tareaavance.findAll", query = "SELECT t FROM Tareaavance t"),
+    @NamedQuery(name = "Tareaavance.findById", query = "SELECT t FROM Tareaavance t WHERE t.id = :id"),
+    @NamedQuery(name = "Tareaavance.findByFecha", query = "SELECT t FROM Tareaavance t WHERE t.fecha = :fecha"),
+    @NamedQuery(name = "Tareaavance.findByAvance", query = "SELECT t FROM Tareaavance t WHERE t.avance = :avance"),
+    @NamedQuery(name = "Tareaavance.findByEstado", query = "SELECT t FROM Tareaavance t WHERE t.estado = :estado")})
+public class Tareaavance implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="tareaprogreso_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="tareaavance_id_seq")
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
-    @Column(name = "progreso")
-    private Integer progreso;
+    @Column(name = "avance")
+    private Integer avance;
     @Column(name = "estado")
     private Character estado;
     @JoinColumn(name = "tareaid", referencedColumnName = "id")
     @ManyToOne
     private Tarea tareaid;
+    @Column(name = "fechainicial")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechainicial;
+    @Column(name = "fechafinal")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechafinal;
+    
 
-    public Tareaprogreso() {
+    public Tareaavance() {
     }
 
-    public Tareaprogreso(Integer id) {
+    public Tareaavance(Integer id) {
         this.id = id;
     }
 
@@ -79,12 +87,12 @@ public class Tareaprogreso implements Serializable {
         this.fecha = fecha;
     }
 
-    public Integer getProgreso() {
-        return progreso;
+    public Integer getAvance() {
+        return avance;
     }
 
-    public void setProgreso(Integer progreso) {
-        this.progreso = progreso;
+    public void setAvance(Integer avance) {
+        this.avance = avance;
     }
 
     public Character getEstado() {
@@ -103,6 +111,24 @@ public class Tareaprogreso implements Serializable {
         this.tareaid = tareaid;
     }
 
+    public Date getFechainicial() {
+        return fechainicial;
+    }
+
+    public void setFechainicial(Date fechainicial) {
+        this.fechainicial = fechainicial;
+    }
+
+    public Date getFechafinal() {
+        return fechafinal;
+    }
+
+    public void setFechafinal(Date fechafinal) {
+        this.fechafinal = fechafinal;
+    }
+    
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -113,10 +139,10 @@ public class Tareaprogreso implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Tareaprogreso)) {
+        if (!(object instanceof Tareaavance)) {
             return false;
         }
-        Tareaprogreso other = (Tareaprogreso) object;
+        Tareaavance other = (Tareaavance) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -125,7 +151,7 @@ public class Tareaprogreso implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.edu.undec.sisgap.model.Tareaprogreso[ id=" + id + " ]";
+        return "ar.edu.undec.sisgap.model.Tareaavance[ id=" + id + " ]";
     }
     
 }

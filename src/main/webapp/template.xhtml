@@ -20,12 +20,17 @@
         <script type="text/javascript">
             function indicador()
             {
-                //this.cfg.title = "zxc";
                 this.cfg.seriesDefaults.rendererOptions = {
                     label: '%',
-                    padding: 1,
-                    intervalInnerRadius: 100,
-                    intervalOuterRadius: 95 
+                    //diameter: 100,
+                    //labelPosition: 'bottom',
+                    //labelHeightAdjust: -5,
+                    padding: 0,
+                    pad: 0,
+                    min: 0,
+                    max: 100,
+                    //intervalOuterRadius: 50,
+                    intervalColors:['#21B2CE', '#9C4DAD', '#FF964A', '#5ACB73', '#CE4131', '#DED7A5']
                 };
             }
             
@@ -38,6 +43,49 @@
                     shadow: false
                 };
             }
+            
+            function ejecutadofecha()
+            {
+                this.cfg.grid = {
+                    backgroundColor: 'transparent', 
+                    drawBorder: false, 
+                    shadow: false
+                };
+                //this.cfg.title = "zxc";
+                this.cfg.AxisTickRenderer = {
+                    //show: false,
+                    showLabel: false,
+                    showMark: false
+                };
+                this.cfg.AxisLabelRenderer = {
+                    show: false,
+                    showLabel: false,
+                    label: ''
+                };
+                this.cfg.axesDefaults = {
+                    show: false,
+                    showTickMarks: false
+                };
+                
+                // asdjasdl
+                this.cfg.axesDefaults.tickOptions = {
+                    //show: false
+                    showLabel: false
+                };
+                
+                this.cfg.axes.xaxis = {
+                  renderer: $.jqplot.CategoryAxisRenderer  
+                };
+            }
+            
+            function tortaPresupuesto()
+            {
+                this.cfg.seriesDefaults.rendererOptions = {
+                    diameter: 160,
+                    showDataLabels: true,
+                };
+            }
+            
         </script>
 
         <script src="http://maps.google.com/maps/api/js?sensor=false" 
@@ -45,6 +93,14 @@
     </h:head>
 
     <h:body>
+        
+        <script>
+//            var yAxis= new YAHOO.widget.NumericAxis();
+//            yAxis.minimum = 34;
+//            yAxis.maximum = 42;
+//            yourChart.set( "yAxis", yAxis);
+        </script>
+        
         <f:facet name="last">
             <h:outputStylesheet name="./css/default.css"/>
         </f:facet>
@@ -53,8 +109,8 @@
 
             <header class="header rounded-corners" >
                 <ui:insert name="top">
-                    <h2 class="cabecera1">sisgap</h2>
-                    <h3 class="cabecera2">sistema de gestión de proyectos</h3>
+<!--                    <h2 class="cabecera1">wayra</h2>
+                    <h3 class="cabecera2">sistema de gestión y administración de proyectos</h3>-->
                 </ui:insert>
             </header><!-- .header-->
 
@@ -82,9 +138,9 @@
                 <!--  <p:gmap zoom="15" type="hybrid" center="-29.156567,-67.470834" style="width: 400px;height: 200px" /> -->
                 Version 1.0
                 <br />
-                Copyright 2014, The Wolberg, Leguiza, Paez, Maza - Development Team
+                Copyright 2014, The Wolberg, Leguiza, Paez Yañez, Maza - Development Team
                 <br />
-                This Software is realeased under the The Wolberg, Leguiza, Paez, Maza.
+                This Software is realeased under the The Wolberg, Leguiza, Paez Yañez, Maza.
             </p:dialog>
         </h:form>
     </h:body>

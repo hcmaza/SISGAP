@@ -86,6 +86,15 @@ public class Solicitud implements Serializable {
     @JoinColumn(name = "rendicionid", referencedColumnName = "id")
     @ManyToOne
     private Rendicion rendicionid;
+    
+    @Column(name = "archivo")
+    private byte[] archivo;
+    
+    @Column(name = "archivonombre")
+    private String archivonombre;
+    
+    @Column(name = "obsevaluacion")
+    private String obsevaluacion;
 
     public Solicitud() {
     }
@@ -203,6 +212,31 @@ public class Solicitud implements Serializable {
     public void setRendicionid(Rendicion rendicionid) {
         this.rendicionid = rendicionid;
     }
+
+    public byte[] getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(byte[] archivo) {
+        this.archivo = archivo;
+    }
+
+    public String getArchivonombre() {
+        return archivonombre;
+    }
+
+    public void setArchivonombre(String archivonombre) {
+        this.archivonombre = archivonombre;
+    }
+
+    public String getObsevaluacion() {
+        return obsevaluacion;
+    }
+
+    public void setObsevaluacion(String obsevaluacion) {
+        this.obsevaluacion = obsevaluacion;
+    }
+
         
     @Override
     public int hashCode() {

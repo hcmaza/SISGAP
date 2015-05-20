@@ -7,9 +7,13 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -94,9 +98,9 @@ public class Tarea implements Serializable {
     @JoinColumn(name = "etapaid", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Etapa etapaid;
-//    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "tareaid")
-//    @Fetch(value = FetchMode.SUBSELECT)
-//    private List<Tareaprogreso> tareaprogresoList;
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "tareaid")
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<Tareaavance> tareaavanceList;
 //    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "tareaid" )
 //    //@JoinColumn(name="tareaid")    //@LazyCollection(LazyCollectionOption.FALSE)
 //    @Fetch(value = FetchMode.SUBSELECT)
@@ -106,6 +110,10 @@ public class Tarea implements Serializable {
      @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "tarea" )
     @Fetch(value = FetchMode.SUBSELECT)
     private List<PresupuestoTarea> presupuestoTareaList;
+    @Column(name = "avance")
+    private Integer avance;
+//    @Transient
+//    private Tareaavance ultimoavance ;
 
     public Tarea() {
     }
@@ -202,14 +210,14 @@ public class Tarea implements Serializable {
         this.etapaid = etapaid;
     }
 
-//    public List<Tareaprogreso> getTareaprogresoList() {
-//        return tareaprogresoList;
-//    }
-//
-//    public void setTareaprogresoList(List<Tareaprogreso> tareaprogresoList) {
-//        this.tareaprogresoList = tareaprogresoList;
-//    }
+    public List<Tareaavance> getTareaavanceList() {
+        return tareaavanceList;
+    }
 
+    public void setTareaavanceList(List<Tareaavance> tareaavanceList) {
+        this.tareaavanceList = tareaavanceList;
+    }
+        
     public List<TareaAgente> getTareaAgenteList() {
         return tareaAgenteList;
     }
@@ -225,6 +233,49 @@ public class Tarea implements Serializable {
     public void setPresupuestoTareaList(List<PresupuestoTarea> presupuestoTareaList) {
         this.presupuestoTareaList = presupuestoTareaList;
     }
+
+//    public Tareaavance getUltimoavance() {
+//        SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy"); 
+//        
+//        try {
+//            if(ultimoavance==null){
+//                Tareaavance tareaavanceultimo = new Tareaavance();
+//                Date diamaximo = new Date();
+//                Date diainicial = formateador.parse("01/01/1920");
+//                if(this.tareaavanceList!=null){
+//
+//                    for(Tareaavance ta : this.tareaavanceList){
+//                        if(!ta.getFecha().equals(diainicial)){
+//                            if(ta.getFecha().after(diainicial)){
+//                                tareaavanceultimo = ta;
+//                                diainicial = ta.getFecha();
+//                            }
+//                        }
+//                    }
+//                }
+//                return tareaavanceultimo;
+//            }else{
+//                return this.ultimoavance;
+//            }
+//        } catch (ParseException ex) {
+//            
+//            Logger.getLogger(Tarea.class.getName()).log(Level.SEVERE, null, ex);
+//            return new Tareaavance();
+//        }
+//        
+//        
+//        
+//        
+//    }
+
+    public Integer getAvance() {
+        return avance;
+    }
+
+    public void setAvance(Integer avance) {
+        this.avance = avance;
+    }
+
     
     
     

@@ -14,7 +14,7 @@
 
             <h:form>
                 <p:panel id="pprincipal" header="Editar Rubro" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
-                    
+
                     <p:fieldset legend="Información del Rubro">
                         <p:panelGrid styleClass="sinBordes sinFondo">
                             <p:row>
@@ -25,6 +25,16 @@
                                     <p:inputText id="rubro" value="#{rubroController.selected.rubro}" title="* Este campo es requerido" required="true" requiredMessage="El campo rubro es requerido" />
                                     <p:message for="rubro" display="icon" /> 
                                     <p:tooltip id="ttRubro" for="rubro" showEvent="focus" hideEvent="blur" />                                    
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="width: 40%;">
+                                    <h:outputLabel value="Nombre Abreviado" for="abreviado" style="font-weight: bold;"  />
+                                </p:column>
+                                <p:column style="width: 60%;">
+                                    <p:inputText id="abreviado" value="#{rubroController.selected.abreviado}" title="* Este campo es requerido" required="true" requiredMessage="El campo nombre abreviado es requerido" />
+                                    <p:message for="abreviado" display="icon" /> 
+                                    <p:tooltip id="ttAbreviado" for="abreviado" showEvent="focus" hideEvent="blur" />                                    
                                 </p:column>
                             </p:row>
                         </p:panelGrid>
