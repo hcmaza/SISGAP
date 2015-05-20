@@ -626,9 +626,11 @@
 
                         <p:outputLabel value="Monto de Factura" />
                         <p:inputText  id="dmontofactura" value="#{archivorendicionController.selected.montofactura}"  >
-                            <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
+<!--                            <f:convertNumber type="number" groupingUsed="false" maxFractionDigits="2" />-->
+                            <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
                             <!--<f:validateDoubleRange minimum="0" maximum="{solicitudController.selected.disponible}"/>--> 
                         </p:inputText>    
+
 
                         <p:outputLabel value="Archivo de Factura" />
                         <p:fileUpload label="Imagen de Factura" id="ffactura" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  

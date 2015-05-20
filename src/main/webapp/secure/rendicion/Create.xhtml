@@ -297,10 +297,15 @@
 
                         <p:outputLabel value="Monto de Factura" />
                         <p:inputText  id="dmontofactura" value="#{archivorendicionController.selected.montofactura}"  >
-                            <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
-                            <!--<f:validateDoubleRange minimum="0" maximum="{solicitudController.selected.disponible}"/>--> 
+                            <!--<f:converter converterId="javax.faces.BigDecimal" />-->
+                            <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
+                            
+                            <!--<f:convertNumber type="number" groupingUsed="false" locale="es_AR"  />-->
+<!--                            <f:validateDoubleRange minimum="0" maximum="{solicitudController.selected.disponible}"/> -->
+                                <!--<f:validateDoubleRange minimum="0" />--> 
+                                <!--<p:ajax event="keyup" update="premontofactura"  />-->
                         </p:inputText>    
-
+                        
                         <p:outputLabel value="Archivo de Factura" />
                         <p:fileUpload label="Imagen de Factura" id="ffactura" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
                                       sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
