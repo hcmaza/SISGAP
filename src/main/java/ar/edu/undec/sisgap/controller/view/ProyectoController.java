@@ -1936,6 +1936,59 @@ public class ProyectoController implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
         }
     }
+     
+     public void pdfPlanTrabajoYEquipo() throws JRException, IOException {
+
+        // Obtengo la ruta absoluta del archivo compilado del reporte
+        String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/equipo.jasper");
+
+        // Fuente de datos del reporte
+        JRBeanArrayDataSource beanArrayDataSource = new JRBeanArrayDataSource(new Proyecto[]{this.getSelected()});
+        
+        // Fuente de datos para el equipo de trabajo
+        List<Agente> listaAgentes = new ArrayList<Agente>();
+        List<ProyectoAgente> listaProyectoAgente = this.ejbproyectoagente.buscarEquipoTrabajo(current.getId());
+        for (ProyectoAgente pa : listaProyectoAgente) {
+
+            listaAgentes.add(pa.getAgente());
+        }
+        JRDataSource equipoTrabajo = new JRBeanCollectionDataSource(listaAgentes);
+
+        // TAREAS
+        // Obtenemos las tareas de un proyecto
+        List<Etapa> listaEtapas = this.ejbetapa.buscarEtapasProyecto(current.getId());
+        List<Tarea> listaTareas = new ArrayList<Tarea>();
+
+        for (Etapa e : listaEtapas) {
+            for (Tarea t : this.ejbtarea.buscarTareasEtapa(e.getId())) {
+                listaTareas.add(t);
+            }
+        }
+        // OrdenaciÃ³n por fecha de inicio
+       Collections.sort(listaTareas, new Comparator<Tarea>() {
+            @Override
+            public int compare(Tarea tarea1, Tarea tarea2) {
+                return tarea1.getFechainicio().compareTo(tarea2.getFechainicio());
+            }
+        });
+
+        JRBeanCollectionDataSource tareas = new JRBeanCollectionDataSource(listaTareas);
+        
+        //Agregando los parametros
+        Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+        parametros.put("equipo", equipoTrabajo);
+        parametros.put("tareas", tareas);
+                
+        // Llenamos el reporte
+        JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, beanArrayDataSource);
+
+        // Generamos el archivo a descargar
+        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        httpServletResponse.addHeader("Content-disposition", "attachment; filename=equipoTrabajoPlan.pdf");
+        ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        FacesContext.getCurrentInstance().responseComplete();
+     }
     
     public List<Agente> obtenerEquipoTrabajo() {
 
@@ -2051,6 +2104,5 @@ public class ProyectoController implements Serializable {
         else{
             this.porcentajeConvocatoria=0.0F;
         }
-    }
-
+    } 
 }

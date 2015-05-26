@@ -260,12 +260,19 @@
                                     <f:facet name="footer">
                                         Total Solicitudes Aprobadas = $#{solicitudactaController.sumarAprobadas()} // Total de Solicitudes Rechazadas = $#{solicitudactaController.sumarRechazadas()}
                                     </f:facet>
-                                </p:dataTable>
-
+                                </p:dataTable>                                
                                 <div align="center">
-                                    <p:commandButton action="#{solicitudactaController.create}" value="Enviar Evaluación de las Solicitudes" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />
+                                    <p:commandButton action="#{solicitudactaController.create}" value="Enviar Evaluación de las Solicitudes" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk"/> <!-- update=":formprincipal:pprincipal" oncomplete="PF('dfinal').show();" immediate="true" />-->
                                 </div>
-
+                                <p:dialog id="d1final" widgetVar="d1final"  modal="true" closable="false"  header="Evaluación de Solicitud" >
+                                    Solicitud Evaluada Satisfactoriamente!!!
+                                    <div align="center" >
+                                        <h:panelGrid columns="2">
+                                            <p:commandButton value="Imprimir" actionListener="#{solicitudactaController.pdfSolicitudesEvaluadas()}" ajax="false"  />
+                                            <p:commandButton value="OK" ajax="false" onclick="PF('d1final').hide();" />
+                                        </h:panelGrid>
+                                    </div>
+                                </p:dialog>  
                             </p:tab>
 
                         </p:tabView>

@@ -20,9 +20,11 @@
                 </p:submenu>  
 
                 <p:submenu label="Proyectos" icon="ui-icon-pencil">  
-                    <p:menuitem value="Listado de Proyectos" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/List.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
-                    
-                    <p:menuitem value="Proyectos por Convocatoria" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/ProyectosPorConvocatoria.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
+                    <p:menuitem value="Listado de Proyectos" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/List.xhtml' icon="ui-icon-arrowreturnthick-1-w" />                     
+                </p:submenu>
+                <p:submenu label="Reportes" icon="ui-icon-print">                      
+                    <p:menuitem value="Gastos por Convocatoria" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/ProyectosPorConvocatoria.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
+                    <p:menuitem value="Plan y Equipo de Trabajo" url='#{request.scheme}://#{request.serverName}:#{request.serverPort}#{request.contextPath}/secure/proyectos/PlanTrabajoyEquipo.xhtml' icon="ui-icon-arrowreturnthick-1-w" />  
 
                 </p:submenu>
 
