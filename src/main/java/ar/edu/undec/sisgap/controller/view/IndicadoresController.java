@@ -539,6 +539,17 @@ public class IndicadoresController implements Serializable {
         saldoProyecto = totalDesembolsado - ejecutadoProyecto;
     }
     
+    public void calcularSaldoTotalProyecto() {
+        
+        // Obtenemos los controladores necesarios
+        FacesContext context = FacesContext.getCurrentInstance();
+        DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
+        
+        float totalDesembolsado = desembolsocontroller.sumarDesembolsos();
+        
+        saldoProyecto = totalDesembolsado - ejecutadoProyecto;
+    }
+    
     public float calcularEjecutadoPorProyecto(Integer idProyecto) {
 
         List<Solicitud> listaSolicitudes;

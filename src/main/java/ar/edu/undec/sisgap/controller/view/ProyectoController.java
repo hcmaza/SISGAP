@@ -1,6 +1,8 @@
 package ar.edu.undec.sisgap.controller.view;
 
+import ar.edu.undec.sisgap.controller.ArchivorendicionFacade;
 import ar.edu.undec.sisgap.controller.ConvocatoriaFacade;
+import ar.edu.undec.sisgap.controller.DesembolsoFacade;
 import ar.edu.undec.sisgap.controller.EnviarMail;
 import ar.edu.undec.sisgap.controller.EstadoproyectoFacade;
 import ar.edu.undec.sisgap.controller.PresupuestoRubroFacade;
@@ -9,8 +11,11 @@ import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ProyectoFacade;
+import ar.edu.undec.sisgap.controller.SolicitudFacade;
+import ar.edu.undec.sisgap.controller.view.IndicadoresController.ItemRubro;
 import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.Archivoproyecto;
+import ar.edu.undec.sisgap.model.Archivorendicion;
 import ar.edu.undec.sisgap.model.Convocatoria;
 import ar.edu.undec.sisgap.model.Estadoproyecto;
 import ar.edu.undec.sisgap.model.Etapa;
@@ -25,6 +30,8 @@ import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.ProyectoAgentePK;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
+import ar.edu.undec.sisgap.model.Desembolso;
+import ar.edu.undec.sisgap.model.Solicitud;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -125,6 +132,12 @@ public class ProyectoController implements Serializable {
     private ar.edu.undec.sisgap.controller.EstadoproyectoFacade ejbestadoproyecto;
     @EJB
     private ar.edu.undec.sisgap.controller.ConvocatoriaFacade ejbconvocatoria;
+    @EJB
+    private ar.edu.undec.sisgap.controller.DesembolsoFacade ejbdesembolso;
+    @EJB
+    private ar.edu.undec.sisgap.controller.SolicitudFacade ejbsolicitud;
+    @EJB
+    private ar.edu.undec.sisgap.controller.ArchivorendicionFacade ejbarchivorendicion;
 
     private PaginationHelper pagination;
     private int selectedItemIndex;
@@ -167,6 +180,18 @@ public class ProyectoController implements Serializable {
     
     private ConvocatoriaFacade getFacadeConvocatoria() {
         return ejbconvocatoria;
+    }
+    
+    private DesembolsoFacade getFacadeDesembolso() {
+        return ejbdesembolso;
+    }
+    
+    private SolicitudFacade getFacadeSolicitud() {
+        return ejbsolicitud;
+    }
+    
+    private ArchivorendicionFacade getFacadearchivoRendicion() {
+        return ejbarchivorendicion;
     }
     
     private PresupuestoTareaFacade getPresupuestoTareaFacade() {
@@ -1990,6 +2015,95 @@ public class ProyectoController implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
      }
     
+     public void pdfEstadoProyecto() throws JRException, IOException {
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
+         
+        // Obtengo la ruta absoluta del archivo compilado del reporte
+        String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/estadoProyecto.jasper");
+        
+        // Fuente de datos del reporte
+        JRBeanArrayDataSource beanArrayDataSource = new JRBeanArrayDataSource(new Proyecto[]{this.getSelected()});
+        
+        //Desembolsos
+        List<Desembolso>listaDesembolso= this.ejbdesembolso.obtenerPorProyecto(this.getSelected().getId());          
+        Collections.sort(listaDesembolso, new Comparator<Desembolso>() {
+            @Override
+            public int compare(Desembolso d1, Desembolso d2) {
+                return d1.getNumerodesembolso().compareTo(d2.getNumerodesembolso());
+            }
+        });        
+        JRBeanCollectionDataSource desembolsos = new JRBeanCollectionDataSource(listaDesembolso);
+        
+        //Solicitudes
+        List<Solicitud>listaSolicitud= this.ejbsolicitud.obtenerPorProyecto(this.getSelected().getId());          
+        Collections.sort(listaSolicitud, new Comparator<Solicitud>() {
+            @Override
+            public int compare(Solicitud s1, Solicitud s2) {
+                return s1.getFechasolicitud().compareTo(s2.getFechasolicitud());
+            }
+        });        
+        JRBeanCollectionDataSource solicitudes = new JRBeanCollectionDataSource(listaSolicitud);
+        
+        //Solicitudes Rendidas
+        List<Solicitud>listaSolicitudesRendidas= this.ejbsolicitud.obtenerRendidasPorProyecto(this.getSelected().getId());          
+        List<Archivorendicion>listaRendidas= new ArrayList<Archivorendicion>();
+        for(Solicitud s: listaSolicitudesRendidas){
+            listaRendidas.add(ejbarchivorendicion.buscarUnaPorRendicion(s.getRendicionid().getId()));
+        }        
+        JRBeanCollectionDataSource rendiciones = new JRBeanCollectionDataSource(listaRendidas);
+        
+        //Ejecutado por Rubros
+        indicadorescontroller.calcularEjecutadoPorRubro();
+        List<ItemRubro>lista=indicadorescontroller.getListaEjecutadoRubro();  
+        List<ItemRubro>listaRubros=new ArrayList<ItemRubro>();  
+        ItemRubro rubro;
+        float total=0.0F;
+        for(ItemRubro i: lista){
+            total+=i.getMonto();
+        }
+        for(ItemRubro i: lista){
+            if(i.getMonto()>0){
+                rubro=new ItemRubro();
+                rubro.setNombrerubro(i.getNombrerubro());
+                rubro.setMonto((i.getMonto()*100)/total);
+                listaRubros.add(rubro);
+            }
+        }        
+        JRBeanCollectionDataSource rubros = new JRBeanCollectionDataSource(listaRubros);
+        
+        //Ejecutado, Saldo y Ejecución
+        float ejecutado=indicadorescontroller.getEjecutadoProyecto();
+        float saldo=0.0f;
+        for(Desembolso d : listaDesembolso){
+            saldo+=d.getMonto().floatValue();
+        }
+        saldo=saldo - ejecutado;
+        String ejecucion= indicadorescontroller.calcularPorcenjateEjecutadoPorProyecto(this.getSelected().getId());
+        
+        //Agregando los parametros
+        Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+        parametros.put("desembolsos", desembolsos);
+        parametros.put("solicitudes", solicitudes);
+        parametros.put("rendiciones", rendiciones);
+        parametros.put("grafico", rubros);
+        parametros.put("ejecutado", ejecutado);
+        parametros.put("saldo", saldo);
+       // parametros.put("ejecucion", Integer.parseInt(ejecucion));
+        
+        // Llenamos el reporte
+        JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, beanArrayDataSource);
+
+        // Generamos el archivo a descargar
+        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        httpServletResponse.addHeader("Content-disposition", "attachment; filename=Estado_Proyecto.pdf");
+        ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        FacesContext.getCurrentInstance().responseComplete();
+     }
+    
+     
     public List<Agente> obtenerEquipoTrabajo() {
 
         List<Agente> listaAgentes = new ArrayList<Agente>();

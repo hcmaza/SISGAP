@@ -12,7 +12,6 @@
         <ui:define name="body">
            <f:event type="preRenderView" listener="#{agenteController.findAgente(request.getUserPrincipal().toString())}" ></f:event>
            <f:event type="preRenderView" listener="#{proyectoController.buscarProyectosAgenteTrue(agenteController.selected)}"></f:event>      
-
             <h:form >
                 <p:panel id="pprincipal" header="Lista de Proyectos" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
 
@@ -71,7 +70,7 @@
                         No existen registros a exportar.
                     </p:dialog>
                     <p:panel header="Exportar">                    
-                        <h:commandLink action="#{proyectoController.pdfPlanTrabajoYEquipo()}">  
+                        <h:commandLink action="#{proyectoController.pdfEstadoProyecto()}">  
                             <p:graphicImage value="/resources/img/pdf.png" />  
                         </h:commandLink>    
                     </p:panel>  
