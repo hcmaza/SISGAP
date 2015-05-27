@@ -890,7 +890,7 @@ public class ProyectoController implements Serializable {
                         Tareaavance tav = new Tareaavance();
                         tav.setAvance(t.getAvance());
                         tav.setFecha(new Date());
-                        tav.setFechainicial(t.getFechainicio());
+                        tav.setFechainicio(t.getFechainicio());
                         tav.setFechafinal(t.getFechafin());
                         tav.setTareaid(t);
                         tav.setId(null);
@@ -2083,4 +2083,32 @@ public class ProyectoController implements Serializable {
         }
     }
 
+     public String prepareAvance(){
+         
+          current = (Proyecto) getItems().getRowData();
+        System.out.println("fffffffffffff1fffffffffff");
+        FacesContext context = FacesContext.getCurrentInstance();
+        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        System.out.println("ffffffffffff2ffffffffffff");
+        etapacontroller.setEtapas(this.ejbetapa.findByProyecto(current));
+        //etapacontroller.agregaralListadoEtapas();
+        etapacontroller.prepareEditarListadoEtapas();
+        etapacontroller.agentesProyecto();
+        System.out.println("ffffffffffffff3ffffffffff");
+        //proyecto Agente
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+
+        proyectoagentecontroller.setEquipotrabajo(ejbproyectoagente.buscarEquipoTrabajo(current.getId()));
+        ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController) context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
+        archivoproyectoController.findporProyectoEdit(current.getId());
+
+        etapacontroller.agentesProyecto();
+
+        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+
+        presupuestotareacontroller.armarPresupuestoNodos();
+
+        System.out.println("fffffffffffff4fffffffffff");
+        return "Avance";
+     }
 }

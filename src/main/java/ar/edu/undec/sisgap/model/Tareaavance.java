@@ -56,12 +56,12 @@ public class Tareaavance implements Serializable {
     @JoinColumn(name = "tareaid", referencedColumnName = "id")
     @ManyToOne
     private Tarea tareaid;
-    @Column(name = "fechainicial")
+    @Column(name = "fechainicio")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechainicial;
-    @Column(name = "fechafinal")
+    private Date fechainicio;
+    @Column(name = "fechafin")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechafinal;
+    private Date fechafin;
     
 
     public Tareaavance() {
@@ -111,20 +111,20 @@ public class Tareaavance implements Serializable {
         this.tareaid = tareaid;
     }
 
-    public Date getFechainicial() {
-        return fechainicial;
+    public Date getFechainicio() {
+        return fechainicio;
     }
 
-    public void setFechainicial(Date fechainicial) {
-        this.fechainicial = fechainicial;
+    public void setFechainicio(Date fechainicio) {
+        this.fechainicio = fechainicio;
     }
 
-    public Date getFechafinal() {
-        return fechafinal;
+    public Date getFechafin() {
+        return fechafin;
     }
 
-    public void setFechafinal(Date fechafinal) {
-        this.fechafinal = fechafinal;
+    public void setFechafinal(Date fechafin) {
+        this.fechafin = fechafin;
     }
     
     

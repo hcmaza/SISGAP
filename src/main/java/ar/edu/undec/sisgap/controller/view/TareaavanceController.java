@@ -4,8 +4,14 @@ import ar.edu.undec.sisgap.model.Tareaavance;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TareaavanceFacade;
+import ar.edu.undec.sisgap.model.Etapa;
+import ar.edu.undec.sisgap.model.Tarea;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -28,7 +34,8 @@ public class TareaavanceController implements Serializable {
     private ar.edu.undec.sisgap.controller.TareaavanceFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-
+    private List<Tareaavance> tareasavancesdeproyecto = new ArrayList<Tareaavance>() ;
+    
     public TareaavanceController() {
     }
 
@@ -228,4 +235,16 @@ public class TareaavanceController implements Serializable {
 
     }
 
+    public List<Tareaavance> getTareasavancesdeproyecto() {
+        return tareasavancesdeproyecto;
+    }
+
+    public void setTareasavancesdeproyecto(List<Tareaavance> tareasavancesdeproyecto) {
+        this.tareasavancesdeproyecto = tareasavancesdeproyecto;
+    }
+    
+    public void setCurrent(Tareaavance tav){
+        current = tav;
+    }
+    
 }
