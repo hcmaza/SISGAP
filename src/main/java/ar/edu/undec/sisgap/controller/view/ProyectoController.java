@@ -25,6 +25,7 @@ import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.ProyectoAgentePK;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
+import ar.edu.undec.sisgap.model.Tareaavance;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -125,6 +126,9 @@ public class ProyectoController implements Serializable {
     private ar.edu.undec.sisgap.controller.EstadoproyectoFacade ejbestadoproyecto;
     @EJB
     private ar.edu.undec.sisgap.controller.ConvocatoriaFacade ejbconvocatoria;
+  
+    @EJB
+    private ar.edu.undec.sisgap.controller.TareaavanceFacade ejbtareaavance;
 
     private PaginationHelper pagination;
     private int selectedItemIndex;
@@ -876,15 +880,27 @@ public class ProyectoController implements Serializable {
 
                         t.setTareaAgenteList(null);
                         t.setPresupuestoTareaList(null);
-
+                        
+                        
+                        
                         this.ejbtarea.createWithPersist(t);
+                        
+                        //inserto tarea avance
+                        Tareaavance tav = new Tareaavance();
+                        tav.setAvance(t.getAvance());
+                        tav.setFecha(new Date());
+                        tav.setFechainicio(t.getFechainicio());
+                        tav.setFechafinal(t.getFechafin());
+                        tav.setTareaid(t);
+                        tav.setId(null);
+                        this.ejbtareaavance.create(tav);
                         if (OldTareaAgente != null) {
                             for (TareaAgente ta : OldTareaAgente) {
                                 ta.setTareaid(t);
                                 ejbtareaagente.create(ta);
                             }
                         }
-
+                        //----------------------------
                         if (OldPresupuestoTarea != null) {
                             for (PresupuestoTarea pt : OldPresupuestoTarea) {
                                 pt.setTarea(t);
@@ -2017,9 +2033,10 @@ public class ProyectoController implements Serializable {
             FacesMessage message = new FacesMessage();
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             message.setSummary("ERROR");
-            message.setDetail("No se pudo crear la FormalizaciÃ³n del Proyecto " + e);
+            message.setDetail("No se pudo crear la Formalización del Proyecto " + e);
             FacesContext.getCurrentInstance().addMessage("growlprincipal", message);
-            System.out.println("Error al grabar la FormalizaciÃ³n  = " + e);
+            System.out.println("Error al grabar la Formalización  = " + e);
+
             return null;
         }
     }
@@ -2066,4 +2083,32 @@ public class ProyectoController implements Serializable {
         }
     }
 
+     public String prepareAvance(){
+         
+          current = (Proyecto) getItems().getRowData();
+        System.out.println("fffffffffffff1fffffffffff");
+        FacesContext context = FacesContext.getCurrentInstance();
+        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        System.out.println("ffffffffffff2ffffffffffff");
+        etapacontroller.setEtapas(this.ejbetapa.findByProyecto(current));
+        //etapacontroller.agregaralListadoEtapas();
+        etapacontroller.prepareEditarListadoEtapas();
+        etapacontroller.agentesProyecto();
+        System.out.println("ffffffffffffff3ffffffffff");
+        //proyecto Agente
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+
+        proyectoagentecontroller.setEquipotrabajo(ejbproyectoagente.buscarEquipoTrabajo(current.getId()));
+        ArchivoproyectoController archivoproyectoController = (ArchivoproyectoController) context.getApplication().evaluateExpressionGet(context, "#{archivoproyectoController}", ArchivoproyectoController.class);
+        archivoproyectoController.findporProyectoEdit(current.getId());
+
+        etapacontroller.agentesProyecto();
+
+        PresupuestoTareaController presupuestotareacontroller = (PresupuestoTareaController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoTareaController}", PresupuestoTareaController.class);
+
+        presupuestotareacontroller.armarPresupuestoNodos();
+
+        System.out.println("fffffffffffff4fffffffffff");
+        return "Avance";
+     }
 }

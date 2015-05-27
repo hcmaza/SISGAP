@@ -5,17 +5,20 @@ import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TareaFacade;
+import ar.edu.undec.sisgap.controller.TareaavanceFacade;
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
 import ar.edu.undec.sisgap.model.TareaAgente;
+import ar.edu.undec.sisgap.model.Tareaavance;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -51,6 +54,13 @@ public class TareaController implements Serializable {
     private TareaAgenteController tareaagentecontroller;
     @ManagedProperty("#{presupuestoTareaController}")
     private PresupuestoTareaController presupuestotareacontroller;
+        
+    private List<Tareaavance> tareasavancesdeproyecto = new ArrayList<Tareaavance>() ;
+    
+    private Tareaavance avanceold = new Tareaavance();
+    
+    @EJB
+    private TareaavanceFacade ejbtareaavance; 
     
     public TareaController() {
     }
@@ -439,5 +449,79 @@ public class TareaController implements Serializable {
             System.out.println("Excepcion en TareaController: establecerTareasPorProyecto(int proyectoId)");
         }
     }
+    
+    public void editarAvanceTarea(Tarea t){
+        current = t;
+       
+    }
+
+    public List<Tareaavance> getTareasavancesdeproyecto() {
+        return tareasavancesdeproyecto;
+    }
+
+    public void setTareasavancesdeproyecto(List<Tareaavance> tareasavancesdeproyecto) {
+        this.tareasavancesdeproyecto = tareasavancesdeproyecto;
+    }
+    
+    
+    //armo los avances de las tareas
+    public void armarTareasAvancesProyecto(){
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        TareaavanceController tareaavancecontroller = (TareaavanceController) context.getApplication().evaluateExpressionGet(context, "#{tareaavanceController}", TareaavanceController.class);
+        if(tareasavancesdeproyecto==null){
+            tareasavancesdeproyecto = new ArrayList();
+        }
+        tareaavancecontroller.getSelected().setTareaid(current);
+       List<Etapa> listadoetapas = new ArrayList<Etapa>();
+        for(Etapa e : etapacontroller.getEtapas()){
+            List<Tarea> listadotareas = new ArrayList<Tarea>();
+            for(Tarea t: e.getTareaList()){
+                
+                if(t.getId().equals(tareaavancecontroller.getSelected().getTareaid().getId())){
+                    tareaavancecontroller.getSelected().setFecha(new Date());
+                    
+                    t.getTareaavanceList().add(tareaavancecontroller.getSelected());
+                     System.out.println("Tarea "+ t.getTarea());
+                     System.out.println("tarea avance "+t.getTareaavanceList().get(0).getAvance());
+             
+                }
+                
+                   listadotareas.add(t);
+                
+                
+            }
+            
+            
+            e.setTareaList(listadotareas);
+            listadoetapas.add(e);
+        }
+         etapacontroller.setEtapas(listadoetapas);
+         
+         //grabo en la base de datos
+         try{
+           
+              this.ejbtareaavance.edit(tareaavancecontroller.getSelected());
+         }catch(Exception e){
+             System.out.println("Error en armar tarea avance ="+e);
+         }
+        tareaavancecontroller.setCurrent(null);
+        
+        etapacontroller.editarListadoEtapas();
+       //crearChart();
+       
+    }
+
+    public Tareaavance getAvanceold() {
+        return avanceold;
+    }
+
+    public void setAvanceold(Tareaavance avanceold) {
+        this.avanceold = avanceold;
+    }
+    
+    
+    
 
 }
