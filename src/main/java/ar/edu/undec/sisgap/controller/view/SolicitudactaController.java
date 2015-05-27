@@ -7,11 +7,14 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudactaFacade;
 import ar.edu.undec.sisgap.model.Estadosolicitud;
+import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.model.Solicitud;
+import java.io.IOException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
@@ -24,6 +27,17 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
 @ManagedBean(name = "solicitudactaController")
@@ -44,6 +58,8 @@ public class SolicitudactaController implements Serializable {
     private List<Solicitud> listaSolicitudes;
 
     private List<Solicitud> listaSolicitudesSeleccionadas;
+    
+    private List<Solicitud> listaSolicitudesAprobadas = new ArrayList<Solicitud>();
 
     private Solicitud solicitudActual;
 
@@ -88,6 +104,14 @@ public class SolicitudactaController implements Serializable {
 
     public void setListaSolicitudesSeleccionadas(List<Solicitud> listaSolicitudesSeleccionadas) {
         this.listaSolicitudesSeleccionadas = listaSolicitudesSeleccionadas;
+    }
+    
+    public List<Solicitud> getListaSolicitudesAprobadas() {
+        return listaSolicitudesAprobadas;
+    }
+
+    public void setListaSolicitudesAprobadas(List<Solicitud> listaSolicitudesAprobadas) {
+        this.listaSolicitudesAprobadas = listaSolicitudesAprobadas;
     }
 
     public Solicitud getSolicitudActual() {
@@ -156,9 +180,9 @@ public class SolicitudactaController implements Serializable {
 
         // Llenamos la lista de solicitudes que no fueron aprobadas
         listaSolicitudes = getFacades().obtenerIniciadasPorProyecto(proyectocontroller.getSelected().getId());
-
+        
         // Vaciamos la lista de solicitudes seleccionadas
-        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();
+        listaSolicitudesSeleccionadas = new ArrayList<Solicitud>();      
 
         // Seteamos la lista de desembolsos para el proyecto actual
         desembolsocontroller.obtenerPorProyecto(proyectocontroller.getSelected().getId());
@@ -180,7 +204,6 @@ public class SolicitudactaController implements Serializable {
 
             // Para cada Solicitud seleccionada
             for (Solicitud s : listaSolicitudesSeleccionadas) {
-
                 // dependiendo del estado que se le dio a cada solicitud
                 switch (s.getEstadosolicitudid().getId()) {
                     // Solicitud Aprobada >> guardar la fecha de aprobacion, el acta de solicitud y PERSISTIR
@@ -199,10 +222,16 @@ public class SolicitudactaController implements Serializable {
                         getFacades().edit(s);
                         break;
                 }
-
             }
-
-            JsfUtil.addSuccessMessage("Evaluación de Solicitudes Exitosa!");
+           /* if(!this.listaSolicitudesAprobadas.isEmpty()){
+                System.out.println("##########Entrooo");
+                RequestContext.getCurrentInstance().execute("PF('d1final').show()");                
+                //JsfUtil.addSuccessMessage("Evaluación de Solicitudes Exitosa!"); 
+            }         
+            else{
+                System.out.println("########## NO Entrooo");
+            }*/
+            RequestContext.getCurrentInstance().execute("PF('d1final').show()"); 
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -221,18 +250,22 @@ public class SolicitudactaController implements Serializable {
             estadoAprobada = null;
             e.printStackTrace();
         }
-
+        
         // cambiamos el estado de la solicitud agregada
         this.solicitudActual.setEstadosolicitudid(estadoAprobada);
 
         // damos la fecha de aprobacion
         this.solicitudActual.setFechaaprobacion(new Date());
+        
+        //Agregamos para el reporte
+        this.listaSolicitudesAprobadas.add(solicitudActual);
 
         // agregamos a la lista
         this.listaSolicitudesSeleccionadas.add(solicitudActual);
 
         // quitamos de la lista de disponibles
-        this.listaSolicitudes.remove(solicitudActual);
+        this.listaSolicitudes.remove(solicitudActual);        
+      
     }
 
     public void agregarRechazada() {
@@ -280,11 +313,15 @@ public class SolicitudactaController implements Serializable {
         solicitud.setFechaaprobacion(null);
         solicitud.setObsevaluacion("");
 
+        //Qiutamos para el reporte
+        this.listaSolicitudesAprobadas.remove(solicitud);
+        
         // la quitamos de la lista
         this.listaSolicitudesSeleccionadas.remove(solicitud);
 
         // la agregamos nuevamente a los disponibles
         this.listaSolicitudes.add(solicitud);
+        
     }
 
     public float sumarAprobadas() {
@@ -458,6 +495,31 @@ public class SolicitudactaController implements Serializable {
 
     public void obtenerPorProyecto(int proyectoid) {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
+    }
+    
+    public void pdfSolicitudesEvaluadas() throws JRException, IOException {       
+        // Obtengo la ruta absoluta del archivo compilado del reporte
+        String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/solicitudesEvaluadas.jasper");
+        
+        JRDataSource solicitudes = new JRBeanCollectionDataSource(this.listaSolicitudesAprobadas);
+        float total= 0.0F;
+        for(Solicitud s: listaSolicitudesAprobadas){
+            total+= s.getImporte().floatValue();
+        }
+        //Agregando los parametros
+        Hashtable<String, Object> parametros = new Hashtable<String, Object>();
+        parametros.put("solicitudes", solicitudes);
+        parametros.put("total", total);
+        
+        // Llenamos el reporte
+        JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, new JREmptyDataSource());
+
+        // Generamos el archivo a descargar
+        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        httpServletResponse.addHeader("Content-disposition", "attachment; filename=solicitudesEvaluadas.pdf");
+        ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        FacesContext.getCurrentInstance().responseComplete();        
     }
 
 }
