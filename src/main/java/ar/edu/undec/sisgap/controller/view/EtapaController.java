@@ -8,12 +8,14 @@ import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Tarea;
 import ar.edu.undec.sisgap.model.TareaAgente;
+import ar.edu.undec.sisgap.model.Tareaavance;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -388,6 +390,8 @@ public class EtapaController implements Serializable {
         mindate = Long.MAX_VALUE;
         FacesContext context = FacesContext.getCurrentInstance();
         TareaController tareacontroller = (TareaController) context.getApplication().evaluateExpressionGet(context, "#{tareaController}", TareaController.class);
+         
+        TareaavanceController tareaavancecontroller = (TareaavanceController) context.getApplication().evaluateExpressionGet(context, "#{tareaavanceController}", TareaavanceController.class);
 
         if (tareacontroller.getTareasdeproyecto() == null) {
             int cant = etapas.size();
@@ -412,9 +416,27 @@ public class EtapaController implements Serializable {
                 contador++;
                 categoria.add(t.getTarea());
                 data += "[" + t.getFechainicio().getTime() + "," + t.getFechafin().getTime() + "],";
+                
+               
+                
+                Tareaavance avance = new Tareaavance();
+                avance.setAvance(0);
+                Calendar cal = new GregorianCalendar(2001,0,1);
+                Date fechainicial = cal.getTime();
+                
+                for(Tareaavance tav:t.getTareaavanceList()){
+                   
+                    if(tav.getFecha().after(fechainicial)) {
+                       
+                       avance = tav;
+                       fechainicial = tav.getFecha();
+                   }
+                   
+                }
+                
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(t.getFechainicio());
-                calendar.add(Calendar.DAY_OF_YEAR, (t.getDias() * t.getEstado()) / 100);
+                calendar.add(Calendar.DAY_OF_YEAR, (t.getDias() * avance.getAvance()) / 100);
                 dataactual += "[" + t.getFechainicio().getTime() + "," + calendar.getTime().getTime() + "],";
             }
         }
@@ -526,18 +548,20 @@ public class EtapaController implements Serializable {
         root = new DefaultTreeNode(new Tarea(), null);
         root.setExpanded(true);
         //current.setTareaList(tareacontroller.getTareasdeproyecto());
-        for (Tarea t : tareacontroller.getTareasdeproyecto()) {
-            contardias = contardias + t.getDias();
-            if (t.getFechainicio().before(mindia)) {
-                mindia = t.getFechainicio();
+        if(tareacontroller.getTareasdeproyecto() != null){
+            for (Tarea t : tareacontroller.getTareasdeproyecto()) {
+                contardias = contardias + t.getDias();
+                if (t.getFechainicio().before(mindia)) {
+                    mindia = t.getFechainicio();
+                }
+                if (t.getFechafin().after(maxdia)) {
+                    maxdia = t.getFechafin();
+                }
             }
-            if (t.getFechafin().after(maxdia)) {
-                maxdia = t.getFechafin();
-            }
+            current.setFechainicio(mindia);
+            current.setFechafin(maxdia);
+            current.setDias(contardias);
         }
-        current.setFechainicio(mindia);
-        current.setFechafin(maxdia);
-        current.setDias(contardias);
         //etapas.add(current);
         for (Etapa etapa : etapas) {
 

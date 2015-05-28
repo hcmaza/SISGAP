@@ -5,21 +5,22 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <ui:composition template="/template.xhtml">
-        
+
         <ui:define name="body">
-            <f:event type="preRenderView" listener="#{presupuestoController.findProyecto(proyectoController.selected.id)}" />
-            <f:event type="preRenderView" listener="#{presupuestoController.sumarGastosView}" />
+            <f:event type="preRenderView" listener="#{presupuestoController.generarPresupuestoPorProyecto(proyectoController.selected.id)}" />
+
             <h:panelGroup id="messagePanel" layout="block">
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             </h:panelGroup>
-       
+
             <h:form>
-            <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" showDetail="true" sticky="true" />
-  
-                 
+                <p:growl globalOnly="true" for="growlprincipal" id="growlprincipal" showDetail="true" sticky="true" />
+
+
                 <p:panel id="pprincipal" header="Solicitud de Proyecto #{proyectoController.selected.id} - #{proyectoController.selected.nombre} " style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;" >
 
                     <h:panelGroup id="messagePanel" layout="block">
@@ -56,7 +57,7 @@
                     </p:fieldset>
 
                     <p:accordionPanel style="display: inline-block; width: 50%; float: right; margin-bottom: 5px; margin-top: 15px;" activeIndex="null">
-                        <p:tab title="Comitente">
+                        <p:tab title="Comitente" titleStyleClass="tabDario">
                             <p:panelGrid columnClasses="right,left" style="width: 100%;" columns="2" styleClass="sinBordes" >
                                 <p:outputLabel value="Razón Social" style="font-weight: bold;"/>
                                 <p:outputLabel value="#{proyectoController.selected.comitenteid.razonsocial}" />
@@ -83,8 +84,8 @@
                                 <p:outputLabel value="#{proyectoController.selected.comitenteid.email}" />
                             </p:panelGrid>
                         </p:tab>
-                       
-                        <p:tab title="Convocatoria">
+
+                        <p:tab title="Convocatoria" titleStyleClass="tabDario"> 
                             <p:panelGrid style="width: 100%;" columnClasses="right,left" columns="2" styleClass="sinBordes">
                                 <p:outputLabel value="Convocatoria" style="font-weight: bold;" />
                                 <p:outputLabel value="#{proyectoController.selected.convocatoriaid.convocatoria}"/>
@@ -99,12 +100,12 @@
                                 <p:outputLabel value="#{proyectoController.selected.convocatoriaid.estado}"/>
                             </p:panelGrid>
                         </p:tab>
-                        <p:tab title="Documentación">
+                        <p:tab title="Documentación" titleStyleClass="tabDario">
                             <p:panelGrid style="width: 100%;" styleClass="sinBordes">
                                 <p:row>
                                     <p:column>
                                         <p:dataTable id="tArchivosProyecto" var="archivo" value="#{archivoproyectoController.collectorArchivoProyecto}" emptyMessage="Este proyecto no tiene archivos subidos" >  
-                                           
+
                                             <p:column headerText="Archivos">  
                                                 <p:commandLink id="downloadLink" value="#{archivo.nombre}" ajax="false" process="@this"  >
                                                     <p:fileDownload id="f1" value="#{archivo.file}"  />
@@ -115,7 +116,7 @@
                                 </p:row>
                             </p:panelGrid>
                         </p:tab>
-                        <p:tab title="Financiamiento">
+                        <p:tab title="Financiamiento" titleStyleClass="tabDario">
                             <p:panelGrid columns="2" columnClasses="right,left" styleClass="sinBordes">
                                 <p:outputLabel value="Beneficiario" style="font-weight: bold;" />
                                 <p:outputLabel value="#{proyectoController.selected.beneficiarioid.beneficiario}" title="#{bundle.ViewProyectoTitle_convocatoriaid}"/>
@@ -150,152 +151,178 @@
                             </p:row>
                         </p:panelGrid>
                     </p:panel>
+                    
                     <p:panel header="Presupuesto" toggleable="true" style="margin-bottom: 5px; clear: both; width: 100%;"  collapsed="true">
-                        <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item">
-                            <f:attribute name="”collectionType”" value="”java.util.ArrayList”/">
-                            </f:attribute>
-                            <p:column>
+                        <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="item"
+                                     rowIndexVar="indice" 
+                                     rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                                     styleClass="tabla">
+
+                            <f:attribute name="”collectionType”" value="”java.util.ArrayList”/" />
+
+                            <f:facet name="header">
+                                Presupuesto de la Idea-Proyecto
+                            </f:facet>
+                            <p:column style="width:20%" >
                                 <f:facet name="header">
                                     <p:outputLabel value="Rubro"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.rubro.rubro}"/>
+                                <p:outputLabel value="#{item.rubro.abreviado}"/>
                             </p:column>
-                            <p:column>
+                            <p:column style="width:20%">
                                 <f:facet name="header">
-                                    <p:outputLabel value="Gastocomitente"/>
+                                    <p:outputLabel value="Gasto Comitente"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.gastocomitente}"/>
+                                <p:outputLabel value="$ #{item.gastocomitente}" style="float: right;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </p:outputLabel>
                             </p:column>
-                            <p:column>
+                            <p:column style="width:20%">
                                 <f:facet name="header">
-                                    <p:outputLabel value="Gastoorganismo"/>
+                                    <p:outputLabel value="Gasto Organismo"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.gastoorganismo}"/>
+                                <p:outputLabel value="$ #{item.gastoorganismo}" style="float: right;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </p:outputLabel>
                             </p:column>
-                            <p:column>
+                            <p:column style="width:20%">
                                 <f:facet name="header">
-                                    <p:outputLabel value="Gastouniversidad"/>
+                                    <p:outputLabel value="Gasto Universidad"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item.gastouniversidad}"/>
+                                <p:outputLabel value="$ #{item.gastouniversidad}" style="float: right;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Totales Rubros" style="width:20%" >
+                                <p:outputLabel value="$ #{item.total}" style="float: right;" >
+                                    <f:convertNumber pattern="#0.00" />
+                                </p:outputLabel>
                             </p:column>
                         </p:dataTable>
 
-                        <h:panelGrid columns="2">
-                            <p:panelGrid style="font-weight:bold;" id="paportes" columns="2">
-                                <f:facet name="header">  
-                                    Total de Aportes  
-                                </f:facet>
-                                <p:outputLabel value="Aportes Organismo"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastoorganismo}"/>
-                                <p:outputLabel value="Aportes Comitente"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastocomitente}"/>
-                                <p:outputLabel value="Aportes Universidad"/>
-                                <p:outputLabel value="$#{presupuestoController.sumagastouniversidad}"/>
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoController.sumatotal}  
-                                </f:facet>
-                            </p:panelGrid>
+                        <p:dataTable id="tpresupuestototales" value="#{presupuestoRubroController.presupuestosrubros}"  
+                                     var="item" rows="1" 
+                                     rowIndexVar="indice" 
+                                     rowStyleClass="#{(fn:length(presupuestoRubroController.presupuestosrubros) mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2' }"
+                                     styleClass="tabla esconder-cabecera-columnas">
 
-                            <p:chart type="pie" id="caportes" model="#{presupuestoController.pieModelAportes}"   
-                                        style="width:100%;height:300px"  /> 
+                            <p:column style="width:20%" >
+                                <h:outputText style="width:96%; font-weight: bold;" value="Totales"/>
+                            </p:column>
 
-                            <p:dataTable value="#{presupuestoController.selected.presupuestoRubroList}" var="data" >
-                                <f:facet name="header">  
-                                    Total de Rubros  
-                                </f:facet>
-                                <p:column >
-                                    <p:outputLabel style="font-weight:bold;" value="#{data.rubro.rubro}"/>
-                                </p:column>
-                                <p:column>
-                                    <p:outputLabel style="font-weight:bold;" value="$#{data.total}"/>
-                                </p:column>    
-                                <f:facet name="footer">  
-                                    Total = $#{presupuestoController.sumatotal}  
-                                </f:facet>
-                            </p:dataTable>
-                            <p:chart type="pie" id="crubros" model="#{presupuestoController.pieModelRubro}"   
-                                        style="width:100%;height:300px"  /> 
+                            <p:column style="width:20%; ">
+                                <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGastosOrganismo()}" style="float: right; font-weight: bold;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="width:20%;">
+                                <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGastosComitente()}" style="float: right; font-weight: bold;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="width:20%;">
+                                <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGastosUniversidad()}" style="float: right; font-weight: bold;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column id="totalesRubro" style="width:20%;" >
+                                <h:outputText value="$ #{presupuestoRubroController.obtenerTotalGeneral()}" style="float: right; font-weight: bold;">
+                                    <f:convertNumber pattern="#0.00" />
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable> 
+
+                        <h:panelGrid columns="2" style="width: 100%;" styleClass="center">
+
+                            <p:chart type="pie" id="caportes" model="#{presupuestoRubroController.pieModel}"   
+                                     style="width:100%;height:300px"  /> 
+
+                            <p:chart type="pie" id="crubros" model="#{presupuestoRubroController.pieModelRubro}"   
+                                     style="width:100%;height:300px"  /> 
 
                         </h:panelGrid>
                     </p:panel>
-                    
-                <br />
+
+                    <br />
                     <p:separator />
-             
-             <br />
-                <p:panel header="Evaluación" >
-                    <h:panelGrid cellspacing="10" cellpadding="5" columnClasses="right,center,center,center" columns="4">
-                        <p:outputLabel style="font-weight:bold;" value="Pregunta" />
-                        <p:outputLabel style="font-weight:bold;" value="" />
-                        <p:outputLabel style="font-weight:bold;" value="Rating" /> 
-                        <p:outputLabel style="font-weight:bold;" value="Observacion" /> 
-                        
-                        <c:forEach items="#{evaluacionPreguntaController.evaluaciones}" var="data">
 
-                            <p:outputLabel style="font-weight:bold;" value="#{data.pregunta.pregunta}"  />
-                            <p:selectBooleanCheckbox value="#{data.aprobado}" />
+                    <br />
+                    <p:panel header="Evaluación" >
+                        <h:panelGrid cellspacing="10" cellpadding="5" columnClasses="right,center,center,center" columns="4">
+                            <p:outputLabel style="font-weight:bold;" value="Pregunta" />
+                            <p:outputLabel style="font-weight:bold;" value="" />
+                            <p:outputLabel style="font-weight:bold;" value="Rating" /> 
+                            <p:outputLabel style="font-weight:bold;" value="Observacion" /> 
 
-                            <p:rating style="width:100%"  value="#{data.rating}" >
-                                <p:ajax event="rate" listener="#{proyectoController.armarObservaciones()}" update="observacionfinal"  />  
-                            </p:rating>
+                            <c:forEach items="#{evaluacionPreguntaController.evaluaciones}" var="data">
 
-                            <p:inputTextarea value="#{data.observacion}" cols="70" rows="3" >
-                                <p:ajax event="keyup" listener="#{proyectoController.armarObservaciones()}" update="observacionfinal"  />  
-                            </p:inputTextarea>
-                        </c:forEach>
+                                <p:outputLabel style="font-weight:bold;" value="#{data.pregunta.pregunta}"  />
+                                <p:selectBooleanCheckbox value="#{data.aprobado}" />
+
+                                <p:rating style="width:100%"  value="#{data.rating}" >
+                                    <p:ajax event="rate" listener="#{proyectoController.armarObservaciones()}" update="observacionfinal"  />  
+                                </p:rating>
+
+                                <p:inputTextarea value="#{data.observacion}" cols="70" rows="3" >
+                                    <p:ajax event="keyup" listener="#{proyectoController.armarObservaciones()}" update="observacionfinal"  />  
+                                </p:inputTextarea>
+                            </c:forEach>
                         </h:panelGrid>
-                    <h:panelGrid cellspacing="10" cellpadding="5" columnClasses="right,left" columns="2">
-                        <p:outputLabel style="font-weight:bold;" value="Estado" />  
-                       
-                        <p:selectOneMenu required="true" requiredMessage="Seleccione un estado Por Favor" id="sestado" value="#{proyectoController.selected.estadoproyectoid}" >
-                            <f:selectItems value="#{estadoproyectoController.getItemspersonalizado(false)}" />
-                            <p:ajax listener="#{proyectoController.armarObservaciones}" update="observacionfinal"  />  
-                        </p:selectOneMenu>
-                    
-                        <p:outputLabel style="font-weight:bold;" id="oobservaciones" value="Observaciones" />
-                        <p:inputTextarea autoResize="true" id="observacionfinal" style="font-weight:bold; " cols="100" rows="20" value="#{evaluacionController.selected.observacion}"   />
-                        
-                    </h:panelGrid>
-                
-            
-             <br />
-             
-             <p:separator />
-             <div align="center" >
-                 <p:commandButton  immediate="true" value="Grabar y enviar evaluacion" actionListener="#{proyectoController.evaluarIdea}"  />
-             </div>
-                      
-                 </p:panel>
-                         </p:panel>
+                        <h:panelGrid cellspacing="10" cellpadding="5" columnClasses="right,left" columns="2">
+                            <p:outputLabel style="font-weight:bold;" value="Estado" />  
 
-                  <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" closable="false"  header="Evaluacion de Idea Proyecto Creada" >
-                     La Evaluación fue realizada Satisfactoriamente!!! en breve le llegara un email al Docente - Investigador
-                     <div align="center" >
-                         
-                        
-                         <h:panelGrid columns="2">
-                             <p:commandButton value="Imprimir" actionListener="#{proyectoController.pdfEvaluacionIdeaProyecto()}" ajax="false"  />
+                            <p:selectOneMenu required="true" requiredMessage="Seleccione un estado Por Favor" id="sestado" value="#{proyectoController.selected.estadoproyectoid}" >
+                                <f:selectItems value="#{estadoproyectoController.getItemspersonalizado(false)}" />
+                                <p:ajax listener="#{proyectoController.armarObservaciones}" update="observacionfinal"  />  
+                            </p:selectOneMenu>
+
+                            <p:outputLabel style="font-weight:bold;" id="oobservaciones" value="Observaciones" />
+                            <p:inputTextarea autoResize="true" id="observacionfinal" style="font-weight:bold; " cols="90" rows="20" value="#{evaluacionController.selected.observacion}"   />
+
+                        </h:panelGrid>
+
+
+                        <br />
+
+                        <p:separator />
+                        <div align="center" >
+                            <p:commandButton  immediate="true" value="Grabar y enviar evaluacion" actionListener="#{proyectoController.evaluarIdea}"  />
+                        </div>
+
+                    </p:panel>
+                </p:panel>
+
+                <p:dialog id="dfinal" widgetVar="dfinal"  modal="true" closable="false"  header="Evaluacion de Idea Proyecto Creada" >
+                    La Evaluación fue realizada Satisfactoriamente!!! en breve le llegara un email al Docente - Investigador
+                    <div align="center" >
+
+
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Imprimir" actionListener="#{proyectoController.pdfEvaluacionIdeaProyecto()}" ajax="false"  />
                             <p:commandButton value="OK" ajax="false" action="List" oncomplete="#{proyectoController.reiniciarValoresEvaluacion}" onclick="PF('dfinal').hide();" />
                         </h:panelGrid>
-                     </div>
-                     
+                    </div>
+
                 </p:dialog>
-             <p:dialog id="dfinalerror" widgetVar="dfinalerror"  modal="true" closable="false" showHeader="false"  header="Evaluacion de Idea Proyecto" >
+                <p:dialog id="dfinalerror" widgetVar="dfinalerror"  modal="true" closable="false" showHeader="false"  header="Evaluacion de Idea Proyecto" >
                     <div style="float: left"><p:graphicImage value="/resources/img/error.jpg"/></div>
-                        
-                        La Evaluación al Docente - Investigador no pudo ser creada ! Consulte con el Administrador del Sistema
-                        <div align="center" ><p:commandButton value="OK" action="List" actionListener="#{proyectoController.reiniciarValoresEvaluacion}" ></p:commandButton></div>
-                     
+
+                    La Evaluación al Docente - Investigador no pudo ser creada ! Consulte con el Administrador del Sistema
+                    <div align="center" ><p:commandButton value="OK" action="List" actionListener="#{proyectoController.reiniciarValoresEvaluacion}" ></p:commandButton></div>
+
                 </p:dialog> 
-            <p:dialog id="dfinalerrore" widgetVar="dfinalerrore"  modal="true" closable="false" showHeader="true"  header="Evaluacion de Idea Proyecto" >
-                        
-                        Seleccione el Estado del Proyecto! Muchas Gracias 
-                       <div align="center" ><p:commandButton value="OK" onclick="PF('dfinalerrore').hide()"  ></p:commandButton></div>
+                <p:dialog id="dfinalerrore" widgetVar="dfinalerrore"  modal="true" closable="false" showHeader="true"  header="Evaluacion de Idea Proyecto" >
+
+                    Seleccione el Estado del Proyecto! Muchas Gracias 
+                    <div align="center" ><p:commandButton value="OK" onclick="PF('dfinalerrore').hide()"  ></p:commandButton></div>
                 </p:dialog> 
             </h:form>
-            
-           
-              
+
+
+
         </ui:define>
     </ui:composition>
 

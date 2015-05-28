@@ -15,7 +15,7 @@
 
             <h:form id="form" styleClass="jsfcrud_list_form">
 
-                <p:panel id="pprincipal" header="Proyecto #{proyectoController.selected.nombre}: Lista de Solicitudes" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
+                <p:panel id="pprincipal" header="Proyecto Nº #{proyectoController.selected.id} - #{proyectoController.selected.nombre}: Lista de Solicitudes" style="padding: 0px; width: 950px; margin: 0 auto; overflow: hidden;">
                     <p:growl id="message" autoUpdate="true" />
                     <!--                    <h:panelGroup id="messagePanel" layout="block">
                                             <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
@@ -39,6 +39,12 @@
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="10,15,30">
 
+                            <p:column id="columnaId">
+                                <f:facet name="header">
+                                    <h:outputText value="Nº" />
+                                </f:facet>
+                                <h:outputText value="#{item.id}" />
+                            </p:column>
                             <p:column id="columnaDescripcion">
                                 <f:facet name="header">
                                     <h:outputText value="Descripción" />
@@ -75,7 +81,7 @@
                                     <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                 </p:commandButton>
                                 <h:outputText value=" "/>
-                                <p:commandButton action="#{solicitudController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" >
+                                <p:commandButton action="#{solicitudController.destroy}" title="Eliminar" icon="ui-icon-trash" update=":form:tbl,:form" disabled="true" >
                                     <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
                                     <p:confirm header="Eliminar" message="¿Esta seguro que desea eliminar la Solicitud?" icon="ui-icon-alert"   />
                                 </p:commandButton>

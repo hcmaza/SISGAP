@@ -306,8 +306,13 @@ public class PresupuestoRubroController implements Serializable {
 //           DataTable s = (DataTable) event.getSource();
         // MyEntity d = (MyEntity) s.getRowData();
         
+        System.out.println("PresupuestoRubroController - sumarGastos ajsdjkaskdjka");
+        
+        System.out.println("PresupuestoRubroController - sumarGastos - presupuestosrubros: " + presupuestosrubros.size());
+        
         if (presupuestosrubros == null) {
             presupuestosrubros = new ArrayList<PresupuestoRubro>();
+            System.out.println("PresupuestoRubroController - sumarGastos >> presupuestosrubros NULO");
         }
         
         Iterator it = presupuestosrubros.iterator();
@@ -339,6 +344,12 @@ public class PresupuestoRubroController implements Serializable {
         sumagastouniversidad = totaluniversidad;
         sumagastoorganismo = totalorganismo;
         sumatotal = sumagastoorganismo.add(sumagastouniversidad).add(sumagastocomitente);
+        
+        System.out.println("PresupuestoRubroController - SUMAR GASTOS");
+        System.out.println("sumagastocomitente= " + sumagastocomitente.floatValue());
+        System.out.println("sumagastouniversidad= " + sumagastouniversidad.floatValue());
+        System.out.println("sumagastoorganismo= " + sumagastoorganismo.floatValue());
+        System.out.println("sumatotal= " + sumatotal.floatValue());
 
         // Armar grafico de aportes
         pieModel = new PieChartModel();
@@ -352,6 +363,7 @@ public class PresupuestoRubroController implements Serializable {
         pieModel.setTitle("Aportes");
         pieModel.setSliceMargin(5);
         pieModel.setShowDataLabels(true);
+        pieModel.setExtender("tortaPresupuesto");
         
         // Armar grafico de rubros
         pieModelRubro = new PieChartModel();
@@ -364,6 +376,7 @@ public class PresupuestoRubroController implements Serializable {
         pieModelRubro.setTitle("Rubros");
         pieModelRubro.setSliceMargin(5);
         pieModelRubro.setShowDataLabels(true);
+        pieModelRubro.setExtender("tortaPresupuesto");
                 // RequestContext.getCurrentInstance().update(s.getClientId(FacesContext.getCurrentInstance()) +  ":" + event.getRowIndex() +  ":isAutomatic");
         //  RequestContext.getCurrentInstance().update(":tpresupuesto:" + event.getRowIndex() +  ":total");
         //               System.out.println("gggggggggggggggggggggggggggggg");
@@ -448,7 +461,7 @@ public class PresupuestoRubroController implements Serializable {
             pieModel.setTitle("Aportes");
             pieModel.setSliceMargin(5);
             pieModel.setShowDataLabels(true);
-            pieModel.setDiameter(50);
+            pieModel.setDiameter(30);
 
         }
         return pieModel;
@@ -471,7 +484,7 @@ public class PresupuestoRubroController implements Serializable {
             pieModelRubro.setSeriesColors("21B2CE,9C4DAD,FF964A,5ACB73,CE4131,DED7A5");
             pieModelRubro.setSliceMargin(5);
             pieModelRubro.setShowDataLabels(true);
-            pieModel.setDiameter(50);
+            pieModel.setDiameter(30);
 
         }
         return pieModelRubro;
@@ -486,6 +499,10 @@ public class PresupuestoRubroController implements Serializable {
         getFacade().edit(pr);
     }
 
+    public void buscarPorPresupuesto(int id) {
+        this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);
+    }
+    
     public void findporPresupuestoEdit(int id) {
         if (iseditar) {
             this.presupuestosrubros = this.ejbFacade.findporPresupuesto(id);

@@ -24,28 +24,26 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import org.primefaces.model.chart.PieChartModel;
 
-
-@ManagedBean(name="presupuestoController")
+@ManagedBean(name = "presupuestoController")
 @SessionScoped
 public class PresupuestoController implements Serializable {
 
-
     private Presupuesto current;
     private DataModel items = null;
-    @EJB 
+    @EJB
     private ar.edu.undec.sisgap.controller.PresupuestoFacade ejbFacade;
-    @EJB 
+    @EJB
     private ar.edu.undec.sisgap.controller.PresupuestoRubroFacade ejbFacadeR;
-    
+
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private BigDecimal sumagastoorganismo=BigDecimal.ZERO;
-    private BigDecimal sumagastocomitente=BigDecimal.ZERO;
-    private BigDecimal sumagastouniversidad=BigDecimal.ZERO;
-    private BigDecimal sumatotal=BigDecimal.ZERO;
+    private BigDecimal sumagastoorganismo = BigDecimal.ZERO;
+    private BigDecimal sumagastocomitente = BigDecimal.ZERO;
+    private BigDecimal sumagastouniversidad = BigDecimal.ZERO;
+    private BigDecimal sumatotal = BigDecimal.ZERO;
     private PieChartModel pieModelAportes = new PieChartModel();
     private PieChartModel pieModelRubro = new PieChartModel();
-    private List<PresupuestoRubro> presupuestosrubrosedilist=null;
+    private List<PresupuestoRubro> presupuestosrubrosedilist = null;
 
     public PresupuestoController() {
     }
@@ -55,13 +53,14 @@ public class PresupuestoController implements Serializable {
             current = new Presupuesto();
             selectedItemIndex = -1;
         }
-        
+
         return current;
     }
 
     private PresupuestoFacade getFacade() {
         return ejbFacade;
     }
+
     public PaginationHelper getPagination() {
         if (pagination == null) {
             pagination = new PaginationHelper(10000000) {
@@ -73,7 +72,7 @@ public class PresupuestoController implements Serializable {
 
                 @Override
                 public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem()+getPageSize()}));
+                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
                 }
             };
         }
@@ -86,7 +85,7 @@ public class PresupuestoController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Presupuesto)getItems().getRowData();
+        current = (Presupuesto) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
@@ -109,7 +108,7 @@ public class PresupuestoController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Presupuesto)getItems().getRowData();
+        current = (Presupuesto) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
@@ -126,7 +125,7 @@ public class PresupuestoController implements Serializable {
     }
 
     public String destroy() {
-        current = (Presupuesto)getItems().getRowData();
+        current = (Presupuesto) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
@@ -160,14 +159,14 @@ public class PresupuestoController implements Serializable {
         int count = getFacade().count();
         if (selectedItemIndex >= count) {
             // selected index cannot be bigger than number of items:
-            selectedItemIndex = count-1;
+            selectedItemIndex = count - 1;
             // go to previous page if last page disappeared:
             if (pagination.getPageFirstItem() >= count) {
                 pagination.previousPage();
             }
         }
         if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex+1}).get(0);
+            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
         }
     }
 
@@ -206,11 +205,11 @@ public class PresupuestoController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    public void soloCrear(){
+    public void soloCrear() {
         getFacade().create(current);
     }
 
-    @FacesConverter(forClass=Presupuesto.class)
+    @FacesConverter(forClass = Presupuesto.class)
     public static class PresupuestoControllerConverter implements Converter {
 
         @Override
@@ -218,7 +217,7 @@ public class PresupuestoController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            PresupuestoController controller = (PresupuestoController)facesContext.getApplication().getELResolver().
+            PresupuestoController controller = (PresupuestoController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "presupuestoController");
             return controller.ejbFacade.find(getKey(value));
         }
@@ -244,27 +243,38 @@ public class PresupuestoController implements Serializable {
                 Presupuesto o = (Presupuesto) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: "+Presupuesto.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Presupuesto.class.getName());
             }
         }
 
     }
-    public void findProyecto(int id){
-        
+
+    public void findProyecto(int id) {
+
         System.out.println("PresupuestoController: findProyecto" + id);
-        
+
         current = getFacade().findporProyecto(id);
-      
-        
+
     }
-    
-    public void sumarGastosView(){
-         FacesContext context = FacesContext.getCurrentInstance();
-           PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController)context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
-         // if(presupuestorubrocontroller.getPresupuestosrubros()==null){
-              presupuestorubrocontroller.findporPresupuestoEdit(current.getId());
-         // }
-            presupuestorubrocontroller.sumarGastos(null);
+
+    public void generarPresupuestoPorProyecto(int proyectoId) {
+        
+        current = getFacade().findporProyecto(proyectoId);
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+
+        presupuestorubrocontroller.buscarPorPresupuesto(current.getId());
+        presupuestorubrocontroller.sumarGastos(null);
+    }
+
+    public void sumarGastosView() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+        // if(presupuestorubrocontroller.getPresupuestosrubros()==null){
+        presupuestorubrocontroller.findporPresupuestoEdit(current.getId());
+        // }
+        presupuestorubrocontroller.sumarGastos(null);
 //                    Iterator it=this.getSelected().getPresupuestoRubroList().iterator();
 //                 BigDecimal totalcomitente=BigDecimal.ZERO;
 //                BigDecimal totaluniversidad=BigDecimal.ZERO;
@@ -320,12 +330,10 @@ public class PresupuestoController implements Serializable {
 ////                    String updateClientId = table.getClientId() + ":" + table.getRowIndex() + ":total";
 ////                    FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(updateClientId);
 
-        
     }
-    
-     public void sumarGastosEdit(){
-         
-            
+
+    public void sumarGastosEdit() {
+
 //                 BigDecimal totalcomitente=BigDecimal.ZERO;
 //                BigDecimal totaluniversidad=BigDecimal.ZERO;
 //                BigDecimal totalorganismo=BigDecimal.ZERO;
@@ -366,12 +374,12 @@ public class PresupuestoController implements Serializable {
 //            }
 //                
 //              
-         FacesContext context = FacesContext.getCurrentInstance();
-           PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController)context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
-         // if(presupuestorubrocontroller.getPresupuestosrubros()==null){
-              presupuestorubrocontroller.findporPresupuestoEdit(current.getId());
-         // }
-            presupuestorubrocontroller.sumarGastos(null);
+        FacesContext context = FacesContext.getCurrentInstance();
+        PresupuestoRubroController presupuestorubrocontroller = (PresupuestoRubroController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroController}", PresupuestoRubroController.class);
+        // if(presupuestorubrocontroller.getPresupuestosrubros()==null){
+        presupuestorubrocontroller.findporPresupuestoEdit(current.getId());
+        // }
+        presupuestorubrocontroller.sumarGastos(null);
     }
 
     public BigDecimal getSumagastoorganismo() {
@@ -423,8 +431,8 @@ public class PresupuestoController implements Serializable {
     }
 
     public List<PresupuestoRubro> getPresupuestosrubrosedilist() {
-        if(presupuestosrubrosedilist==null){
-            presupuestosrubrosedilist=this.getSelected().getPresupuestoRubroList();
+        if (presupuestosrubrosedilist == null) {
+            presupuestosrubrosedilist = this.getSelected().getPresupuestoRubroList();
         }
         return presupuestosrubrosedilist;
     }
@@ -432,7 +440,7 @@ public class PresupuestoController implements Serializable {
     public void setPresupuestosrubrosedilist(List<PresupuestoRubro> presupuestosrubrosedilist) {
         this.presupuestosrubrosedilist = presupuestosrubrosedilist;
     }
-    
+
     // Paneles de control y Listados
     public BigDecimal getPresupuestoTotalProyecto(int idProyecto) {
         if (current == null) {
@@ -476,5 +484,4 @@ public class PresupuestoController implements Serializable {
         return sumatotal;
     }
 
-    
 }

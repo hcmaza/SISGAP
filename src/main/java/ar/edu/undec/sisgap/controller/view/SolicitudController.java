@@ -135,7 +135,7 @@ public class SolicitudController implements Serializable {
 
     public PaginationHelper getPagination() {
         if (pagination == null) {
-            pagination = new PaginationHelper(10) {
+            pagination = new PaginationHelper(10000000) {
 
                 @Override
                 public int getItemsCount() {
@@ -153,7 +153,7 @@ public class SolicitudController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "ListPorProyecto";
+        return "ListSolicitudesPorProyecto";
     }
 
     public String prepareView() {
