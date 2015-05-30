@@ -36,4 +36,5 @@ public class DesembolsoFacade extends AbstractFacade<Desembolso> {
         return consulta.getResultList();
     }
     
+    
 }

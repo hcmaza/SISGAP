@@ -664,7 +664,7 @@
                         <div align="center" >
                            
                             <p:commandButton id="botontareaok" value="OK" onclick="PF('dtarea').hide();crearGrafico();" actionListener="#{tareaController.armarTareasAvancesProyecto()}" update=":form:tabview1:contenedor :form:tabview1:treetableetapas :form:beanvalue :form:tabview1:tresumenequipo :form:tabview1:tablepresupuesto"   ></p:commandButton>
-
+                            <p:commandButton id="botontareacancelar" value="Cancelar" onclick="PF('dtarea').hide();" action="#{tareaController.editarAvanceTarea(null)}" ></p:commandButton>
                         </div>
                     </f:facet>
 

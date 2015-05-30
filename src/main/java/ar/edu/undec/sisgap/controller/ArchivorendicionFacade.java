@@ -39,4 +39,12 @@ public class ArchivorendicionFacade extends AbstractFacade<Archivorendicion> {
         
     }
     
+    public Archivorendicion buscarUnaPorRendicion(int rendicionId){
+        
+        Query consulta = em.createQuery("SELECT ar FROM Archivorendicion ar WHERE ar.rendicionid.id = :rendicionId)", Archivorendicion.class);
+        consulta.setParameter("rendicionId", rendicionId);
+        return (Archivorendicion)consulta.getSingleResult();
+        
+    }
+    
 }

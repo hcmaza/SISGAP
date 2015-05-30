@@ -6,6 +6,7 @@
 
 package ar.edu.undec.sisgap.model;
 
+import ar.edu.undec.sisgap.controller.util.Propiedades;
 import ar.edu.undec.sisgap.controller.view.util.ConnectJDBCPostgresql;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -273,7 +274,8 @@ public class ProyectoAgente implements Serializable {
         int resultado = 0; 
         ConnectJDBCPostgresql connectjdbcpostgresql = new ConnectJDBCPostgresql();
         try {
-            connectjdbcpostgresql.connect("192.168.3.219","5432", "siu", "postgres", "db4dmin");
+            Propiedades propiedades = new Propiedades();
+            connectjdbcpostgresql.connect(propiedades.getHostMapuche(),propiedades.getPortMapuche(), propiedades.getDatabaseMapuche(), propiedades.getUserMapuche(), propiedades.getPasswordMapuche());
             
         } catch (SQLException ex) {
             System.out.println("No se pudo realizar la coneccion "+ex);
@@ -313,7 +315,8 @@ public class ProyectoAgente implements Serializable {
         BigDecimal resultado = BigDecimal.ZERO; 
         ConnectJDBCPostgresql connectjdbcpostgresql = new ConnectJDBCPostgresql();
         try {
-            connectjdbcpostgresql.connect("192.168.3.219","5432", "siu", "postgres", "db4dmin");
+            Propiedades propiedades = new Propiedades();
+            connectjdbcpostgresql.connect(propiedades.getHostMapuche(),propiedades.getPortMapuche(), propiedades.getDatabaseMapuche(), propiedades.getUserMapuche(), propiedades.getPasswordMapuche());
             
         } catch (SQLException ex) {
             System.out.println("No se pudo realizar la coneccion "+ex);
