@@ -9,6 +9,7 @@ package ar.edu.undec.sisgap.controller.view;
 import ar.edu.undec.sisgap.controller.AgenteFacade;
 import ar.edu.undec.sisgap.controller.EncriptarSHA256;
 import ar.edu.undec.sisgap.controller.UsuarioFacade;
+import ar.edu.undec.sisgap.controller.util.Propiedades;
 import ar.edu.undec.sisgap.controller.view.util.ConnectJDBCPostgresql;
 import ar.edu.undec.sisgap.model.Agente;
 import ar.edu.undec.sisgap.model.Agentecargo;

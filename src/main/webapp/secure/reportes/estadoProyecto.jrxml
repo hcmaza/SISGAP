@@ -61,7 +61,7 @@
 		<band height="139">
 			<image scaleImage="FillFrame">
 				<reportElement x="0" y="0" width="802" height="139" uuid="f0812402-1584-4bd8-bec4-771bf0f5c358"/>
-				<imageExpression><![CDATA["E:\\Java\\Proyecto Wayra\\src\\main\\webapp\\resources\\img\\wayra6.png"]]></imageExpression>
+				<imageExpression><![CDATA["imagenes/wayra6.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
