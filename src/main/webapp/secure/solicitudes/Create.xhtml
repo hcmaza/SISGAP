@@ -604,7 +604,7 @@
             </p:dialog>
 
             <!--**********************************************-->
-            <!--************* DIALAGO RENDICION **************-->
+            <!--******* DIALAGO ARCHIVO de RENDICION *********-->
             <!--**********************************************-->
 
             <p:dialog header="Factura" id="dialogoItemRendicion" widgetVar="dialogoItemRendicion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -619,18 +619,18 @@
                         <p:inputText id="dnrofactura" value="#{archivorendicionController.selected.nrofactura}" />
 
                         <p:outputLabel value="Fecha de Factura" />
-                        <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" />
+                        <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{solicitudController.selected.fechasolicitud}" >
+                            <f:validator validatorId="validadorFechaArchivoRendicion" />
+                            <f:attribute name="fechaSolicitud" value="#{solicitudController.selected.fechasolicitud}" />
+                        </p:calendar>
 
                         <p:outputLabel value="Proveedor" />
                         <p:inputText id="dproveedor" value="#{archivorendicionController.selected.proveedor}" />
 
                         <p:outputLabel value="Monto de Factura" />
                         <p:inputText  id="dmontofactura" value="#{archivorendicionController.selected.montofactura}"  >
-<!--                            <f:convertNumber type="number" groupingUsed="false" maxFractionDigits="2" />-->
                             <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
-                            <!--<f:validateDoubleRange minimum="0" maximum="{solicitudController.selected.disponible}"/>--> 
                         </p:inputText>    
-
 
                         <p:outputLabel value="Archivo de Factura" />
                         <p:fileUpload label="Imagen de Factura" id="ffactura" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
