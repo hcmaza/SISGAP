@@ -58,6 +58,10 @@ public class Archivorendicion implements Serializable {
     @Column(name = "nrofactura")
     private String nrofactura;
     
+    @Size(max = 2)
+    @Column(name = "tipofactura")
+    private String tipofactura;
+    
     @Size(max = 200)
     @Column(name = "obsfactura")
     private String obsfactura;
@@ -125,6 +129,14 @@ public class Archivorendicion implements Serializable {
 
     public void setNrofactura(String nrofactura) {
         this.nrofactura = nrofactura;
+    }
+
+    public String getTipofactura() {
+        return tipofactura;
+    }
+
+    public void setTipofactura(String tipofactura) {
+        this.tipofactura = tipofactura;
     }
 
     public String getObsfactura() {

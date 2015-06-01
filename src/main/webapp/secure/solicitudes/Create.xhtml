@@ -610,42 +610,94 @@
             <p:dialog header="Factura" id="dialogoItemRendicion" widgetVar="dialogoItemRendicion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="formarchivorendicion" enctype="multipart/form-data" >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                    <p:panelGrid columns="2" rendered="#{not empty rendicionController.solicitudSeleccionada}" styleClass="panelgrid" columnClasses="right,right" >
+                    <p:panelGrid rendered="#{not empty rendicionController.solicitudSeleccionada}" styleClass="panelgrid" columnClasses="right,right" >
                         <f:facet name="header">
                             <h:outputText value="Datos de la Factura" />
                         </f:facet>
 
-                        <p:outputLabel value="Número de Factura" />
-                        <p:inputText id="dnrofactura" value="#{archivorendicionController.selected.nrofactura}" />
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Tipo de Factura" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="dtipofactura" value="#{archivorendicionController.selected.tipofactura}" var="tipo" required="true" requiredMessage="Se debe seleccionar un tipo de factura." style="width: 100%;">
+                                    <f:selectItem itemLabel="Seleccionar un tipo." itemValue="" />
+                                    <f:selectItem itemLabel="B" itemValue="B" />
+                                    <f:selectItem itemLabel="C" itemValue="C" />
+                                </p:selectOneMenu>
+                            </p:column>
+                        </p:row>
 
-                        <p:outputLabel value="Fecha de Factura" />
-                        <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{solicitudController.selected.fechasolicitud}" >
-                            <f:validator validatorId="validadorFechaArchivoRendicion" />
-                            <f:attribute name="fechaSolicitud" value="#{solicitudController.selected.fechasolicitud}" />
-                        </p:calendar>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Número de Factura" />
+                            </p:column>
+                            <p:column>
+                                <p:inputMask id="dnrofactura" value="#{archivorendicionController.selected.nrofactura}" title="Formato: 1234-12345678" mask="9999-99999999" maxlength="13" validatorMessage="Debe seguir el formato de Nº de factura correcto: 0000-00000000" required="true" requiredMessage="Se debe cargar el número de factura." />
+                                <p:tooltip id="dttnrofactura" for="dnrofactura" showEvent="focus" hideEvent="blur" />
+                            </p:column>
+                        </p:row>
 
-                        <p:outputLabel value="Proveedor" />
-                        <p:inputText id="dproveedor" value="#{archivorendicionController.selected.proveedor}" />
 
-                        <p:outputLabel value="Monto de Factura" />
-                        <p:inputText  id="dmontofactura" value="#{archivorendicionController.selected.montofactura}"  >
-                            <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
-                        </p:inputText>    
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Fecha de Factura" />
+                            </p:column>
+                            <p:column>
+                                <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{solicitudController.selected.fechasolicitud}" required="true" requiredMessage="Se debe cargar la fecha de factura." >
+                                    <f:validator validatorId="validadorFechaArchivoRendicion" />
+                                    <f:attribute name="fechaSolicitud" value="#{solicitudController.selected.fechasolicitud}" />
+                                </p:calendar>
+                            </p:column>
 
-                        <p:outputLabel value="Archivo de Factura" />
-                        <p:fileUpload label="Imagen de Factura" id="ffactura" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
-                                      sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
-                        </p:fileUpload>    
+                        </p:row>
 
-                        <p:outputLabel value="Observación" />
-                        <p:inputTextarea id="dobservacionFactura" value="#{archivorendicionController.selected.obsfactura}" />
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Proveedor" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="dproveedor" value="#{archivorendicionController.selected.proveedor}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Monto de Factura" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText  id="dmontofactura" value="#{archivorendicionController.selected.montofactura}" required="true" requiredMessage="Se debe cargar el monto de la factura."  >
+                                    <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
+                                </p:inputText>    
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Archivo de Factura" />
+                            </p:column>
+                            <p:column>
+                                <p:fileUpload label="Imagen de Factura" id="ffactura" fileUploadListener="#{archivorendicionController.subirArchivoRendicion}" mode="advanced"  
+                                              sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
+                                </p:fileUpload>    
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Observación" />
+                            </p:column>
+                            <p:column>
+                                <p:inputTextarea id="dobservacionFactura" value="#{archivorendicionController.selected.obsfactura}" />
+                            </p:column>
+                        </p:row>
 
                     </p:panelGrid>
 
                     <p:separator/>
                     <div align="center" >
                         <!--<p:commandButton value="Solicitar" actionListener="{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" />--> 
-                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion, :formprincipal:tabsolicitudes:difrendicion" oncomplete="PF('dialogoItemRendicion').hide();" />
+                        <p:commandButton value="Agregar Factura" actionListener="#{archivorendicionController.agregarArchivoLista()}" update=":formprincipal:tabsolicitudes:tablafacturasrendicion, :formprincipal:tabsolicitudes:difrendicion" oncomplete="PF('dialogoItemRendicion').hide();" validateClient="true" />
                     </div>
                 </h:form>
 
