@@ -529,7 +529,7 @@
 
                         <p:outputLabel value="Solicitado" />
                         <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}"  >
-                            <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
+                            <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
                             <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
                         </p:inputText>    
 
@@ -580,7 +580,7 @@
 
                         <p:outputLabel value="Solicitado" />
                         <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}"  >
-                            <f:convertNumber type="number" groupingUsed="false" locale="es_AR" />
+                            <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
                             <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
                         </p:inputText>    
 
