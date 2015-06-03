@@ -267,6 +267,16 @@ public class ArchivorendicionController implements Serializable {
         System.out.println("Nuevo Archivo Rendicion Inicio");
         //current = null;
         current = new Archivorendicion();
+        
+         // Obtenemos el controlador necesario
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+        
+        System.out.println("Rendicion Solicitud: " + rendicioncontroller.getSolicitudSeleccionada().getPresupuestotarea().getDescripcion());
+        System.out.println("Rendicion Fecha Solicitud: " + rendicioncontroller.getSolicitudSeleccionada().getFechasolicitud().toString());
+//        System.out.println("Rendicion Fecha Aprobacion: " + rendicioncontroller.getSolicitudSeleccionada().getFechaaprobacion().toString());
+//        System.out.println("Rendicion Fecha Ejecucion: " + rendicioncontroller.getSolicitudSeleccionada().getFechaejecucion().toString());
+        
         System.out.println("Nuevo Archivo rendicion Fin");
     }
 

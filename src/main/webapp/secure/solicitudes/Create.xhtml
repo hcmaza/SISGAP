@@ -336,7 +336,7 @@
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton id="botonRendicionSubirFactura" update=":formprincipal:growlprincipal, :formarchivorendicion " actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" title="Subir Factura" immediate="true" >
+                                        <p:commandButton id="botonRendicionSubirFactura" update=":formprincipal:growlprincipal, :formarchivorendicion " action="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" title="Subir Factura" immediate="true" >
                                             <f:setPropertyActionListener value="#{item}" target="#{rendicionController.solicitudSeleccionada}" />
                                         </p:commandButton>
                                         <p:tooltip for="botonRendicionSubirFactura" value="Agregar Comprobante de Rendición" />
@@ -644,9 +644,9 @@
                                 <p:outputLabel value="Fecha de Factura" />
                             </p:column>
                             <p:column>
-                                <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{solicitudController.selected.fechasolicitud}" required="true" requiredMessage="Se debe cargar la fecha de factura." >
+                                <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{rendicionController.solicitudSeleccionada.fechasolicitud}" required="true" requiredMessage="Se debe cargar la fecha de factura." >
                                     <f:validator validatorId="validadorFechaArchivoRendicion" />
-                                    <f:attribute name="fechaSolicitud" value="#{solicitudController.selected.fechasolicitud}" />
+                                    <f:attribute name="fechaSolicitud" value="#{rendicionController.solicitudSeleccionada.fechasolicitud}" />
                                 </p:calendar>
                             </p:column>
 
