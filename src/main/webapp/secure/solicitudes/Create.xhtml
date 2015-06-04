@@ -423,7 +423,23 @@
                                         <h:outputText value="Explicación: "/>
                                         <br />
 
-                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud y la suma de comprobantes rendidos." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
+                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud y la suma de comprobantes rendidos. El reintegro se creará por un importe de $#{rendicionController.solicitudReintegroPorDiferencia.importe.floatValue()}"  rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
+                                        
+                                        <p:separator />
+                                        
+                                        <p:panelGrid columns="2" rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" style="margin-left: auto; margin-right: auto;" >
+                                            <f:facet name="header">
+                                                Diferencia
+                                            </f:facet>
+                                            <p:outputLabel value="Total Solicitud" />
+                                            <p:outputLabel value="$ #{rendicionController.solicitudSeleccionada.importe.floatValue()}" />
+                                            
+                                            <p:outputLabel value="Total Rendido" />
+                                            <p:outputLabel value="$ #{archivorendicionController.sumarComprobantes()}" />
+                                            
+                                            <p:outputLabel value="Diferencia" />
+                                            <p:outputLabel value="$ #{rendicionController.solicitudSeleccionada.importe.floatValue() - archivorendicionController.sumarComprobantes()}" />
+                                        </p:panelGrid>
 
                                         <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
 
