@@ -321,6 +321,15 @@
                                     </f:facet>
                                     <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
                                     <!--<p:column selectionMode="single" style="width:16px;text-align:center"/>-->
+                                    <p:column headerText="Nº">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    </p:column>
                                     <p:column headerText="Descripción">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
@@ -329,11 +338,11 @@
                                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                                         </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Tipo">
-                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
-                                    </p:column>
                                     <p:column headerText="Total">
                                         <h:outputText value="#{item.importe}" />
+                                    </p:column>
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
                                     </p:column>
                                     <p:column style="width:32px;text-align: center">
                                         <p:commandButton id="botonRendicionSubirFactura" update=":formprincipal:growlprincipal, :formarchivorendicion " action="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" title="Subir Factura" immediate="true" >
@@ -344,7 +353,7 @@
                                 </p:dataTable>
 
                                 <!--**********************************************-->
-                                <!--********* TABLA ARCHIVOS RENDICION ***********-->
+                                <!--*** TABLA ARCHIVOS RENDICION ****-->
                                 <!--**********************************************-->
 
                                 <p:dataTable id="tablafacturasrendicion" var="arc" value="#{archivorendicionController.listaArchivos}" 
@@ -354,11 +363,32 @@
                                     <f:facet name="header">
                                         Facturas incorporadas a la Rendición
                                     </f:facet>
+                                    <p:column headerText="Solicitud">  
+                                        <h:outputText value="#{rendicionController.solicitudSeleccionada.id}" />  
+                                    </p:column> 
+                                    <p:column headerText="Tipo de Factura">  
+                                        <h:outputText value="#{arc.tipofactura}" />                                        
+                                    </p:column> 
                                     <p:column headerText="N° de Factura">  
                                         <h:outputText value="#{arc.nrofactura}" />  
                                     </p:column> 
+                                    <p:column headerText="Proveedor">  
+                                        <h:outputText value="#{arc.proveedor}" />  
+                                    </p:column> 
                                     <p:column headerText="Archivo">  
-                                        <h:outputText value="#{arc.nombrearchivo}" />  
+
+                                        <p:lightBox id="lighbox">
+                                            <h:outputLink value="#">
+                                                <h:outputText value="#{arc.nombrearchivo}" />
+                                            </h:outputLink>
+
+                                            <f:facet name="inline">
+                                                <p:graphicImage value="#{archivorendicionController.obtenerImagenComprobante()}" width="400px" style="width: 300px; height: auto; display: block;" >
+                                                    <f:param name="archivo" value="#{arc.nombrearchivo}" />
+                                                </p:graphicImage>
+                                            </f:facet>
+                                        </p:lightBox>
+
                                     </p:column> 
                                     <p:column headerText="Monto">  
                                         <h:outputText value="#{arc.montofactura}" />  
@@ -372,6 +402,20 @@
                                         El total Solicitado es $ #{archivorendicionController.sumarComprobantes()}
                                     </f:facet>
                                 </p:dataTable>
+
+                                <!--                                <p:dialog header="Images" widgetVar="dlgImagenComprobante" modal="true" resizable="false">
+                                                                    <p:graphicImage value="{archivorendicionController.obtenerImagenSelected()}" />
+                                                                    
+                                                                    <p:imageSwitch effect="wipe" widgetVar="switcher" id="vercomprobantes"
+                                                                                       slideshowAuto="false" >
+                                                                            <ui:repeat value="{archivorendicionController.listaArchivos}" var="imagen" id="manuelSwitcherImages">
+                                                                                <p:graphicImage value="{archivorendicionController.obtenerImagen()}" width="400px" style="width: 300px; height: auto; display: block;" >
+                                                                                    <f:param name="archivo" value="{imagen.nombrearchivo}" />
+                                                                                </p:graphicImage>
+                                
+                                                                            </ui:repeat>
+                                                                        </p:imageSwitch>
+                                                                </p:dialog>-->
 
                                 <p:outputPanel id="difrendicion"  >
                                     <p:fieldset legend="Diferencia de la Rendición de Gastos" style="margin-bottom:20px" rendered="#{archivorendicionController.sumarComprobantes() > rendicionController.solicitudSeleccionada.importe.floatValue()}">
