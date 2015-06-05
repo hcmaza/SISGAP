@@ -536,23 +536,31 @@
 
                 </p:panel>
 
-                <p:dialog id="dfinalsolicitud" widgetVar="dfinalsolicitud" modal="true" header="Alta de Solicitud" >
+                <!--**********************************************-->
+                <!--***** DIALAGO FINAL SOLICITUD ******-->
+                <!--**********************************************-->
+                
+                <p:dialog id="dfinalsolicitud" widgetVar="dfinalsolicitud" modal="true" header="Alta de Solicitud" closable="false" >
                     <h:panelGroup id="panelmensajesolicitud" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Volver a la Lista" action="#{solicitudController.prepareList()}" ajax="false"  />
+                        <p:commandButton value="Lista de Solicitudes" action="#{solicitudController.prepareList()}" ajax="false"  />
                     </div>
                 </p:dialog>
+                
+                <!--**********************************************-->
+                <!--***** DIALAGO FINAL RENDICION *****-->
+                <!--**********************************************-->
 
-                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición"  >
+                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición" closable="false" >
                     <h:panelGroup id="panelmensajerendicion" layout="block" >
                         <p:messages id="mensajeRendicion" autoUpdate="true" showDetail="true" />
                     </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Volver a la Lista" action="#{rendicionController.prepareList()}" ajax="false" rendered=""  />
+                        <p:commandButton value="Lista de Rendiciones" action="#{rendicionController.prepareList()}" ajax="false" />
                     </div>
                 </p:dialog>
 
@@ -564,7 +572,7 @@
             </h:form>
 
             <!--**********************************************-->
-            <!--************* DIALAGO SOLICITUD **************-->
+            <!--********* DIALAGO SOLICITUD **********-->
             <!--**********************************************-->
 
             <p:dialog header="Item Solicitud" id="dialogoItemSolicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -614,7 +622,7 @@
             </p:dialog>
 
             <!--**********************************************-->
-            <!--************* DIALAGO REINTEGRO **************-->
+            <!--******** DIALAGO REINTEGRO *********-->
             <!--**********************************************-->
 
             <p:dialog header="Reintegro" id="dialogoItemReintegro" widgetVar="dialogoItemReintegro" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -664,7 +672,7 @@
             </p:dialog>
 
             <!--**********************************************-->
-            <!--******* DIALAGO ARCHIVO de RENDICION *********-->
+            <!--* DIALAGO ARCHIVO de RENDICION *-->
             <!--**********************************************-->
 
             <p:dialog header="Factura" id="dialogoItemRendicion" widgetVar="dialogoItemRendicion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -709,7 +717,6 @@
                                     <f:attribute name="fechaSolicitud" value="#{rendicionController.solicitudSeleccionada.fechasolicitud}" />
                                 </p:calendar>
                             </p:column>
-
                         </p:row>
 
                         <p:row>

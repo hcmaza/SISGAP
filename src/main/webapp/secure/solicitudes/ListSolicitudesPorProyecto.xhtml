@@ -33,11 +33,20 @@
                             var="item" 
                             widgetVar="tblW"
                             rowKey="#{item.id}" 
-                            emptyMessage="No se encontraron resultados para el criterio de busqueda"
-                            paginator="true" rows="10" paginatorPosition="bottom"
+                            emptyMessage="No se encontraron registros"
                             draggableColumns="true"
-                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                            rowsPerPageTemplate="10,15,30">
+                            paginator="true"
+                            paginatorPosition="bottom"
+                            rows="20"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,25"                                              
+                            rowIndexVar="indice"
+                            rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
+                            styleClass="tabla">
+                            
+                            <f:facet name="header">
+                                Solicitudes
+                            </f:facet>
 
                             <p:column id="columnaId">
                                 <f:facet name="header">
