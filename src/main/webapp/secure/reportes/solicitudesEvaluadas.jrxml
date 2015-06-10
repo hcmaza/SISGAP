@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="solicitudesEvaluadas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="780753e8-2b7f-4c9e-bae6-18ef94f4a212">
 	<property name="ireport.zoom" value="0.9075000000000002"/>
-	<property name="ireport.x" value="6"/>
+	<property name="ireport.x" value="26"/>
 	<property name="ireport.y" value="44"/>
 	<style name="table">
 		<box>
@@ -43,7 +43,7 @@
 		<band height="137" splitType="Stretch">
 			<image scaleImage="FillFrame">
 				<reportElement x="0" y="0" width="802" height="134" uuid="f0812402-1584-4bd8-bec4-771bf0f5c358"/>
-				<imageExpression><![CDATA["E:\\Java\\Proyecto Wayra\\src\\main\\webapp\\resources\\img\\wayra6.png"]]></imageExpression>
+				<imageExpression><![CDATA["imagenes/wayra6.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -68,7 +68,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Solicitud/es]]></text>
+				<text><![CDATA[Solicitud Aprobada]]></text>
 			</staticText>
 			<rectangle radius="0">
 				<reportElement mode="Opaque" x="0" y="24" width="802" height="15" backcolor="#8A8A8A" uuid="0295e084-db8d-4b38-bc64-6d1760958a59">

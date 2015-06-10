@@ -43,9 +43,11 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1943,7 +1945,7 @@ public class ProyectoController implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
     }
 
-     public void pdfProyectosPorConvocatorias() throws JRException, IOException {
+     public void pdfGastosPorConvocatorias() throws JRException, IOException {
 
         if(!tablafiltrada.isEmpty()){
             FacesContext context = FacesContext.getCurrentInstance();
@@ -1954,6 +1956,9 @@ public class ProyectoController implements Serializable {
             List<IndicadoresController> listaE=new ArrayList<IndicadoresController>();        
             float total=0.0f;
             float totalEjecutado=0.0f;
+            float totalRendir= 0.0f;
+            float totalRendirConvocatoria=0.0f;
+            List<Solicitud>pendientes=new ArrayList<Solicitud>();
             for (Proyecto e : tablafiltrada) {
                 IndicadoresController obj=new IndicadoresController();
                 obj.setEjecutadoProyecto(indicadorescontroller.calcularEjecutadoPorProyecto(e.getId()));
@@ -1962,9 +1967,17 @@ public class ProyectoController implements Serializable {
                 obj.setPorcentajeEjecutado(Float.parseFloat(valor));            
                 listaE.add(obj);     
                 total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
-                totalEjecutado+=obj.getEjecutadoProyecto();
-            }
-
+                totalEjecutado+=obj.getEjecutadoProyecto();                            
+                for(Solicitud s : this.ejbsolicitud.obtenerEjecucionPorProyecto(e.getId())){
+                    totalRendir+=s.getImporte().floatValue();
+                }
+                Solicitud unaSolicitud=new Solicitud();
+                unaSolicitud.setImporte(new BigDecimal(Float.toString(totalRendir)));
+                totalRendirConvocatoria+=totalRendir;
+                pendientes.add(unaSolicitud);
+                totalRendir=0;
+            }            
+            JRBeanCollectionDataSource pendientesPorRendir = new JRBeanCollectionDataSource(pendientes);  
             JRDataSource lista = new JRBeanCollectionDataSource(listaE);  
             JRDataSource proyectos = new JRBeanCollectionDataSource(this.tablafiltrada); 
 
@@ -1972,8 +1985,11 @@ public class ProyectoController implements Serializable {
             Hashtable<String, Object> parametros = new Hashtable<String, Object>();
             parametros.put("lista", lista);
             parametros.put("proyectos", proyectos);
+            parametros.put("pendienteRendicion", pendientesPorRendir);
             parametros.put("convocatoria", this.getSelected().getConvocatoriaid().getConvocatoria());
             parametros.put("ejecutadoConvocatoria", String.format("%.02f",(totalEjecutado*100)/total));
+            parametros.put("totalConvocatoria", totalEjecutado);
+            parametros.put("totalPendienteRendicion",totalRendirConvocatoria);
 
             // Llenamos el reporte
             JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, new JREmptyDataSource());
@@ -2011,12 +2027,35 @@ public class ProyectoController implements Serializable {
         // Obtenemos las tareas de un proyecto
         List<Etapa> listaEtapas = this.ejbetapa.buscarEtapasProyecto(current.getId());
         List<Tarea> listaTareas = new ArrayList<Tarea>();
-
+        Tarea unaTarea;
         for (Etapa e : listaEtapas) {
             for (Tarea t : this.ejbtarea.buscarTareasEtapa(e.getId())) {
-                listaTareas.add(t);
+                unaTarea=new Tarea();
+                List<Tareaavance> listaAvances= t.getTareaavanceList();
+                if(listaAvances.size()>0){
+                    Tareaavance avance = new Tareaavance();
+                    Calendar cal = new GregorianCalendar(2000,0,1);
+                    Date fechainicial = cal.getTime();
+                    for(Tareaavance ta: listaAvances){
+                        if(ta.getFecha().after(fechainicial)) {                       
+                           avance = ta;
+                           fechainicial = ta.getFecha();
+                       }
+                    }
+                    unaTarea.setFechamodificacion(avance.getFechainicio());
+                    unaTarea.setAvance(avance.getAvance());
+                }
+                else{
+                    unaTarea.setFechamodificacion(unaTarea.getFechainicio());
+                }                
+                unaTarea.setTarea(t.getTarea());
+                unaTarea.setFechainicio(t.getFechainicio());
+                unaTarea.setFechafin(t.getFechafin());
+                unaTarea.setEtapaid(t.getEtapaid());
+                listaTareas.add(unaTarea);
             }
-        }
+        }  
+        
         // OrdenaciÃ³n por fecha de inicio
        Collections.sort(listaTareas, new Comparator<Tarea>() {
             @Override
@@ -2098,7 +2137,7 @@ public class ProyectoController implements Serializable {
                 rubro.setMonto((i.getMonto()*100)/total);
                 listaRubros.add(rubro);
             }
-        }        
+        }    
         JRBeanCollectionDataSource rubros = new JRBeanCollectionDataSource(listaRubros);
         
         //Ejecutado, Saldo y Ejecución
