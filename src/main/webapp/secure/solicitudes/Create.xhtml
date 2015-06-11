@@ -321,6 +321,15 @@
                                     </f:facet>
                                     <!--<p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
                                     <!--<p:column selectionMode="single" style="width:16px;text-align:center"/>-->
+                                    <p:column headerText="Nº">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="#{item.presupuestotarea.rubro.rubro}" />
+                                    </p:column>
                                     <p:column headerText="Descripción">
                                         <h:outputText value="#{item.presupuestotarea.descripcion}" />
                                     </p:column>
@@ -329,14 +338,14 @@
                                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                                         </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Tipo">
-                                        <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
-                                    </p:column>
                                     <p:column headerText="Total">
                                         <h:outputText value="#{item.importe}" />
                                     </p:column>
+                                    <p:column headerText="Etapa">
+                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
+                                    </p:column>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton id="botonRendicionSubirFactura" update=":formprincipal:growlprincipal, :formarchivorendicion " actionListener="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" title="Subir Factura" immediate="true" >
+                                        <p:commandButton id="botonRendicionSubirFactura" update=":formprincipal:growlprincipal, :formarchivorendicion " action="#{archivorendicionController.nuevoArchivoRendicion()}" oncomplete="PF('dialogoItemRendicion').show();" icon="ui-icon-circle-plus" title="Subir Factura" immediate="true" >
                                             <f:setPropertyActionListener value="#{item}" target="#{rendicionController.solicitudSeleccionada}" />
                                         </p:commandButton>
                                         <p:tooltip for="botonRendicionSubirFactura" value="Agregar Comprobante de Rendición" />
@@ -344,7 +353,7 @@
                                 </p:dataTable>
 
                                 <!--**********************************************-->
-                                <!--********* TABLA ARCHIVOS RENDICION ***********-->
+                                <!--*** TABLA ARCHIVOS RENDICION ****-->
                                 <!--**********************************************-->
 
                                 <p:dataTable id="tablafacturasrendicion" var="arc" value="#{archivorendicionController.listaArchivos}" 
@@ -354,11 +363,32 @@
                                     <f:facet name="header">
                                         Facturas incorporadas a la Rendición
                                     </f:facet>
+                                    <p:column headerText="Solicitud">  
+                                        <h:outputText value="#{rendicionController.solicitudSeleccionada.id}" />  
+                                    </p:column> 
+                                    <p:column headerText="Tipo de Factura">  
+                                        <h:outputText value="#{arc.tipofactura}" />                                        
+                                    </p:column> 
                                     <p:column headerText="N° de Factura">  
                                         <h:outputText value="#{arc.nrofactura}" />  
                                     </p:column> 
+                                    <p:column headerText="Proveedor">  
+                                        <h:outputText value="#{arc.proveedor}" />  
+                                    </p:column> 
                                     <p:column headerText="Archivo">  
-                                        <h:outputText value="#{arc.nombrearchivo}" />  
+
+                                        <p:lightBox id="lighbox">
+                                            <h:outputLink value="#">
+                                                <h:outputText value="#{arc.nombrearchivo}" />
+                                            </h:outputLink>
+
+                                            <f:facet name="inline">
+                                                <p:graphicImage value="#{archivorendicionController.obtenerImagenComprobante()}" width="400px" style="width: 300px; height: auto; display: block;" >
+                                                    <f:param name="archivo" value="#{arc.nombrearchivo}" />
+                                                </p:graphicImage>
+                                            </f:facet>
+                                        </p:lightBox>
+
                                     </p:column> 
                                     <p:column headerText="Monto">  
                                         <h:outputText value="#{arc.montofactura}" />  
@@ -373,13 +403,43 @@
                                     </f:facet>
                                 </p:dataTable>
 
+                                <!--                                <p:dialog header="Images" widgetVar="dlgImagenComprobante" modal="true" resizable="false">
+                                                                    <p:graphicImage value="{archivorendicionController.obtenerImagenSelected()}" />
+                                                                    
+                                                                    <p:imageSwitch effect="wipe" widgetVar="switcher" id="vercomprobantes"
+                                                                                       slideshowAuto="false" >
+                                                                            <ui:repeat value="{archivorendicionController.listaArchivos}" var="imagen" id="manuelSwitcherImages">
+                                                                                <p:graphicImage value="{archivorendicionController.obtenerImagen()}" width="400px" style="width: 300px; height: auto; display: block;" >
+                                                                                    <f:param name="archivo" value="{imagen.nombrearchivo}" />
+                                                                                </p:graphicImage>
+                                
+                                                                            </ui:repeat>
+                                                                        </p:imageSwitch>
+                                                                </p:dialog>-->
+
                                 <p:outputPanel id="difrendicion"  >
                                     <p:fieldset legend="Diferencia de la Rendición de Gastos" style="margin-bottom:20px" rendered="#{archivorendicionController.sumarComprobantes() > rendicionController.solicitudSeleccionada.importe.floatValue()}">
 
                                         <h:outputText value="Explicación: "/>
                                         <br />
 
-                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud y la suma de comprobantes rendidos." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
+                                        <h:outputText value="Se creará un Reintegro por la diferencia entre la solicitud y la suma de comprobantes rendidos. El reintegro se creará por un importe de $#{rendicionController.solicitudReintegroPorDiferencia.importe.floatValue()}"  rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
+                                        
+                                        <p:separator />
+                                        
+                                        <p:panelGrid columns="2" rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id == rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" style="margin-left: auto; margin-right: auto;" >
+                                            <f:facet name="header">
+                                                Diferencia
+                                            </f:facet>
+                                            <p:outputLabel value="Total Solicitud" />
+                                            <p:outputLabel value="$ #{rendicionController.solicitudSeleccionada.importe.floatValue()}" />
+                                            
+                                            <p:outputLabel value="Total Rendido" />
+                                            <p:outputLabel value="$ #{archivorendicionController.sumarComprobantes()}" />
+                                            
+                                            <p:outputLabel value="Diferencia" />
+                                            <p:outputLabel value="$ #{rendicionController.solicitudSeleccionada.importe.floatValue() - archivorendicionController.sumarComprobantes()}" />
+                                        </p:panelGrid>
 
                                         <h:outputText value="Cuando el item que se solicitó, no tiene más dinero disponible en presupuesto y el comprobante o la suma de ellos (si son varios), supera/n el valor de la solicitud que se está rindiendo, se crea una nueva solicitud de reintegro por la diferencia, la cual debe estar enlazada a un item del presupuesto con dinero disponible." rendered="#{rendicionController.solicitudSeleccionada.presupuestotarea.id != rendicionController.solicitudReintegroPorDiferencia.presupuestotarea.id}" />
 
@@ -476,23 +536,31 @@
 
                 </p:panel>
 
-                <p:dialog id="dfinalsolicitud" widgetVar="dfinalsolicitud" modal="true" header="Alta de Solicitud" >
+                <!--**********************************************-->
+                <!--***** DIALAGO FINAL SOLICITUD ******-->
+                <!--**********************************************-->
+                
+                <p:dialog id="dfinalsolicitud" widgetVar="dfinalsolicitud" modal="true" header="Alta de Solicitud" closable="false" >
                     <h:panelGroup id="panelmensajesolicitud" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Volver a la Lista" action="#{solicitudController.prepareList()}" ajax="false"  />
+                        <p:commandButton value="Lista de Solicitudes" action="#{solicitudController.prepareList()}" ajax="false"  />
                     </div>
                 </p:dialog>
+                
+                <!--**********************************************-->
+                <!--***** DIALAGO FINAL RENDICION *****-->
+                <!--**********************************************-->
 
-                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición"  >
+                <p:dialog id="dfinalrendicion" widgetVar="dfinalrendicion" modal="true" header="Alta de Rendición" closable="false" >
                     <h:panelGroup id="panelmensajerendicion" layout="block" >
                         <p:messages id="mensajeRendicion" autoUpdate="true" showDetail="true" />
                     </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Volver a la Lista" action="#{rendicionController.prepareList()}" ajax="false" rendered=""  />
+                        <p:commandButton value="Lista de Rendiciones" action="#{rendicionController.prepareList()}" ajax="false" />
                     </div>
                 </p:dialog>
 
@@ -504,7 +572,7 @@
             </h:form>
 
             <!--**********************************************-->
-            <!--************* DIALAGO SOLICITUD **************-->
+            <!--********* DIALAGO SOLICITUD **********-->
             <!--**********************************************-->
 
             <p:dialog header="Item Solicitud" id="dialogoItemSolicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -554,7 +622,7 @@
             </p:dialog>
 
             <!--**********************************************-->
-            <!--************* DIALAGO REINTEGRO **************-->
+            <!--******** DIALAGO REINTEGRO *********-->
             <!--**********************************************-->
 
             <p:dialog header="Reintegro" id="dialogoItemReintegro" widgetVar="dialogoItemReintegro" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -604,7 +672,7 @@
             </p:dialog>
 
             <!--**********************************************-->
-            <!--******* DIALAGO ARCHIVO de RENDICION *********-->
+            <!--* DIALAGO ARCHIVO de RENDICION *-->
             <!--**********************************************-->
 
             <p:dialog header="Factura" id="dialogoItemRendicion" widgetVar="dialogoItemRendicion" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -644,12 +712,11 @@
                                 <p:outputLabel value="Fecha de Factura" />
                             </p:column>
                             <p:column>
-                                <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{solicitudController.selected.fechasolicitud}" required="true" requiredMessage="Se debe cargar la fecha de factura." >
+                                <p:calendar id="dfechafactura" value="#{archivorendicionController.selected.fechafactura}" mindate="#{rendicionController.solicitudSeleccionada.fechasolicitud}" required="true" requiredMessage="Se debe cargar la fecha de factura." >
                                     <f:validator validatorId="validadorFechaArchivoRendicion" />
-                                    <f:attribute name="fechaSolicitud" value="#{solicitudController.selected.fechasolicitud}" />
+                                    <f:attribute name="fechaSolicitud" value="#{rendicionController.solicitudSeleccionada.fechasolicitud}" />
                                 </p:calendar>
                             </p:column>
-
                         </p:row>
 
                         <p:row>

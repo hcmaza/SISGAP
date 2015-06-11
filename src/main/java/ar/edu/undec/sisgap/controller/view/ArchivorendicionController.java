@@ -267,6 +267,16 @@ public class ArchivorendicionController implements Serializable {
         System.out.println("Nuevo Archivo Rendicion Inicio");
         //current = null;
         current = new Archivorendicion();
+
+        // Obtenemos el controlador necesario
+        FacesContext context = FacesContext.getCurrentInstance();
+        RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
+
+        System.out.println("Rendicion Solicitud: " + rendicioncontroller.getSolicitudSeleccionada().getPresupuestotarea().getDescripcion());
+        System.out.println("Rendicion Fecha Solicitud: " + rendicioncontroller.getSolicitudSeleccionada().getFechasolicitud().toString());
+//        System.out.println("Rendicion Fecha Aprobacion: " + rendicioncontroller.getSolicitudSeleccionada().getFechaaprobacion().toString());
+//        System.out.println("Rendicion Fecha Ejecucion: " + rendicioncontroller.getSolicitudSeleccionada().getFechaejecucion().toString());
+
         System.out.println("Nuevo Archivo rendicion Fin");
     }
 
@@ -285,8 +295,8 @@ public class ArchivorendicionController implements Serializable {
 
         sumaArchivosRendicion = sumaArchivosRendicion + current.getMontofactura().floatValue();
         System.out.println("Suma de Archivos de Rendicion = " + sumaArchivosRendicion);
-        
-        if(rendicioncontroller.getSolicitudSeleccionada() == null){
+
+        if (rendicioncontroller.getSolicitudSeleccionada() == null) {
             System.out.println("rendicioncontroller.getSolicitudSeleccionada() NULLLLLLLLLLLLLLLL asd");
         }
 
@@ -389,6 +399,34 @@ public class ArchivorendicionController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            // Renderizamos el HTML. Devolver un stub de StreamedContent asi se general la URL correcta.
+
+            System.out.println("obtenerImagen: RENDER_RESPONSE");
+
+            return new DefaultStreamedContent();
+        } else {
+            // Se responde al requerimiento de la imagen, con un StreamContent con los bytes de imagen reales.
+            String nombreArchivo = context.getExternalContext().getRequestParameterMap().get("archivo");
+
+            System.out.println("obtenerImagen: <NO> RENDER_RESPONSE");
+            System.out.println("Archivo del Comprobante: " + nombreArchivo);
+
+            for (Archivorendicion ar : getListaArchivos()) {
+                if (ar.getNombrearchivo().equals(nombreArchivo)) {
+                    return new DefaultStreamedContent(new ByteArrayInputStream(ar.getArchivo()));
+                }
+            }
+        }
+        return null;
+    }
+
+    public StreamedContent obtenerImagenComprobante() throws IOException {
+
+        StreamedContent imagen = null;
+
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
             // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
             return new DefaultStreamedContent();
         } else {
@@ -397,10 +435,15 @@ public class ArchivorendicionController implements Serializable {
 
             for (Archivorendicion ar : getListaArchivos()) {
                 if (ar.getNombrearchivo().equals(nombreArchivo)) {
+                    //BufferedImage bufferedImg = new BufferedImage(100, 25, BufferedImage.TYPE_INT_RGB);
+                    //ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    //ImageIO.write(bufferedImg, "png", os);
+                    //imagen = new DefaultStreamedContent(new ByteArrayInputStream(os.toByteArray()), "image/png");
                     return new DefaultStreamedContent(new ByteArrayInputStream(ar.getArchivo()));
                 }
             }
         }
+
         return null;
     }
 
@@ -415,7 +458,7 @@ public class ArchivorendicionController implements Serializable {
 
         return r;
     }
-    
+
     public float sumarMontoAprobadoComprobantes() {
         float r = 0;
 
@@ -427,15 +470,13 @@ public class ArchivorendicionController implements Serializable {
 
         return r;
     }
-    
+
     public void llenarListaArchivosPorSolicitudSeleccionada() {
         // Obtenemos el controlador necesario
         FacesContext context = FacesContext.getCurrentInstance();
         RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
-        
-        
-        
-        if(rendicioncontroller.getSolicitudSeleccionada() != null){
+
+        if (rendicioncontroller.getSolicitudSeleccionada() != null) {
             System.out.println("rendicioncontroller.getSolicitudSeleccionada NULLLLLLL");
             listaArchivos.addAll(getFacade().buscarPorRendicion(rendicioncontroller.getSolicitudSeleccionada().getRendicionid().getId()));
         }
@@ -451,14 +492,14 @@ public class ArchivorendicionController implements Serializable {
             }
         }
     }
-    
+
     public void onCellEdit(CellEditEvent event) {
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
         //String nombreColumna = event.getColumn().getHeaderText();
         //String nombreColumna = event.getColumn().getFacet("header").toString();
-        
-        if(newValue != null && !newValue.equals(oldValue)) {
+
+        if (newValue != null && !newValue.equals(oldValue)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cambio.", "Valor Anterior: " + oldValue + ", Nuevo Valor:" + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
