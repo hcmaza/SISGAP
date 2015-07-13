@@ -86,11 +86,11 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{tipodocumentoid.tipodocumento} + ": " + $F{numerodocumento}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="331" y="0" width="178" height="15" uuid="66d9dd05-a2f7-4a1a-82e9-c09a42c57964"/>
 				<textFieldExpression><![CDATA[$F{profesion}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="519" y="0" width="283" height="15" uuid="4892b738-73bc-49fd-8f65-251bfbf5b024"/>
 				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
 			</textField>

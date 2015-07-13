@@ -58,22 +58,18 @@
                                 </f:facet>                        
                                 <h:outputText value="#{item.estadoproyectoid.estado}"/>
                             </p:column>
-                            <p:column id="columnaAccion">  
-                                <p:commandButton icon="ui-icon-search" title="View">
-                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}"/>
-                                </p:commandButton>
+                             <p:column id="columnaAccion">    
+                                 <h:commandLink action="#{proyectoController.pdfEstadoProyecto()}" >  
+                                    <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                    <p:graphicImage value="/resources/img/pdf.png" />  
+                                </h:commandLink>   
                             </p:column>
                         </p:dataTable>
 
                     <br />
                     <p:dialog id="dfinal" widgetVar="dfinal" resizable="false"  modal="true" closable="true"  header="Error">
                         No existen registros a exportar.
-                    </p:dialog>
-                    <p:panel header="Exportar">                    
-                        <h:commandLink action="#{proyectoController.pdfEstadoProyecto()}">  
-                            <p:graphicImage value="/resources/img/pdf.png" />  
-                        </h:commandLink>    
-                    </p:panel>  
+                    </p:dialog> 
                     <br />
                     <p:commandButton action="/index?faces-redirect=true" value="Inicio" icon="ui-icon-home" ajax="false"/>
                 </p:panel>
