@@ -130,6 +130,10 @@
                                         
                                         <p:menuitem value="Avance del Proyecto" rendered="#{item.estadoproyectoid.id eq 8}" action="#{proyectoController.prepareAvance}" ajax="false" icon="ui-icon-pencil"/>
                                         
+                                        <p:menuitem value="Modificar Presupuesto" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{modificacionpresupuestoController.prepareCreate()}" ajax="false" icon="ui-icon-calculator" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
+                                        
                                         <p:separator />
                                         
                                         <p:menuitem value="Lista: Desembolsos" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{desembolsoController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
