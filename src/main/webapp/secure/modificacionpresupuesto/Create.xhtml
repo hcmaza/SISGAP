@@ -109,11 +109,9 @@
 
                         <p:tabView id="tabsolicitudes" dynamic="true" style="margin-bottom: 10px;" >
 
-                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:op, :formitem, :formprincipal:botonsolicitud, :formprincipal:tabsolicitudes:tabladisponiblesmodificacion" immediate="true" />
-
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
-                                <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" styleClass="tabla"  >
+                                <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" styleClass="tabla fuente10"  >
                                     <f:facet name="header">
                                         <h:outputText value="Presupuesto" />
                                     </f:facet>
@@ -123,22 +121,25 @@
                                     <p:column headerText="Tarea">
                                         <h:outputText value="#{item.presupuestoTarea.tarea.tarea}" />
                                     </p:column>
-                                    <p:column headerText="Rubro">
-                                        <h:outputText value="#{item.presupuestoTarea.rubro.abreviado}" />
-                                    </p:column>
                                     <p:column headerText="Descripcion">
-                                        <h:outputText value="#{item.descripcion}" />
+                                        <h:outputText value="[#{item.presupuestoTarea.rubro.abreviado}] #{item.descripcion}" rendered="#{not empty item.descripcion}" /> 
                                     </p:column>
-                                    <p:column headerText="Importe Original"  style="text-align: right;" >
-                                        <h:outputText value="#{item.importeOriginal}" />
+                                    <p:column headerText="Original"  style="text-align: right;" >
+                                        <h:outputText value="#{item.importeOriginal}"  />
                                     </p:column>
-                                    <p:column headerText="Modificación"  style="text-align: right;" >
-                                        <h:outputText value="#{item.modificacion}" />
+                                    <p:column headerText="Solicitudes" style="text-align: right;" >
+                                        <h:outputText value="#{item.importeSolicitudes}"  />
                                     </p:column>
-                                    <p:column headerText="Importe Final"  style="text-align: right;" >
+                                    <p:column headerText="Disponible" style="text-align: right;" >
+                                        <h:outputText value="#{item.importeSinModificacion}" />
+                                    </p:column>
+                                    <p:column headerText="Modificación" style="text-align: right;" >
+                                        <h:outputText value="#{item.importeModificacion}"  />
+                                    </p:column>
+                                    <p:column headerText="Importe Final" style="text-align: right;" >
                                         <h:outputText value="#{item.importeFinal}" />
                                     </p:column>
-                                    <p:column headerText=" " style="width:24px">
+                                    <p:column headerText=" " style="width:24px; min-width: 24px !important; max-width: 24px !important;">
                                         <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-pencil" title="Modificar" >
                                             <f:setPropertyActionListener value="#{item}" target="#{modificacionpresupuestoController.piSeleccionado}" />
                                         </p:commandButton> 
@@ -151,90 +152,31 @@
                                     </p:columnGroup>
                                 </p:treeTable>
                             </p:tab>
-
-                            <p:tab id="tabmodificaciones" title="Modificación de Presupuesto" >
-
-                                <p:dataTable id="tabladisponiblesmodificacion" widgetVar="tabladisponiblesmodificacion" var="item" value="#{solicitudController.itemsDisponibles}"  sortBy="#{item.presupuestotarea.tarea.etapaid.id}" 
-                                             paginator="true"
-                                             paginatorPosition="bottom"
-                                             rows="5"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="5,10,25"
-                                             rowIndexVar="indice"
-                                             rowStyleClass="#{(indice mod 2) eq 0 ? 'filaResaltada1' : 'filaResaltada2'}"
-                                             styleClass="tabla" >
-                                    <f:facet name="header">
-                                        Items Disponibles del Presupuesto
-                                    </f:facet>
-                                    <p:column headerText="Etapa" sortBy="#{item.presupuestotarea.tarea.etapaid.id}">
-                                        <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                                    </p:column>
-                                    <p:column headerText="Tarea" sortBy="#{item.presupuestotarea.tarea.tarea}">
-                                        <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                                    </p:column>
-                                    <p:column headerText="Rubro" sortBy="#{item.presupuestotarea.rubro.abreviado}">
-                                        <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
-                                    </p:column>
-                                    <p:column headerText="Descripción" sortBy="#{item.presupuestotarea.descripcion}">
-                                        <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                    </p:column>
-                                    <p:column headerText="Cantidad" sortBy="#{item.presupuestotarea.cantidad}"  style="text-align: right;" >
-                                        <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                    </p:column>
-                                    <p:column headerText="Disponible" sortBy="#{item.disponible}"  style="text-align: right;" >
-                                        <h:outputText value="#{item.disponible}" />
-                                    </p:column>
-                                    <p:column style="width:32px;text-align: center">
-                                        <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-plus" title="Solicitar" >
-                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                        </p:commandButton> 
-
-                                    </p:column>
-
-                                </p:dataTable>
-                            </p:tab>
-
                         </p:tabView>
-                        
-                        <p:outputPanel id="op" >
-                            <p:dataTable id="tablamodificaciones" var="item" value="#{solicitudController.itemsSolicitados}" rendered="#{solicitudController.tabseleccionado ne 'Presupuesto Detallado' and solicitudController.tabseleccionado ne 'Rendición de Gastos'}">
+
+                    </p:panel>
+                    
+                    <p:outputPanel id="op" >
+                        <p:dataTable id="tablamodificaciones" var="item" value="#{modificacionpresupuestoController.modificaciones}" >
                                 <f:facet name="header">
-                                    Items Solicitados
+                                    Lista de Modificaciones del Presupuesto a Realizar
                                 </f:facet>
-                                <p:column headerText="Etapa">
-                                    <h:outputText value="#{item.presupuestotarea.tarea.etapaid.etapa}" />
-                                </p:column>
-                                <p:column headerText="Tarea">
-                                    <h:outputText value="#{item.presupuestotarea.tarea.tarea}" />
-                                </p:column>
-                                <p:column headerText="Rubro">
-                                    <h:outputText value="#{item.presupuestotarea.rubro.abreviado}" />
-                                </p:column>
-                                <p:column headerText="Descripción">
-                                    <h:outputText value="#{item.presupuestotarea.descripcion}" />
-                                </p:column>
-                                <p:column headerText="Especificación">
-                                    <h:outputText value="#{item.observacion}" />
-                                </p:column>
                                 <p:column headerText="Fecha">
-                                    <h:outputText value="#{item.fechasolicitud}">
+                                    <h:outputText value="#{item.fecha}">
                                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Archivo" rendered="#{solicitudController.tabseleccionado ne 'Anticipo'}">
-                                    <h:outputText value="#{item.archivonombre}" />
+                                <p:column headerText="Egreso" >
+                                    <h:outputText value="#{item.presupuestotareaegreso.descripcion}" />
                                 </p:column>
-                                <p:column headerText="Tipo Solicitud">
-                                    <h:outputText value="#{item.tiposolicitudid.tiposolicitud}" />
+                                <p:column headerText="Importe Egreso">
+                                    <h:outputText value="#{item.modificacion.floatValue()}" style="text-align: right;" />
                                 </p:column>
-                                <p:column headerText="Cantidad"  style="text-align: right;" >
-                                    <h:outputText value="#{item.presupuestotarea.cantidad}" />
-                                </p:column>
-                                <p:column headerText="Solicitado"  style="text-align: right;" >
-                                    <h:outputText value="$#{item.importe}" />
+                                <p:column headerText="Ingreso" >
+                                    <h:outputText value="#{item.presupuestotareaingreso.descripcion}" />
                                 </p:column>
                                 <p:column style="width:32px;text-align: center">
-                                    <p:commandButton actionListener="#{solicitudController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabsolicitudes:tabladisponiblesmodificacion, :formprincipal:tablamodificaciones" >
+                                    <p:commandButton actionListener="#{modificacionpresupuestoController.quitarItemSolicitado(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tablamodificaciones" >
                                         <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
                                     </p:commandButton>
                                 </p:column>
@@ -243,8 +185,6 @@
                                 </f:facet>
                             </p:dataTable>
                         </p:outputPanel>
-
-                    </p:panel>
 
                     <p:outputPanel id="botonsolicitud"  >
                         <div align="center">
@@ -292,23 +232,29 @@
                             <h:outputText value="#{modificacionpresupuestoController.piSeleccionado.presupuestoTarea.descripcion}" />
                         </f:facet>
 
-                        <p:outputLabel value="Total" />
-                        <h:outputText id="dcostounitario" value="#{modificacionpresupuestoController.piSeleccionado.presupuestoTarea.total.floatValue()}" />
-
                         <p:outputLabel value="Importe Original" />
-                        <h:outputText id="dcantidad" value="#{modificacionpresupuestoController.piSeleccionado.importeFinal}" />
+                        <h:outputText id="dimporteOriginal" value="#{modificacionpresupuestoController.piSeleccionado.importeOriginal}" />
+                        
+                        <p:outputLabel value="Importe Solicitudes" />
+                        <h:outputText id="dimporteSolicitudes" value="#{modificacionpresupuestoController.piSeleccionado.importeSolicitudes}" />
+                        
+                        <p:outputLabel value="Importe Disponible" />
+                        <h:outputText id="dimporteSinModificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeSinModificacion}" />
 
                         <p:outputLabel value="Modificación" />
-                        <p:inputText  id="dmodificacion" value="#{modificacionpresupuestoController.piSeleccionado.modificacion}"  >
+                        <p:inputText  id="dmodificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"  >
                             <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
-                            <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.piSeleccionado.modificacion}"/> 
+                            <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"/> 
                         </p:inputText>    
+                        
+                        <p:outputLabel value="Importe Final" />
+                        <h:outputText id="dimporteFinal" value="#{modificacionpresupuestoController.piSeleccionado.importeFinal}" />
 
                     </p:panelGrid>
 
                     <p:separator/>
                     <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesmodificacion, :formprincipal:tablamodificaciones, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tablamodificaciones, :formprincipal:growlprincipal"  oncomplete="PF('dialogoItemSolicitud').hide();" /> 
                     </div>
                 </h:form>
 

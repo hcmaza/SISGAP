@@ -13,7 +13,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -282,10 +284,16 @@ public class ModificacionpresupuestoController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         
+        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        
+        BigDecimal sumatotalsolicitudespst = BigDecimal.ZERO;
+        
         BigDecimal sumatotaltarea = BigDecimal.ZERO;
+        BigDecimal sumatotalsolicitudestarea = BigDecimal.ZERO;
         BigDecimal sumatotalmodificacionestarea = BigDecimal.ZERO;
 
         BigDecimal sumatotaletapa = BigDecimal.ZERO;
+        BigDecimal sumatotalsolicitudesetapa = BigDecimal.ZERO;
         BigDecimal sumatotalmodificacionesetapa = BigDecimal.ZERO;
 
         List<PresupuestoItem> sumatoriaporetapa = new ArrayList<PresupuestoItem>();
@@ -301,6 +309,7 @@ public class ModificacionpresupuestoController implements Serializable {
         for (Etapa etapa : etapacontroller.getEtapas()) {
 
             sumatotaletapa = BigDecimal.ZERO;
+            sumatotalsolicitudesetapa = BigDecimal.ZERO;
             sumatotalmodificacionesetapa = BigDecimal.ZERO;
             
             System.out.println("PASO >> Inicio FOR Tareas");
@@ -308,14 +317,38 @@ public class ModificacionpresupuestoController implements Serializable {
             for (Tarea tarea : etapa.getTareaList()) {
 
                 sumatotaltarea = BigDecimal.ZERO;
+                sumatotalsolicitudestarea = BigDecimal.ZERO;
                 sumatotalmodificacionestarea = BigDecimal.ZERO;
                 
                 System.out.println("PASO >> Inicio FOR PresupuestoTarea");
 
                 for (PresupuestoTarea psTarea : tarea.getPresupuestoTareaList()) {
+
+                    sumatotalsolicitudespst = BigDecimal.ZERO;
+                    
+                    System.out.println("PASO >> Inicio FOR Solicitudes");
+                    
+                    // Verificar si hay solicitudes anteriores para el presupuesto_tarea
+                    
+                    for(Solicitud s : solicitudcontroller.getItemsAprobados() ){
+                        
+                        if(psTarea.getId().equals(s.getPresupuestotarea().getId())){
+                            //psTarea.setTotal(psTarea.getTotal().subtract(s.getImporte()));
+                            
+                            System.out.println("Suma Solicitudes Antes: " + sumatotalsolicitudespst.floatValue());
+                            
+                            System.out.println("Presupuesto_tarea: " + psTarea.getId() + " | " + psTarea.getDescripcion());
+                            System.out.println("Solicitud: " + s.getPresupuestotarea().getId() + " | " + s.getPresupuestotarea().getDescripcion() + " - Importe= " + s.getImporte().floatValue());
+                            
+                            sumatotalsolicitudespst = sumatotalsolicitudespst.add(s.getImporte());
+                            
+                            System.out.println("Suma Solicitudes Despues: " + sumatotalsolicitudespst.floatValue());
+                        }
+                    }
                     
                     System.out.println("PASO >> Inicio FOR Modificaciones");
                     
+                    //  Verificar si hay modificaciones para el presupuesto_tarea
                     for(Modificacionpresupuesto mp : this.getModificaciones()){
                         
                         System.out.println("PASO >> SI 1");
@@ -324,7 +357,7 @@ public class ModificacionpresupuestoController implements Serializable {
                             sumatotalmodificacionestarea.add(mp.getModificacion());
                         }
                         
-                        System.out.println("PASO >> SI 1");
+                        System.out.println("PASO >> SI 2");
                         
                         if(mp.getPresupuestotareaegreso().getId().equals(psTarea.getId())){
                             sumatotalmodificacionestarea.subtract(mp.getModificacion());
@@ -335,10 +368,13 @@ public class ModificacionpresupuestoController implements Serializable {
                     pi3.setPresupuestoTarea(psTarea);
                     pi3.setDescripcion(psTarea.getDescripcion());
                     pi3.setImporteOriginal(psTarea.getTotal().floatValue());
-                    pi3.setModificacion(sumatotalmodificacionestarea.floatValue());
-                    pi3.setImporteFinal(pi3.getImporteOriginal() + pi3.getModificacion());
+                    pi3.setImporteSolicitudes(sumatotalsolicitudespst.floatValue());
+                    pi3.setImporteSinModificacion(pi3.getImporteOriginal() - pi3.getImporteSolicitudes());
+                    pi3.setImporteModificacion(sumatotalmodificacionestarea.floatValue());
+                    pi3.setImporteFinal(pi3.getImporteSinModificacion() + pi3.getImporteModificacion());
 
                     sumatotaltarea = sumatotaltarea.add(psTarea.getTotal());
+                    sumatotalsolicitudestarea = sumatotalsolicitudestarea.add(sumatotalsolicitudespst);
                     
                     sumatoriaporpst.add(ip, pi3);
                     
@@ -349,6 +385,7 @@ public class ModificacionpresupuestoController implements Serializable {
                 System.out.println("PASO >> SUMAR TAREA: " + it);
                 
                 sumatotaletapa = sumatotaletapa.add(sumatotaltarea);
+                sumatotalsolicitudesetapa = sumatotalsolicitudesetapa.add(sumatotalsolicitudestarea);
                 sumatotalmodificacionesetapa = sumatotalmodificacionesetapa.add(sumatotalmodificacionestarea);
                 
                 PresupuestoItem pi2 = this.new PresupuestoItem();
@@ -360,8 +397,10 @@ public class ModificacionpresupuestoController implements Serializable {
                 
                 //pi2.setDescripcion("Tarea: " + tarea.getTarea());
                 pi2.setImporteOriginal(sumatotaltarea.floatValue());
-                pi2.setModificacion(sumatotalmodificacionestarea.floatValue());
-                pi2.setImporteFinal(pi2.getImporteOriginal() + sumatotalmodificacionestarea.floatValue());
+                pi2.setImporteSolicitudes(sumatotalsolicitudestarea.floatValue());
+                pi2.setImporteSinModificacion(pi2.getImporteOriginal() - pi2.getImporteSolicitudes());
+                pi2.setImporteModificacion(sumatotalmodificacionestarea.floatValue());
+                pi2.setImporteFinal(pi2.getImporteSinModificacion() + sumatotalmodificacionestarea.floatValue());
                 
                 sumatoriaportarea.add(it, pi2);
                 it++;
@@ -380,8 +419,10 @@ public class ModificacionpresupuestoController implements Serializable {
             pi.setPresupuestoTarea(pst);
             
             pi.setImporteOriginal(sumatotaletapa.floatValue());
-            pi.setModificacion(sumatotalmodificacionesetapa.floatValue());
-            pi.setImporteFinal(pi.getImporteOriginal() + sumatotalmodificacionesetapa.floatValue());
+            pi.setImporteSolicitudes(sumatotalsolicitudesetapa.floatValue());
+            pi.setImporteSinModificacion(pi.getImporteOriginal() - pi.getImporteSolicitudes());
+            pi.setImporteModificacion(sumatotalmodificacionesetapa.floatValue());
+            pi.setImporteFinal(pi.getImporteSinModificacion() + sumatotalmodificacionesetapa.floatValue());
 
             sumatoriaporetapa.add(ie, pi);
 
@@ -435,7 +476,9 @@ public class ModificacionpresupuestoController implements Serializable {
         private PresupuestoTarea presupuestoTarea;
         private String descripcion;
         private Float importeOriginal;
-        private Float modificacion;
+        private Float importeSolicitudes;
+        private Float importeSinModificacion;
+        private Float importeModificacion;
         private Float importeFinal;
 
         public PresupuestoTarea getPresupuestoTarea() {
@@ -462,12 +505,28 @@ public class ModificacionpresupuestoController implements Serializable {
             this.importeOriginal = importeOriginal;
         }
 
-        public Float getModificacion() {
-            return modificacion;
+        public Float getImporteSolicitudes() {
+            return importeSolicitudes;
         }
 
-        public void setModificacion(Float modificacion) {
-            this.modificacion = modificacion;
+        public void setImporteSolicitudes(Float importeSolicitudes) {
+            this.importeSolicitudes = importeSolicitudes;
+        }
+
+        public Float getImporteSinModificacion() {
+            return importeSinModificacion;
+        }
+
+        public void setImporteSinModificacion(Float importeSinModificacion) {
+            this.importeSinModificacion = importeSinModificacion;
+        }
+
+        public Float getImporteModificacion() {
+            return importeModificacion;
+        }
+
+        public void setImporteModificacion(Float importeModificacion) {
+            this.importeModificacion = importeModificacion;
         }
 
         public Float getImporteFinal() {
@@ -477,8 +536,28 @@ public class ModificacionpresupuestoController implements Serializable {
         public void setImporteFinal(Float importeFinal) {
             this.importeFinal = importeFinal;
         }
+    }
+    
+    public void quitarItemSolicitado(Modificacionpresupuesto modificacion) {
+
+        // se quita de la lista de modificaciones
+        Iterator i = this.modificaciones.iterator();
         
-        
+        while(i.hasNext()){
+            if(((Modificacionpresupuesto) i.next()).getPresupuestotareaegreso().equals(modificacion.getPresupuestotareaegreso()) && ((Modificacionpresupuesto) i.next()).getPresupuestotareaingreso().equals(modificacion.getPresupuestotareaingreso())) {
+                i.remove();
+            }
+        }
+    }
+    
+    public float sumarModificaciones() {
+        float r = 0;
+
+        for (Modificacionpresupuesto p : modificaciones) {
+            r += p.getModificacion().floatValue();
+        }
+
+        return r;
     }
 
 }
