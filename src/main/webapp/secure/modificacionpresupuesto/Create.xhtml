@@ -113,12 +113,15 @@
 
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
-                                <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;"  >
+                                <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" var="item" style="padding: 0px; width: 100%; margin: 0 auto; overflow: hidden;" styleClass="tabla"  >
                                     <f:facet name="header">
                                         <h:outputText value="Presupuesto" />
                                     </f:facet>
                                     <p:column headerText="Etapa">
-                                        <h:outputText value="#{item.presupuestoTarea.etapa}" />
+                                        <h:outputText value="#{item.presupuestoTarea.tarea.etapaid.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Tarea">
+                                        <h:outputText value="#{item.presupuestoTarea.tarea.tarea}" />
                                     </p:column>
                                     <p:column headerText="Rubro">
                                         <h:outputText value="#{item.presupuestoTarea.rubro.abreviado}" />
@@ -135,14 +138,14 @@
                                     <p:column headerText="Importe Final"  style="text-align: right;" >
                                         <h:outputText value="#{item.importeFinal}" />
                                     </p:column>
-                                    <p:column style="width:24px">
-                                        <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-circle-pencil" title="Modificar" >
-                                            <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
+                                    <p:column headerText=" " style="width:24px">
+                                        <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-pencil" title="Modificar" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{modificacionpresupuestoController.piSeleccionado}" />
                                         </p:commandButton> 
                                     </p:column>
                                     <p:columnGroup type="footer">
                                         <p:row>
-                                            <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                            <p:column colspan="6" style="text-align:right" footerText="Totales:" />
                                             <p:column footerText="#{presupuestoTareaController.sumatotal}" style="text-align: right;" />
                                         </p:row>
                                     </p:columnGroup>
@@ -284,37 +287,22 @@
             <p:dialog header="Item Solicitud" id="dialogoItemSolicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="formitem" enctype="multipart/form-data"  >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                    <p:panelGrid  columns="2" rendered="#{not empty solicitudController.selected}" styleClass="panelgrid" columnClasses="right,right" >
+                    <p:panelGrid  columns="2" rendered="#{not empty modificacionpresupuestoController.piSeleccionado}" styleClass="panelgrid" columnClasses="right,right" >
                         <f:facet name="header">
-                            <h:outputText value="#{solicitudController.selected.presupuestotarea.descripcion}" />
+                            <h:outputText value="#{modificacionpresupuestoController.piSeleccionado.presupuestoTarea.descripcion}" />
                         </f:facet>
 
-                        <p:outputLabel value="Costo Unitario" />
-                        <h:outputText id="dcostounitario" value="#{solicitudController.selected.presupuestotarea.costounitario}" />
+                        <p:outputLabel value="Total" />
+                        <h:outputText id="dcostounitario" value="#{modificacionpresupuestoController.piSeleccionado.presupuestoTarea.total.floatValue()}" />
 
-                        <p:outputLabel value="Cantidad" />
-                        <h:outputText id="dcantidad" value="#{solicitudController.selected.presupuestotarea.cantidad}" />
+                        <p:outputLabel value="Importe Original" />
+                        <h:outputText id="dcantidad" value="#{modificacionpresupuestoController.piSeleccionado.importeFinal}" />
 
-                        <p:outputLabel value="Presupuestado" />
-                        <h:outputText id="dpresupuestado" value="#{solicitudController.selected.presupuestotarea.total}" />
-
-                        <p:outputLabel value="Disponible" />
-                        <h:outputText id="ddisponible" value="#{solicitudController.selected.disponible}" />
-
-                        <p:outputLabel value="Solicitado" />
-                        <p:inputText  id="dsolicitado" value="#{solicitudController.selected.importe}"  >
+                        <p:outputLabel value="Modificación" />
+                        <p:inputText  id="dmodificacion" value="#{modificacionpresupuestoController.piSeleccionado.modificacion}"  >
                             <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
-                            <f:validateDoubleRange minimum="0" maximum="#{solicitudController.selected.disponible}"/> 
+                            <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.piSeleccionado.modificacion}"/> 
                         </p:inputText>    
-
-                        <p:outputLabel value="Especificación" rendered="#{ solicitudController.tabseleccionado ne 'Anticipo' and solicitudController.tabseleccionado eq 'Adquisición'}" />
-                        <p:outputLabel value="Comprobante" rendered="#{ solicitudController.tabseleccionado ne 'Anticipo' and solicitudController.tabseleccionado eq 'Certificación'}" />
-                        <p:fileUpload label="Presupuesto" id="fdocumentacion" fileUploadListener="#{solicitudController.subirArchivoSolicitud}" mode="advanced" rendered="#{solicitudController.tabseleccionado ne 'Anticipo'}" 
-                                      sizeLimit="10000000" multiple="true" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formprincipal:growlprincipal"  >
-                        </p:fileUpload>    
-
-                        <p:outputLabel value="Observación" />
-                        <p:inputTextarea id="dobservacionItem" value="#{solicitudController.selected.observacion}" />
 
                     </p:panelGrid>
 

@@ -42,6 +42,16 @@ public class ModificacionpresupuestoController implements Serializable {
     private TreeNode root = new DefaultTreeNode();
     
     private List<Modificacionpresupuesto> modificaciones;
+    
+    private PresupuestoItem piSeleccionado;
+
+    public PresupuestoItem getPiSeleccionado() {
+        return piSeleccionado;
+    }
+
+    public void setPiSeleccionado(PresupuestoItem piSeleccionado) {
+        this.piSeleccionado = piSeleccionado;
+    }
 
     public TreeNode getRoot() {
         return root;
@@ -322,6 +332,7 @@ public class ModificacionpresupuestoController implements Serializable {
                     }
                     
                     PresupuestoItem pi3 = this.new PresupuestoItem();
+                    pi3.setPresupuestoTarea(psTarea);
                     pi3.setDescripcion(psTarea.getDescripcion());
                     pi3.setImporteOriginal(psTarea.getTotal().floatValue());
                     pi3.setModificacion(sumatotalmodificacionestarea.floatValue());
@@ -341,7 +352,13 @@ public class ModificacionpresupuestoController implements Serializable {
                 sumatotalmodificacionesetapa = sumatotalmodificacionesetapa.add(sumatotalmodificacionestarea);
                 
                 PresupuestoItem pi2 = this.new PresupuestoItem();
-                pi2.setDescripcion("Tarea: " + tarea.getTarea());
+                
+                PresupuestoTarea pst2 = new PresupuestoTarea();
+                pst2.setTarea(tarea);
+                pst2.setDescripcion("Tarea: " + tarea.getTarea());
+                pi2.setPresupuestoTarea(pst2);
+                
+                //pi2.setDescripcion("Tarea: " + tarea.getTarea());
                 pi2.setImporteOriginal(sumatotaltarea.floatValue());
                 pi2.setModificacion(sumatotalmodificacionestarea.floatValue());
                 pi2.setImporteFinal(pi2.getImporteOriginal() + sumatotalmodificacionestarea.floatValue());
@@ -354,7 +371,14 @@ public class ModificacionpresupuestoController implements Serializable {
             System.out.println("PASO >> SUMAR ETAPA: " + ie);
             
             PresupuestoItem pi = this.new PresupuestoItem();
-            pi.setDescripcion("Etapa: " + etapa.getEtapa());
+            
+            PresupuestoTarea pst = new PresupuestoTarea();
+            Tarea t = new Tarea();
+            t.setEtapaid(etapa);
+            pst.setTarea(t);
+            pst.setDescripcion("Etapa: " + etapa.getEtapa());
+            pi.setPresupuestoTarea(pst);
+            
             pi.setImporteOriginal(sumatotaletapa.floatValue());
             pi.setModificacion(sumatotalmodificacionesetapa.floatValue());
             pi.setImporteFinal(pi.getImporteOriginal() + sumatotalmodificacionesetapa.floatValue());
