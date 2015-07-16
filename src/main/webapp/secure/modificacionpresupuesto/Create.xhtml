@@ -140,7 +140,7 @@
                                         <h:outputText value="#{item.importeFinal}" />
                                     </p:column>
                                     <p:column headerText=" " style="width:24px; min-width: 24px !important; max-width: 24px !important;">
-                                        <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-pencil" title="Modificar" >
+                                        <p:commandButton update=":formitem, :formprincipal:growlprincipal" oncomplete="PF('dialogoItemSolicitud').show();" icon="ui-icon-pencil" title="Modificar" rendered="#{not empty item.descripcion}"  >
                                             <f:setPropertyActionListener value="#{item}" target="#{modificacionpresupuestoController.piSeleccionado}" />
                                         </p:commandButton> 
                                     </p:column>
@@ -227,30 +227,49 @@
             <p:dialog header="Item Solicitud" id="dialogoItemSolicitud" widgetVar="dialogoItemSolicitud" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="formitem" enctype="multipart/form-data"  >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
-                    <p:panelGrid  columns="2" rendered="#{not empty modificacionpresupuestoController.piSeleccionado}" styleClass="panelgrid" columnClasses="right,right" >
-                        <f:facet name="header">
-                            <h:outputText value="#{modificacionpresupuestoController.piSeleccionado.presupuestoTarea.descripcion}" />
-                        </f:facet>
+                    
+                    <p:tabView id="tabsolicitudes" dynamic="true" style="margin-bottom: 10px;" >
 
-                        <p:outputLabel value="Importe Original" />
-                        <h:outputText id="dimporteOriginal" value="#{modificacionpresupuestoController.piSeleccionado.importeOriginal}" />
-                        
-                        <p:outputLabel value="Importe Solicitudes" />
-                        <h:outputText id="dimporteSolicitudes" value="#{modificacionpresupuestoController.piSeleccionado.importeSolicitudes}" />
-                        
-                        <p:outputLabel value="Importe Disponible" />
-                        <h:outputText id="dimporteSinModificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeSinModificacion}" />
+                        <p:tab id="tabsumar" title="Agregar Presupuesto" >
+                            <p:panelGrid  columns="2" rendered="#{not empty modificacionpresupuestoController.piSeleccionado}" styleClass="panelgrid" columnClasses="right,right" >
+                                <f:facet name="header">
+                                    <h:outputText value="#{modificacionpresupuestoController.piSeleccionado.presupuestoTarea.descripcion}" />
+                                </f:facet>
 
-                        <p:outputLabel value="Modificación" />
-                        <p:inputText  id="dmodificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"  >
-                            <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
-                            <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"/> 
-                        </p:inputText>    
-                        
-                        <p:outputLabel value="Importe Final" />
-                        <h:outputText id="dimporteFinal" value="#{modificacionpresupuestoController.piSeleccionado.importeFinal}" />
+                                <p:outputLabel value="Importe Original" />
+                                <h:outputText id="dimporteOriginal" value="#{modificacionpresupuestoController.piSeleccionado.importeOriginal}" />
 
-                    </p:panelGrid>
+                                <p:outputLabel value="Importe Solicitudes" />
+                                <h:outputText id="dimporteSolicitudes" value="#{modificacionpresupuestoController.piSeleccionado.importeSolicitudes}" />
+
+                                <p:outputLabel value="Importe Disponible" />
+                                <h:outputText id="dimporteSinModificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeSinModificacion}" />
+
+                                <p:outputLabel value="Modificación" />
+                                <p:inputText  id="dmodificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"  >
+                                    <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
+                                    <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"/> 
+                                </p:inputText>
+                                
+                                <p:outputLabel value="Item al cual restamos" />
+                                <p:selectOneMenu id="car" value="#{modificacionpresupuestoController.selected.presupuestotareaegreso}">
+                                    <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                    <f:selectItems value="#{modificacionpresupuestoController.itemsPresupuesto}" var="item" itemLabel="#{item.presupuestoTarea.descripcion}" itemValue="#{item.presupuestoTarea}"  />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Importe Final" />
+                                <h:outputText id="dimporteFinal" value="#{modificacionpresupuestoController.piSeleccionado.importeFinal}" />
+
+                            </p:panelGrid>
+                        </p:tab>
+                        
+                        <p:tab id="tabrestar" title="Quitar Presupuesto" >
+                            
+                        </p:tab>
+                    </p:tabView>
+                    
+                    
+                    
 
                     <p:separator/>
                     <div align="center" >

@@ -44,6 +44,7 @@ public class ModificacionpresupuestoController implements Serializable {
     private TreeNode root = new DefaultTreeNode();
     
     private List<Modificacionpresupuesto> modificaciones;
+    private List<PresupuestoItem> itemsPresupuesto;
     
     private PresupuestoItem piSeleccionado;
 
@@ -53,6 +54,15 @@ public class ModificacionpresupuestoController implements Serializable {
 
     public void setPiSeleccionado(PresupuestoItem piSeleccionado) {
         this.piSeleccionado = piSeleccionado;
+    }
+
+    public List<PresupuestoItem> getItemsPresupuesto() {
+        
+        if(itemsPresupuesto == null){
+            itemsPresupuesto = new ArrayList<PresupuestoItem>();
+        }
+        
+        return itemsPresupuesto;
     }
 
     public TreeNode getRoot() {
@@ -466,6 +476,8 @@ public class ModificacionpresupuestoController implements Serializable {
             }
             ie++;
         }
+        
+        itemsPresupuesto = sumatoriaporpst;
 
         System.out.println("");
 
