@@ -95,6 +95,15 @@ border-color: transparent;*/
     width: auto;
 }
 
+.centrarEnFieldSetAnchoTotal{
+    
+    display: block;
+    margin: 0 0 auto 235px;
+    text-align: center;
+    height: 70%;
+    width: auto;
+}
+
 // Color: #00C7F6 Seleccion de Dario
 // Color 2: #82CADC Seleccion de Dario 
 // Color anterior: #21B2CE

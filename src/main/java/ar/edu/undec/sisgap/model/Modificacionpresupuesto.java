@@ -86,12 +86,9 @@ public class Modificacionpresupuesto implements Serializable {
     private BigDecimal modificacion;
     
     @ManyToOne
-    @JoinColumn(name = "presupuestotareaingresoid", referencedColumnName = "id")
-    private PresupuestoTarea presupuestotareaingreso;
+    @JoinColumn(name = "presupuestotareaid", referencedColumnName = "id")
+    private PresupuestoTarea presupuestotareaid;
     
-    @ManyToOne
-    @JoinColumn(name = "presupuestotareaegresoid", referencedColumnName = "id")
-    private PresupuestoTarea presupuestotareaegreso;
 
     public Modificacionpresupuesto() {
     }
@@ -124,20 +121,12 @@ public class Modificacionpresupuesto implements Serializable {
         this.modificacion = modificacion;
     }
 
-    public PresupuestoTarea getPresupuestotareaingreso() {
-        return presupuestotareaingreso;
+    public PresupuestoTarea getPresupuestotareaid() {
+        return presupuestotareaid;
     }
 
-    public void setPresupuestotareaingreso(PresupuestoTarea presupuestotareaingreso) {
-        this.presupuestotareaingreso = presupuestotareaingreso;
-    }
-
-    public PresupuestoTarea getPresupuestotareaegreso() {
-        return presupuestotareaegreso;
-    }
-
-    public void setPresupuestotareaegreso(PresupuestoTarea presupuestotareaegreso) {
-        this.presupuestotareaegreso = presupuestotareaegreso;
+    public void setPresupuestotareaid(PresupuestoTarea presupuestotareaid) {
+        this.presupuestotareaid = presupuestotareaid;
     }
 
     @Override
