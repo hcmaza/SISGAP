@@ -107,16 +107,34 @@
 
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
-                                <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30"  >
-                                    <f:facet name="legend" >
-                                        Dinero Disponible en Presupuesto
-                                    </f:facet>
-                                    <div class="centrarEnFieldSetAnchoTotal" >
-                                        <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
-                                            <p:outputLabel id="labelPresupuestoDisponible" value="$ #{modificacionpresupuestoController.presupuestoDisponible}" style="color: #777777; font-weight: bold; font-size: 18px !important;  " />
-                                        </p:panelGrid>
-                                    </div>
-                                </p:fieldset>
+                                <p:panelGrid style="width: 100%;" styleClass="sinBordes">
+                                    <p:row >
+                                        <p:column style="width: 50%;" >
+                                            <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30"  >
+                                                <f:facet name="legend" >
+                                                    Dinero Disponible en Presupuesto
+                                                </f:facet>
+                                                <div class="centrarEnFieldSetAnchoTotal" >
+                                                    <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                        <p:outputLabel id="labelPresupuestoDisponible" value="$ #{modificacionpresupuestoController.presupuestoDisponible}" style="color: #777777; font-weight: bold; font-size: 18px !important; " />
+                                                    </p:panelGrid>
+                                                </div>
+                                            </p:fieldset>
+                                        </p:column>
+                                        <p:column style="width: 50%;">
+                                            <p:fieldset style="height: 30px; padding: 5px;" styleClass="fieldSetCentrado30"  >
+                                                <f:facet name="legend" >
+                                                    Diferencia
+                                                </f:facet>
+                                                <div class="centrarEnFieldSetAnchoTotal" >
+                                                    <p:panelGrid columns="1" style="width: 100%; height: 100%; margin: 0 auto;">
+                                                        <p:outputLabel id="labelPresupuestoDiferencia" value="$ #{modificacionpresupuestoController.presupuestoDiferencia}" style="font-weight: bold; font-size: 18px !important;  " styleClass="#{modificacionpresupuestoController.obtenerEstiloDiferencia()}" />
+                                                    </p:panelGrid>
+                                                </div>
+                                            </p:fieldset>
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
                                 
                                 <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" var="item" style="padding: 0px; width: 100%; margin: 5px auto; overflow: hidden;" styleClass="tabla fuente10"  >
                                     <f:facet name="header">
@@ -179,7 +197,7 @@
                                     <h:outputText value="#{item.modificacion.floatValue()}" style="text-align: right;" />
                                 </p:column>
                                 <p:column style="width:32px;text-align: center">
-                                    <p:commandButton actionListener="#{modificacionpresupuestoController.quitarModificacion(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible" >
+                                    <p:commandButton actionListener="#{modificacionpresupuestoController.quitarModificacion(item)}" title="Eliminar" icon="ui-icon-trash" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:tabmodificaciones:labelPresupuestoDiferencia" >
                                         <p:confirm header="Eliminar" message="Esta seguro que desea eliminar el Item?" icon="ui-icon-alert"  />
                                     </p:commandButton>
                                 </p:column>
@@ -226,7 +244,7 @@
                 <!--**********************************************-->
                 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible" style="float:left;" /> 
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:tabmodificaciones:labelPresupuestoDiferencia" style="float:left;" /> 
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right;" />
                 </p:confirmDialog>
 
@@ -270,7 +288,7 @@
                             </p:panelGrid>
                             
                             <div align="center" >
-                                <p:commandButton value="Modificar Presupuesto" actionListener="#{modificacionpresupuestoController.agregarModificacionSumar()}" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:growlprincipal"  oncomplete="PF('dialogoModificacion').hide();" /> 
+                                <p:commandButton value="Modificar Presupuesto" actionListener="#{modificacionpresupuestoController.agregarModificacionSumar()}" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:tabmodificaciones:labelPresupuestoDiferencia, :formprincipal:growlprincipal"  oncomplete="PF('dialogoModificacion').hide();" /> 
                             </div>
                         </p:tab>
                         
@@ -304,7 +322,7 @@
                             <p:separator/>
                             
                             <div align="center" >
-                                <p:commandButton value="Modificar Presupuesto"  actionListener="#{modificacionpresupuestoController.agregarModificacionQuitar()}" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:growlprincipal"  oncomplete="PF('dialogoModificacion').hide();" /> 
+                                <p:commandButton value="Modificar Presupuesto"  actionListener="#{modificacionpresupuestoController.agregarModificacionQuitar()}" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:tabmodificaciones:labelPresupuestoDiferencia, :formprincipal:growlprincipal"  oncomplete="PF('dialogoModificacion').hide();" /> 
                             </div>
                         </p:tab>
                     </p:tabView>

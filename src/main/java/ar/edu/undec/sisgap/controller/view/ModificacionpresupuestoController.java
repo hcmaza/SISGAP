@@ -49,13 +49,36 @@ public class ModificacionpresupuestoController implements Serializable {
     private PresupuestoItem piSeleccionado;
     
     private Float presupuestoDisponible = 0f;
-
+    private Float presupuestoDiferencia = 0f;
+    
     public Float getPresupuestoDisponible() {
         return presupuestoDisponible;
     }
 
     public void setPresupuestoDisponible(Float presupuestoDisponible) {
         this.presupuestoDisponible = presupuestoDisponible;
+    }
+
+    public Float getPresupuestoDiferencia() {
+        return presupuestoDiferencia;
+    }
+
+    public void setPresupuestoDiferencia(Float presupuestoDiferencia) {
+        this.presupuestoDiferencia = presupuestoDiferencia;
+    }
+    public String obtenerEstiloDiferencia() {
+        
+        // Si el valor es 0 > color gris
+        if(presupuestoDiferencia.equals(0f)){
+            return "colorGris";
+        }
+        
+        // si el valor es positivo o negativo, cambiar el color
+        if(presupuestoDiferencia > 0){
+            return "colorVerde";
+        } else {
+            return "colorRojo";
+        }
     }
 
     public PresupuestoItem getPiSeleccionado() {
@@ -142,6 +165,9 @@ public class ModificacionpresupuestoController implements Serializable {
         
         // importe del presupuesto diponible en 0
         presupuestoDisponible = 0f;
+        
+        // importe de la diferencia de presupuesto por modificaciones en 0
+        presupuestoDiferencia = 0f;
 
         FacesContext context = FacesContext.getCurrentInstance();
         SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
@@ -151,6 +177,8 @@ public class ModificacionpresupuestoController implements Serializable {
         
         // armar el arbol de presupuesto
         armarModificacionesPresupuestoNodos();
+        
+        // obtener el dinero disponible
         
         return "CreateModificacionPresupuesto";
     }
@@ -314,68 +342,64 @@ public class ModificacionpresupuestoController implements Serializable {
     public void armarModificacionesPresupuestoNodos() {
         
         FacesContext context = FacesContext.getCurrentInstance();
-        EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
+        EtapaController etapaController = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
         
-        SolicitudController solicitudcontroller = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+        SolicitudController solicitudController = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         
-        BigDecimal sumatotalsolicitudespst = BigDecimal.ZERO;
-        BigDecimal sumatotalmodificacionespst = BigDecimal.ZERO;
+        BigDecimal sumatotaldinerodisponible = BigDecimal.ZERO;
         
-        BigDecimal sumatotaltarea = BigDecimal.ZERO;
-        BigDecimal sumatotalsolicitudestarea = BigDecimal.ZERO;
-        BigDecimal sumatotalmodificacionestarea = BigDecimal.ZERO;
+        BigDecimal sumaTotalSolicitudesPst = BigDecimal.ZERO;
+        BigDecimal sumaTotalModificacionesPst = BigDecimal.ZERO;
+        
+        BigDecimal sumaTotalTarea = BigDecimal.ZERO;
+        BigDecimal sumaTotalSolicitudesTarea = BigDecimal.ZERO;
+        BigDecimal sumaTotalModificacionesTarea = BigDecimal.ZERO;
 
-        BigDecimal sumatotaletapa = BigDecimal.ZERO;
-        BigDecimal sumatotalsolicitudesetapa = BigDecimal.ZERO;
-        BigDecimal sumatotalmodificacionesetapa = BigDecimal.ZERO;
+        BigDecimal sumaTotalEtapa = BigDecimal.ZERO;
+        BigDecimal sumaTotalSolicitudesEtapa = BigDecimal.ZERO;
+        BigDecimal sumaTotalModificacionesEtapa = BigDecimal.ZERO;
 
-        List<PresupuestoItem> sumatoriaporetapa = new ArrayList<PresupuestoItem>();
-        List<PresupuestoItem> sumatoriaportarea = new ArrayList<PresupuestoItem>();
-        List<PresupuestoItem> sumatoriaporpst = new ArrayList<PresupuestoItem>();
+        List<PresupuestoItem> sumatoriaPorEtapa = new ArrayList<PresupuestoItem>();
+        List<PresupuestoItem> sumatoriaPorTarea = new ArrayList<PresupuestoItem>();
+        List<PresupuestoItem> sumatoriaPorPst = new ArrayList<PresupuestoItem>();
 
         int ie = 0;
         int it = 0;
         int ip = 0;
         
-        for (Etapa etapa : etapacontroller.getEtapas()) {
+        for (Etapa etapa : etapaController.getEtapas()) {
 
-            sumatotaletapa = BigDecimal.ZERO;
-            sumatotalsolicitudesetapa = BigDecimal.ZERO;
-            sumatotalmodificacionesetapa = BigDecimal.ZERO;
+            sumaTotalEtapa = BigDecimal.ZERO;
+            sumaTotalSolicitudesEtapa = BigDecimal.ZERO;
+            sumaTotalModificacionesEtapa = BigDecimal.ZERO;
 
             for (Tarea tarea : etapa.getTareaList()) {
 
-                sumatotaltarea = BigDecimal.ZERO;
-                sumatotalsolicitudestarea = BigDecimal.ZERO;
-                sumatotalmodificacionestarea = BigDecimal.ZERO;
+                sumaTotalTarea = BigDecimal.ZERO;
+                sumaTotalSolicitudesTarea = BigDecimal.ZERO;
+                sumaTotalModificacionesTarea = BigDecimal.ZERO;
                 
                 for (PresupuestoTarea psTarea : tarea.getPresupuestoTareaList()) {
 
                     // acumulador de solicitudes por presupuesto_tarea = 0
-                    sumatotalsolicitudespst = BigDecimal.ZERO;
+                    sumaTotalSolicitudesPst = BigDecimal.ZERO;
 
                     // Verificar si hay solicitudes anteriores para el presupuesto_tarea
-                    for(Solicitud s : solicitudcontroller.getItemsAprobados() ){
+                    for(Solicitud s : solicitudController.getItemsAprobados() ){
                         
                         if(psTarea.getId().equals(s.getPresupuestotarea().getId())){
-                            sumatotalsolicitudespst = sumatotalsolicitudespst.add(s.getImporte());
+                            sumaTotalSolicitudesPst = sumaTotalSolicitudesPst.add(s.getImporte());
                         }
                     }
-
+                    
                     // acumulador de modificaciones por presupuesto_tarea = 0
-                    sumatotalmodificacionespst = BigDecimal.ZERO;
+                    sumaTotalModificacionesPst = BigDecimal.ZERO;
                    
                     //  Verificar si hay modificaciones para el presupuesto_tarea
                     for(Modificacionpresupuesto mp : this.getModificaciones()){
                         
                         if(mp.getPresupuestotareaid().getId().equals(psTarea.getId())){
-                            
-                            System.out.println("MODIFICACION: " + mp.getPresupuestotareaid().getDescripcion() + " - " + mp.getModificacion().floatValue());
-                            System.out.println("SUMATORIA SIN MODIFICACION= " + sumatotalmodificacionespst.floatValue());
-                            
-                            sumatotalmodificacionespst = sumatotalmodificacionespst.add(mp.getModificacion());
-                            
-                            System.out.println("SUMATORIA CON MODIFICACION= " + sumatotalmodificacionespst.floatValue());
+                            sumaTotalModificacionesPst = sumaTotalModificacionesPst.add(mp.getModificacion());
                         }
                     }
                     
@@ -383,24 +407,24 @@ public class ModificacionpresupuestoController implements Serializable {
                     pi3.setPresupuestoTarea(psTarea);
                     pi3.setDescripcion(psTarea.getDescripcion());
                     pi3.setImporteOriginal(psTarea.getTotal().floatValue());
-                    pi3.setImporteSolicitudes(sumatotalsolicitudespst.floatValue());
+                    pi3.setImporteSolicitudes(sumaTotalSolicitudesPst.floatValue());
                     pi3.setImporteSinModificacion(pi3.getImporteOriginal() - pi3.getImporteSolicitudes());
-                    pi3.setImporteModificacion(sumatotalmodificacionespst.floatValue());
+                    pi3.setImporteModificacion(sumaTotalModificacionesPst.floatValue());
                     pi3.setImporteFinal(pi3.getImporteSinModificacion() + pi3.getImporteModificacion());
 
-                    sumatotaltarea = sumatotaltarea.add(psTarea.getTotal());
-                    sumatotalsolicitudestarea = sumatotalsolicitudestarea.add(sumatotalsolicitudespst);
-                    sumatotalmodificacionestarea = sumatotalmodificacionestarea.add(sumatotalmodificacionespst);
+                    sumaTotalTarea = sumaTotalTarea.add(psTarea.getTotal());
+                    sumaTotalSolicitudesTarea = sumaTotalSolicitudesTarea.add(sumaTotalSolicitudesPst);
+                    sumaTotalModificacionesTarea = sumaTotalModificacionesTarea.add(sumaTotalModificacionesPst);
                     
-                    sumatoriaporpst.add(ip, pi3);
+                    sumatoriaPorPst.add(ip, pi3);
                     
                     ip++;
                 
                 }
                 
-                sumatotaletapa = sumatotaletapa.add(sumatotaltarea);
-                sumatotalsolicitudesetapa = sumatotalsolicitudesetapa.add(sumatotalsolicitudestarea);
-                sumatotalmodificacionesetapa = sumatotalmodificacionesetapa.add(sumatotalmodificacionestarea);
+                sumaTotalEtapa = sumaTotalEtapa.add(sumaTotalTarea);
+                sumaTotalSolicitudesEtapa = sumaTotalSolicitudesEtapa.add(sumaTotalSolicitudesTarea);
+                sumaTotalModificacionesEtapa = sumaTotalModificacionesEtapa.add(sumaTotalModificacionesTarea);
                 
                 PresupuestoItem pi2 = this.new PresupuestoItem();
                 
@@ -410,13 +434,13 @@ public class ModificacionpresupuestoController implements Serializable {
                 pi2.setPresupuestoTarea(pst2);
                 
                 //pi2.setDescripcion("Tarea: " + tarea.getTarea());
-                pi2.setImporteOriginal(sumatotaltarea.floatValue());
-                pi2.setImporteSolicitudes(sumatotalsolicitudestarea.floatValue());
+                pi2.setImporteOriginal(sumaTotalTarea.floatValue());
+                pi2.setImporteSolicitudes(sumaTotalSolicitudesTarea.floatValue());
                 pi2.setImporteSinModificacion(pi2.getImporteOriginal() - pi2.getImporteSolicitudes());
-                pi2.setImporteModificacion(sumatotalmodificacionestarea.floatValue());
-                pi2.setImporteFinal(pi2.getImporteSinModificacion() + sumatotalmodificacionestarea.floatValue());
+                pi2.setImporteModificacion(sumaTotalModificacionesTarea.floatValue());
+                pi2.setImporteFinal(pi2.getImporteSinModificacion() + sumaTotalModificacionesTarea.floatValue());
                 
-                sumatoriaportarea.add(it, pi2);
+                sumatoriaPorTarea.add(it, pi2);
                 it++;
 
             }
@@ -430,17 +454,21 @@ public class ModificacionpresupuestoController implements Serializable {
             pst.setDescripcion("Etapa: " + etapa.getEtapa());
             pi.setPresupuestoTarea(pst);
             
-            pi.setImporteOriginal(sumatotaletapa.floatValue());
-            pi.setImporteSolicitudes(sumatotalsolicitudesetapa.floatValue());
+            pi.setImporteOriginal(sumaTotalEtapa.floatValue());
+            pi.setImporteSolicitudes(sumaTotalSolicitudesEtapa.floatValue());
             pi.setImporteSinModificacion(pi.getImporteOriginal() - pi.getImporteSolicitudes());
-            pi.setImporteModificacion(sumatotalmodificacionesetapa.floatValue());
-            pi.setImporteFinal(pi.getImporteSinModificacion() + sumatotalmodificacionesetapa.floatValue());
+            pi.setImporteModificacion(sumaTotalModificacionesEtapa.floatValue());
+            pi.setImporteFinal(pi.getImporteSinModificacion() + sumaTotalModificacionesEtapa.floatValue());
 
-            sumatoriaporetapa.add(ie, pi);
+            sumatotaldinerodisponible = sumatotaldinerodisponible.add(new BigDecimal(pi.getImporteSinModificacion()));
+            
+            sumatoriaPorEtapa.add(ie, pi);
 
             ie++;
 
         }
+        
+        this.presupuestoDisponible = sumatotaldinerodisponible.floatValue();
         
         root = new DefaultTreeNode(new PresupuestoItem(), null);
         root.setExpanded(false);
@@ -449,20 +477,20 @@ public class ModificacionpresupuestoController implements Serializable {
         it = 0;
         ip = 0;
         
-        for (Etapa etapa : etapacontroller.getEtapas()) {
+        for (Etapa etapa : etapaController.getEtapas()) {
 
-            TreeNode et = new DefaultTreeNode(sumatoriaporetapa.get(ie), root);
+            TreeNode et = new DefaultTreeNode(sumatoriaPorEtapa.get(ie), root);
             et.setExpanded(false);
 
             for (Tarea tarea : etapa.getTareaList()) {
                 
-                TreeNode tar = new DefaultTreeNode(sumatoriaportarea.get(it), et);
+                TreeNode tar = new DefaultTreeNode(sumatoriaPorTarea.get(it), et);
                 tar.setExpanded(false);
                 
                 for (PresupuestoTarea p : tarea.getPresupuestoTareaList()) {
                     //TreeNode tp = new DefaultTreeNode(p, tar);
                     
-                    TreeNode tp = new DefaultTreeNode(sumatoriaporpst.get(ip), tar);
+                    TreeNode tp = new DefaultTreeNode(sumatoriaPorPst.get(ip), tar);
                     
                     ip++;
                 }
@@ -471,7 +499,7 @@ public class ModificacionpresupuestoController implements Serializable {
             ie++;
         }
         
-        itemsPresupuesto = sumatoriaporpst;
+        itemsPresupuesto = sumatoriaPorPst;
 
         System.out.println("FIN ARMAR ARBOL");
 
@@ -554,29 +582,20 @@ public class ModificacionpresupuestoController implements Serializable {
     
     // Agregamos una modificacion que suma presupuesto a un item
     public void agregarModificacionSumar(){
-        
-        
-        System.out.println("agregarModificacionSumar INICIO");
-        
-        System.out.println("piSeleccionado.importeModificacion = " + piSeleccionado.importeModificacion);
-        
-        System.out.println("presupuestoDisponible antes = " + presupuestoDisponible);
-        
+   
         Modificacionpresupuesto modificacion = new Modificacionpresupuesto();
         modificacion.setPresupuestotareaid(piSeleccionado.getPresupuestoTarea());
         modificacion.setFecha(new Date());
         
-        modificacion.setModificacion(new BigDecimal(piSeleccionado.importeModificacion));
-        
-        System.out.println("modificacion.setModificacion= " + modificacion.getModificacion().floatValue());
+        // obtenemos el importe de la modificacion de PresupuestoItem seleccionado y lo negamos
+        BigDecimal importeModificacion = new BigDecimal(piSeleccionado.getImporteModificacion());
+        System.out.println("agregarModificacionSumar >> importeModificacion = " + importeModificacion.floatValue());
+        modificacion.setModificacion(importeModificacion);
 
-        presupuestoDisponible = presupuestoDisponible - piSeleccionado.importeModificacion;
-        
-        System.out.println("presupuestoDisponible: " + presupuestoDisponible);
+        // calculamos la diferencia en el presupuesto
+        presupuestoDiferencia = presupuestoDiferencia - piSeleccionado.importeModificacion;
         
         this.getModificaciones().add(modificacion);
-        
-        System.out.println("agregarModificacionSumar FIN");
         
         // llamamos al método para rearmar el arbol de nodos de presupuesto
         armarModificacionesPresupuestoNodos();
@@ -588,11 +607,15 @@ public class ModificacionpresupuestoController implements Serializable {
         Modificacionpresupuesto modificacion = new Modificacionpresupuesto();
         modificacion.setPresupuestotareaid(piSeleccionado.getPresupuestoTarea());
         modificacion.setFecha(new Date());
-        modificacion.setModificacion(new BigDecimal(piSeleccionado.importeModificacion).negate());
+
+        // obtenemos el importe de la modificacion de PresupuestoItem seleccionado y lo negamos
+        BigDecimal importeModificacion = new BigDecimal(piSeleccionado.getImporteModificacion());
+        importeModificacion = importeModificacion.negate();
+        System.out.println("agregarModificacionQuitar >> importeModificacion = " + importeModificacion.floatValue());
+        modificacion.setModificacion(importeModificacion);
         
-        presupuestoDisponible = presupuestoDisponible + piSeleccionado.importeModificacion;
-        
-        System.out.println("presupuestoDisponible: " + presupuestoDisponible);
+        // calculamos la diferencia en el presupuesto
+        presupuestoDiferencia = presupuestoDiferencia + piSeleccionado.importeModificacion;
         
         this.getModificaciones().add(modificacion);
         
@@ -633,6 +656,7 @@ public class ModificacionpresupuestoController implements Serializable {
         System.out.println("agregarPresupuestoImporteFinal");
         System.out.println("piSeleccionado.importeSinModificacion= " + piSeleccionado.importeSinModificacion);
         System.out.println("piSeleccionado.importeModificacion= " + piSeleccionado.importeModificacion);
+        System.out.println("piSeleccionado.importeFinal = " + piSeleccionado.importeFinal);
 
         this.piSeleccionado.importeFinal = this.piSeleccionado.importeSinModificacion + this.piSeleccionado.importeModificacion;
         

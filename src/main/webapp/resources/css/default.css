@@ -425,3 +425,19 @@ border-color: transparent;*/
     border-radius:40px;
     box-shadow:3px 3px 3px gray;
 }
+
+.colorGris{
+    color: #878787;
+}
+
+.colorAzul{
+    color: teal;
+}
+
+.colorVerde{
+    color: #94D352;
+}
+
+.colorRojo{
+    color: #E02424;
+}
