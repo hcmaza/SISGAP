@@ -423,17 +423,17 @@ public class EtapaController implements Serializable {
                 avance.setAvance(0);
                 Calendar cal = new GregorianCalendar(2001,0,1);
                 Date fechainicial = cal.getTime();
-                if(t.getTareaavanceList()!=null){
+                
                 for(Tareaavance tav:t.getTareaavanceList()){
-
-                        if(tav.getFecha().after(fechainicial)) {
-
-                           avance = tav;
-                           fechainicial = tav.getFecha();
-                       }
-
-                    }
+                   
+                    if(tav.getFecha().after(fechainicial)) {
+                       
+                       avance = tav;
+                       fechainicial = tav.getFecha();
+                   }
+                   
                 }
+                
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(t.getFechainicio());
                 calendar.add(Calendar.DAY_OF_YEAR, (t.getDias() * avance.getAvance()) / 100);

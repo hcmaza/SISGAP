@@ -2,13 +2,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="equipo" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="780753e8-2b7f-4c9e-bae6-18ef94f4a212">
 	<property name="ireport.zoom" value="0.9982500000000003"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="243"/>
+	<property name="ireport.y" value="0"/>
 	<subDataset name="dtsTareas" uuid="6bbaea7c-d606-491d-bd16-a613cb4e1fd5">
 		<field name="etapaid.etapa" class="java.lang.String"/>
 		<field name="tarea" class="java.lang.String"/>
-		<field name="estado" class="java.lang.Integer"/>
+		<field name="avance" class="java.lang.Integer"/>
 		<field name="fechainicio" class="java.util.Date"/>
 		<field name="fechafin" class="java.util.Date"/>
+		<field name="fechamodificacion" class="java.util.Date"/>
 	</subDataset>
 	<parameter name="equipo" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="tareas" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
@@ -34,7 +35,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="398">
+		<band height="268">
 			<rectangle radius="0">
 				<reportElement mode="Opaque" x="0" y="57" width="802" height="15" backcolor="#8A8A8A" uuid="4b098153-fe86-4bc9-af17-9935e834cd69">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -197,8 +198,10 @@
 				</textElement>
 				<text><![CDATA[Tareas]]></text>
 			</staticText>
+		</band>
+		<band height="282" splitType="Prevent">
 			<rectangle radius="0">
-				<reportElement positionType="Float" mode="Opaque" x="0" y="283" width="802" height="15" backcolor="#000000" uuid="751cfcbb-fb90-4770-9f43-1146518d0963">
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="802" height="15" backcolor="#000000" uuid="751cfcbb-fb90-4770-9f43-1146518d0963">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -208,7 +211,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="11" y="283" width="175" height="15" forecolor="#FFFFFF" uuid="ead41c74-0977-41ff-a8af-027911087d29">
+				<reportElement positionType="Float" x="11" y="0" width="175" height="15" forecolor="#FFFFFF" uuid="ead41c74-0977-41ff-a8af-027911087d29">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -219,31 +222,38 @@
 				<text><![CDATA[Diagrama de Gantt]]></text>
 			</staticText>
 			<ganttChart>
-				<chart>
-					<reportElement positionType="Float" x="0" y="298" width="802" height="100" uuid="a45a84b6-432c-4c0b-a26f-63f67dc28a8c"/>
-					<chartTitle/>
+				<chart isShowLegend="true">
+					<reportElement positionType="Float" x="0" y="15" width="802" height="100" uuid="a45a84b6-432c-4c0b-a26f-63f67dc28a8c"/>
+					<chartTitle position="Top"/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<ganttDataset>
 					<dataset>
-						<datasetRun subDataset="dtsTareas" uuid="b8a69c50-f08c-4b7e-a8b4-b872de261257">
+						<datasetRun subDataset="dtsTareas" uuid="5d34519b-ec15-45ab-9f0a-7aed8a9ed6bd">
 							<dataSourceExpression><![CDATA[$P{tareas}.cloneDataSource()]]></dataSourceExpression>
 						</datasetRun>
 					</dataset>
 					<ganttSeries>
-						<seriesExpression><![CDATA[$F{etapaid.etapa}]]></seriesExpression>
+						<seriesExpression><![CDATA["Planificado"]]></seriesExpression>
 						<taskExpression><![CDATA[$F{tarea}]]></taskExpression>
 						<subtaskExpression><![CDATA[$F{tarea}]]></subtaskExpression>
 						<startDateExpression><![CDATA[$F{fechainicio}]]></startDateExpression>
 						<endDateExpression><![CDATA[$F{fechafin}]]></endDateExpression>
 					</ganttSeries>
+					<ganttSeries>
+						<seriesExpression><![CDATA["Actual"]]></seriesExpression>
+						<taskExpression><![CDATA[$F{tarea}]]></taskExpression>
+						<subtaskExpression><![CDATA[$F{tarea}]]></subtaskExpression>
+						<startDateExpression><![CDATA[$F{fechainicio}]]></startDateExpression>
+						<endDateExpression><![CDATA[$F{fechamodificacion}]]></endDateExpression>
+					</ganttSeries>
 				</ganttDataset>
-				<barPlot>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="true">
 					<plot/>
 					<itemLabel/>
 					<categoryAxisFormat>
-						<axisFormat/>
+						<axisFormat verticalTickLabels="true"/>
 					</categoryAxisFormat>
 					<valueAxisFormat>
 						<axisFormat/>

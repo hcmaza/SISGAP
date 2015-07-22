@@ -638,6 +638,11 @@
                             
                             <p:fieldset id="favance" legend="avance" >
                                 <h:panelGrid columns="4">
+                                        <p:outputLabel style="font-weight: bold" value="Fechainicio:" for="fechainicio2" />
+                                        <p:calendar requiredMessage="Ingrese la Fecha de Inicio real"  size="11" required="true" id="fechainicio2" showOn="button" value="#{tareaavanceController.selected.fechainicio}" title="Fecha inicio" >
+                                         </p:calendar>
+                                        <p:outputLabel />
+                                        <p:outputLabel />
                                         <p:outputLabel style="font-weight: bold" value="Avance:"   />
                                         
                                         <p:slider  minValue="0" maxValue="100" for="iavance2" animate="enable"  />
