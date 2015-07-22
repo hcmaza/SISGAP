@@ -87,6 +87,13 @@ public class ModificacionpresupuestoController implements Serializable {
 
     public void setPiSeleccionado(PresupuestoItem piSeleccionado) {
         this.piSeleccionado = piSeleccionado;
+        
+        System.out.println("setPiSeleccionado >> " + piSeleccionado.getPresupuestoTarea().getDescripcion());
+        System.out.println("setPiSeleccionado >> importeOriginal " + piSeleccionado.getImporteOriginal());
+        System.out.println("setPiSeleccionado >> getImporteSolicitudes " + piSeleccionado.getImporteSolicitudes());
+        System.out.println("setPiSeleccionado >> getImporteSinModificacion " + piSeleccionado.getImporteSinModificacion());
+        System.out.println("setPiSeleccionado >> getImporteModificacion " + piSeleccionado.getImporteModificacion());
+        System.out.println("setPiSeleccionado >> getImporteFinal " + piSeleccionado.getImporteFinal());
     }
 
     public List<PresupuestoItem> getItemsPresupuesto() {
@@ -588,14 +595,15 @@ public class ModificacionpresupuestoController implements Serializable {
         modificacion.setFecha(new Date());
         
         // obtenemos el importe de la modificacion de PresupuestoItem seleccionado y lo negamos
+        System.out.println("agregarModificacionSumar >> piSeleccionado.getImporteModificacion = " + piSeleccionado.getImporteModificacion());
         BigDecimal importeModificacion = new BigDecimal(piSeleccionado.getImporteModificacion());
         System.out.println("agregarModificacionSumar >> importeModificacion = " + importeModificacion.floatValue());
         modificacion.setModificacion(importeModificacion);
 
+        this.getModificaciones().add(modificacion);
+        
         // calculamos la diferencia en el presupuesto
         presupuestoDiferencia = presupuestoDiferencia - piSeleccionado.importeModificacion;
-        
-        this.getModificaciones().add(modificacion);
         
         // llamamos al método para rearmar el arbol de nodos de presupuesto
         armarModificacionesPresupuestoNodos();
@@ -613,11 +621,11 @@ public class ModificacionpresupuestoController implements Serializable {
         importeModificacion = importeModificacion.negate();
         System.out.println("agregarModificacionQuitar >> importeModificacion = " + importeModificacion.floatValue());
         modificacion.setModificacion(importeModificacion);
+
+        this.getModificaciones().add(modificacion);
         
         // calculamos la diferencia en el presupuesto
         presupuestoDiferencia = presupuestoDiferencia + piSeleccionado.importeModificacion;
-        
-        this.getModificaciones().add(modificacion);
         
         // llamamos al método para rearmar el arbol de nodos de presupuesto
         armarModificacionesPresupuestoNodos();
@@ -625,6 +633,9 @@ public class ModificacionpresupuestoController implements Serializable {
     
     // Quitamos una modificacion del presupuesto
     public void quitarModificacion(Modificacionpresupuesto modificacion) {
+        
+        // calculamos la diferencia en el presupuesto
+        presupuestoDiferencia = presupuestoDiferencia + modificacion.getModificacion().floatValue();
 
         // se quita de la lista de modificaciones
         Iterator i = this.modificaciones.iterator();
@@ -634,7 +645,7 @@ public class ModificacionpresupuestoController implements Serializable {
                 i.remove();
             }
         }
-        
+                
         // llamamos al método para rearmar el arbol de nodos de presupuesto
         armarModificacionesPresupuestoNodos();
     }
@@ -651,21 +662,17 @@ public class ModificacionpresupuestoController implements Serializable {
     }
 
     // método que maneja la suma de dinero a un item del presupuesto.
-    public void agregarPresupuestoImporteFinal(){
-        
-        System.out.println("agregarPresupuestoImporteFinal");
-        System.out.println("piSeleccionado.importeSinModificacion= " + piSeleccionado.importeSinModificacion);
-        System.out.println("piSeleccionado.importeModificacion= " + piSeleccionado.importeModificacion);
-        System.out.println("piSeleccionado.importeFinal = " + piSeleccionado.importeFinal);
+    public Float agregarPresupuestoImporteFinal(){
 
-        this.piSeleccionado.importeFinal = this.piSeleccionado.importeSinModificacion + this.piSeleccionado.importeModificacion;
-        
-        System.out.println("piSeleccionado.importeFinal = " + piSeleccionado.importeFinal);
+        return this.piSeleccionado.importeSinModificacion + this.piSeleccionado.importeModificacion;
+    
     }
     
     // método que maneja la quita de presupuesto a item.
     public void quitarPresupuestoImporteFinal(){
         this.piSeleccionado.importeFinal = this.piSeleccionado.importeSinModificacion - this.piSeleccionado.importeModificacion;
+        
+        
     }
 
 }
