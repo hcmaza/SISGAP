@@ -165,7 +165,7 @@
                                         <h:outputText value="#{item.importeFinal}" />
                                     </p:column>
                                     <p:column headerText=" " style="width:24px; min-width: 24px !important; max-width: 24px !important;">
-                                        <p:commandButton update=":formitem, :formitem:tabmodificaciones, :formprincipal:growlprincipal, " oncomplete="PF('dialogoModificacion').show();" icon="ui-icon-pencil" title="Modificar Presupuesto" rendered="#{not empty item.descripcion}"  >
+                                        <p:commandButton update=":formitem, :formprincipal:growlprincipal, " oncomplete="PF('dialogoModificacion').show();" icon="ui-icon-pencil" title="Modificar Presupuesto" rendered="#{not empty item.descripcion}"  >
                                             <f:setPropertyActionListener value="#{item}" target="#{modificacionpresupuestoController.piSeleccionado}" />
                                         </p:commandButton> 
                                     </p:column>
@@ -258,7 +258,7 @@
                 <h:form id="formitem" enctype="multipart/form-data"  >
                     <!--<p:messages id="messages" showDetail="true" autoUpdate="true" />-->
                     
-                    <p:tabView id="tabmodificaciones" style="margin-bottom: 10px;"  >
+                    <p:tabView id="tabmodificacionesdialogo" style="margin-bottom: 10px;"  >
 
                         <p:tab id="tabsumar"  title="Agregar Presupuesto" >
                             <p:panelGrid  columns="2" rendered="#{not empty modificacionpresupuestoController.piSeleccionado}" styleClass="panelgrid" columnClasses="right,right" >
@@ -279,12 +279,16 @@
                                 <p:inputText  id="damodificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"  >
                                     <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
                                     <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.presupuestoDisponible}"/> 
+                                    <p:ajax event="keyup" update="daimporteFinal" listener="#{modificacionpresupuestoController.agregarPresupuestoImporteFinal()}"  />
                                 </p:inputText>
+                                
+                                <p:outputLabel value="Importe Final" />
+                                <h:outputText id="daimporteFinal" value="#{modificacionpresupuestoController.agregarPresupuestoImporteFinal()}" />
 
                             </p:panelGrid>
                             
                             <div align="center" >
-                                <p:commandButton value="Modificar Presupuesto" actionListener="#{modificacionpresupuestoController.agregarModificacionSumar()}" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:tabmodificaciones:labelPresupuestoDiferencia, :formprincipal:growlprincipal"  oncomplete="PF('dialogoModificacion').hide();" onstart="return keyupDelay(this, cfg)" /> 
+                                <p:commandButton value="Modificar Presupuesto" actionListener="#{modificacionpresupuestoController.agregarModificacionSumar()}" update=":formprincipal:tabmodificaciones:tablapresupuesto, :formprincipal:tablamodificaciones, :formprincipal:tabmodificaciones:labelPresupuestoDisponible, :formprincipal:tabmodificaciones:labelPresupuestoDiferencia, :formprincipal:growlprincipal"  oncomplete="PF('dialogoModificacion').hide();" /> 
                             </div>
                         </p:tab>
                         
@@ -307,8 +311,12 @@
                                 <p:inputText  id="dqmodificacion" value="#{modificacionpresupuestoController.piSeleccionado.importeModificacion}"  >
                                     <f:convertNumber type="number" groupingUsed="false" locale="en-US"  /> 
                                     <f:validateDoubleRange minimum="0" maximum="#{modificacionpresupuestoController.piSeleccionado.importeSinModificacion.floatValue()}"/> 
+                                    <p:ajax event="keyup" update="dqimporteFinal" listener="#{modificacionpresupuestoController.quitarPresupuestoImporteFinal()}" />
                                 </p:inputText>
                                 
+                                <p:outputLabel value="Importe Final" />
+                                <h:outputText id="dqimporteFinal" value="#{modificacionpresupuestoController.piSeleccionado.importeFinal}" />
+
                             </p:panelGrid>
                             
                             <p:separator/>
