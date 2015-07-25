@@ -217,7 +217,7 @@
 
                     <p:outputPanel id="botonsolicitud"  >
                         <div align="center">
-                            <p:commandButton action="#{modificacionpresupuestoController.create}" value="Guardar Modificaciones de Presupuesto" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinalsolicitud').show();" immediate="true" rendered="#{solicitudController.tabseleccionado ne 'Presupuesto Detallado' and solicitudController.tabseleccionado ne 'Rendición de Gastos'}" />
+                            <p:commandButton action="#{modificacionpresupuestoController.create}" value="Guardar Modificaciones de Presupuesto" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinalmodificacion').show();" immediate="true" />
                         </div>
                     </p:outputPanel>
 
@@ -237,7 +237,7 @@
                 <!--******** DIALAGO FINAL MODIFICACION **********-->
                 <!--**********************************************-->
                 
-                <p:dialog id="dfinalsolicitud" widgetVar="dfinalsolicitud" modal="true" header="Guardar Modificaciones de Presupuesto" closable="false" >
+                <p:dialog id="dfinalmodificacion" widgetVar="dfinalmodificacion" modal="true" header="Guardar Modificaciones de Presupuesto" closable="false" >
                     <h:panelGroup id="panelmensajesolicitud" layout="block">
                         <p:messages autoUpdate="true" />
                     </h:panelGroup>

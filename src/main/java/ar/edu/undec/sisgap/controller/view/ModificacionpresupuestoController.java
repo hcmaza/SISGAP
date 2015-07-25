@@ -4,6 +4,7 @@ import ar.edu.undec.sisgap.model.Modificacionpresupuesto;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ModificacionpresupuestoFacade;
+import ar.edu.undec.sisgap.controller.PresupuestoTareaFacade;
 import ar.edu.undec.sisgap.model.Etapa;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Solicitud;
@@ -38,6 +39,8 @@ public class ModificacionpresupuestoController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.ModificacionpresupuestoFacade ejbFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.PresupuestoTareaFacade pstFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
     
@@ -65,6 +68,8 @@ public class ModificacionpresupuestoController implements Serializable {
     
     // Suma Total de Importes finales
     private Float totalImportesFinales;
+    
+    
 
     public Float getTotalSolicitudes() {
         return totalSolicitudes;
@@ -185,6 +190,10 @@ public class ModificacionpresupuestoController implements Serializable {
     private ModificacionpresupuestoFacade getFacade() {
         return ejbFacade;
     }
+    
+    private PresupuestoTareaFacade getPstFacade() {
+        return pstFacade;
+    }
 
     public PaginationHelper getPagination() {
         if (pagination == null) {
@@ -244,6 +253,19 @@ public class ModificacionpresupuestoController implements Serializable {
         try {
             
             // Modificar las propiedades de los objetos PresupuestoTarea correspondientes y Persistir
+            for(Modificacionpresupuesto modificacion : this.getModificaciones()){
+                
+                // modificar el valor de presupuesto del presupuesto tarea de acuerdo al valor de la modificacion
+                PresupuestoTarea pst = modificacion.getPresupuestotareaid();
+                pst.setTotal(pst.getTotal().add(modificacion.getModificacion()));
+                
+                // actualizamos la bd
+                getPstFacade().edit(pst);
+                
+                // persistimos la modificacion
+                getFacade().create(modificacion);
+                
+            }
             
             // Persistir las ModificacionPresupuesto
             
