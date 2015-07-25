@@ -136,7 +136,10 @@
                                     </p:row>
                                 </p:panelGrid>
                                 
-                                <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" var="item" style="padding: 0px; width: 100%; margin: 5px auto; overflow: hidden;" styleClass="tabla fuente10"  >
+                                <p:treeTable id="tablapresupuesto" value="#{modificacionpresupuestoController.root}" 
+                                             var="item" 
+                                             style="padding: 0px; width: 100%; margin: 5px auto; overflow: hidden;" 
+                                             styleClass="tablaArbol fuente10"  >
                                     <f:facet name="header">
                                         <h:outputText value="Presupuesto" />
                                     </f:facet>
@@ -171,8 +174,13 @@
                                     </p:column>
                                     <p:columnGroup type="footer">
                                         <p:row>
-                                            <p:column colspan="6" style="text-align:right" footerText="Totales:" />
-                                            <p:column footerText="#{presupuestoTareaController.sumatotal}" style="text-align: right;" />
+                                            <p:column colspan="3" style="text-align:right" footerText="Totales:" />
+                                            <p:column footerText="$ #{presupuestoTareaController.sumatotal}" style="text-align: right;" />
+                                            <p:column footerText="$ #{modificacionpresupuestoController.totalSolicitudes}" style="text-align: right;" />
+                                            <p:column footerText="$ #{modificacionpresupuestoController.totalSinModificaciones}" style="text-align: right;" />
+                                            <p:column footerText="$ #{modificacionpresupuestoController.totalModificaciones}" style="text-align: right;" />
+                                            <p:column footerText="$ #{modificacionpresupuestoController.totalImportesFinales}" style="text-align: right;" />
+                                            <p:column footerText=" "  />
                                         </p:row>
                                     </p:columnGroup>
                                 </p:treeTable>

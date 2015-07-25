@@ -52,6 +52,52 @@ public class ModificacionpresupuestoController implements Serializable {
     private Float presupuestoDiferencia = 0f;
     
     private String operacion = "";
+    
+    // Totales
+    // Suma Total de Solicitudes
+    private Float totalSolicitudes;
+    
+    // Suma Total de Disponible (SinModificaciones)
+    private Float totalSinModificaciones;
+    
+    // Suma Total de Modificaciones
+    private Float totalModificaciones;
+    
+    // Suma Total de Importes finales
+    private Float totalImportesFinales;
+
+    public Float getTotalSolicitudes() {
+        return totalSolicitudes;
+    }
+
+    public void setTotalSolicitudes(Float totalSolicitudes) {
+        this.totalSolicitudes = totalSolicitudes;
+    }
+
+    public Float getTotalSinModificaciones() {
+        return totalSinModificaciones;
+    }
+
+    public void setTotalSinModificaciones(Float totalSinModificaciones) {
+        this.totalSinModificaciones = totalSinModificaciones;
+    }
+
+    public Float getTotalModificaciones() {
+        return totalModificaciones;
+    }
+
+    public void setTotalModificaciones(Float totalModificaciones) {
+        this.totalModificaciones = totalModificaciones;
+    }
+
+    public Float getTotalImportesFinales() {
+        return totalImportesFinales;
+    }
+
+    public void setTotalImportesFinales(Float totalImportesFinales) {
+        this.totalImportesFinales = totalImportesFinales;
+    }
+    
 
     public String getOperacion() {
         return operacion;
@@ -97,13 +143,6 @@ public class ModificacionpresupuestoController implements Serializable {
 
     public void setPiSeleccionado(PresupuestoItem piSeleccionado) {
         this.piSeleccionado = piSeleccionado;
-        
-        System.out.println("setPiSeleccionado >> " + piSeleccionado.getPresupuestoTarea().getDescripcion());
-        System.out.println("setPiSeleccionado >> importeOriginal " + piSeleccionado.getImporteOriginal());
-        System.out.println("setPiSeleccionado >> getImporteSolicitudes " + piSeleccionado.getImporteSolicitudes());
-        System.out.println("setPiSeleccionado >> getImporteSinModificacion " + piSeleccionado.getImporteSinModificacion());
-        System.out.println("setPiSeleccionado >> getImporteModificacion " + piSeleccionado.getImporteModificacion());
-        System.out.println("setPiSeleccionado >> getImporteFinal " + piSeleccionado.getImporteFinal());
     }
 
     public List<PresupuestoItem> getItemsPresupuesto() {
@@ -203,6 +242,11 @@ public class ModificacionpresupuestoController implements Serializable {
 
     public String create() {
         try {
+            
+            // Modificar las propiedades de los objetos PresupuestoTarea correspondientes y Persistir
+            
+            // Persistir las ModificacionPresupuesto
+            
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ModificacionpresupuestoCreated"));
             return prepareCreate();
@@ -364,7 +408,7 @@ public class ModificacionpresupuestoController implements Serializable {
         
         SolicitudController solicitudController = (SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
         
-        BigDecimal sumatotaldinerodisponible = BigDecimal.ZERO;
+        
         
         BigDecimal sumaTotalSolicitudesPst = BigDecimal.ZERO;
         BigDecimal sumaTotalModificacionesPst = BigDecimal.ZERO;
@@ -376,6 +420,11 @@ public class ModificacionpresupuestoController implements Serializable {
         BigDecimal sumaTotalEtapa = BigDecimal.ZERO;
         BigDecimal sumaTotalSolicitudesEtapa = BigDecimal.ZERO;
         BigDecimal sumaTotalModificacionesEtapa = BigDecimal.ZERO;
+        
+        BigDecimal sumaTotalSolicitudes = BigDecimal.ZERO;
+        BigDecimal sumaTotalDisponible = BigDecimal.ZERO;
+        BigDecimal sumaTotalModificaciones = BigDecimal.ZERO;
+        BigDecimal sumaTotalImportesFinales = BigDecimal.ZERO;
 
         List<PresupuestoItem> sumatoriaPorEtapa = new ArrayList<PresupuestoItem>();
         List<PresupuestoItem> sumatoriaPorTarea = new ArrayList<PresupuestoItem>();
@@ -478,7 +527,11 @@ public class ModificacionpresupuestoController implements Serializable {
             pi.setImporteModificacion(sumaTotalModificacionesEtapa.floatValue());
             pi.setImporteFinal(pi.getImporteSinModificacion() + sumaTotalModificacionesEtapa.floatValue());
 
-            sumatotaldinerodisponible = sumatotaldinerodisponible.add(new BigDecimal(pi.getImporteSinModificacion()));
+            // Totales Generales
+            sumaTotalSolicitudes = sumaTotalSolicitudes.add(sumaTotalSolicitudesEtapa);
+            sumaTotalDisponible = sumaTotalDisponible.add(new BigDecimal(pi.getImporteSinModificacion()));
+            sumaTotalModificaciones = sumaTotalModificaciones.add(sumaTotalModificacionesEtapa);
+            sumaTotalImportesFinales = sumaTotalImportesFinales.add(new BigDecimal(pi.getImporteFinal()));
             
             sumatoriaPorEtapa.add(ie, pi);
 
@@ -486,7 +539,12 @@ public class ModificacionpresupuestoController implements Serializable {
 
         }
         
-        this.presupuestoDisponible = sumatotaldinerodisponible.floatValue();
+        // Totales Generales a Propiedades del Managed Bean
+        this.setPresupuestoDisponible(sumaTotalDisponible.floatValue());
+        this.setTotalSolicitudes(sumaTotalSolicitudes.floatValue());
+        this.setTotalSinModificaciones(sumaTotalDisponible.floatValue());
+        this.setTotalModificaciones(sumaTotalModificaciones.floatValue());
+        this.setTotalImportesFinales(sumaTotalImportesFinales.floatValue());
         
         root = new DefaultTreeNode(new PresupuestoItem(), null);
         root.setExpanded(false);

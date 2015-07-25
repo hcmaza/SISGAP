@@ -227,6 +227,30 @@ border-color: transparent;*/
   border-right: none !important;
 }
 
+.tablaArbol tbody td {
+  //border-color: #4B4B4B;
+  border-color: #878787 !important;
+  border-width: 2px !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.tablaArbol thead td {
+  //border-color: #4B4B4B;
+  border-color: #878787 !important;
+  border-width: 2px !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.tablaArbol tr{
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    
+}
+
+
 .panelgrid tbody td {
   //border-color: #4B4B4B;
   border-color: #878787 !important;
