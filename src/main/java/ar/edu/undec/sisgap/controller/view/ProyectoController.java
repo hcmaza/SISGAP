@@ -2206,10 +2206,12 @@ public class ProyectoController implements Serializable {
         this.tareaagentesproyecto = tareaagentesproyecto;
     }
 
-    public void prepareSolicitud() {
+    public String prepareSolicitud() {
 
         current = null;
         this.recreateModel();
+        
+        return "/secure/solicitud/Solicitud.xhtml";
 
     }
 
