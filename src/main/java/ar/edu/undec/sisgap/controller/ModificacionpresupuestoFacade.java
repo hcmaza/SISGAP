@@ -42,9 +42,12 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Modificacionpresupuesto;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -62,6 +65,19 @@ public class ModificacionpresupuestoFacade extends AbstractFacade<Modificacionpr
 
     public ModificacionpresupuestoFacade() {
         super(Modificacionpresupuesto.class);
+    }
+    
+    public List<Modificacionpresupuesto> obtenerPorProyecto(int proyectoid) {
+        try {
+            //Query consulta = em.createQuery("SELECT r FROM Modificacionpresupuesto r WHERE r.id IN (SELECT s.rendicionid.id FROM Solicitud s WHERE s.presupuestotarea.tarea.etapaid.proyectoid.id = :proyectoid)", Rendicion.class);
+            Query consulta = em.createQuery("SELECT mp FROM Modificacionpresupuesto mp WHERE mp.presupuestotareaid.tarea.etapaid.proyectoid.id = :proyectoid", Modificacionpresupuesto.class);
+            consulta.setParameter("proyectoid", proyectoid);
+            return consulta.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("ModificacionpresupuestoFacade - obtenerPorProyecto");
+            return new ArrayList<Modificacionpresupuesto>();
+        }
     }
     
 }

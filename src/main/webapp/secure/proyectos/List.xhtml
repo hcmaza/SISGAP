@@ -148,6 +148,10 @@
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
                                         </p:menuitem>
                                         
+                                        <p:menuitem value="Lista: Modificaciones Presupuesto" rendered="#{item.estadoproyectoid.id eq 8 || item.estadoproyectoid.id eq 11}" action="#{modificacionpresupuestoController.prepareList}" ajax="false" icon="ui-icon-clipboard" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
+                                        
 
                                     </c:if>
                                 </p:menuButton>

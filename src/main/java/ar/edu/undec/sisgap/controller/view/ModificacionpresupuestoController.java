@@ -215,7 +215,11 @@ public class ModificacionpresupuestoController implements Serializable {
 
     public String prepareList() {
         recreateModel();
-        return "List";
+        return "ListModificacionesPorProyecto";
+    }
+    
+    public void obtenerPorProyecto(int proyectoid) {
+        items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
 
     public String prepareView() {
