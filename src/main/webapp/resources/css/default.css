@@ -45,6 +45,14 @@ table {
     empty-cells: show;
 }
 
+.menu-ancho{
+    width: 220px !important;
+}
+
+/*.ui-menu{
+    
+}*/
+
 .fondoTextura{
     background-image: url("#{resource['img:/tweed.png']}");
     background-repeat: repeat;
