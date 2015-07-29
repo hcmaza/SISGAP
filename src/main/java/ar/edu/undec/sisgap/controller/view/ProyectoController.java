@@ -1968,7 +1968,7 @@ public class ProyectoController implements Serializable {
                 listaE.add(obj);     
                 total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
                 totalEjecutado+=obj.getEjecutadoProyecto();                            
-                for(Solicitud s : this.ejbsolicitud.obtenerEjecucionPorProyecto(e.getId())){
+                for(Solicitud s : this.ejbsolicitud.obtenerAprobadasPorProyecto(e.getId())){
                     totalRendir+=s.getImporte().floatValue();
                 }
                 Solicitud unaSolicitud=new Solicitud();

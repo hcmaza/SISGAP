@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -497,19 +498,38 @@ public class SolicitudactaController implements Serializable {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
     
-    public void pdfSolicitudesEvaluadas() throws JRException, IOException {       
-        // Obtengo la ruta absoluta del archivo compilado del reporte
+    public void pdfSolicitudesEvaluadas() throws JRException, IOException {           
+        FacesContext context = FacesContext.getCurrentInstance();
+        IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
+         // Obtengo la ruta absoluta del archivo compilado del reporte
         String rutaJasper = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/secure/reportes/solicitudesEvaluadas.jasper");
         
         JRDataSource solicitudes = new JRBeanCollectionDataSource(this.listaSolicitudesAprobadas);
-        float total= 0.0F;
+        indicadorescontroller.calcularSaldosPorRubro();
+        //HashMap<String, Float> saldosRubro= indicadorescontroller.getListaSaldosRubro();        
+        List<String> rubros= new ArrayList<String>(indicadorescontroller.getListaSaldosRubro().keySet());        
+        List<Float> saldosRubro = new ArrayList<Float>(indicadorescontroller.getListaSaldosRubro().values()); 
+        float totalSolicitado= 0.0F;
+        float totalItem= 0.0F;
+        int index=-1;
         for(Solicitud s: listaSolicitudesAprobadas){
-            total+= s.getImporte().floatValue();
+            totalItem += s.getPresupuestotarea().getTotal().floatValue();
+            totalSolicitado+= s.getImporte().floatValue();
+            for(String r: rubros){
+                if(s.getPresupuestotarea().getRubro().getRubro().toString()== r.toString()){
+                    index=rubros.indexOf(r);
+                    System.out.println("###########");
+                }
+            }
         }
+        //System.out.println("###########  Rubro Seleccionado: " + rubros.get(index));
+        //System.out.println("###########  Rubro Saldo: " + saldosRubro.get(index));
+                                
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("solicitudes", solicitudes);
-        parametros.put("total", total);
+        parametros.put("total", totalSolicitado);
+        parametros.put("saldoItem", totalItem - totalSolicitado);
         
         // Llenamos el reporte
         JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, new JREmptyDataSource());
