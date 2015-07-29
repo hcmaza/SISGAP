@@ -42,6 +42,7 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -149,6 +150,11 @@ public class Traslado implements Serializable {
 
     @XmlTransient
     public List<Pasajero> getPasajeroList() {
+        
+        if(pasajeroList == null){
+            pasajeroList = new ArrayList<Pasajero>();
+        }
+        
         return pasajeroList;
     }
 

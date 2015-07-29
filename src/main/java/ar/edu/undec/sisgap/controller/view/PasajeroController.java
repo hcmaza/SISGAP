@@ -40,6 +40,10 @@ public class PasajeroController implements Serializable {
         return current;
     }
 
+    public void setSelected(Pasajero pasajero) {
+        this.current = pasajero;
+    }
+
     private PasajeroFacade getFacade() {
         return ejbFacade;
     }
@@ -226,6 +230,10 @@ public class PasajeroController implements Serializable {
             }
         }
 
+    }
+    
+    public void nuevoPasajero(){
+        current = new Pasajero();
     }
 
 }

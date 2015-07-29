@@ -4,8 +4,11 @@ import ar.edu.undec.sisgap.model.Traslado;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TrasladoFacade;
+import ar.edu.undec.sisgap.model.Pasajero;
+import ar.edu.undec.sisgap.model.Solicitud;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -226,6 +229,26 @@ public class TrasladoController implements Serializable {
             }
         }
 
+    }
+    
+    public void agregarPasajero(){
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        PasajeroController pasajeroController = (PasajeroController) context.getApplication().evaluateExpressionGet(context, "#{pasajeroController}", PasajeroController.class);
+        
+        this.current.getPasajeroList().add(pasajeroController.getSelected());
+    }
+    
+    public void quitarPasajero(Pasajero pasajero){
+
+        // se quita de la lista de pasajeros
+        Iterator i = this.getSelected().getPasajeroList().iterator();
+
+        while(i.hasNext()){
+            if(((Pasajero)i.next()).getDni().equals(pasajero.getDni())){
+                i.remove();
+            }
+        }
     }
 
 }
