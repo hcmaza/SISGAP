@@ -1,15 +1,11 @@
 package ar.edu.undec.sisgap.controller.view;
 
-import ar.edu.undec.sisgap.controller.PasajeroFacade;
-import ar.edu.undec.sisgap.model.Traslado;
+import ar.edu.undec.sisgap.model.Vehiculo;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
-import ar.edu.undec.sisgap.controller.TrasladoFacade;
-import ar.edu.undec.sisgap.model.Pasajero;
-import ar.edu.undec.sisgap.model.Solicitud;
+import ar.edu.undec.sisgap.controller.VehiculoFacade;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -22,36 +18,29 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
-@ManagedBean(name = "trasladoController")
+@ManagedBean(name = "vehiculoController")
 @SessionScoped
-public class TrasladoController implements Serializable {
+public class VehiculoController implements Serializable {
 
-    private Traslado current;
+    private Vehiculo current;
     private DataModel items = null;
     @EJB
-    private ar.edu.undec.sisgap.controller.TrasladoFacade ejbFacade;
-    
-    @EJB
-    private ar.edu.undec.sisgap.controller.PasajeroFacade ejbPasajeroFacade;
+    private ar.edu.undec.sisgap.controller.VehiculoFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    public PasajeroFacade getEjbPasajeroFacade() {
-        return ejbPasajeroFacade;
+    public VehiculoController() {
     }
 
-    public TrasladoController() {
-    }
-
-    public Traslado getSelected() {
+    public Vehiculo getSelected() {
         if (current == null) {
-            current = new Traslado();
+            current = new Vehiculo();
             selectedItemIndex = -1;
         }
         return current;
     }
 
-    private TrasladoFacade getFacade() {
+    private VehiculoFacade getFacade() {
         return ejbFacade;
     }
 
@@ -79,46 +68,21 @@ public class TrasladoController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Traslado) getItems().getRowData();
+        current = (Vehiculo) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
     public String prepareCreate() {
-        current = new Traslado();
+        current = new Vehiculo();
         selectedItemIndex = -1;
         return "Create";
     }
 
     public String create() {
-        
-        System.out.println("3:" + current.getDestino());
-        System.out.println("1:" + current.getFechahoraviaje().toString());
-        System.out.println("2:" + current.getFechahoraregreso().toString());
-        
         try {
-            
-            FacesContext context = FacesContext.getCurrentInstance();
-            ProyectoController proyectoController = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-            
-            // guardar el responsable
-            current.setResponsableid(proyectoController.getSelected().getAgenteid());
-            
-            // guardar el proyecto
-            current.setProyectoid(proyectoController.getSelected());
-            
-            // persistir
-            //getFacade().create(current);
-            getFacade().createWithPersist(current);
-            
-            // persistir los pasajeros
-            for(Pasajero p : current.getPasajeroList()){
-                p.setTrasladoid(current);
-                
-                this.getEjbPasajeroFacade().create(p);
-            }
-            
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TrasladoCreated"));
+            getFacade().create(current);
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("VehiculoCreated"));
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -127,7 +91,7 @@ public class TrasladoController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Traslado) getItems().getRowData();
+        current = (Vehiculo) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
@@ -135,7 +99,7 @@ public class TrasladoController implements Serializable {
     public String update() {
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TrasladoUpdated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("VehiculoUpdated"));
             return "View";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -144,7 +108,7 @@ public class TrasladoController implements Serializable {
     }
 
     public String destroy() {
-        current = (Traslado) getItems().getRowData();
+        current = (Vehiculo) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
@@ -168,7 +132,7 @@ public class TrasladoController implements Serializable {
     private void performDestroy() {
         try {
             getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TrasladoDeleted"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("VehiculoDeleted"));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
         }
@@ -224,16 +188,16 @@ public class TrasladoController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    @FacesConverter(forClass = Traslado.class)
-    public static class TrasladoControllerConverter implements Converter {
+    @FacesConverter(forClass = Vehiculo.class)
+    public static class VehiculoControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TrasladoController controller = (TrasladoController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "trasladoController");
+            VehiculoController controller = (VehiculoController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "vehiculoController");
             return controller.ejbFacade.find(getKey(value));
         }
 
@@ -254,34 +218,14 @@ public class TrasladoController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Traslado) {
-                Traslado o = (Traslado) object;
+            if (object instanceof Vehiculo) {
+                Vehiculo o = (Vehiculo) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Traslado.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Vehiculo.class.getName());
             }
         }
 
-    }
-    
-    public void agregarPasajero(){
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        PasajeroController pasajeroController = (PasajeroController) context.getApplication().evaluateExpressionGet(context, "#{pasajeroController}", PasajeroController.class);
-        
-        this.current.getPasajeroList().add(pasajeroController.getSelected());
-    }
-    
-    public void quitarPasajero(Pasajero pasajero){
-
-        // se quita de la lista de pasajeros
-        Iterator i = this.getSelected().getPasajeroList().iterator();
-
-        while(i.hasNext()){
-            if(((Pasajero)i.next()).getDni().equals(pasajero.getDni())){
-                i.remove();
-            }
-        }
     }
 
 }

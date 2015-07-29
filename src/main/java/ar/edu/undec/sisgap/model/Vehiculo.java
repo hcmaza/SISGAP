@@ -42,89 +42,49 @@
 package ar.edu.undec.sisgap.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author tinchopy
  */
 @Entity
-@Table(name = "traslado", schema = "ap")
-@SequenceGenerator(name="traslados_id_seq", sequenceName="ap.traslados_id_seq", allocationSize=1)
+@Table(name = "vehiculo", schema = "ap")
+@SequenceGenerator(name="vehiculo_id_seq", sequenceName="ap.vehiculo_id_seq", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Traslado.findAll", query = "SELECT t FROM Traslado t"),
-    @NamedQuery(name = "Traslado.findById", query = "SELECT t FROM Traslado t WHERE t.id = :id"),
-    @NamedQuery(name = "Traslado.findByFechahoraviaje", query = "SELECT t FROM Traslado t WHERE t.fechahoraviaje = :fechahoraviaje"),
-    @NamedQuery(name = "Traslado.findByFechahoraregreso", query = "SELECT t FROM Traslado t WHERE t.fechahoraregreso = :fechahoraregreso"),
-    @NamedQuery(name = "Traslado.findByDestino", query = "SELECT t FROM Traslado t WHERE t.destino = :destino")})
-public class Traslado implements Serializable {
+    @NamedQuery(name = "Vehiculo.findAll", query = "SELECT v FROM Vehiculo v"),
+    @NamedQuery(name = "Vehiculo.findById", query = "SELECT v FROM Vehiculo v WHERE v.id = :id"),
+    @NamedQuery(name = "Vehiculo.findByDescripcion", query = "SELECT v FROM Vehiculo v WHERE v.descripcion = :descripcion"),
+    @NamedQuery(name = "Vehiculo.findByCapacidad", query = "SELECT v FROM Vehiculo v WHERE v.capacidad = :capacidad")})
+public class Vehiculo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="traslados_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="vehiculo_id_seq")
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Integer id;
-    
-    @Column(name = "fechahoraviaje")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechahoraviaje;
-    
-    @Column(name = "fechahoraregreso")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechahoraregreso;
-    
     @Size(max = 100)
-    @Column(name = "destino", length = 100)
-    private String destino;
-    
-    @OneToMany(mappedBy = "trasladoid")
-    private List<Pasajero> pasajeroList;
-    
-    @JoinColumn(name = "proyectoid", referencedColumnName = "id")
-    @ManyToOne
-    private Proyecto proyectoid;
-    
-    @JoinColumn(name = "responsableid", referencedColumnName = "id")
-    @ManyToOne
-    private Agente responsableid;
-    
-    @JoinColumn(name = "vehiculoid", referencedColumnName = "id")
-    @ManyToOne
-    private Vehiculo vehiculoid;
+    @Column(name = "descripcion", length = 100)
+    private String descripcion;
+    @Column(name = "capacidad")
+    private Integer capacidad;
 
-    public Vehiculo getVehiculoid() {
-        return vehiculoid;
+    public Vehiculo() {
     }
 
-    public void setVehiculoid(Vehiculo vehiculoid) {
-        this.vehiculoid = vehiculoid;
-    }
-
-    public Traslado() {
-    }
-
-    public Traslado(Integer id) {
+    public Vehiculo(Integer id) {
         this.id = id;
     }
 
@@ -136,58 +96,20 @@ public class Traslado implements Serializable {
         this.id = id;
     }
 
-    public Date getFechahoraviaje() {
-        return fechahoraviaje;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setFechahoraviaje(Date fechahoraviaje) {
-        this.fechahoraviaje = fechahoraviaje;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public Date getFechahoraregreso() {
-        return fechahoraregreso;
+    public Integer getCapacidad() {
+        return capacidad;
     }
 
-    public void setFechahoraregreso(Date fechahoraregreso) {
-        this.fechahoraregreso = fechahoraregreso;
-    }
-
-    public String getDestino() {
-        return destino;
-    }
-
-    public void setDestino(String destino) {
-        this.destino = destino;
-    }
-
-    @XmlTransient
-    public List<Pasajero> getPasajeroList() {
-        
-        if(pasajeroList == null){
-            pasajeroList = new ArrayList<Pasajero>();
-        }
-        
-        return pasajeroList;
-    }
-
-    public void setPasajeroList(List<Pasajero> pasajeroList) {
-        this.pasajeroList = pasajeroList;
-    }
-
-    public Proyecto getProyectoid() {
-        return proyectoid;
-    }
-
-    public void setProyectoid(Proyecto proyectoid) {
-        this.proyectoid = proyectoid;
-    }
-
-    public Agente getResponsableid() {
-        return responsableid;
-    }
-
-    public void setResponsableid(Agente responsableid) {
-        this.responsableid = responsableid;
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
     }
 
     @Override
@@ -200,10 +122,10 @@ public class Traslado implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Traslado)) {
+        if (!(object instanceof Vehiculo)) {
             return false;
         }
-        Traslado other = (Traslado) object;
+        Vehiculo other = (Vehiculo) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -212,7 +134,8 @@ public class Traslado implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.edu.undec.sisgap.model.Traslado[ id=" + id + " ]";
+        //return "ar.edu.undec.sisgap.model.Vehiculo[ id=" + id + " ]";
+        return this.getDescripcion();
     }
     
 }

@@ -305,22 +305,21 @@
                             <p:tab id="ttraslado" title="Traslados" >
                                 
                                 <h:panelGrid columns="2">
-                                    <p:outputLabel value="#{bundle.CreateTrasladoLabel_fechahoraviaje}" for="fechahoraviaje" />
-                                    <p:calendar id="fechahoraviaje" value="#{trasladoController.selected.fechahoraviaje}" pattern="MM/dd/yyyy HH:mm:ss" />
+                                    <p:outputLabel value="Fecha y Hora de Viaje" for="fechahoraviaje" />
+                                    <p:calendar id="fechahoraviaje" value="#{trasladoController.selected.fechahoraviaje}" pattern="dd/MM/yyyy HH:mm:ss" />
 
-                                    <p:outputLabel value="#{bundle.CreateTrasladoLabel_fechahoraregreso}" for="fechahoraregreso" />
-                                    <p:calendar id="fechahoraregreso" value="#{trasladoController.selected.fechahoraregreso}" pattern="MM/dd/yyyy HH:mm:ss" />
+                                    <p:outputLabel value="Fecha y Hora de Regreso" for="fechahoraregreso" />
+                                    <p:calendar id="fechahoraregreso" value="#{trasladoController.selected.fechahoraregreso}" pattern="dd/MM/yyyy HH:mm:ss" />
 
                                     <p:outputLabel value="#{bundle.CreateTrasladoLabel_destino}" for="destino" />
                                     <p:inputText id="destino" value="#{trasladoController.selected.destino}" title="#{bundle.CreateTrasladoTitle_destino}" />
 
-                                    <p:outputLabel value="#{bundle.CreateTrasladoLabel_proyectoid}" for="proyectoid" />
-                                    <p:selectOneMenu id="proyectoid" value="#{trasladoController.selected.proyectoid}" >
-                                        <f:selectItems value="#{proyectoController.itemsAvailableSelectOne}"/>
-                                    </p:selectOneMenu>
                                     <p:outputLabel value="#{bundle.CreateTrasladoLabel_responsableid}" for="responsableid" />
-                                    <p:selectOneMenu id="responsableid" value="#{trasladoController.selected.responsableid}"  >
-                                        <f:selectItems value="#{agenteController.itemsAvailableSelectOne}"/>
+                                    <p:outputLabel id="responsableid" value="#{proyectoController.selected.agenteid.apellido}, #{proyectoController.selected.agenteid.nombres}"  />
+                                    
+                                    <p:outputLabel value="Vehículo" for="vehiculoid" />
+                                    <p:selectOneMenu id="vehiculoid" value="#{trasladoController.selected.vehiculoid}"  >
+                                        <f:selectItems value="#{vehiculoController.itemsAvailableSelectOne}"/>
                                     </p:selectOneMenu>
                                 </h:panelGrid>
                                 
@@ -350,7 +349,7 @@
                                 </p:dataTable>
                                 
                                 <div align="center">
-                                    <p:commandButton action="#{trasladoController.create}" value="Crear Traslado" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinalrendicion').show();" immediate="true" />
+                                    <p:commandButton action="#{trasladoController.create}" value="Crear Traslado" style="display: inline-block; margin-top: 5px;" icon="ui-icon-disk" update=":formprincipal:pprincipal" oncomplete="PF('dfinaltraslado').show();" />
                                 </div>
                                 
                             </p:tab>
