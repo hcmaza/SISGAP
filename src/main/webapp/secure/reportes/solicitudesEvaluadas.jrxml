@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="solicitudesEvaluadas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="780753e8-2b7f-4c9e-bae6-18ef94f4a212">
 	<property name="ireport.zoom" value="0.9075000000000002"/>
-	<property name="ireport.x" value="26"/>
-	<property name="ireport.y" value="44"/>
+	<property name="ireport.x" value="30"/>
+	<property name="ireport.y" value="96"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -36,6 +36,8 @@
 		<defaultValueExpression><![CDATA["E:\\Java\\Proyecto Wayra\\src\\main\\webapp\\secure\\reportes\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="total" class="java.lang.Float"/>
+	<parameter name="saldoItem" class="java.lang.Float"/>
+	<parameter name="saldoRubro" class="java.lang.Float"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -48,9 +50,9 @@
 		</band>
 	</title>
 	<detail>
-		<band height="145">
+		<band height="246">
 			<rectangle radius="0">
-				<reportElement mode="Opaque" x="0" y="5" width="802" height="15" backcolor="#000000" uuid="cf532e9d-68c7-433c-b9f9-e1ebdba0ce79">
+				<reportElement mode="Opaque" x="0" y="5" width="802" height="15" backcolor="#00CCFF" uuid="cf532e9d-68c7-433c-b9f9-e1ebdba0ce79">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -169,14 +171,14 @@
 			<staticText>
 				<reportElement positionType="Float" x="0" y="103" width="722" height="20" uuid="f8f5465a-cde3-4aaf-8ebf-40766b5de64b"/>
 				<textElement textAlignment="Left">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Solicitado]]></text>
 			</staticText>
 			<textField>
 				<reportElement positionType="Float" x="722" y="103" width="80" height="20" uuid="11ceb61a-f8eb-4860-9a93-212c42cb602b"/>
 				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["$ " + $P{total}]]></textFieldExpression>
 			</textField>
@@ -186,6 +188,40 @@
 					<pen lineWidth="1.25"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement x="722" y="168" width="80" height="20" uuid="7b99245a-1813-488a-8b02-12193bce9588"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["$ " + $P{saldoItem}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="163" width="802" height="1" uuid="ebcd9492-0c25-4468-be12-a0d7527ad1ac"/>
+				<graphicElement>
+					<pen lineWidth="1.25"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="168" width="722" height="20" uuid="81c9422a-aa04-4797-90ab-51ebf9377c76"/>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Saldo Disponible en el Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="199" width="722" height="20" uuid="84310424-f803-4de5-9780-ca0deb1a7a72"/>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Saldo Disponible en el Rubro]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="722" y="199" width="80" height="20" uuid="62d01275-cad7-4885-aeba-583a7dbd82a7"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{saldoRubro}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>

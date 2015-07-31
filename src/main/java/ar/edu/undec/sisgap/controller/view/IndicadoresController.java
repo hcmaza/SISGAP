@@ -337,14 +337,9 @@ public class IndicadoresController implements Serializable {
                 // Acumulamos en la lista de ejecutado por rubro
                 if (irt.getId() == solicitud.getPresupuestotarea().getRubro().getId()) {
                     irt.setMonto(irt.getMonto() + solicitud.getImporte().floatValue());
-                    System.out.println("ItemRubro monto = " + irt.getMonto());
                 }
             }
 
-        }
-
-        for (ItemRubro ir : ejecutado) {
-            System.out.println("Ejecutado Rubro: " + ir.getId() + " - " + ir.getNombrerubro() + " = " + ir.getMonto());
         }
 
         // Ejecutado por Rubro
@@ -409,14 +404,6 @@ public class IndicadoresController implements Serializable {
             }
         });
         
-        for(Solicitud s : colSolicitudes){
-            System.out.println("SOLICITUD: " + s.getFechasolicitud().toString() + " - " + s.getImporte().toPlainString());
-        }
-        
-        for(Desembolso d : colDesembolsos){
-            System.out.println("DESEMBOLSO: " + d.getFechacarga().toString() + " - " + d.getMonto().toPlainString());
-        }
-
         // Formato de fecha
         //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy"); 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
@@ -492,8 +479,6 @@ public class IndicadoresController implements Serializable {
         
         porcentajeEjecutado = (ejecutadoProyecto / totalPresupuestoProyecto) * 100;
         
-        System.out.println("INDICADORES: porcentajeEjecutado = " + porcentajeEjecutado);
-
         //return new MeterGaugeChartModel(Integer.parseInt(String.valueOf(ejecutado)), intervalos);
         return new MeterGaugeChartModel((int) porcentajeEjecutado, intervalos);
     }
@@ -521,7 +506,6 @@ public class IndicadoresController implements Serializable {
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
 
         totalPresupuestoProyecto = this.getPresupuestoTareaFacade().obtenerTotalPorProyecto(proyectocontroller.getSelected().getId());
-        System.out.println("INDICADORES: totalPresupuestoProyecto = " + totalPresupuestoProyecto);
     }
 
     public void calcularPendienteRendicion() {

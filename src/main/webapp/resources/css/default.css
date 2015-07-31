@@ -45,6 +45,14 @@ table {
     empty-cells: show;
 }
 
+.menu-ancho{
+    width: 220px !important;
+}
+
+/*.ui-menu{
+    
+}*/
+
 .fondoTextura{
     background-image: url("#{resource['img:/tweed.png']}");
     background-repeat: repeat;
@@ -90,6 +98,15 @@ border-color: transparent;*/
     
     display: block;
     margin: 0 0 auto 150px;
+    text-align: center;
+    height: 70%;
+    width: auto;
+}
+
+.centrarEnFieldSetAnchoTotal{
+    
+    display: block;
+    margin: 0 0 auto 235px;
     text-align: center;
     height: 70%;
     width: auto;
@@ -194,6 +211,14 @@ border-color: transparent;*/
     background: none repeat scroll 0 0 #F1F7F9 !important;
 }
 
+.fuente10{
+    font-size: 10px !important;
+}
+
+.fuente11{
+    font-size: 11px !important;
+}
+
 .tabla tbody td {
   //border-color: #4B4B4B;
   border-color: #878787 !important;
@@ -209,6 +234,30 @@ border-color: transparent;*/
   border-left: none !important;
   border-right: none !important;
 }
+
+.tablaArbol tbody td {
+  //border-color: #4B4B4B;
+  border-color: #878787 !important;
+  border-width: 2px !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.tablaArbol thead td {
+  //border-color: #4B4B4B;
+  border-color: #878787 !important;
+  border-width: 2px !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.tablaArbol tr{
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    
+}
+
 
 .panelgrid tbody td {
   //border-color: #4B4B4B;
@@ -407,4 +456,20 @@ border-color: transparent;*/
 
     border-radius:40px;
     box-shadow:3px 3px 3px gray;
+}
+
+.colorGris{
+    color: #878787;
+}
+
+.colorAzul{
+    color: teal;
+}
+
+.colorVerde{
+    color: #94D352;
+}
+
+.colorRojo{
+    color: #E02424;
 }

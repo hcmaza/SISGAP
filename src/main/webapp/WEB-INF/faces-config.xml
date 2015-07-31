@@ -23,6 +23,18 @@
             <base-name>/Bundle</base-name>
             <var>bundle</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
     </application>
     
     <!--    <factory>
@@ -70,5 +82,14 @@
             <from-outcome>ListRendicionesPorProyecto</from-outcome>
             <to-view-id>/secure/rendicion/ListRendicionesPorProyecto.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>CreateModificacionPresupuesto</from-outcome>
+            <to-view-id>/secure/modificacionpresupuesto/Create.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>ListModificacionesPorProyecto</from-outcome>
+            <to-view-id>/secure/modificacionpresupuesto/ListModificacionesPorProyecto.xhtml</to-view-id>
+        </navigation-case>
+        
     </navigation-rule>
 </faces-config>

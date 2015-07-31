@@ -1494,15 +1494,8 @@ public class ProyectoController implements Serializable {
                     e.setProyectoid(current);
                 }
 
-                for (Tarea t : e.getTareaList()) {
-
-                    if (t.getId() == null) {
-                        t.setFechacreacion(new Date());
-                    }
-                    t.setFechamodificacion(new Date());
-
-                }
                 List<Tarea> OldTarea = e.getTareaList();
+                
                 e.setTareaList(null);
                 if (e.getId() == null) {
                     ejbetapa.createWithPersist(e);
@@ -1517,18 +1510,45 @@ public class ProyectoController implements Serializable {
                             t.setEtapaid(e);
                         }
                         List<TareaAgente> OldTareaAgente = t.getTareaAgenteList();
+                        List<PresupuestoTarea> OldPresupuestoTarea = t.getPresupuestoTareaList();
+
                         t.setTareaAgenteList(null);
+                        t.setPresupuestoTareaList(null);
+                                               
+                        t.setTareaAgenteList(null);
+                        System.out.println("");
                         // System.out.println("tarea -> "+t.getId());
-                        if ((t.getId() == null)) {
+                       
+                                
+                        if ((t.getFechacreacion() == null)) {
+                            t.setId(null);
+                            t.setFechacreacion(new Date());
                             this.ejbtarea.createWithPersist(t);
                         } else {
+                            t.setFechamodificacion(new Date());
                             this.ejbtarea.edit(t);
                         }
+                        
+                        //inserto tarea avance
+                        Tareaavance tav = new Tareaavance();
+                        tav.setAvance(t.getAvance());
+                        tav.setFecha(new Date());
+                        tav.setFechainicio(t.getFechainicio());
+                        tav.setFechafinal(t.getFechafin());
+                        tav.setTareaid(t);
+                        tav.setId(null);
+                        this.ejbtareaavance.create(tav);
                         if (OldTareaAgente != null) {
                             for (TareaAgente ta : OldTareaAgente) {
                                 ta.setTareaid(t);
 
                                 ejbtareaagente.create(ta);
+                            }
+                        }
+                        if (OldPresupuestoTarea != null) {
+                            for (PresupuestoTarea pt : OldPresupuestoTarea) {
+                                pt.setTarea(t);
+                                ejbpresupuestotarea.create(pt);
                             }
                         }
                     }
@@ -1562,19 +1582,20 @@ public class ProyectoController implements Serializable {
             }
 
             for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
+                if(e.getTareaList()!=null){
+                    for (Tarea t : e.getTareaList()) {
+                        //  System.out.println("tarea db "+t.getTarea());
+                        for (Tarea tl : listadocompletotareas) {
 
-                for (Tarea t : e.getTareaList()) {
-                    //  System.out.println("tarea db "+t.getTarea());
-                    for (Tarea tl : listadocompletotareas) {
-
-                        //System.out.println("tarea local "+tl.getTarea());
-                        if (t.getId() == tl.getId()) {
-                            encontrotarea = true;
+                            //System.out.println("tarea local "+tl.getTarea());
+                            if (t.getId() == tl.getId()) {
+                                encontrotarea = true;
+                            }
                         }
-                    }
-                    if (!encontrotarea) {
-                        ejbtarea.remove(t);
-                        encontrotarea = false;
+                        if (!encontrotarea) {
+                            ejbtarea.remove(t);
+                            encontrotarea = false;
+                        }
                     }
                 }
             }
@@ -1585,31 +1606,34 @@ public class ProyectoController implements Serializable {
             for (Etapa e : oldetapas) {
 
                 System.out.println("Etapa " + e.getTareaList());
-                for (Tarea t : e.getTareaList()) {
-                    System.out.println("TAREA " + t.getTareaAgenteList());
+                if(e.getTareaList()!=null){
+                    for (Tarea t : e.getTareaList()) {
+                        System.out.println("TAREA " + t.getTareaAgenteList());
 
-                    for (TareaAgente ta : t.getTareaAgenteList()) {
-                        System.out.println("AGENTE " + ta.getAgenteid().getApellido());
-                        listadocompletotareaagente.add(ta);
+                        for (TareaAgente ta : t.getTareaAgenteList()) {
+                            System.out.println("AGENTE " + ta.getAgenteid().getApellido());
+                            listadocompletotareaagente.add(ta);
+                        }
+
                     }
-
                 }
-
             }
 
             for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
-                for (Tarea t : e.getTareaList()) {
-                    for (TareaAgente ta : t.getTareaAgenteList()) {
-                        for (TareaAgente t1 : listadocompletotareaagente) {
-                            System.out.println("for tarea " + ta.getId());
-                            if (ta.getId() == t1.getId()) {
-                                System.out.println("if = " + t1.getId());
-                                encontrotareaagente = true;
+                if(e.getTareaList()!=null){
+                    for (Tarea t : e.getTareaList()) {
+                        for (TareaAgente ta : t.getTareaAgenteList()) {
+                            for (TareaAgente t1 : listadocompletotareaagente) {
+                                System.out.println("for tarea " + ta.getId());
+                                if (ta.getId() == t1.getId()) {
+                                    System.out.println("if = " + t1.getId());
+                                    encontrotareaagente = true;
+                                }
                             }
-                        }
-                        if (!encontrotarea) {
-                            ejbtareaagente.remove(ta);
-                            encontrotareaagente = false;
+                            if (!encontrotarea) {
+                                ejbtareaagente.remove(ta);
+                                encontrotareaagente = false;
+                            }
                         }
                     }
                 }
@@ -1968,7 +1992,7 @@ public class ProyectoController implements Serializable {
                 listaE.add(obj);     
                 total+=indicadorescontroller.calcularTotalesPorProyecto(e.getId());
                 totalEjecutado+=obj.getEjecutadoProyecto();                            
-                for(Solicitud s : this.ejbsolicitud.obtenerEjecucionPorProyecto(e.getId())){
+                for(Solicitud s : this.ejbsolicitud.obtenerAprobadasPorProyecto(e.getId())){
                     totalRendir+=s.getImporte().floatValue();
                 }
                 Solicitud unaSolicitud=new Solicitud();
@@ -2206,10 +2230,12 @@ public class ProyectoController implements Serializable {
         this.tareaagentesproyecto = tareaagentesproyecto;
     }
 
-    public void prepareSolicitud() {
+    public String prepareSolicitud() {
 
         current = null;
         this.recreateModel();
+        
+        return "/secure/solicitud/Solicitud.xhtml";
 
     }
 
