@@ -62,4 +62,12 @@ public class PresupuestoTareaFacade extends AbstractFacade<PresupuestoTarea> {
         return total;
     }
     
+    public void removeWithId(int i){
+        try{
+            em.createQuery("delete from PresupuestoTarea pt where pt.id="+i).executeUpdate();
+        }catch(Exception e){
+            System.out.println("Error en presupuestotarea "+e);
+        }
+    }
+    
 }
