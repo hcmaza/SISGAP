@@ -1312,15 +1312,16 @@ public class ProyectoController implements Serializable {
 
         pr = null;
         convocatoria.setSelected(null);
-        convocatoria.setTablafiltrada(null);
+        convocatoria.setTablafiltrada(new ArrayList<Convocatoria>());
 
         current = null;
-        ap.setCollectorArchivoProyecto(null);
+        ap.setCollectorArchivoProyecto(new ArrayList<Archivoproyecto>());
         ap.setSelected(null);
         agenteViewController.setAgentes(null);
         agenteViewController.setSelected(null);
         agenteViewController.setAgente1(null);
-        agenteViewController.setCollectoragentes(null);
+        agenteViewController.setCollectoragentes(new ArrayList<Agente>());
+
     }
 
     public String soloEditar() {
@@ -1600,7 +1601,7 @@ public class ProyectoController implements Serializable {
                 }
             }
 
-    //elimino tareaagente
+   /* //elimino tareaagente
             List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
             TareaAgente tareaagenteencontrado = null;
             
@@ -1667,27 +1668,12 @@ public class ProyectoController implements Serializable {
                         }
                     }
              }
-    
-    /*  for(PresupuestoRubroitem pri: ejbpresupuestorubroitem.findByPresupuesto(presupuestocontroller.getSelected())){
-             if(presupuestorubroitemcontroller.getPresupuestosrubrositems().contains(pri)){
-              
-             }else{
-             ejbpresupuestorubroitem.remove(pri);
-             }
-          
-             }
-      
-             //Insercion de presupuestosrubrositem
-             for(PresupuestoRubroitem pri : presupuestorubroitemcontroller.getPresupuestosrubrositems()){
-             pri.setPresupuesto(presupuestocontroller.getSelected());
-             ejbpresupuestorubroitem.create(pri);
-           
-             } */
+    */
             EnviarMail enviarmail = new EnviarMail();
             // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
             todobien = true;
-
+           
            // RequestContext.getCurrentInstance().execute("PF('dfinal').show()");
             // FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/secure/solicitud/View.xhtml");
             // context4.addMessage("growlprincipal", new FacesMessage("Excelente! " + context4.getExternalContext().getUserPrincipal(),"Su Solicitud a Proyecto fue creado, en breve recibira un email"));
