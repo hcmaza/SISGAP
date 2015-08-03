@@ -116,6 +116,18 @@ public class SolicitudFacade extends AbstractFacade<Solicitud> {
     }
     
     /**
+    * Obtiene una lista de Solicitudes de un item
+    *
+     * @param presupuestotareaid
+     * @return 
+    */
+    public List<Solicitud> obtenerPorPresupuestoTareas(int presupuestotareaid){
+        Query consulta = em.createQuery("SELECT s FROM Solicitud s WHERE s.presupuestotarea.id = :presupuestotareaid", Solicitud.class);
+        consulta.setParameter("presupuestotareaid", presupuestotareaid);
+        return consulta.getResultList();
+    }
+    
+    /**
      * Ontiene una solicitud de una rendicion determinada
      * 
      * @param rendicionid
