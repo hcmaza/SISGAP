@@ -1479,16 +1479,145 @@ public class ProyectoController implements Serializable {
 
     public String enviarEditarEvaluarProyecto() {
         boolean todobien = false;
-        try {
-            FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContext.getCurrentInstance();
             EtapaController etapacontroller = (EtapaController) context.getApplication().evaluateExpressionGet(context, "#{etapaController}", EtapaController.class);
 
             PresupuestoRubroitemController presupuestorubroitemcontroller = (PresupuestoRubroitemController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoRubroitemController}", PresupuestoRubroitemController.class);
             PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
+            
+            List<Etapa> oldetapaseliminacion = new ArrayList<Etapa>();
+            for(Etapa ee:etapacontroller.getEtapas()){
+                oldetapaseliminacion.add(ee);
+            }
+            
+               //Eliminacion etapas
+            boolean encontroetapa = false;
+            boolean encontrotarea = false;
+            boolean encontrotareaagente = false;
+            Tarea tareaborrar = new Tarea();
 
+            //eliminar 
+            for (Etapa e : ejbetapa.findByProyecto(current)) {
+                if (etapacontroller.getEtapas().contains(e)) {
+
+                } else {
+                    ejbetapa.remove(e);
+                }
+
+            }
+            //elimino tareas
+            List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
+            for (Etapa e : etapacontroller.getEtapas()) {
+                if (e.getTareaList() != null) {
+                    for (Tarea t : e.getTareaList()) {
+                        listadocompletotareas.add(t);
+                    }
+                }
+
+            }
+
+            for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
+                if(e.getTareaList()!=null){
+                    for (Tarea t : e.getTareaList()) {
+                        //  System.out.println("tarea db "+t.getTarea());
+                        for (Tarea tl : listadocompletotareas) {
+
+                            //System.out.println("tarea local "+tl.getTarea());
+                            if (t.getId() == tl.getId()) {
+                                encontrotarea = true;
+                            }
+                        }
+                        if (!encontrotarea) {
+                            ejbtarea.remove(t);
+                            encontrotarea = false;
+                        }
+                    }
+                }
+            }
+
+    //elimino tareaagente
+            TareaAgente tareaagenteencontrado = null;
+            
+             for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
+                if(e.getTareaList()!=null){
+                    for (Tarea t : e.getTareaList()) {
+                        
+                        if(t.getTareaAgenteList()!=null)
+                            for (TareaAgente ta : t.getTareaAgenteList()){
+                                //busco en controller
+                                for(Etapa ec : oldetapaseliminacion ){
+                                    if(ec.getTareaList()!=null){
+                                        for(Tarea tc : ec.getTareaList()){
+                                            if(tc.getTareaAgenteList()!=null){
+                                                for(TareaAgente tac : tc.getTareaAgenteList()){
+                                                     System.out.println("------------- tarea agente tac id "+ tac.getId()+" tac tarea "+tac.getTareaid().getTarea() + " tac agente "+tac.getAgenteid().getApellido()+"ta id "+ta.getId()+ " ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido() );
+                                                    if(tac.getAgenteid().equals(ta.getAgenteid()) & tac.getTareaid().equals(ta.getTareaid())){
+                                                        System.out.println("es igual tarea agente tac"+tac.getTareaid().getTarea() + " tac agente "+tac.getAgenteid().getApellido()+ " ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido());
+                                                       tareaagenteencontrado = ta; 
+                                                    }else{
+                                                         System.out.println("NO ES igual tarea agente tac"+tac.getTareaid().getTarea() + " tac agente "+tac.getAgenteid().getApellido()+ " ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                //si no lo encontro elimino
+                                if(tareaagenteencontrado==null){
+                                      System.out.println("Elimino ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido());
+                                    this.ejbtareaagente.removeWithId(ta.getId());
+                                }
+                            }
+                            
+                        }
+                    }
+             }
+           /* 
+      //Eliminacion de presupuestosrubrositem
+             
+               PresupuestoTarea presupuestotareaencontrado = null;
+            
+             for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
+                if(e.getTareaList()!=null){
+                    for (Tarea t : e.getTareaList()) {
+                        
+                        if(t.getPresupuestoTareaList()!=null)
+                            for (PresupuestoTarea pt : t.getPresupuestoTareaList()){
+                                //busco en controller
+                                for(Etapa ec : etapacontroller.getEtapas() ){
+                                    if(ec.getTareaList()!=null){
+                                        for(Tarea tc : ec.getTareaList()){
+                                            if(tc.getPresupuestoTareaList()!=null){
+                                                for(PresupuestoTarea ptc : tc.getPresupuestoTareaList()){
+                                                    if(ptc.equals(pt)){
+                                                       presupuestotareaencontrado = pt; 
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                //si no lo encontro elimino
+                                if(presupuestotareaencontrado==null){
+                                    this.ejbpresupuestotarea.removeWithId(pt.getId());
+                                }
+                            }
+                            
+                        }
+                    }
+             }
+    */
+            
+            
+            
+            
+            
+            
             // Insercion de ETAPAS, TAREAS , TAREASAGENTES, PRESUPUESTO
             List<Etapa> oldetapas = etapacontroller.getEtapas();
 
+        try {
+            
             for (Etapa e : etapacontroller.getEtapas()) {
 
                 if (e.getProyectoid() == null) {
@@ -1556,119 +1685,7 @@ public class ProyectoController implements Serializable {
                 }
             }
 
-            //Eliminacion etapas
-            boolean encontroetapa = false;
-            boolean encontrotarea = false;
-            boolean encontrotareaagente = false;
-            Tarea tareaborrar = new Tarea();
-
-            //eliminar 
-            for (Etapa e : ejbetapa.findByProyecto(current)) {
-                if (etapacontroller.getEtapas().contains(e)) {
-
-                } else {
-                    ejbetapa.remove(e);
-                }
-
-            }
-            //elimino tareas
-            List<Tarea> listadocompletotareas = new ArrayList<Tarea>();
-            for (Etapa e : etapacontroller.getEtapas()) {
-                if (e.getTareaList() != null) {
-                    for (Tarea t : e.getTareaList()) {
-                        listadocompletotareas.add(t);
-                    }
-                }
-
-            }
-
-            for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
-                if(e.getTareaList()!=null){
-                    for (Tarea t : e.getTareaList()) {
-                        //  System.out.println("tarea db "+t.getTarea());
-                        for (Tarea tl : listadocompletotareas) {
-
-                            //System.out.println("tarea local "+tl.getTarea());
-                            if (t.getId() == tl.getId()) {
-                                encontrotarea = true;
-                            }
-                        }
-                        if (!encontrotarea) {
-                            ejbtarea.remove(t);
-                            encontrotarea = false;
-                        }
-                    }
-                }
-            }
-/*
-    //elimino tareaagente
-            List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
-            TareaAgente tareaagenteencontrado = null;
-            
-             for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
-                if(e.getTareaList()!=null){
-                    for (Tarea t : e.getTareaList()) {
-                        
-                        if(t.getTareaAgenteList()!=null)
-                            for (TareaAgente ta : t.getTareaAgenteList()){
-                                //busco en controller
-                                for(Etapa ec : etapacontroller.getEtapas() ){
-                                    if(ec.getTareaList()!=null){
-                                        for(Tarea tc : ec.getTareaList()){
-                                            if(tc.getTareaAgenteList()!=null){
-                                                for(TareaAgente tac : tc.getTareaAgenteList()){
-                                                    if(tac.getAgenteid().equals(ta.getAgenteid()) & tac.getTareaid().equals(ta.getTareaid())){
-                                                       tareaagenteencontrado = ta; 
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                //si no lo encontro elimino
-                                if(tareaagenteencontrado==null){
-                                    this.ejbtareaagente.removeWithId(ta.getId());
-                                }
-                            }
-                            
-                        }
-                    }
-             }
-            
-      //Eliminacion de presupuestosrubrositem
-             
-               PresupuestoTarea presupuestotareaencontrado = null;
-            
-             for (Etapa e : this.ejbetapa.buscarEtapasProyecto(current.getId())) {
-                if(e.getTareaList()!=null){
-                    for (Tarea t : e.getTareaList()) {
-                        
-                        if(t.getPresupuestoTareaList()!=null)
-                            for (PresupuestoTarea pt : t.getPresupuestoTareaList()){
-                                //busco en controller
-                                for(Etapa ec : etapacontroller.getEtapas() ){
-                                    if(ec.getTareaList()!=null){
-                                        for(Tarea tc : ec.getTareaList()){
-                                            if(tc.getPresupuestoTareaList()!=null){
-                                                for(PresupuestoTarea ptc : tc.getPresupuestoTareaList()){
-                                                    if(ptc.equals(pt)){
-                                                       presupuestotareaencontrado = pt; 
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                //si no lo encontro elimino
-                                if(presupuestotareaencontrado==null){
-                                    this.ejbpresupuestotarea.removeWithId(pt.getId());
-                                }
-                            }
-                            
-                        }
-                    }
-             }
-    */
+         
             EnviarMail enviarmail = new EnviarMail();
             // enviarmail.enviarMailEvaluarPlanEPres(current.getAgenteid() );
 
