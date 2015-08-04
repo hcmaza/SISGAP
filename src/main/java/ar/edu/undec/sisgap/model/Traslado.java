@@ -112,6 +112,18 @@ public class Traslado implements Serializable {
     @JoinColumn(name = "vehiculoid", referencedColumnName = "id")
     @ManyToOne
     private Vehiculo vehiculoid;
+    
+    @JoinColumn(name = "solicitudid", referencedColumnName = "id")
+    @ManyToOne
+    private Solicitud solicitudid;
+
+    public Solicitud getSolicitudid() {
+        return solicitudid;
+    }
+
+    public void setSolicitudid(Solicitud solicitudid) {
+        this.solicitudid = solicitudid;
+    }
 
     public Vehiculo getVehiculoid() {
         return vehiculoid;
