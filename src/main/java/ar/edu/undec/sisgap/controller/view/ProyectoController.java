@@ -1549,13 +1549,9 @@ public class ProyectoController implements Serializable {
                                     if(ec.getTareaList()!=null){
                                         for(Tarea tc : ec.getTareaList()){
                                             if(tc.getTareaAgenteList()!=null){
-                                                for(TareaAgente tac : tc.getTareaAgenteList()){
-                                                     System.out.println("------------- tarea agente tac id "+ tac.getId()+" tac tarea "+tac.getTareaid().getTarea() + " tac agente "+tac.getAgenteid().getApellido()+"ta id "+ta.getId()+ " ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido() );
+                                                for(TareaAgente tac : tc.getTareaAgenteList()){                                                     
                                                     if(tac.getAgenteid().equals(ta.getAgenteid()) & tac.getTareaid().equals(ta.getTareaid())){
-                                                        System.out.println("es igual tarea agente tac"+tac.getTareaid().getTarea() + " tac agente "+tac.getAgenteid().getApellido()+ " ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido());
-                                                       tareaagenteencontrado = ta; 
-                                                    }else{
-                                                         System.out.println("NO ES igual tarea agente tac"+tac.getTareaid().getTarea() + " tac agente "+tac.getAgenteid().getApellido()+ " ta tarea "+ ta.getTareaid().getTarea()+" ta agente "+ta.getAgenteid().getApellido());
+                                                        tareaagenteencontrado = ta; 
                                                     }
                                                 }
                                             }
@@ -1572,7 +1568,7 @@ public class ProyectoController implements Serializable {
                         }
                     }
              }
-           /* 
+            
       //Eliminacion de presupuestosrubrositem
              
                PresupuestoTarea presupuestotareaencontrado = null;
@@ -1606,7 +1602,7 @@ public class ProyectoController implements Serializable {
                         }
                     }
              }
-    */
+    
             
             
             
