@@ -39,4 +39,12 @@ public class TareaAgenteFacade extends AbstractFacade<TareaAgente> {
       public List<TareaAgente> findByTareaAgente(Agente a){
         return em.createQuery("select ta from TareaAgente ta where ta.agenteid.id = "+a.getId(), TareaAgente.class).getResultList();
     }
+     
+    public void removeWithId(int i){
+        try{
+            em.createQuery("delete from TareaAgente ta where ta.id="+i).executeUpdate();
+        }catch(Exception e){
+            System.out.println("Error en tareaagente "+e);
+        }
+    }
 }

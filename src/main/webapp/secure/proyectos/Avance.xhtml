@@ -636,16 +636,15 @@
                                 
                             </p:panelGrid>
                             
-                            <p:fieldset id="favance" legend="avance" >
-                                <h:panelGrid columns="4">
-                                        <p:outputLabel style="font-weight: bold" value="Avance:"   />
-                                        
-                                        <p:slider  minValue="0" maxValue="100" for="iavance2" animate="enable"  />
-                                    
-                                    
-                                        <p:inputText required="true" requiredMessage="Ingrese el porcentaje de avance!" size="8" id="iavance2" value="#{tareaavanceController.selected.avance}" title="Avance"  />
-                                        <p:outputLabel style="font-weight: bold" value="%" />
-                                    
+                            <p:fieldset id="favance" legend="Avance"  >
+                                <h:panelGrid columns="2">
+                                    <h:panelGrid columns="1">     
+                                        <p:slider  minValue="0" maxValue="100" for="iavance2" animate="enable" style="width: 330px" />
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2">
+                                        <p:inputText required="true" requiredMessage="Ingrese el porcentaje de avance!" size="8" id="iavance2" value="#{tareaavanceController.selected.avance}" title="Avance"   />
+                                        <p:outputLabel value="%" />
+                                    </h:panelGrid>
                                 </h:panelGrid>
                                 
                             </p:fieldset>
