@@ -1600,8 +1600,8 @@ public class ProyectoController implements Serializable {
                     }
                 }
             }
-
-   /* //elimino tareaagente
+/*
+    //elimino tareaagente
             List<TareaAgente> listadocompletotareaagente = new ArrayList<TareaAgente>();
             TareaAgente tareaagenteencontrado = null;
             
@@ -1617,7 +1617,7 @@ public class ProyectoController implements Serializable {
                                         for(Tarea tc : ec.getTareaList()){
                                             if(tc.getTareaAgenteList()!=null){
                                                 for(TareaAgente tac : tc.getTareaAgenteList()){
-                                                    if(tac.equals(ta)){
+                                                    if(tac.getAgenteid().equals(ta.getAgenteid()) & tac.getTareaid().equals(ta.getTareaid())){
                                                        tareaagenteencontrado = ta; 
                                                     }
                                                 }
