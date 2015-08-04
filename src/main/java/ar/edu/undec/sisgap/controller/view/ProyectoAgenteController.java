@@ -260,6 +260,10 @@ public class ProyectoAgenteController implements Serializable {
     public void setEquipotrabajo(List<ProyectoAgente> equipotrabajo) {
         this.equipotrabajo = equipotrabajo;
     }
+    
+    public void buscarEquipoTrabajoPorProyecto(int proyectoId){
+        this.equipotrabajo=this.ejbFacade.buscarEquipoTrabajo(proyectoId);
+    }
 
     public void buscarEquipoTrabajoEditar(int p){
         if((equipotrabajo.isEmpty()) & (iseditar)){

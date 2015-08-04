@@ -12,6 +12,7 @@ import ar.edu.undec.sisgap.model.Estadosolicitud;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Proyecto;
 import ar.edu.undec.sisgap.model.Rubro;
+import ar.edu.undec.sisgap.model.Traslado;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -173,6 +174,17 @@ public class SolicitudController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         RendicionController rendicioncontroller = (RendicionController) context.getApplication().evaluateExpressionGet(context, "#{rendicionController}", RendicionController.class);
         rendicioncontroller.prepararRendicion();
+        
+        // preparar el traslado
+        TrasladoController trasladocontroller = (TrasladoController) context.getApplication().evaluateExpressionGet(context, "#{trasladoController}", TrasladoController.class);
+        trasladocontroller.setSelected(new Traslado());
+        
+        // preparar proyecto
+        ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        
+        // preparar el equipo de trabajo
+        ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
+        proyectoagentecontroller.buscarEquipoTrabajoPorProyecto(proyectocontroller.getSelected().getId());
 
         return "CreateSolicitud";
     }
@@ -315,6 +327,12 @@ public class SolicitudController implements Serializable {
                         case 5:
                             // Se le da estado "Aprobada", sin acumular 1 a la cantidad de reintegros del proyecto
                             s.setEstadosolicitudid(getEjbFacadeEstado().find(2));
+                            s.setFechaaprobacion(s.getFechasolicitud());
+                            break;          
+                        // Traslado
+                        case 6:
+                            // Se le da estado "Iniciada", para que se aprobada por el administrador
+                            s.setEstadosolicitudid(getEjbFacadeEstado().find(1));
                             s.setFechaaprobacion(s.getFechasolicitud());
                             break;          
                         default:
@@ -891,6 +909,16 @@ public class SolicitudController implements Serializable {
             for(Solicitud s : this.itemsDisponiblesNuevo ){
 
                 if(s.getPresupuestotarea().getRubro().getId().equals(4) | s.getPresupuestotarea().getRubro().getId().equals(5) ){
+                    this.itemsDisponibles.add(s);
+                }
+            }
+        }
+        
+        // Si es de Traslados
+        if(tabseleccionado.equals("Traslados")){
+            for(Solicitud s : this.itemsDisponiblesNuevo ){
+
+                if(s.getPresupuestotarea().getRubro().getId().equals(7) ){
                     this.itemsDisponibles.add(s);
                 }
             }

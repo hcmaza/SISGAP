@@ -6,10 +6,13 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TrasladoFacade;
 import ar.edu.undec.sisgap.model.Pasajero;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Solicitud;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -35,6 +38,20 @@ public class TrasladoController implements Serializable {
     private ar.edu.undec.sisgap.controller.PasajeroFacade ejbPasajeroFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
+    
+    private List<ProyectoAgente> listaPasajerosSeleccionados;
+
+    public List<ProyectoAgente> getListaPasajerosSeleccionados() {
+        if(listaPasajerosSeleccionados == null){
+            listaPasajerosSeleccionados = new ArrayList<ProyectoAgente>();
+        }
+        
+        return listaPasajerosSeleccionados;
+    }
+
+    public void setListaPasajerosSeleccionados(List<ProyectoAgente> listaPasajerosSeleccionados) {
+        this.listaPasajerosSeleccionados = listaPasajerosSeleccionados;
+    }
 
     public PasajeroFacade getEjbPasajeroFacade() {
         return ejbPasajeroFacade;
@@ -49,6 +66,10 @@ public class TrasladoController implements Serializable {
             selectedItemIndex = -1;
         }
         return current;
+    }
+
+    public void setSelected(Traslado current) {
+        this.current = current;
     }
 
     private TrasladoFacade getFacade() {
@@ -264,24 +285,30 @@ public class TrasladoController implements Serializable {
 
     }
     
-    public void agregarPasajero(){
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        PasajeroController pasajeroController = (PasajeroController) context.getApplication().evaluateExpressionGet(context, "#{pasajeroController}", PasajeroController.class);
-        
-        this.current.getPasajeroList().add(pasajeroController.getSelected());
-    }
+//    public void agregarPasajero(){
+//        
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        PasajeroController pasajeroController = (PasajeroController) context.getApplication().evaluateExpressionGet(context, "#{pasajeroController}", PasajeroController.class);
+//        
+//        this.current.getPasajeroList().add(pasajeroController.getSelected());
+//    }
+//    
+//    public void quitarPasajero(Pasajero pasajero){
+//
+//        // se quita de la lista de pasajeros
+//        Iterator i = this.getSelected().getPasajeroList().iterator();
+//
+//        while(i.hasNext()){
+//            //if(((Pasajero)i.next()).getDni().equals(pasajero.getDni())){
+//            if(((Pasajero)i.next()).get .equals(pasajero.getAgenteid().getId){
+//                
+//                i.remove();
+//            }
+//        }
+//    }
     
-    public void quitarPasajero(Pasajero pasajero){
-
-        // se quita de la lista de pasajeros
-        Iterator i = this.getSelected().getPasajeroList().iterator();
-
-        while(i.hasNext()){
-            if(((Pasajero)i.next()).getDni().equals(pasajero.getDni())){
-                i.remove();
-            }
-        }
+    public void asdasd(){
+        System.out.println("Tamaño de lista de pasajeros seleccionados = " + this.getListaPasajerosSeleccionados().size());
     }
 
 }
