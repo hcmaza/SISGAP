@@ -4,6 +4,9 @@ import ar.edu.undec.sisgap.model.Desembolso;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.DesembolsoFacade;
+import ar.edu.undec.sisgap.controller.EstadoproyectoFacade;
+import ar.edu.undec.sisgap.controller.ProyectoFacade;
+import ar.edu.undec.sisgap.model.Estadoproyecto;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,10 +31,25 @@ public class DesembolsoController implements Serializable {
     private DataModel items = null;
     @EJB
     private ar.edu.undec.sisgap.controller.DesembolsoFacade ejbFacade;
+    
+    @EJB
+    private ar.edu.undec.sisgap.controller.ProyectoFacade proyectoFacade;
+    
+    @EJB
+    private ar.edu.undec.sisgap.controller.EstadoproyectoFacade estadoproyectoFacade;
+    
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
     public DesembolsoController() {
+    }
+
+    public ProyectoFacade getProyectoFacade() {
+        return proyectoFacade;
+    }
+
+    public EstadoproyectoFacade getEstadoproyectoFacade() {
+        return estadoproyectoFacade;
     }
 
     public Desembolso getSelected() {
@@ -93,13 +111,27 @@ public class DesembolsoController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             ProyectoController proyectocontroller= (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
             
+            /* PERSISTENCIA DEL DESEMBOLSO */
+            
             // obtenermos el proyecto actual y lo guardamos en el desembolso a guardar
             current.setProyectoid(proyectocontroller.getSelected());
             
             // fecha de carga actual
             current.setFechacarga(new Date());
             
+            // persistimos el desembolso
             getFacade().create(current);
+            
+            /* CAMBIO EN EL ESTADO DE PROYECTO */
+            // buscamos el estado de proyecto [Proyecto en Ejecucion = 12]
+            Estadoproyecto estado = getEstadoproyectoFacade().buscarPorId(12);
+            
+            // cambiamos el estado del proyecto a en ejecucion
+            proyectocontroller.getSelected().setEstadoproyectoid(estado);
+            
+            // actualizamos el estado del proyecto
+            this.getProyectoFacade().edit(proyectocontroller.getSelected());
+            
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoCreated"));
             return prepareCreate();
         } catch (Exception e) {
