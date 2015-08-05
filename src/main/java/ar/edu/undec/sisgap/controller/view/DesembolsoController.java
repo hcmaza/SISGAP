@@ -132,7 +132,7 @@ public class DesembolsoController implements Serializable {
             // actualizamos el estado del proyecto
             this.getProyectoFacade().edit(proyectocontroller.getSelected());
             
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("DesembolsoCreated"));
+            JsfUtil.addSuccessMessage("El Desembolso se ha creado con éxito");
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
