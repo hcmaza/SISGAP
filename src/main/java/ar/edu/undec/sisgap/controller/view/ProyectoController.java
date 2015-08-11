@@ -860,7 +860,7 @@ public class ProyectoController implements Serializable {
             PresupuestoController presupuestocontroller = (PresupuestoController) context.getApplication().evaluateExpressionGet(context, "#{presupuestoController}", PresupuestoController.class);
             ProyectoAgenteController proyectoagentecontroller = (ProyectoAgenteController) context.getApplication().evaluateExpressionGet(context, "#{proyectoAgenteController}", ProyectoAgenteController.class);
 
-            //Creacion de proyectosAgentes
+            // Creacion de proyectosAgentes
             ejbproyectoagente.removebyProyecto(this.current.getId());
 
             for (ProyectoAgente pa : proyectoagentecontroller.getEquipotrabajo()) {
@@ -873,6 +873,8 @@ public class ProyectoController implements Serializable {
                 pa.setProyectoAgentePK(paPK);
                 ejbproyectoagente.create(pa);
             }
+            
+            // dar nuevo estado al proyecto= [6] Proyecto en Evaluación
             Estadoproyecto ep = new Estadoproyecto();
             ep.setId(6);
             current.setEstadoproyectoid(ep);
