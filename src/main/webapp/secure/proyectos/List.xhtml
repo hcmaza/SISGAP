@@ -87,6 +87,10 @@
 
                                 <p:menuButton value="Opciones" >
                                     <c:if test="#{request.isUserInRole('Administrador')}" > 
+                                        
+                                        <p:menuitem value="Evaluar Idea-Proyecto" rendered="#{item.estadoproyectoid.id eq 1}" action="#{proyectoController.prepareCreateEvaluacion()}" ajax="false" icon="ui-icon-check" styleClass="menuAncho">
+                                            <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />
+                                        </p:menuitem>
 
                                         <p:menuitem value="Formalizar" rendered="#{item.estadoproyectoid.id eq 2}" action="#{proyectoController.prepareFormalizar()}" ajax="false" icon="ui-icon-script" styleClass="menuAncho">
                                             <f:setPropertyActionListener value="#{item}" target="#{proyectoController.selected}" />

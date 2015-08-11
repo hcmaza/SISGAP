@@ -2195,7 +2195,7 @@ public class ProyectoController implements Serializable {
     public String prepareCreateEvaluacion() {
         current = (Proyecto) getItems().getRowData();
         // selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Create";
+        return "CreateEvaluacionIdeaProyecto";
     }
 
     public List<TareaAgente> getTareaagentesproyecto() {

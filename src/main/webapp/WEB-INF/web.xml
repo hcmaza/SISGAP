@@ -36,9 +36,9 @@
             30
         </session-timeout>
     </session-config>
-    <listener>
+<!--    <listener>
         <listener-class>ar.edu.undec.sisgap.controller.view.HttpSessionChecker</listener-class>
-    </listener>
+    </listener>-->
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
