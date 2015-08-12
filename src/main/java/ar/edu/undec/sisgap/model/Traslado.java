@@ -70,7 +70,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "traslado", schema = "ap")
-@SequenceGenerator(name="traslados_id_seq", sequenceName="ap.traslados_id_seq", allocationSize=1)
+@SequenceGenerator(name="traslado_id_seq", sequenceName="ap.traslado_id_seq", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Traslado.findAll", query = "SELECT t FROM Traslado t"),
@@ -81,7 +81,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Traslado implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="traslados_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="traslado_id_seq")
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
@@ -98,16 +98,13 @@ public class Traslado implements Serializable {
     @Column(name = "destino", length = 100)
     private String destino;
     
-    @OneToMany(mappedBy = "trasladoid")
-    private List<Pasajero> pasajeroList;
-    
-    @JoinColumn(name = "proyectoid", referencedColumnName = "id")
-    @ManyToOne
-    private Proyecto proyectoid;
-    
     @JoinColumn(name = "responsableid", referencedColumnName = "id")
     @ManyToOne
     private Agente responsableid;
+       
+    @JoinColumn(name = "proyectoid", referencedColumnName = "id")
+    @ManyToOne
+    private Proyecto proyectoid;   
     
     @JoinColumn(name = "vehiculoid", referencedColumnName = "id")
     @ManyToOne
@@ -171,21 +168,7 @@ public class Traslado implements Serializable {
     public void setDestino(String destino) {
         this.destino = destino;
     }
-
-    @XmlTransient
-    public List<Pasajero> getPasajeroList() {
-        
-        if(pasajeroList == null){
-            pasajeroList = new ArrayList<Pasajero>();
-        }
-        
-        return pasajeroList;
-    }
-
-    public void setPasajeroList(List<Pasajero> pasajeroList) {
-        this.pasajeroList = pasajeroList;
-    }
-
+    
     public Proyecto getProyectoid() {
         return proyectoid;
     }

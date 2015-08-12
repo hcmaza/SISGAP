@@ -2,15 +2,19 @@ package ar.edu.undec.sisgap.controller.view;
 
 import ar.edu.undec.sisgap.controller.ConfiguracionFacade;
 import ar.edu.undec.sisgap.controller.EstadosolicitudFacade;
+import ar.edu.undec.sisgap.controller.PasajeroFacade;
 import ar.edu.undec.sisgap.controller.ProyectoFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
 import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.SolicitudFacade;
 import ar.edu.undec.sisgap.controller.TiposolicitudFacade;
+import ar.edu.undec.sisgap.controller.TrasladoFacade;
 import ar.edu.undec.sisgap.model.Estadosolicitud;
+import ar.edu.undec.sisgap.model.Pasajero;
 import ar.edu.undec.sisgap.model.PresupuestoTarea;
 import ar.edu.undec.sisgap.model.Proyecto;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Rubro;
 import ar.edu.undec.sisgap.model.Traslado;
 
@@ -18,11 +22,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -58,6 +64,11 @@ public class SolicitudController implements Serializable {
     private TiposolicitudFacade ejbFacadeTipo;
     @EJB
     private EstadosolicitudFacade ejbFacadeEstado;
+    @EJB
+    private ar.edu.undec.sisgap.controller.TrasladoFacade ejbTrasladoFacade;
+    @EJB
+    private ar.edu.undec.sisgap.controller.PasajeroFacade ejbPasajeroFacade;
+    
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -90,6 +101,14 @@ public class SolicitudController implements Serializable {
         current = solicitud;
     }
 
+    public TrasladoFacade getEjbTrasladoFacade() {
+        return ejbTrasladoFacade;
+    }
+
+    public PasajeroFacade getEjbPasajeroFacade() {
+        return ejbPasajeroFacade;
+    }
+    
     private SolicitudFacade getFacade() {
         return ejbFacade;
     }
@@ -342,7 +361,42 @@ public class SolicitudController implements Serializable {
                     }
 
                     // Guardamos la solicitud
-                    getFacade().create(s);
+                    getFacade().createWithPersist(s);
+                    
+                    if(s.getTiposolicitudid().getId()==6){
+                        FacesContext context = FacesContext.getCurrentInstance();
+                        TrasladoController trasladoController = (TrasladoController) context.getApplication().evaluateExpressionGet(context, "#{trasladoController}", TrasladoController.class);
+                        ProyectoController proyectoController = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+                        VehiculoController vehiculoController = (VehiculoController) context.getApplication().evaluateExpressionGet(context, "#{vehiculoController}", VehiculoController.class);
+                        
+                        Traslado traslado=new Traslado();
+                        traslado.setDestino(trasladoController.getSelected().getDestino());
+                        traslado.setFechahoraregreso(trasladoController.getSelected().getFechahoraregreso());
+                        traslado.setFechahoraviaje(trasladoController.getSelected().getFechahoraviaje());
+                        
+                         // guardar el responsable
+                        traslado.setResponsableid(proyectoController.getSelected().getAgenteid());
+                        
+                         // guardar el proyecto
+                        traslado.setProyectoid(proyectoController.getSelected());
+                        
+                        // guardar el vehiculo
+                        traslado.setVehiculoid(trasladoController.getSelected().getVehiculoid());  
+                        
+                        // guardar la solicitud
+                        traslado.setSolicitudid(getFacade().find(s.getId()));                             
+                        
+                        this.getEjbTrasladoFacade().createWithPersist(traslado);
+                        
+                        for(ProyectoAgente a: trasladoController.getListaPasajerosSeleccionados()){
+                            Pasajero pasajero = new Pasajero();
+                            pasajero.setTrasladoid(traslado);                            
+                            pasajero.setAgenteid(a.getAgente());
+                            this.getEjbPasajeroFacade().createWithPersist(pasajero);
+                        }
+                        
+                    }                  
+                    
                 }
                 System.out.println("SolicitudController - Creacion Finalizada");
             } catch (Exception e) {
@@ -528,6 +582,7 @@ public class SolicitudController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         DesembolsoController desembolsocontroller = (DesembolsoController) context.getApplication().evaluateExpressionGet(context, "#{desembolsoController}", DesembolsoController.class);
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
+        
 
         // obtenemos el dinero disponible (los desembolsos menos las solicitudes anteriores)
         float dineroDisponible = desembolsocontroller.sumarDesembolsos() - sumarSolicitudesAprobadas();
@@ -590,6 +645,19 @@ public class SolicitudController implements Serializable {
             context.addMessage(null, new FacesMessage("Inválido", "Se ha superado la cantidad máxima de reintegros (" + + maxcantidadreintegros + ") permitidos para este proyecto."));
 
             // Restauramos el valor de la solicitad al total de presupuesto tarea
+            current.setImporte(current.getDisponible());
+
+            return;
+        }
+        // Validar que si es un traslado
+         if (this.tabseleccionado.equals("Traslado")) {
+
+            /*System.out.println("Se ha superado la cantidad maxima de reintegros permitidos para este proyecto");
+
+            context.addMessage(null, new FacesMessage("Inválido", "Se ha superado la cantidad máxima de reintegros (" + + maxcantidadreintegros + ") permitidos para este proyecto."));
+
+            // Restauramos el valor de la solicitad al total de presupuesto tarea*/         
+           
             current.setImporte(current.getDisponible());
 
             return;
@@ -970,3 +1038,4 @@ public class SolicitudController implements Serializable {
     }
     
 }
+

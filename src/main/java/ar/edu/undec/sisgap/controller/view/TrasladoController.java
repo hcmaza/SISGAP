@@ -112,32 +112,25 @@ public class TrasladoController implements Serializable {
     }
 
     public String create() {
-        
-        System.out.println("3:" + current.getDestino());
-        System.out.println("1:" + current.getFechahoraviaje().toString());
-        System.out.println("2:" + current.getFechahoraregreso().toString());
-        
+                
         try {
             
-            FacesContext context = FacesContext.getCurrentInstance();
+            /*FacesContext context = FacesContext.getCurrentInstance();
             ProyectoController proyectoController = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-            
-            // guardar el responsable
-            current.setResponsableid(proyectoController.getSelected().getAgenteid());
-            
-            // guardar el proyecto
-            current.setProyectoid(proyectoController.getSelected());
-            
+            VehiculoController vehiculoController = (VehiculoController) context.getApplication().evaluateExpressionGet(context, "#{vehiculoController}", VehiculoController.class);
+            SolicitudController solicitudController=(SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+            */
+                                 
             // persistir
             //getFacade().create(current);
-            getFacade().createWithPersist(current);
+            //getFacade().createWithPersist(current);
             
-            // persistir los pasajeros
+           /* // persistir los pasajeros
             for(Pasajero p : current.getPasajeroList()){
                 p.setTrasladoid(current);
                 
                 this.getEjbPasajeroFacade().create(p);
-            }
+            }*/
             
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TrasladoCreated"));
             return prepareCreate();

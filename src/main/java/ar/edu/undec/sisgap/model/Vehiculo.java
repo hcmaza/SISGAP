@@ -73,7 +73,7 @@ public class Vehiculo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="vehiculo_id_seq")
     @Basic(optional = false)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Integer id;
     @Size(max = 100)
     @Column(name = "descripcion", length = 100)
