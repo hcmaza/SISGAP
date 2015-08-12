@@ -222,15 +222,15 @@
                     <p:panel header="Desembolso" >
                         <h:panelGrid columns="2">
 
-                            <p:outputLabel value="#{bundle.CreateDesembolsoLabel_numerodesembolso}" for="numerodesembolso" />
+                            <p:outputLabel value="Nº de Desembolso" for="numerodesembolso" />
                             <p:inputText id="numerodesembolso" value="#{desembolsoController.selected.numerodesembolso}" title="#{bundle.CreateDesembolsoTitle_numerodesembolso}" />
 
-                            <p:outputLabel value="#{bundle.CreateDesembolsoLabel_numerocuentabancaria}" for="numerocuentabancaria" />
+                            <p:outputLabel value="Cuenta Bancaria" for="numerocuentabancaria" />
                             <p:selectOneMenu id="numerocuentabancaria" value="#{desembolsoController.selected.numerocuentabancaria}" >
                                 <f:selectItems value="#{cuentabancariaController.itemsAvailableSelectOne}"/>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="#{bundle.CreateDesembolsoLabel_monto}" for="monto" />
+                            <p:outputLabel value="Importe del Desembolso" for="monto" />
                             <p:inputText id="monto" value="#{desembolsoController.selected.monto}" title="#{bundle.CreateDesembolsoTitle_monto}" />
 
                         </h:panelGrid>

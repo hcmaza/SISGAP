@@ -75,14 +75,20 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
          
     }
     
-    
+    /**
+     * Obtiene proyectos por condicion de que sean proyectos (no IP) y por agente.
+     * 
+     * @param isproyecto
+     * @param agenteid
+     * @return 
+     */
     public List<Proyecto> buscarProyectosAgente(boolean isproyecto,int agenteid){
         
         String consulta="select p from Proyecto p join p.agenteid a where p.agenteid.id= "+agenteid;
         if(isproyecto){
-             consulta+=" and p.estadoproyectoid.id in (2,5,6,8) ";
+             consulta+=" and p.estadoproyectoid.id in (2,5,6,8,12) ";
          }else{
-            consulta+=" and p.estadoproyectoid.id in (1 ,3, 4, 7) ";
+            consulta+=" and p.estadoproyectoid.id in (1,3,4,7) ";
         }
         List<Proyecto> proyecto;
         
@@ -93,11 +99,7 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
            System.out.println("No se pudo realizar la consulta"+e);
            return null;
        }
-        
-         
     } 
-    
-    
     
     public long buscarProyectosEvaluar(){
         
@@ -108,8 +110,6 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
            System.out.println("No se pudo realizar la consulta"+e);
            return 0;
        }
-        
-         
     } 
     
     public long buscarIdeasProyectosEvaluar(){
@@ -123,7 +123,6 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
            System.out.println("No se pudo realizar la consulta"+e);
            return 0;
        }
-         
     }
     
     public List<Proyecto> buscarProyectosaEvaluar(){
@@ -174,8 +173,6 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> {
                 .setParameter("proyectoId", proyectoId)
                 .getSingleResult())
                 .intValue();
-        
-
     }
     
 }
