@@ -109,7 +109,7 @@
 
                         <p:tabView id="tabsolicitudes" dynamic="true" style="margin-bottom: 10px;" >
 
-                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:op, :formitem, :formprincipal:botonsolicitud, :formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro" immediate="true" />
+                            <p:ajax event="tabChange" listener="#{solicitudController.onTabChange}" update=":formprincipal:op, :formitem, :formprincipal:botonsolicitud, :formprincipal:tabsolicitudes:tabladisponiblesanticipo :formprincipal:tabsolicitudes:tabladisponiblesadquisicion :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tabsolicitudes:tabladisponiblesreintegro, :formprincipal:tabsolicitudes:tabladisponiblestraslado" immediate="true" />
 
                             <p:tab id="tabpresupuesto" title="Presupuesto Detallado" >
 
@@ -337,8 +337,8 @@
                                     <p:column style="width:32px;text-align: center">
                                         <p:commandButton update=":formtraslado, :formprincipal:growlprincipal" oncomplete="PF('dialogoTraslado').show();" icon="ui-icon-circle-plus" title="Solicitar" >
                                             <f:setPropertyActionListener value="#{item}" target="#{solicitudController.selected}" />
-                                        </p:commandButton> 
-
+                                        </p:commandButton>                                             
+                                        
                                     </p:column>
 
                                 </p:dataTable>
@@ -614,7 +614,7 @@
                     </h:panelGroup>
                     <p:separator />
                     <div align="center" >
-                        <p:commandButton value="Lista de Traslados" action="#{trasladoController.prepareList()}" ajax="false" />
+                        <p:commandButton value="Lista de Traslados" action="#{trasladoController.prepareList()}"  ajax="false" />
                     </div>
                 </p:dialog>
 
@@ -730,14 +730,15 @@
             <!--**********************************************-->
 
             <p:dialog header="Item Traslado" id="dialogoTraslado" widgetVar="dialogoTraslado" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                <h:form id="formtraslado" enctype="multipart/form-data"  >
-                    
-                     <h:panelGrid columns="2">
-                            <p:outputLabel value="Fecha y Hora de Viaje" for="fechahoraviaje" />
-                            <p:calendar id="fechahoraviaje" value="#{trasladoController.selected.fechahoraviaje}" pattern="dd/MM/yyyy HH:mm:ss" />
-
+                <h:form id="formtraslado" enctype="multipart/form-data">
+                    <h:panelGrid columns="2">
+                            <h:outputLabel value="Fecha y hora salida:" for="fechahoraviaje"/>
+                            <p:calendar id="fechahoraviaje" value="#{trasladoController.selected.fechahoraviaje}" pattern="dd/MM/yyyy HH:mm">
+                                <p:ajax event="dateSelect" update="fechahoraviaje"/>
+                            </p:calendar>
+                           
                             <p:outputLabel value="Fecha y Hora de Regreso" for="fechahoraregreso" />
-                            <p:calendar id="fechahoraregreso" value="#{trasladoController.selected.fechahoraregreso}" pattern="dd/MM/yyyy HH:mm:ss" />
+                            <p:calendar id="fechahoraregreso" value="#{trasladoController.selected.fechahoraregreso}" pattern="dd/MM/yyyy HH:mm" />
 
                             <p:outputLabel value="#{bundle.CreateTrasladoLabel_destino}" for="destino" />
                             <p:inputText id="destino" value="#{trasladoController.selected.destino}" title="#{bundle.CreateTrasladoTitle_destino}" />
@@ -746,12 +747,13 @@
                             <p:outputLabel id="responsableid" value="#{proyectoController.selected.agenteid.apellido}, #{proyectoController.selected.agenteid.nombres}" />
                             
                             <p:outputLabel value="Vehículo" for="vehiculoid" />
-                            <p:selectOneMenu id="vehiculoid" value="#{trasladoController.selected.vehiculoid}"  >
+                            <p:selectOneMenu id="vehiculoid" value="#{trasladoController.selected.vehiculoid}">
                                 <f:selectItems value="#{vehiculoController.itemsAvailableSelectOne}"/>
+                                <p:ajax event="change" update="capacidad" listener="#{trasladoController.obtenerAsientos()}"/>                             
                             </p:selectOneMenu>
                             
-                            <p:outputLabel value="Capacidad del Vehículo" />
-                            <p:outputLabel value="#{trasladoController.selected.vehiculoid.capacidad}" />
+                            <p:outputLabel value="Capacidad del Vehículo"/>
+                            <p:outputLabel id="capacidad" value="#{trasladoController.capacidadCalculada}"/>
                             
                             <p:outputLabel value="Presupuestado" />
                             <h:outputText id="dtpresupuestado" value="#{solicitudController.selected.presupuestotarea.total}" />
@@ -766,11 +768,7 @@
                             </p:inputText>    
                             
                         </h:panelGrid>
-
-<!--                        <p:commandButton id="botonAgregarPasajero" update=":formprincipal:growlprincipal, :formpasajero" action="{pasajeroController.nuevoPasajero()}" oncomplete="PF('dialogoAgregarPasajero').show();" icon="ui-icon-circle-plus"  value="Agregar Pasajero" immediate="true" >
-                            <f:setPropertyActionListener value="{item}" target="{pasajeroController.selected}" />
-                        </p:commandButton>-->
-
+                    
                       <p:dataTable id="tablapasajeros" var="item" value="#{proyectoAgenteController.equipotrabajo}" rowKey="#{item.agente.id}" selection="#{trasladoController.listaPasajerosSeleccionados}" >
                             <f:facet name="header">
                                 Pasajeros
@@ -791,7 +789,7 @@
 
                     <p:separator/>
                     <div align="center" >
-                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoTraslado').hide();" /> 
+                        <p:commandButton value="Solicitar" actionListener="#{solicitudController.agregarItemSolicitado}" update=":formprincipal:tabsolicitudes:tabladisponiblesanticipo, :formprincipal:tabsolicitudes:tabladisponiblesadquisicion, :formprincipal:tabsolicitudes:tabladisponiblescertificacion, :formprincipal:tablasolicitudes, :formprincipal:growlprincipal"  oncomplete="PF('dialogoTraslado').hide();" />
                     </div>
                 </h:form>
 

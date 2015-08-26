@@ -16,10 +16,12 @@
             </h:panelGroup>
             <h:form>
                 <h:panelGrid columns="2">
-                    <h:outputLabel value="#{bundle.CreateTrasladoLabel_fechahoraviaje}" for="fechahoraviaje" />
-                    <p:calendar id="fechahoraviaje" value="#{trasladoController.selected.fechahoraviaje}" pattern="MM/dd/yyyy HH:mm:ss" />
+                    <h:outputLabel value="Fecha y hora salida:" for="fechahoraviaje" />
+                    <p:calendar id="fechahoraviaje" value="#{trasladoController.selected.fechahoraviaje}" pattern="MM/dd/yyyy HH:mm:ss">
+                       <!--<p:ajax event="dateSelect" update="fechahoraregreso"/>-->
+                    </p:calendar>
                     
-                    <h:outputLabel value="#{bundle.CreateTrasladoLabel_fechahoraregreso}" for="fechahoraregreso" />
+                    <h:outputLabel value="Fecha y hora de regreso:" for="fechahoraregreso" />
                     <p:calendar id="fechahoraregreso" value="#{trasladoController.selected.fechahoraregreso}" pattern="MM/dd/yyyy HH:mm:ss" />
                     
                     <h:outputLabel value="#{bundle.CreateTrasladoLabel_destino}" for="destino" />
@@ -28,7 +30,13 @@
                 <h:outputLabel value="#{bundle.CreateTrasladoLabel_proyectoid}" for="proyectoid" />
                     <h:selectOneMenu id="proyectoid" value="#{trasladoController.selected.proyectoid}" title="#{bundle.CreateTrasladoTitle_proyectoid}" >
                         <f:selectItems value="#{proyectoController.itemsAvailableSelectOne}"/>
+                        <p:ajax event="change" update="capacidad" listener="#{trasladoController.obtenerAsientos()}"/>
                     </h:selectOneMenu>
+                
+                <p:outputLabel value="Capacidad del Vehículo"/>
+                            <!-- <h:outputLabel id="capacidad" value="{trasladoController.capacidadCalculada}"/>-->
+                           <p:outputLabel id="capacidad" value="#{trasladoController.selected.vehiculoid.capacidad}" />
+                
                     <h:outputLabel value="#{bundle.CreateTrasladoLabel_responsableid}" for="responsableid" />
                     <h:selectOneMenu id="responsableid" value="#{trasladoController.selected.responsableid}" title="#{bundle.CreateTrasladoTitle_responsableid}" >
                         <f:selectItems value="#{agenteController.itemsAvailableSelectOne}"/>

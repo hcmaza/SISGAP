@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -40,7 +41,17 @@ public class TrasladoController implements Serializable {
     private int selectedItemIndex;
     
     private List<ProyectoAgente> listaPasajerosSeleccionados;
+    
+    private int capacidadCalculada=0;
 
+    public int getCapacidadCalculada() {
+        return capacidadCalculada;
+    }
+
+    public void setCapacidadCalculada(int capacidadCalculada) {
+        this.capacidadCalculada = capacidadCalculada;
+    }    
+    
     public List<ProyectoAgente> getListaPasajerosSeleccionados() {
         if(listaPasajerosSeleccionados == null){
             listaPasajerosSeleccionados = new ArrayList<ProyectoAgente>();
@@ -109,6 +120,11 @@ public class TrasladoController implements Serializable {
         current = new Traslado();
         selectedItemIndex = -1;
         return "Create";
+    }
+    
+    public void prepararTraslado(){
+        current = new Traslado();
+        selectedItemIndex = -1;                
     }
 
     public String create() {
@@ -302,6 +318,21 @@ public class TrasladoController implements Serializable {
     
     public void asdasd(){
         System.out.println("Tamaño de lista de pasajeros seleccionados = " + this.getListaPasajerosSeleccionados().size());
+    }
+    
+    public void obtenerAsientos(){                
+        this.capacidadCalculada=0;
+        if(this.getSelected().getVehiculoid()!=null){
+            List<Traslado> lista = new ArrayList<Traslado>();
+            lista = this.getFacade().buscarTraslado(this.getSelected().getFechahoraviaje(), this.getSelected().getVehiculoid().getId());
+            int capacidad = 0;
+            for (Traslado tras : lista) {
+                capacidad += ejbPasajeroFacade.buscarPasajeroPorTraslado(tras.getId());
+            }
+            if (this.getSelected().getVehiculoid().getCapacidad() > capacidad) {
+                this.capacidadCalculada = this.getSelected().getVehiculoid().getCapacidad() - capacidad;
+            }               
+        }
     }
 
 }

@@ -62,6 +62,6 @@ public class VehiculoFacade extends AbstractFacade<Vehiculo> {
 
     public VehiculoFacade() {
         super(Vehiculo.class);
-    }
+    }   
     
 }

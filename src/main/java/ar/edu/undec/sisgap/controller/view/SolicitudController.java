@@ -196,7 +196,7 @@ public class SolicitudController implements Serializable {
         
         // preparar el traslado
         TrasladoController trasladocontroller = (TrasladoController) context.getApplication().evaluateExpressionGet(context, "#{trasladoController}", TrasladoController.class);
-        trasladocontroller.setSelected(new Traslado());
+        trasladocontroller.prepararTraslado();
         
         // preparar proyecto
         ProyectoController proyectocontroller = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
@@ -367,8 +367,7 @@ public class SolicitudController implements Serializable {
                         FacesContext context = FacesContext.getCurrentInstance();
                         TrasladoController trasladoController = (TrasladoController) context.getApplication().evaluateExpressionGet(context, "#{trasladoController}", TrasladoController.class);
                         ProyectoController proyectoController = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-                        VehiculoController vehiculoController = (VehiculoController) context.getApplication().evaluateExpressionGet(context, "#{vehiculoController}", VehiculoController.class);
-                        
+                                                
                         Traslado traslado=new Traslado();
                         traslado.setDestino(trasladoController.getSelected().getDestino());
                         traslado.setFechahoraregreso(trasladoController.getSelected().getFechahoraregreso());
