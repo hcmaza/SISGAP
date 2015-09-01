@@ -498,7 +498,7 @@ public class SolicitudactaController implements Serializable {
         items = new ListDataModel(this.ejbFacade.obtenerPorProyecto(proyectoid));
     }
     
-    public void pdfSolicitudesEvaluadas() throws JRException, IOException {           
+    public void pdfSolicitudesEvaluadasAnticipos() throws JRException, IOException {           
         FacesContext context = FacesContext.getCurrentInstance();
         IndicadoresController indicadorescontroller = (IndicadoresController) context.getApplication().evaluateExpressionGet(context, "#{indicadoresController}", IndicadoresController.class);        
          // Obtengo la ruta absoluta del archivo compilado del reporte
@@ -511,25 +511,30 @@ public class SolicitudactaController implements Serializable {
         List<Float> saldosRubro = new ArrayList<Float>(indicadorescontroller.getListaSaldosRubro().values()); 
         float totalSolicitado= 0.0F;
         float totalItem= 0.0F;
-        int index=-1;
-        for(Solicitud s: listaSolicitudesAprobadas){
+        float gastado= 0.0F;
+        float saldo= 0.0F;
+        int index=-1;     
+        
+        for(Solicitud s: listaSolicitudesAprobadas){  
+            for(Solicitud soli: this.ejbFacades.obtenerPorPresupuestoTareas(s.getPresupuestotarea().getId())){
+                gastado+=soli.getImporte().floatValue();
+            }
             totalItem += s.getPresupuestotarea().getTotal().floatValue();
             totalSolicitado+= s.getImporte().floatValue();
             for(String r: rubros){
-                if(s.getPresupuestotarea().getRubro().getRubro().toString()== r.toString()){
-                    index=rubros.indexOf(r);
-                    System.out.println("###########");
+                if(s.getPresupuestotarea().getRubro().getAbreviado().equals(r.toString())){
+                    index = rubros.indexOf(r);
+                    saldo = saldosRubro.get(index);
                 }
             }
         }
-        //System.out.println("###########  Rubro Seleccionado: " + rubros.get(index));
-        //System.out.println("###########  Rubro Saldo: " + saldosRubro.get(index));
-                                
+        
         //Agregando los parametros
         Hashtable<String, Object> parametros = new Hashtable<String, Object>();
         parametros.put("solicitudes", solicitudes);
         parametros.put("total", totalSolicitado);
-        parametros.put("saldoItem", totalItem - totalSolicitado);
+        parametros.put("saldoItem", totalItem - gastado);
+        parametros.put("saldoRubro", saldo);
         
         // Llenamos el reporte
         JasperPrint jasperPrint = JasperFillManager.fillReport(rutaJasper, parametros, new JREmptyDataSource());

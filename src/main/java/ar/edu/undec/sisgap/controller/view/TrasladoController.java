@@ -6,12 +6,16 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.TrasladoFacade;
 import ar.edu.undec.sisgap.model.Pasajero;
+import ar.edu.undec.sisgap.model.ProyectoAgente;
 import ar.edu.undec.sisgap.model.Solicitud;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -35,6 +39,30 @@ public class TrasladoController implements Serializable {
     private ar.edu.undec.sisgap.controller.PasajeroFacade ejbPasajeroFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
+    
+    private List<ProyectoAgente> listaPasajerosSeleccionados;
+    
+    private int capacidadCalculada=0;
+
+    public int getCapacidadCalculada() {
+        return capacidadCalculada;
+    }
+
+    public void setCapacidadCalculada(int capacidadCalculada) {
+        this.capacidadCalculada = capacidadCalculada;
+    }    
+    
+    public List<ProyectoAgente> getListaPasajerosSeleccionados() {
+        if(listaPasajerosSeleccionados == null){
+            listaPasajerosSeleccionados = new ArrayList<ProyectoAgente>();
+        }
+        
+        return listaPasajerosSeleccionados;
+    }
+
+    public void setListaPasajerosSeleccionados(List<ProyectoAgente> listaPasajerosSeleccionados) {
+        this.listaPasajerosSeleccionados = listaPasajerosSeleccionados;
+    }
 
     public PasajeroFacade getEjbPasajeroFacade() {
         return ejbPasajeroFacade;
@@ -49,6 +77,10 @@ public class TrasladoController implements Serializable {
             selectedItemIndex = -1;
         }
         return current;
+    }
+
+    public void setSelected(Traslado current) {
+        this.current = current;
     }
 
     private TrasladoFacade getFacade() {
@@ -89,34 +121,32 @@ public class TrasladoController implements Serializable {
         selectedItemIndex = -1;
         return "Create";
     }
+    
+    public void prepararTraslado(){
+        current = new Traslado();
+        selectedItemIndex = -1;                
+    }
 
     public String create() {
-        
-        System.out.println("3:" + current.getDestino());
-        System.out.println("1:" + current.getFechahoraviaje().toString());
-        System.out.println("2:" + current.getFechahoraregreso().toString());
-        
+                
         try {
             
-            FacesContext context = FacesContext.getCurrentInstance();
+            /*FacesContext context = FacesContext.getCurrentInstance();
             ProyectoController proyectoController = (ProyectoController) context.getApplication().evaluateExpressionGet(context, "#{proyectoController}", ProyectoController.class);
-            
-            // guardar el responsable
-            current.setResponsableid(proyectoController.getSelected().getAgenteid());
-            
-            // guardar el proyecto
-            current.setProyectoid(proyectoController.getSelected());
-            
+            VehiculoController vehiculoController = (VehiculoController) context.getApplication().evaluateExpressionGet(context, "#{vehiculoController}", VehiculoController.class);
+            SolicitudController solicitudController=(SolicitudController) context.getApplication().evaluateExpressionGet(context, "#{solicitudController}", SolicitudController.class);
+            */
+                                 
             // persistir
             //getFacade().create(current);
-            getFacade().createWithPersist(current);
+            //getFacade().createWithPersist(current);
             
-            // persistir los pasajeros
+           /* // persistir los pasajeros
             for(Pasajero p : current.getPasajeroList()){
                 p.setTrasladoid(current);
                 
                 this.getEjbPasajeroFacade().create(p);
-            }
+            }*/
             
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("TrasladoCreated"));
             return prepareCreate();
@@ -264,23 +294,44 @@ public class TrasladoController implements Serializable {
 
     }
     
-    public void agregarPasajero(){
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        PasajeroController pasajeroController = (PasajeroController) context.getApplication().evaluateExpressionGet(context, "#{pasajeroController}", PasajeroController.class);
-        
-        this.current.getPasajeroList().add(pasajeroController.getSelected());
+//    public void agregarPasajero(){
+//        
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        PasajeroController pasajeroController = (PasajeroController) context.getApplication().evaluateExpressionGet(context, "#{pasajeroController}", PasajeroController.class);
+//        
+//        this.current.getPasajeroList().add(pasajeroController.getSelected());
+//    }
+//    
+//    public void quitarPasajero(Pasajero pasajero){
+//
+//        // se quita de la lista de pasajeros
+//        Iterator i = this.getSelected().getPasajeroList().iterator();
+//
+//        while(i.hasNext()){
+//            //if(((Pasajero)i.next()).getDni().equals(pasajero.getDni())){
+//            if(((Pasajero)i.next()).get .equals(pasajero.getAgenteid().getId){
+//                
+//                i.remove();
+//            }
+//        }
+//    }
+    
+    public void asdasd(){
+        System.out.println("Tamaño de lista de pasajeros seleccionados = " + this.getListaPasajerosSeleccionados().size());
     }
     
-    public void quitarPasajero(Pasajero pasajero){
-
-        // se quita de la lista de pasajeros
-        Iterator i = this.getSelected().getPasajeroList().iterator();
-
-        while(i.hasNext()){
-            if(((Pasajero)i.next()).getDni().equals(pasajero.getDni())){
-                i.remove();
+    public void obtenerAsientos(){                
+        this.capacidadCalculada=0;
+        if(this.getSelected().getVehiculoid()!=null){
+            List<Traslado> lista = new ArrayList<Traslado>();
+            lista = this.getFacade().buscarTraslado(this.getSelected().getFechahoraviaje(), this.getSelected().getVehiculoid().getId());
+            int capacidad = 0;
+            for (Traslado tras : lista) {
+                capacidad += ejbPasajeroFacade.buscarPasajeroPorTraslado(tras.getId());
             }
+            if (this.getSelected().getVehiculoid().getCapacidad() > capacidad) {
+                this.capacidadCalculada = this.getSelected().getVehiculoid().getCapacidad() - capacidad;
+            }               
         }
     }
 

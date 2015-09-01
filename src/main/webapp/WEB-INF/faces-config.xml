@@ -19,22 +19,7 @@
         <locale-config>
             <default-locale>es_ES</default-locale>
         </locale-config>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
+        
     </application>
     
     <!--    <factory>
@@ -50,6 +35,10 @@
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/secure/proyectos/List.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>CreateEvaluacionIdeaProyecto</from-outcome>
+            <to-view-id>/secure/evaluacionideaproyecto/Create.xhtml</to-view-id>
+        </navigation-case>
         <navigation-case>
             <from-outcome>CreateSolicitud</from-outcome>
             <to-view-id>/secure/solicitudes/Create.xhtml</to-view-id>

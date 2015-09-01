@@ -42,9 +42,14 @@
 package ar.edu.undec.sisgap.controller;
 
 import ar.edu.undec.sisgap.model.Traslado;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.swing.text.DateFormatter;
 
 /**
  *
@@ -64,4 +69,13 @@ public class TrasladoFacade extends AbstractFacade<Traslado> {
         super(Traslado.class);
     }
     
+    public List<Traslado> buscarTraslado(Date fechahoraviaje, int id){
+       try{
+           //return em.createQuery("SELECT t FROM Traslado t WHERE t.fechahoraviaje = :fechahoraviaje and t.vehiculoid=:vehiculoid ", Traslado.class).setParameter("fechahoraviaje", pfecha).setParameter("vehiculoid",vehiculoid).getResultList();                 
+           return em.createQuery("SELECT t FROM Traslado t WHERE t.fechahoraviaje= :fechahoraviaje and t.vehiculoid.id = :id", Traslado.class).setParameter("fechahoraviaje", fechahoraviaje).setParameter("id", id).getResultList();
+       }catch(Exception e){
+           System.out.println("No se pudo realizar la consulta "+e);
+           return null;
+       }
+    }
 }

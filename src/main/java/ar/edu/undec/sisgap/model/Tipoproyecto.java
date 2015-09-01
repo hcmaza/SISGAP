@@ -41,7 +41,7 @@ public class Tipoproyecto implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="tipoproyecto_id_seq")
     @Basic(optional = false)
     @Column(name = "id")
-    private Integer id;
+    private Integer id;    
     @Size(max = 100)
     @Column(name = "tipo")
     private String tipo;

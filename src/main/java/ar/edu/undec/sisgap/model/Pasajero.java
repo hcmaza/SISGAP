@@ -68,9 +68,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Pasajero.findAll", query = "SELECT p FROM Pasajero p"),
     @NamedQuery(name = "Pasajero.findById", query = "SELECT p FROM Pasajero p WHERE p.id = :id"),
-    @NamedQuery(name = "Pasajero.findByNombre", query = "SELECT p FROM Pasajero p WHERE p.nombre = :nombre"),
-    @NamedQuery(name = "Pasajero.findByApellido", query = "SELECT p FROM Pasajero p WHERE p.apellido = :apellido"),
-    @NamedQuery(name = "Pasajero.findByDni", query = "SELECT p FROM Pasajero p WHERE p.dni = :dni")})
+})
 public class Pasajero implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -78,18 +76,22 @@ public class Pasajero implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 50)
-    @Column(name = "nombre", length = 50)
-    private String nombre;
-    @Size(max = 50)
-    @Column(name = "apellido", length = 50)
-    private String apellido;
-    @Size(max = 20)
-    @Column(name = "dni", length = 20)
-    private String dni;
+    
     @JoinColumn(name = "trasladoid", referencedColumnName = "id")
     @ManyToOne
     private Traslado trasladoid;
+    
+    @JoinColumn(name = "agenteid", referencedColumnName = "id")
+    @ManyToOne
+    private Agente agenteid;
+
+    public Agente getAgenteid() {
+        return agenteid;
+    }
+
+    public void setAgenteid(Agente agenteid) {
+        this.agenteid = agenteid;
+    }
 
     public Pasajero() {
     }
@@ -104,30 +106,6 @@ public class Pasajero implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
     }
 
     public Traslado getTrasladoid() {

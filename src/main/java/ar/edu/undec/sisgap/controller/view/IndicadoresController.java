@@ -293,7 +293,7 @@ public class IndicadoresController implements Serializable {
 
         // Saldos por Rubro
         listaSaldosRubro = saldos;
-
+        
         columnasListaSaldosRubro = new ArrayList<String>(saldos.keySet());
         valoresListaSaldosRubro = new ArrayList<Float>(saldos.values());
     }

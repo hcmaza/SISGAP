@@ -5,7 +5,6 @@ import ar.edu.undec.sisgap.controller.view.util.JsfUtil;
 import ar.edu.undec.sisgap.controller.view.util.PaginationHelper;
 import ar.edu.undec.sisgap.controller.ArchivorendicionFacade;
 import ar.edu.undec.sisgap.model.Solicitud;
-import com.lowagie.text.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
