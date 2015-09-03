@@ -64,4 +64,15 @@ public class PasajeroFacade extends AbstractFacade<Pasajero> {
         super(Pasajero.class);
     }
     
+    public long buscarPasajeroPorTraslado(int id){
+             
+       try{
+         return (long)em.createQuery("SELECT COUNT(p) FROM Pasajero p WHERE p.trasladoid.id= :id", Long.class).setParameter("id", id).getSingleResult();                    
+           
+       }catch(Exception e){
+           System.out.println("No se pudo realizar la consulta "+e);
+           return 0;
+       }
+    }
+    
 }

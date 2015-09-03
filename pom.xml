@@ -2,10 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ar.edu.undec</groupId>
-    <artifactId>wayra</artifactId>
+    <artifactId>nortia</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>wayra</name>
+    <name>nortia</name>
+
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -122,6 +123,13 @@
             <version>2.2.1</version>
         </dependency>
         <dependency>
+            <groupId>com.kenai.nbpwr</groupId>
+            <artifactId>com-sun-syndication-feed</artifactId>
+            <version>1.0-201002241208</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>6.0</version>
