@@ -6,6 +6,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
 
+    <f:view contentType="text/html">
+    
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <!--  <h:outputStylesheet name="./css/cssLayout.css"/> -->
@@ -137,7 +139,7 @@
             </div><!-- .middle-->
         </div><!-- .wrapper -->
 
-        <footer class="footer rounded-corners" style="vertical-align: middle; margin: 0px auto 0px auto; position: relative;">
+        <footer class="footer" style="vertical-align: middle; margin: 0px auto 0px auto; position: relative;">
             <ui:insert name="bottom">  
                 <div align="center" style="margin: 0px auto 0px auto; border-color: white; border-width: 1;" >
                     <h:outputText value="[UNdeC] Universidad Nacional de Chilecito" class="pie1" style="vertical-align: middle;" />
@@ -156,5 +158,5 @@
             </p:dialog>
         </h:form>
     </h:body>
-
+</f:view>
 </html>

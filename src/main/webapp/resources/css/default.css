@@ -302,7 +302,7 @@ border-color: transparent;*/
 .wrapper {
     width: 100%;
     min-width: 1000px;
-    min-height: 100%;
+    /* min-height: 100%;*/
     height: auto !important;
     height: 100%;
 }
@@ -348,7 +348,7 @@ border-color: transparent;*/
     /*height: 18%;*/
     
     width: 950px;
-    height: 120px;
+    height: 80px;
     
     margin: 0 auto;
     //background-color: #003366; 
@@ -356,9 +356,11 @@ border-color: transparent;*/
     //background-color: #FFFFFF; 
     /*        background-color: transparent;*/
     //background-image: url("#{resource['img:/vinculacionTecnologica.png']}");        
-    background-image: url("#{resource['img:/logo-nortia.png']}");        
-    background-size: 100%;
+    background-image: url("#{resource['img:/logo-nortia3.png']}");        
+    background-size: 40%;
     background-repeat: no-repeat ;
+    
+    background-position-x: 10px;
 
     /*position: relative;*/
 }
@@ -367,7 +369,7 @@ border-color: transparent;*/
 -----------------------------------------------------------------------------*/
 .middle {
     width: 100%;
-    padding: 0 0 100px;
+    padding: 0 0 5px;
     position: relative;
 }
 .middle:after {
